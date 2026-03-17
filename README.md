@@ -1,40 +1,107 @@
-# Portfolio – versione Vanilla (HTML / CSS / JS)
+# 🚀 TacoStar – Web Experience
 
-Versione **brutalist** del portfolio in HTML/CSS/JS puro, 1:1 con la versione React (stesso aspetto e stesse funzionalità, senza React né GSAP).
+> Modern diner-style website built for performance, identity, and conversion.
 
-## File
+---
 
-- **index.html** – Struttura (noise, cursor, scroll bar, header, hero con tape, sezioni, footer)
-- **style.css** – Tema brutalist (variabili, nav, hero, tape, sezioni, card, reveal on scroll)
-- **script.js** – Cursor, scroll progress, rendering da data, header/menu, reveal, tilt card
-- **data.js** – Dati (personal, projects, skills, highlights, contactLinks)
+## 🌮 Overview
 
-## Come avviare
+TacoStar is a high-performance, mobile-first web project designed to deliver a strong visual identity and a seamless user experience.
 
-Apri **index.html** nel browser (doppio clic) oppure con un server locale:
+The goal was simple:
+create a lightweight, visually impactful website that converts users into real customers through direct actions like WhatsApp and Deliveroo.
+
+---
+
+## 🎯 Project Goals
+
+- Ultra-fast and lightweight performance  
+- Strong and recognizable visual identity  
+- Mobile-first experience  
+- High conversion rate (CTA focused)  
+- Full control without external dependencies  
+
+---
+
+## ✨ Features
+
+- Modern diner-style UI  
+- Fully responsive layout  
+- Smooth scrolling navigation  
+- Optimized call-to-actions:
+  - WhatsApp integration  
+  - Deliveroo redirection  
+- Clean and scalable structure  
+- No unnecessary libraries  
+
+---
+
+## 🛠️ Tech Stack
+
+- HTML5  
+- CSS3 (Flexbox + Grid)  
+- JavaScript (Vanilla)  
+
+---
+
+## 📸 Preview
+
+![Preview](./assets/preview.png)  
+
+
+---
+
+## 🚀 Live Demo
+
+👉 https://michelbranche.github.io/demo-tacostar
+
+---
+
+## 📂 Project Structure
 
 ```bash
-cd vanilla
-npx serve .
+/
+├── index.html
+├── style.css
+├── script.js
+├── assets/
+│   ├── images
+│   └── icons
 ```
 
-Poi apri l’URL indicato (es. http://localhost:3000).
+---
 
-## Funzionalità (1:1 con React)
+## 🧠 Design Approach
 
-- Cursor personalizzato che segue il mouse e si ingrandisce su link/button
-- Barra di scroll in alto che si riempie con lo scroll
-- Overlay noise (grana)
-- Nav fissa, stato “scrolled”, menu mobile (☰/✕)
-- Hero: ghost “PORTFOLIO”, titolo, tagline, CTA, nastro a scorrimento (due copie, loop senza vuoti)
-- About: ghost “ABOUT”, header, 4 card colorate con reveal
-- Projects: ghost “WORK”, featured + 3 card, tilt 3D al passaggio del mouse, reveal
-- Skills: ghost “SKILLS”, griglia card con reveal
-- Contact: ghost “CONTACT”, titolo, 3 link CTA con reveal
-- Footer: logo nome con stroke, copyright
-- Reveal on scroll (IntersectionObserver) con classi .brutal-reveal e .brutal-revealed
-- Smooth scroll per navigazione
+This project focuses on:
 
-## Aggiornare i contenuti
+- Clarity over complexity  
+- Visual storytelling  
+- Conversion-driven UI  
+- Performance-first development  
 
-Modifica **data.js** (personal, projects, skills, highlights, contactLinks). Per le card About il testo è in script.js (aboutHighlights) se vuoi cambiare titoli/descrizioni/tag.
+Every element has been designed to guide the user toward action.
+
+---
+
+## 🔒 License
+
+This project is licensed under a custom Non-Commercial License.
+
+You are free to use, modify, and study this code for personal purposes only.
+
+Commercial use is strictly prohibited.
+
+© 2026 Michel Branche
+
+---
+
+## 👤 Author
+
+**Michel Branche**  
+Frontend Developer & Creative  
+
+- GitHub: https://github.com/MichelBranche  
+- YouTube: https://www.youtube.com/@Zeropodcastreal  
+- TikTok: https://www.tiktok.com/@zeropodcastofficial  
+- Email: michel.lavoro@gmail.com
