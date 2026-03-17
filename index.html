@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Michel Branche – Front-End Developer Portfolio. Brutalist design, modern interfaces." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700&family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet" />
+  <title>Michel Branche | Front-End Developer Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="App">
+    <div class="brutal-noise" aria-hidden="true"></div>
+    <div class="brutal-cursor" id="brutalCursor" aria-hidden="true"></div>
+    <div class="brutal-scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <header class="brutal-nav" id="site-header">
+      <button type="button" class="brutal-nav__logo" id="nav-logo" aria-label="Home">MB</button>
+      <ul class="brutal-nav__links">
+        <li><button type="button" class="brutal-nav__link" data-section="about">About</button></li>
+        <li><button type="button" class="brutal-nav__link" data-section="projects">Projects</button></li>
+        <li><button type="button" class="brutal-nav__link" data-section="skills">Skills</button></li>
+        <li><button type="button" class="brutal-nav__link" data-section="contact">Contact</button></li>
+      </ul>
+      <button type="button" class="brutal-nav__menu-btn" id="nav-mobile-btn" aria-label="Open menu">☰</button>
+    </header>
+
+    <main>
+      <section id="hero" class="brutal-hero">
+        <div class="brutal-hero__ghost" aria-hidden="true">PORTFOLIO</div>
+        <div id="hero-content" class="brutal-hero__content"></div>
+        <div class="brutal-tape">
+          <div class="brutal-tape__track">
+            <span class="brutal-tape__text">FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦</span>
+            <span class="brutal-tape__text">FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦</span>
+            <span class="brutal-tape__text">FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="brutal-section brutal-section--lime">
+        <div class="brutal-section__ghost" aria-hidden="true">ABOUT</div>
+        <div id="about-content"></div>
+      </section>
+
+      <section id="projects" class="brutal-section brutal-section--yellow">
+        <div class="brutal-section__ghost" aria-hidden="true">WORK</div>
+        <div id="projects-content"></div>
+      </section>
+
+      <section id="skills" class="brutal-section brutal-section--cyan">
+        <div class="brutal-section__ghost" aria-hidden="true">SKILLS</div>
+        <div id="skills-content"></div>
+      </section>
+
+      <section id="contact" class="brutal-section brutal-section--orange brutal-cta">
+        <div class="brutal-section__ghost" aria-hidden="true">CONTACT</div>
+        <div id="contact-content"></div>
+      </section>
+    </main>
+
+    <footer id="footer" class="brutal-footer"></footer>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
