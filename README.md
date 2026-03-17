@@ -1,59 +1,68 @@
-# 🚀 TacoStar – Web Experience
+# ⚡ Michel Branche – Portfolio
 
-> Modern diner-style website built for performance, identity, and conversion.
-
----
-
-## 🌮 Overview
-
-TacoStar is a high-performance, mobile-first web project designed to deliver a strong visual identity and a seamless user experience.
-
-The goal was simple:
-create a lightweight, visually impactful website that converts users into real customers through direct actions like WhatsApp and Deliveroo.
+> Brutalist-inspired front-end portfolio focused on identity, interaction, and performance.
 
 ---
 
-## 🎯 Project Goals
+## 🧠 Overview
 
-- Ultra-fast and lightweight performance  
-- Strong and recognizable visual identity  
-- Mobile-first experience  
-- High conversion rate (CTA focused)  
-- Full control without external dependencies  
+This is my personal portfolio, designed and developed to reflect both my technical skills and my visual approach to web development.
+
+The project combines:
+- brutalist aesthetics
+- modern UI patterns
+- interactive elements
+- performance-focused structure
+
+It’s not just a showcase, but a **visual statement** of how I build and think.
+
+
+## Preview
+
+![Portfolio Preview](./preview.png)
+
+---
+
+## 🎯 Goals
+
+- Build a strong and recognizable visual identity  
+- Showcase real projects in a clean and impactful way  
+- Create a smooth and interactive user experience  
+- Keep the project lightweight and fully controlled  
+- Stand out from standard developer portfolios  
+
+---
+
+## 🎨 Design Approach
+
+The design is heavily inspired by **brutalist and experimental web design**, mixed with modern UX principles.
+
+Key ideas:
+- High contrast  
+- Bold typography  
+- Minimal but intentional layout  
+- Interactive feedback (cursor, scroll, transitions)  
+
+Every section is designed to feel **alive and responsive**.
 
 ---
 
 ## ✨ Features
 
-- Modern diner-style UI  
+- Custom brutalist UI system  
+- Smooth navigation between sections  
+- Scroll-based interactions  
+- Dynamic content rendering (via `data.js`)  
+- Custom cursor and visual effects  
 - Fully responsive layout  
-- Smooth scrolling navigation  
-- Optimized call-to-actions:
-  - WhatsApp integration  
-  - Deliveroo redirection  
-- Clean and scalable structure  
-- No unnecessary libraries  
 
 ---
 
 ## 🛠️ Tech Stack
 
 - HTML5  
-- CSS3 (Flexbox + Grid)  
+- CSS3 (custom styling, no frameworks)  
 - JavaScript (Vanilla)  
-
----
-
-## 📸 Preview
-
-![Preview](./assets/preview.png)  
-
-
----
-
-## 🚀 Live Demo
-
-👉 https://michelbranche.github.io/demo-tacostar
 
 ---
 
@@ -64,23 +73,31 @@ create a lightweight, visually impactful website that converts users into real c
 ├── index.html
 ├── style.css
 ├── script.js
+├── data.js
 ├── assets/
 │   ├── images
-│   └── icons
+│   └── mockups
 ```
 
 ---
 
-## 🧠 Design Approach
+## 🚀 Live
 
-This project focuses on:
+👉 https://michelbranche.github.io/portfolio
 
-- Clarity over complexity  
-- Visual storytelling  
-- Conversion-driven UI  
-- Performance-first development  
+---
 
-Every element has been designed to guide the user toward action.
+## 🧠 Philosophy
+
+This portfolio is built around a simple idea:
+
+> A developer is not just code, but also taste.
+
+I focus on:
+- clean structure  
+- visual impact  
+- user perception  
+- interaction details  
 
 ---
 
@@ -88,7 +105,7 @@ Every element has been designed to guide the user toward action.
 
 This project is licensed under a custom Non-Commercial License.
 
-You are free to use, modify, and study this code for personal purposes only.
+You are free to use, modify, and study the code for personal and educational purposes only.
 
 Commercial use is strictly prohibited.
 
