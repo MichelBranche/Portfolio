@@ -103,12 +103,14 @@ body.brutalist {
 
 .brutalist .App { min-height: 100vh; position: relative; }
 
-/* ===== HEADER ===== */
+/* ===== HEADER (hyper-kinetic style + portfolio stile) ===== */
 .brutal-nav {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  box-sizing: border-box;
+  max-width: 100vw;
   z-index: 100;
   padding: 1rem 1.5rem;
   display: flex;
@@ -117,9 +119,25 @@ body.brutalist {
   background: var(--c-ink);
   color: var(--c-yellow);
   border-bottom: var(--border-thick);
-  transition: padding 0.3s, background 0.3s;
+  transition: padding 0.5s cubic-bezier(0.22, 1, 0.36, 1), background 0.5s, top 0.5s, left 0.5s, width 0.5s, border-radius 0.5s, border 0.5s, box-shadow 0.5s;
+  transform-style: preserve-3d;
+  perspective: 1200px;
 }
-.brutal-nav.scrolled { padding: 0.6rem 1.5rem; background: var(--c-ink); }
+.brutal-nav.scrolled {
+  top: 1.25rem;
+  left: 50%;
+  right: auto;
+  width: auto;
+  min-width: 420px;
+  padding: 0.65rem 1.5rem;
+  transform: translateX(-50%);
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255, 229, 0, 0.25);
+  border-radius: 8px;
+  border-bottom: 2px solid rgba(255, 229, 0, 0.25);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
 .brutal-nav__logo {
   font-family: var(--font-stamp);
   font-size: 1.75rem;
@@ -129,8 +147,18 @@ body.brutalist {
   border: none;
   background: none;
   cursor: none;
+  position: relative;
+  transition: color 0.2s;
 }
-.brutal-nav__logo:hover { color: var(--c-lime); }
+.brutal-nav__logo:hover { color: var(--c-lime); animation: nav-glitch 0.25s infinite; }
+@keyframes nav-glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+  100% { transform: translate(0); }
+}
 .brutal-nav__links { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; }
 .brutal-nav__link {
   font-family: var(--font-mono);
@@ -142,11 +170,21 @@ body.brutalist {
   background: none;
   border: none;
   cursor: none;
-  padding: 4px 0;
+  padding: 4px 0 4px 0;
   border-bottom: 2px solid transparent;
-  transition: border-color 0.2s, color 0.2s;
+  transition: border-color 0.2s, color 0.2s, padding 0.2s;
+  position: relative;
 }
-.brutal-nav__link:hover { border-bottom-color: var(--c-lime); color: var(--c-lime); }
+.brutal-nav__link::before {
+  content: '>';
+  position: absolute;
+  left: -0.5rem;
+  opacity: 0;
+  color: var(--c-lime);
+  transition: opacity 0.2s, left 0.2s;
+}
+.brutal-nav__link:hover { border-bottom-color: var(--c-lime); color: var(--c-lime); padding-left: 1rem; }
+.brutal-nav__link:hover::before { opacity: 1; left: 0; }
 .brutal-nav__menu-btn {
   display: none;
   width: 44px;
@@ -160,6 +198,12 @@ body.brutalist {
   font-size: 1.25rem;
 }
 @media (max-width: 768px) {
+  .brutal-nav {
+    padding: 0.85rem 1rem;
+    /* stesse transizioni del desktop: scroll → pill non fa perdere l’animazione */
+    transition: padding 0.5s cubic-bezier(0.22, 1, 0.36, 1), background 0.5s, top 0.5s, left 0.5s, width 0.5s, border-radius 0.5s, border 0.5s, box-shadow 0.5s;
+  }
+  .brutal-nav.scrolled { min-width: auto; width: calc(100% - 2rem); left: 1rem; transform: none; }
   .brutal-nav__links { display: none; }
   .brutal-nav__menu-btn { display: flex; }
   .brutal-nav__menu-open .brutal-nav__links {
@@ -206,16 +250,43 @@ body.brutalist {
   font-family: var(--font-stamp);
   font-size: clamp(5rem, 18vw, 12rem);
   color: transparent;
-  -webkit-text-stroke: 2px rgba(10, 10, 10, 0.09);
-  left: 63%;
+  -webkit-text-stroke: 2px #fff;
+  left: 70%;
   top: 52%;
   transform: translate(-50%, -50%);
   white-space: nowrap;
   z-index: 1;
   pointer-events: none;
+  text-shadow:
+    0 0 8px rgba(255, 45, 120, 0.9),
+    0 0 20px rgba(255, 45, 120, 0.6),
+    0 0 40px rgba(255, 45, 120, 0.35);
+  animation: neon-flicker 4s ease-in-out infinite;
+}
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+    -webkit-text-stroke-color: #fff;
+    text-shadow:
+      0 0 8px rgba(255, 45, 120, 0.95),
+      0 0 20px rgba(255, 45, 120, 0.65),
+      0 0 40px rgba(255, 45, 120, 0.4);
+  }
+  20%, 24%, 55% {
+    opacity: 0.9;
+    -webkit-text-stroke-color: rgba(255, 255, 255, 0.85);
+    text-shadow:
+      0 0 4px rgba(255, 45, 120, 0.6),
+      0 0 12px rgba(255, 45, 120, 0.4),
+      0 0 24px rgba(255, 45, 120, 0.25);
+  }
+  22% {
+    opacity: 0.7;
+    text-shadow: 0 0 2px rgba(255, 45, 120, 0.5);
+  }
 }
 @media (max-width: 900px) {
-  .brutal-hero__ghost { opacity: 0.08; top: 58%; font-size: clamp(4rem, 22vw, 10rem); }
+  .brutal-hero__ghost { left: 55%; top: 58%; font-size: clamp(3.5rem, 18vw, 8rem); }
 }
 .brutal-hero__kicker {
   font-family: var(--font-mono);
@@ -305,6 +376,34 @@ body.brutalist {
 @keyframes brutal-tape-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+/* Tape verde tra Skills e Contact */
+.brutal-tape-wrap--green {
+  width: 100%;
+  overflow: hidden;
+  border-bottom: var(--border-thick);
+}
+.brutal-tape--green {
+  position: relative;
+  left: -10%;
+  width: 120%;
+  background: var(--c-green);
+  color: var(--c-ink);
+  transform: scaleX(-1) rotate(-1.5deg);
+  padding: 0.75rem 0;
+  border-top: var(--border-thick);
+  border-bottom: var(--border-thick);
+  overflow: hidden;
+  z-index: 1;
+}
+.brutal-tape--green .brutal-tape__track {
+  animation: brutal-tape-scroll 18s linear infinite;
+}
+.brutal-tape--green .brutal-tape__track-inner {
+  display: flex;
+  width: max-content;
+  transform: scaleX(-1);
 }
 
 /* ===== SECTIONS ===== */
@@ -605,7 +704,7 @@ body.brutalist {
 /* ===== CTA ===== */
 .brutal-cta {
   text-align: center;
-  padding: clamp(3rem, 10vw, 6rem) 1.5rem;
+  padding: clamp(3rem, 10vw, 6rem) 1.5rem clamp(4rem, 14vw, 8rem);
   position: relative;
 }
 .brutal-cta__title {
@@ -645,8 +744,8 @@ body.brutalist {
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  background: var(--c-ink);
-  color: var(--c-yellow);
+  background: #fff;
+  color: var(--c-ink);
   border: var(--border-thick);
   font-family: var(--font-display);
   font-weight: 900;
@@ -658,12 +757,124 @@ body.brutalist {
   transition: background 0.2s, color 0.2s;
 }
 .brutal-cta__link:hover { background: var(--c-lime); color: var(--c-ink); }
+.brutal-cta__link .fa {
+  font-size: 1.75em;
+  display: inline-block;
+  font-family: "FontAwesome";
+}
+/* Brand colors (Font Awesome icons – pacchetto brand color variables) */
+.brutal-cta__link .fa-envelope { color: #ea4335; }
+.brutal-cta__link .fa-github { color: #333; }
+.brutal-cta__link .fa-linkedin,
+.brutal-cta__link .fa-linkedin-square { color: #0976b4; }
+.brutal-cta__link .fa-instagram { color: #3f729b; }
+.brutal-cta__link .fa-facebook,
+.brutal-cta__link .fa-facebook-square { color: #3b5998; }
+.brutal-cta__link:hover .fa { color: inherit; }
+.brutal-cta__link .brutal-cta__icon-svg {
+  width: 1.75em;
+  height: 1.75em;
+  vertical-align: middle;
+  color: #5865F2;
+}
+.brutal-cta__link:hover .brutal-cta__icon-svg { color: inherit; }
+
+/* ----- Contact form ----- */
+.brutal-contact-form {
+  max-width: 32rem;
+  margin: 2.5rem auto 0;
+  text-align: left;
+  position: relative;
+  z-index: 2;
+}
+.brutal-contact-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 500px) {
+  .brutal-contact-form__grid { grid-template-columns: 1fr; }
+}
+.brutal-contact-form__group {
+  margin-bottom: 1rem;
+}
+.brutal-contact-form__label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--c-ink);
+  margin-bottom: 0.35rem;
+}
+.brutal-contact-form__input,
+.brutal-contact-form__textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--c-ink);
+  background: #fff;
+  border: var(--border-thick);
+  box-sizing: border-box;
+  transition: background 0.2s, border-color 0.2s;
+}
+.brutal-contact-form__input::placeholder,
+.brutal-contact-form__textarea::placeholder {
+  color: var(--c-ink);
+  opacity: 0.5;
+}
+.brutal-contact-form__input:focus,
+.brutal-contact-form__textarea:focus {
+  outline: none;
+  background: var(--c-lime);
+}
+.brutal-contact-form__textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+.brutal-contact-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+.brutal-contact-form__submit {
+  padding: 0.85rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--c-ink);
+  color: var(--c-yellow);
+  border: var(--border-thick);
+  cursor: none;
+  transition: background 0.2s, color 0.2s;
+}
+.brutal-contact-form__submit:hover:not(:disabled) {
+  background: var(--c-pink);
+  color: var(--c-ink);
+}
+.brutal-contact-form__submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.brutal-contact-form__feedback {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  margin: 0;
+}
+.brutal-contact-form__feedback--success { color: var(--c-ink); }
+.brutal-contact-form__feedback--error { color: var(--c-ink); }
 
 /* ===== FOOTER ===== */
 .brutal-footer {
   background: var(--c-pink);
   color: var(--c-ink);
   padding: clamp(1.5rem, 4vw, 2.5rem) 1.5rem;
+  padding-bottom: max(clamp(2rem, 5vw, 3rem), env(safe-area-inset-bottom, 0px));
   border-top: var(--border-thick);
   display: flex;
   justify-content: space-between;
@@ -692,8 +903,14 @@ body.brutalist {
     min-height: auto;
     padding-bottom: 5rem;
   }
+  .brutal-hero__ghost {
+    display: none;
+  }
   .brutal-hero__kicker { font-size: 0.75rem; }
-  .brutal-hero__title { font-size: clamp(2.25rem, 11vw, 3.5rem); }
+  .brutal-hero__title {
+    font-size: clamp(2.25rem, 11vw, 3.5rem);
+    letter-spacing: 0.02em;
+  }
   .brutal-hero__title span:nth-child(2) { -webkit-text-stroke: 3px var(--c-ink); }
   .brutal-hero__tagline { font-size: 1rem; margin-bottom: 1.5rem; }
   .brutal-hero__cta { padding: 0.875rem 1.5rem; font-size: 0.95rem; min-height: 44px; }
@@ -724,9 +941,13 @@ body.brutalist {
   .brutal-featured__desc { font-size: 0.85rem; }
   .brutal-featured__cta { padding: 0.6rem 1rem; font-size: 0.8rem; min-height: 44px; }
 
-  .brutal-cta { padding: clamp(2rem, 8vw, 4rem) 1.25rem; }
+  .brutal-cta { padding: clamp(2rem, 8vw, 4rem) 1.25rem clamp(3rem, 12vw, 5rem); }
   .brutal-cta__link { padding: 0.875rem 1.25rem; font-size: 0.85rem; min-height: 44px; }
 
-  .brutal-footer { padding: 1.25rem; font-size: 0.8rem; }
+  .brutal-footer {
+    padding: 1.25rem;
+    padding-bottom: max(1.75rem, env(safe-area-inset-bottom, 0px));
+    font-size: 0.8rem;
+  }
   .brutal-footer__logo { font-size: clamp(0.95rem, 4vw, 1.1rem); }
 }

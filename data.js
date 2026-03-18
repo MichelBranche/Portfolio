@@ -8,9 +8,13 @@ const personal = {
   title: 'Front-End Developer',
   tagline: 'Crafting modern, responsive interfaces with attention to detail',
   bio: 'Front-End Developer con solide basi in HTML, CSS e JavaScript, orientato allo sviluppo di interfacce moderne e responsive. Forte attenzione a UI/UX, con focus su design coerente, leggibilità e identità visiva. Approccio performance-first: sviluppo leggero, senza dipendenze inutili e ottimizzato per mobile. Esperienza su progetti reali, con attenzione a conversione e utilizzo concreto.',
-  email: 'contact@michelbranche.dev',
+  email: 'michel.lavoro@gmail.com',
   github: 'https://github.com/MichelBranche',
-  linkedin: 'https://linkedin.com/in/michelbranche',
+  linkedin: 'https://www.linkedin.com/in/michel-branche-328501301/',
+  discord: 'https://discord.com',
+  discordUsername: 'cloroalclero',
+  instagram: 'https://www.instagram.com/80_sete_/',
+  facebook: 'https://www.facebook.com/michel.branche.56/',
 }
 
 const projects = [
@@ -83,6 +87,9 @@ const contactLinks = [
   { label: 'Email', value: personal.email, href: 'mailto:' + personal.email, gradient: 'from-orange-500 to-red-500', icon: 'mail' },
   { label: 'GitHub', value: 'MichelBranche', href: personal.github, gradient: 'from-gray-700 to-gray-900', icon: 'github' },
   { label: 'LinkedIn', value: 'Connect', href: personal.linkedin, gradient: 'from-blue-600 to-blue-800', icon: 'linkedin' },
+  { label: 'Discord (cloroalclero)', value: personal.discordUsername, href: personal.discord, gradient: 'from-indigo-500 to-purple-600', icon: 'discord' },
+  { label: 'Instagram', value: 'Instagram', href: personal.instagram, gradient: 'from-purple-500 to-pink-500', icon: 'instagram' },
+  { label: 'Facebook', value: 'Facebook', href: personal.facebook, gradient: 'from-blue-600 to-blue-800', icon: 'facebook' },
 ]
 
 const categoryGradients = {
@@ -93,4 +100,7 @@ const categoryGradients = {
   tools: 'from-yellow-500 to-orange-500',
 }
 
-window.PORTFOLIO_DATA = { personal, projects, skills, highlights, contactLinks, categoryGradients }
+// URL dell'API che invia email + Telegram (es. dopo deploy Vercel: 'https://tuo-progetto.vercel.app/api/send-message')
+const contactFormApiUrl = ''
+
+window.PORTFOLIO_DATA = { personal, projects, skills, highlights, contactLinks, categoryGradients, contactFormApiUrl }
