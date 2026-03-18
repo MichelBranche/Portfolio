@@ -1,17 +1,3 @@
-/**
- * Vercel serverless: riceve il form di contatto, invia email (Resend) e messaggio su Telegram.
- *
- * Variabili d'ambiente (in Vercel → Project → Settings → Environment Variables):
- * - RESEND_API_KEY   (da https://resend.com)
- * - TO_EMAIL         (es. michel.lavoro@gmail.com)
- * - FROM_EMAIL       (es. onboarding@resend.dev per test, o tua email verificata su Resend)
- * - TELEGRAM_BOT_TOKEN (da @BotFather su Telegram)
- * - TELEGRAM_CHAT_ID    (il tuo chat_id, es. ottenuto da @userinfobot)
- */
-
-const RESEND_API_KEY = process.env.RESEND_API_KEY
-const TO_EMAIL = process.env.TO_EMAIL
-const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev'
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
@@ -48,43 +34,17 @@ module.exports = async function handler(req, res) {
 
   const errors = []
 
-  if (!(RESEND_API_KEY && TO_EMAIL) && !(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID)) {
+  // Ora usiamo SOLO Telegram: se non è configurato, return 500 subito
+  if (!(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID)) {
     return res.status(500).json({
-      error: 'Server not configured',
+      error: 'Server not configured (telegram)',
       details: [
-        'Set RESEND_API_KEY + TO_EMAIL (email)',
-        'and/or TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (telegram)',
+        'Set TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID on Vercel',
       ],
     })
   }
 
-  // 1) Invia email con Resend
-  if (RESEND_API_KEY && TO_EMAIL) {
-    try {
-      const resResend = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + RESEND_API_KEY,
-        },
-        body: JSON.stringify({
-          from: FROM_EMAIL,
-          to: [TO_EMAIL],
-          reply_to: emailTrim,
-          subject: `Portfolio: messaggio da ${nameTrim}`,
-          text: `Da: ${nameTrim} <${emailTrim}>\n\n${messageTrim}`,
-        }),
-      })
-      if (!resResend.ok) {
-        const errData = await resResend.text()
-        errors.push('Email: ' + (errData || resResend.statusText))
-      }
-    } catch (e) {
-      errors.push('Email: ' + (e.message || 'send failed'))
-    }
-  }
-
-  // 2) Invia messaggio su Telegram
+  // Invia messaggio su Telegram
   if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
     const telegramText = [
       '📩 Nuovo messaggio portfolio',
@@ -116,7 +76,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (errors.length > 0) {
-    return res.status(502).json({ error: 'Send failed', details: errors })
+    return res.status(502).json({ error: 'Send failed (telegram)', details: errors })
   }
 
   return res.status(200).json({ ok: true })
