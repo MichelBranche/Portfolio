@@ -293,7 +293,7 @@
             iconHtml = '<i class="' + faClass + '" aria-hidden="true"></i>'
           }
           return '' +
-            '<a href="' + item.href + '" target="_blank" rel="noopener noreferrer" class="brutal-cta__link brutal-reveal brutal-reveal--up" data-reveal data-delay="' + i * 100 + '" aria-label="' + item.label + '">' +
+            '<a href="' + item.href + '" target="_blank" rel="noopener noreferrer" class="brutal-cta__link brutal-reveal brutal-reveal--up" data-reveal data-delay="' + i * 100 + '" aria-label="' + item.label + '"' + (item.icon !== 'mail' ? ' data-stats-social="1"' : '') + '>' +
               iconHtml + ' →' +
             '</a>'
         }).join('') +
@@ -318,6 +318,20 @@
           '<p class="brutal-contact-form__feedback" id="contact-feedback" aria-live="polite"></p>' +
         '</div>' +
       '</form>'
+
+    // Contare anche i click sulle icone SOCIAL (non la mail).
+    // Usiamo keepalive per far partire la request anche quando si apre una nuova tab.
+    try {
+      var socialIcons = contactContent.querySelectorAll('a[data-stats-social="1"]')
+      socialIcons.forEach(function (a) {
+        a.addEventListener('click', function () {
+          if (!data.statsApiUrl) return
+          try {
+            fetch(data.statsApiUrl + '?inc=contact', { method: 'GET', keepalive: true }).catch(function () {})
+          } catch (_) {}
+        })
+      })
+    } catch (_) {}
   }
 
   // ----- Contact form submit -----
