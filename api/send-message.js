@@ -21,7 +21,7 @@ function cors(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   cors(res)
   if (req.method === 'OPTIONS') {
     return res.status(204).end()
@@ -47,6 +47,16 @@ export default async function handler(req, res) {
   }
 
   const errors = []
+
+  if (!(RESEND_API_KEY && TO_EMAIL) && !(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID)) {
+    return res.status(500).json({
+      error: 'Server not configured',
+      details: [
+        'Set RESEND_API_KEY + TO_EMAIL (email)',
+        'and/or TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (telegram)',
+      ],
+    })
+  }
 
   // 1) Invia email con Resend
   if (RESEND_API_KEY && TO_EMAIL) {
@@ -105,8 +115,8 @@ export default async function handler(req, res) {
     }
   }
 
-  if (errors.length > 0 && !(RESEND_API_KEY && TO_EMAIL) && !(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID)) {
-    return res.status(500).json({ error: 'Server not configured', details: errors })
+  if (errors.length > 0) {
+    return res.status(502).json({ error: 'Send failed', details: errors })
   }
 
   return res.status(200).json({ ok: true })

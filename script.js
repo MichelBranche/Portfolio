@@ -254,8 +254,15 @@
         body: JSON.stringify(payload)
       })
         .then(function (res) {
-          if (!res.ok) throw new Error(res.statusText || 'Errore di invio')
-          return res.json()
+          return res.text().then(function (t) {
+            var data
+            try { data = t ? JSON.parse(t) : {} } catch (_) { data = { raw: t } }
+            if (!res.ok) {
+              var detail = data && (data.error || data.details || data.raw) ? (' — ' + JSON.stringify(data)) : ''
+              throw new Error((res.statusText || 'Errore di invio') + detail)
+            }
+            return data
+          })
         })
         .then(function () {
           feedback.textContent = 'Messaggio inviato. Ti rispondo al più presto!'
@@ -263,7 +270,7 @@
           contactForm.reset()
         })
         .catch(function (err) {
-          feedback.textContent = 'Invio fallito. Riprova o scrivimi a ' + (personal ? personal.email : '') + '.'
+          feedback.textContent = 'Invio fallito. ' + (err && err.message ? err.message : 'Riprova') + ' — oppure scrivimi a ' + (personal ? personal.email : '') + '.'
           feedback.className = 'brutal-contact-form__feedback brutal-contact-form__feedback--error'
         })
         .finally(function () {
