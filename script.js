@@ -119,8 +119,10 @@
   if (heroContent && personal) {
     var words = personal.name.split(' ')
     var cvLink = personal.cvPdfUrl
-      ? '<a href="' + personal.cvPdfUrl + '" class="brutal-hero__cta brutal-hero__cta--outline" download="Michel-Branche-CV.pdf" rel="noopener">Download CV</a>'
-      : ''
+      ? '<a href="' + personal.cvPdfUrl + '" class="brutal-hero__cta brutal-hero__cta--outline" download="Michel-Branche-CV.pdf" rel="noopener" data-stats-cv="1">Download CV</a>'
+      : personal.cvHtmlUrl
+        ? '<a href="' + personal.cvHtmlUrl + '" class="brutal-hero__cta brutal-hero__cta--outline" target="_blank" rel="noopener" data-stats-cv="1">Open CV</a>'
+        : ''
     heroContent.innerHTML =
       '<p class="brutal-hero__kicker">' + personal.title + '</p>' +
       '<h1 class="brutal-hero__title"><span id="hero-name-michel">' + words[0] + '</span><span>' + words.slice(1).join(' ') + '</span></h1>' +
@@ -441,8 +443,8 @@
     // Aggiorna i numeri anche mentre resti sulla pagina (near real-time)
     // Il polling viene avviato solo se l'endpoint `/api/stats` risponde OK.
 
-    // Incrementa CV al click sul link Download CV
-    var cvLink = document.querySelector('a[download="Michel-Branche-CV.pdf"]')
+    // Incrementa CV al click sul link (PDF o HTML)
+    var cvLink = document.querySelector('a[data-stats-cv="1"]')
     if (cvLink) {
       cvLink.addEventListener('click', function () {
         fetch(statsApiUrl + '?inc=cv').then(function (r) { return r.json() }).then(renderStats).catch(function () {})

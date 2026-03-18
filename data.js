@@ -15,7 +15,9 @@ const personal = {
   discordUsername: 'cloroalclero',
   instagram: 'https://www.instagram.com/80_sete_/',
   facebook: 'https://www.facebook.com/michel.branche.56/',
-  cvPdfUrl: './assets/Michel-Branche-CV.pdf',
+  // Se il PDF non è presente in `assets/`, meglio usare il CV HTML.
+  // (evita "file non disponibile" sul sito)
+  cvPdfUrl: null,
   cvHtmlUrl: './assets/cv.html',
 }
 
