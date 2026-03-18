@@ -100,7 +100,14 @@ const categoryGradients = {
   tools: 'from-yellow-500 to-orange-500',
 }
 
-// URL dell'API che invia email + Telegram (es. dopo deploy Vercel: 'https://tuo-progetto.vercel.app/api/send-message')
-const contactFormApiUrl = ''
+const contactFormApiUrl = 'https://portfolio-three-ruby-wf4uz6dmul.vercel.app/api/send-message'
 
-window.PORTFOLIO_DATA = { personal, projects, skills, highlights, contactLinks, categoryGradients, contactFormApiUrl }
+window.PORTFOLIO_DATA = { 
+  personal, 
+  projects, 
+  skills, 
+  highlights, 
+  contactLinks, 
+  categoryGradients, 
+  contactFormApiUrl 
+}
