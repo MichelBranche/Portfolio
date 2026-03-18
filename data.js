@@ -100,7 +100,7 @@ const categoryGradients = {
   tools: 'from-yellow-500 to-orange-500',
 }
 
-const contactFormApiUrl = 'https://portfolio-three-ruby-wf4uz6dmul.vercel.app/api/send-message'
+const contactFormApiUrl = 'https://portfolio-three-ruby-wf4uz6dmu1.vercel.app/api/send-message'
 
 window.PORTFOLIO_DATA = { 
   personal, 
