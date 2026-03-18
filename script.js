@@ -396,32 +396,50 @@
     renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
     function fetchStats(inc) {
       var url = inc ? statsApiUrl + '?inc=' + encodeURIComponent(inc) : statsApiUrl
-      fetch(url).then(function (r) { return r.json() }).then(function (s) {
+      return fetch(url).then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status)
+        return r.json()
+      }).then(function (s) {
         renderStats(s)
+        return s
       }).catch(function () {
         renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
+        return null
       })
     }
     var visitCounted = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('portfolio_visit_counted')
+    var pollMs = 8000
+    var pollTimer = null
+    function startPolling() {
+      if (pollTimer) return
+      pollTimer = setInterval(function () {
+        try {
+          if (document.visibilityState === 'hidden') return
+        } catch (_) {}
+        fetchStats().then(function (s) {
+          if (!s) {
+            try { clearInterval(pollTimer) } catch (_) {}
+            pollTimer = null
+          }
+        })
+      }, pollMs)
+      window.addEventListener('beforeunload', function () {
+        try { clearInterval(pollTimer) } catch (_) {}
+      })
+    }
     if (visitCounted) {
-      fetchStats()
+      fetchStats().then(function (s) {
+        if (s) startPolling()
+      })
     } else {
-      fetchStats('visit')
+      fetchStats('visit').then(function (s) {
+        if (s) startPolling()
+      })
       try { sessionStorage.setItem('portfolio_visit_counted', '1') } catch (_) {}
     }
 
     // Aggiorna i numeri anche mentre resti sulla pagina (near real-time)
-    // Non incrementa nulla: chiama solo GET /api/stats
-    var pollMs = 8000
-    var pollTimer = setInterval(function () {
-      try {
-        if (document.visibilityState === 'hidden') return
-      } catch (_) {}
-      fetchStats()
-    }, pollMs)
-    window.addEventListener('beforeunload', function () {
-      try { clearInterval(pollTimer) } catch (_) {}
-    })
+    // Il polling viene avviato solo se l'endpoint `/api/stats` risponde OK.
 
     // Incrementa CV al click sul link Download CV
     var cvLink = document.querySelector('a[download="Michel-Branche-CV.pdf"]')
