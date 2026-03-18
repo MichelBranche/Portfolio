@@ -104,6 +104,7 @@ const categoryGradients = {
 }
 
 const contactFormApiUrl = 'https://portfolio-three-ruby-wf4uz6dmu1.vercel.app/api/send-message'
+const statsApiUrl = (contactFormApiUrl || '').replace(/\/api\/send-message\/?$/, '') + '/api/stats'
 
 window.PORTFOLIO_DATA = { 
   personal, 
@@ -112,5 +113,6 @@ window.PORTFOLIO_DATA = {
   highlights, 
   contactLinks, 
   categoryGradients, 
-  contactFormApiUrl 
+  contactFormApiUrl,
+  statsApiUrl
 }

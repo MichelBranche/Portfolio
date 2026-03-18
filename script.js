@@ -128,7 +128,8 @@
       '<div class="brutal-hero__ctas">' +
         '<button type="button" class="brutal-hero__cta" id="hero-cta">View My Work →</button>' +
         (cvLink ? cvLink : '') +
-      '</div>'
+      '</div>' +
+      '<div class="brutal-stats brutal-hero-stats" id="hero-stats" aria-hidden="true"></div>'
     document.getElementById('hero-cta').addEventListener('click', function () { scrollToSection('projects') })
     var michelSpan = document.getElementById('hero-name-michel')
     if (michelSpan && personal.cvHtmlUrl) {
@@ -350,6 +351,12 @@
           feedback.textContent = 'Messaggio inviato. Ti rispondo al più presto!'
           feedback.className = 'brutal-contact-form__feedback brutal-contact-form__feedback--success'
           contactForm.reset()
+          if (data.statsApiUrl) {
+            fetch(data.statsApiUrl + '?inc=contact').then(function (r) { return r.json() }).then(function (s) {
+              var e = document.getElementById('hero-stats')
+              if (e && s) e.innerHTML = '<span class="brutal-stats__item"><strong class="brutal-stats__num">' + (s.visits || 0) + '</strong> visite</span><span class="brutal-stats__item"><strong class="brutal-stats__num">' + (s.cvDownloads || 0) + '</strong> CV</span><span class="brutal-stats__item"><strong class="brutal-stats__num">' + (s.contacts || 0) + '</strong> contatti</span>'
+            }).catch(function () {})
+          }
         })
         .catch(function (err) {
           feedback.textContent = 'Invio fallito. ' + (err && err.message ? err.message : 'Riprova') + ' — oppure scrivimi a ' + (personal ? personal.email : '') + '.'
@@ -369,7 +376,62 @@
     var parts = personal.name.split(' ')
     footer.innerHTML =
       '<div class="brutal-footer__logo">' + parts[0] + '<br><span>' + parts.slice(1).join(' ') + '</span></div>' +
-      '<p>© ' + new Date().getFullYear() + ' · Designed & Built with passion</p>'
+      '<div class="brutal-footer__right">' +
+        '<p>© ' + new Date().getFullYear() + ' · Designed & Built with passion</p>' +
+      '</div>'
+  }
+
+  // ----- Stats (visite, download CV, messaggi) -----
+  var statsApiUrl = data.statsApiUrl
+  if (statsApiUrl) {
+    var statsEl = document.getElementById('hero-stats')
+    function renderStats(stats) {
+      if (!statsEl || !stats) return
+      statsEl.innerHTML =
+        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-visits">' + (stats.visits || 0) + '</strong> visite</span>' +
+        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-cv">' + (stats.cvDownloads || 0) + '</strong> CV</span>' +
+        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-contacts">' + (stats.contacts || 0) + '</strong> contatti</span>'
+    }
+    // Placeholder immediato: così vedi qualcosa anche se la fetch fallisce
+    renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
+    function fetchStats(inc) {
+      var url = inc ? statsApiUrl + '?inc=' + encodeURIComponent(inc) : statsApiUrl
+      fetch(url).then(function (r) { return r.json() }).then(function (s) {
+        renderStats(s)
+      }).catch(function () {
+        renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
+      })
+    }
+    var visitCounted = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('portfolio_visit_counted')
+    if (visitCounted) {
+      fetchStats()
+    } else {
+      fetchStats('visit')
+      try { sessionStorage.setItem('portfolio_visit_counted', '1') } catch (_) {}
+    }
+
+    // Aggiorna i numeri anche mentre resti sulla pagina (near real-time)
+    // Non incrementa nulla: chiama solo GET /api/stats
+    var pollMs = 8000
+    var pollTimer = setInterval(function () {
+      try {
+        if (document.visibilityState === 'hidden') return
+      } catch (_) {}
+      fetchStats()
+    }, pollMs)
+    window.addEventListener('beforeunload', function () {
+      try { clearInterval(pollTimer) } catch (_) {}
+    })
+
+    // Incrementa CV al click sul link Download CV
+    var cvLink = document.querySelector('a[download="Michel-Branche-CV.pdf"]')
+    if (cvLink) {
+      cvLink.addEventListener('click', function () {
+        fetch(statsApiUrl + '?inc=cv').then(function (r) { return r.json() }).then(renderStats).catch(function () {})
+      })
+    }
+
+    // Incrementa contatti dopo invio form riuscito (sotto, nel submit handler)
   }
 
   // ----- Header -----

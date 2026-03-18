@@ -483,6 +483,20 @@ body.brutalist {
   gap: 1rem;
   align-items: center;
 }
+
+/* ===== HERO: LIVE STATS ===== */
+.brutal-hero-stats {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--c-yellow);
+  border: var(--border-thick);
+  box-shadow: 4px 4px 0 var(--c-ink);
+  border-radius: 0;
+  position: relative;
+  z-index: 2;
+  justify-content: flex-start;
+  font-size: 0.85rem; /* override del footer */
+}
 .brutal-hero__cta--outline {
   background: transparent;
   color: var(--c-ink);
@@ -1119,6 +1133,31 @@ body.brutalist {
   margin-top: 0.15em;
   -webkit-text-stroke: 2px var(--c-ink);
   color: transparent;
+}
+
+.brutal-footer__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+.brutal-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+.brutal-stats__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+.brutal-stats__num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--c-ink);
+  font-size: 1em;
 }
 
 .brutalist a { text-decoration: none; }

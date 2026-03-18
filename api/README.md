@@ -27,3 +27,25 @@ Questa cartella contiene la serverless **Vercel** che riceve il messaggio del fo
    Crea un bot con @BotFather, avvia una chat con il bot, poi usa @userinfobot per ottenere il tuo `chat_id` e inseriscilo in `TELEGRAM_CHAT_ID`.
 
 Dopo il deploy e la configurazione, il form invierà i messaggi sia alla mail che al tuo profilo Telegram.
+
+---
+
+## API Statistiche (`/api/stats`)
+
+Contatore visite, download CV e messaggi di contatto inoltrati.
+
+- **GET** `/api/stats` → restituisce `{ visits, cvDownloads, contacts }`
+- **GET** `/api/stats?inc=visit` → incrementa le visite e restituisce i conteggi
+- **GET** `/api/stats?inc=cv` → incrementa i download CV
+- **GET** `/api/stats?inc=contact` → incrementa i messaggi inviati
+
+**Storage:** usa Redis (Vercel Storage → Redis / Upstash Redis).
+
+- **Upstash Redis (consigliato se usi l’opzione Upstash in Storage):**
+  - imposta automaticamente `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN`
+  - l’API usa `@upstash/redis`
+- **Redis generico (es. RedisLabs):**
+  - imposta `REDIS_URL` come connection string (es. `redis://default:...@host:port`)
+  - l’API usa il client `redis`
+
+Se Redis non è configurato, l’API risponde con `0, 0, 0` ma il sito continua a funzionare.

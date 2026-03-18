@@ -1,0 +1,11 @@
+# Env (NON committare segreti: REDIS_URL, TELEGRAM_*, ecc.)
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db

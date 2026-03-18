@@ -1,0 +1,8 @@
+{
+  "name": "portfolio-michelbranche",
+  "private": true,
+  "dependencies": {
+    "@upstash/redis": "^1.34.0",
+    "redis": "^4.7.0"
+  }
+}
