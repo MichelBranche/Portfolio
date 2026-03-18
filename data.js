@@ -15,6 +15,8 @@ const personal = {
   discordUsername: 'cloroalclero',
   instagram: 'https://www.instagram.com/80_sete_/',
   facebook: 'https://www.facebook.com/michel.branche.56/',
+  cvPdfUrl: './assets/Michel-Branche-CV.pdf',
+  cvHtmlUrl: './assets/cv.html',
 }
 
 const projects = [
@@ -74,6 +76,7 @@ const skills = [
   { name: 'UI/UX', category: 'design' },
   { name: 'Performance Optimization', category: 'optimization' },
   { name: 'Git', category: 'tools' },
+  { name: 'Canva', category: 'design', cardMod: 'lavender' },
 ]
 
 const highlights = [

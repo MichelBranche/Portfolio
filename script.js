@@ -20,25 +20,85 @@
   // ----- Cursor -----
   var cursor = document.getElementById('brutalCursor')
   if (cursor) {
-    var cursorX = 0, cursorY = 0
-    var targetX = 0, targetY = 0
-    function animateCursor() {
-      cursorX += (targetX - cursorX) * 0.15
-      cursorY += (targetY - cursorY) * 0.15
-      cursor.style.transform = 'translate(' + cursorX + 'px, ' + cursorY + 'px) translate(-50%, -50%)'
-      requestAnimationFrame(animateCursor)
+    function positionCursor(x, y) {
+      cursor.style.transform = 'translate(' + x + 'px, ' + y + 'px) translate(-3px, -3px)'
     }
-    animateCursor()
     document.addEventListener('mousemove', function (e) {
-      targetX = e.clientX
-      targetY = e.clientY
+      positionCursor(e.clientX, e.clientY)
     })
     document.addEventListener('mouseover', function (e) {
-      if (e.target.closest('a, button')) cursor.classList.add('brutal-cursor--large')
+      if (e.target.closest('#clippy')) cursor.classList.add('brutal-cursor--grab')
+      else if (e.target.closest('a, button')) cursor.classList.add('brutal-cursor--large')
     })
+    var clippyEl = document.getElementById('clippy')
     document.addEventListener('mouseout', function (e) {
+      if (!e.relatedTarget || !e.relatedTarget.closest('#clippy'))
+        if (!clippyEl || !clippyEl.classList.contains('is-active')) cursor.classList.remove('brutal-cursor--grab')
       if (!e.relatedTarget || !e.relatedTarget.closest('a, button')) cursor.classList.remove('brutal-cursor--large')
     })
+
+    // Durante il drag Clippy ha .is-active: mostra sempre la grab custom (niente grab/grabbing di Windows)
+    if (clippyEl) {
+      var obs = new MutationObserver(function () {
+        if (clippyEl.classList.contains('is-active')) cursor.classList.add('brutal-cursor--grab')
+        else cursor.classList.remove('brutal-cursor--grab')
+      })
+      obs.observe(clippyEl, { attributes: true, attributeFilter: ['class'] })
+    }
+
+    // Rimuove solo lo sfondo bianco (flood fill dai bordi → trasparente), mantiene contorno nero + interno bianco
+    var clickImg = cursor.querySelector('.brutal-cursor__img--click')
+    if (clickImg) {
+      var img = new Image()
+      img.crossOrigin = 'anonymous'
+      img.onload = function () {
+        var w = img.naturalWidth
+        var h = img.naturalHeight
+        var canvas = document.createElement('canvas')
+        canvas.width = w
+        canvas.height = h
+        var ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0)
+        var data = ctx.getImageData(0, 0, w, h)
+        var p = data.data
+        var light = 240
+        function isWhite(i) {
+          return p[i] >= light && p[i + 1] >= light && p[i + 2] >= light
+        }
+        function idx(x, y) { return (y * w + x) * 4 }
+        var stack = []
+        for (var x = 0; x < w; x++) {
+          if (isWhite(idx(x, 0))) stack.push([x, 0])
+          if (h > 1 && isWhite(idx(x, h - 1))) stack.push([x, h - 1])
+        }
+        for (var y = 0; y < h; y++) {
+          if (isWhite(idx(0, y))) stack.push([0, y])
+          if (w > 1 && isWhite(idx(w - 1, y))) stack.push([w - 1, y])
+        }
+        var seen = {}
+        while (stack.length) {
+          var pt = stack.pop()
+          var px = pt[0]
+          var py = pt[1]
+          var k = px + ',' + py
+          if (seen[k]) continue
+          if (px < 0 || px >= w || py < 0 || py >= h) continue
+          var i = idx(px, py)
+          if (!isWhite(i)) continue
+          seen[k] = true
+          p[i + 3] = 0
+          stack.push([px - 1, py])
+          stack.push([px + 1, py])
+          stack.push([px, py - 1])
+          stack.push([px, py + 1])
+        }
+        ctx.putImageData(data, 0, 0)
+        try {
+          clickImg.src = canvas.toDataURL('image/png')
+        } catch (e) {}
+      }
+      img.src = clickImg.getAttribute('src') || 'assets/cursor-click.png'
+    }
   }
 
   // ----- Scroll progress -----
@@ -58,12 +118,34 @@
   var heroContent = document.getElementById('hero-content')
   if (heroContent && personal) {
     var words = personal.name.split(' ')
+    var cvLink = personal.cvPdfUrl
+      ? '<a href="' + personal.cvPdfUrl + '" class="brutal-hero__cta brutal-hero__cta--outline" download="Michel-Branche-CV.pdf" rel="noopener">Download CV</a>'
+      : ''
     heroContent.innerHTML =
       '<p class="brutal-hero__kicker">' + personal.title + '</p>' +
-      '<h1 class="brutal-hero__title"><span>' + words[0] + '</span><span>' + words.slice(1).join(' ') + '</span></h1>' +
+      '<h1 class="brutal-hero__title"><span id="hero-name-michel">' + words[0] + '</span><span>' + words.slice(1).join(' ') + '</span></h1>' +
       '<p class="brutal-hero__tagline">' + personal.tagline + '</p>' +
-      '<button type="button" class="brutal-hero__cta" id="hero-cta">View My Work →</button>'
+      '<div class="brutal-hero__ctas">' +
+        '<button type="button" class="brutal-hero__cta" id="hero-cta">View My Work →</button>' +
+        (cvLink ? cvLink : '') +
+      '</div>'
     document.getElementById('hero-cta').addEventListener('click', function () { scrollToSection('projects') })
+    var michelSpan = document.getElementById('hero-name-michel')
+    if (michelSpan && personal.cvHtmlUrl) {
+      var michelClicks = 0
+      var michelTimer = null
+      michelSpan.style.cursor = 'pointer'
+      michelSpan.addEventListener('click', function () {
+        michelClicks++
+        if (michelTimer) clearTimeout(michelTimer)
+        if (michelClicks >= 5) {
+          michelClicks = 0
+          window.open(personal.cvHtmlUrl, '_blank', 'noopener')
+        } else {
+          michelTimer = setTimeout(function () { michelClicks = 0 }, 1500)
+        }
+      })
+    }
   }
 
   // About highlights (same as React)
@@ -181,7 +263,7 @@
       '</div>' +
       '<div class="brutal-grid brutal-grid--3">' +
         skills.map(function (skill, i) {
-          var mod = cardMods[i % cardMods.length]
+          var mod = skill.cardMod || cardMods[i % cardMods.length]
           return '<article class="brutal-card brutal-card--' + mod + ' brutal-reveal brutal-reveal--skill" data-reveal data-delay="' + i * 40 + '">' +
             '<div class="brutal-card__top"><span class="brutal-card__number">' + String(i + 1).padStart(2, '0') + '</span></div>' +
             '<div class="brutal-card__body"><h3 class="brutal-card__title">' + skill.name + '</h3></div></article>'

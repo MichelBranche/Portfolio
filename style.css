@@ -74,21 +74,35 @@ body.brutalist {
 
 .brutal-cursor {
   position: fixed;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--c-ink);
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  left: 0;
+  top: 0;
   pointer-events: none;
   z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: width 0.18s, height 0.18s, background 0.18s;
-  mix-blend-mode: multiply;
+  transform: translate(0, 0);
+  background: transparent;
 }
-.brutal-cursor--large {
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 229, 0, 0.55);
+.brutal-cursor__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
+
+/* Una sola icona visibile: default / click su link-pulsanti / grab su Clippy */
+.brutal-cursor__img--default { display: block; }
+.brutal-cursor__img--click { display: none; }
+.brutal-cursor__img--grab { display: none; }
+.brutal-cursor--large .brutal-cursor__img--default { display: none; }
+.brutal-cursor--large .brutal-cursor__img--click { display: block; }
+.brutal-cursor--grab .brutal-cursor__img--default { display: none; }
+.brutal-cursor--grab .brutal-cursor__img--click { display: none; }
+.brutal-cursor--grab .brutal-cursor__img--grab { display: block; }
 
 .brutal-scroll-progress {
   position: fixed;
@@ -245,48 +259,173 @@ body.brutalist {
   z-index: 1;
 }
 .brutal-hero__content { position: relative; z-index: 2; width: 100%; max-width: 620px; }
+
+/* Hero brutalism art: stamps, shapes, labels, tape corner */
+.brutal-hero__art { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.brutal-hero__stamp {
+  position: absolute;
+  right: clamp(1.5rem, 8vw, 4rem);
+  top: clamp(2rem, 12vh, 4rem);
+  width: 5rem;
+  height: 5rem;
+  border: var(--border-thick);
+  border-radius: 50%;
+  background: var(--c-pink);
+  color: var(--c-ink);
+  font-family: var(--font-stamp);
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(12deg);
+  box-shadow: 6px 6px 0 var(--c-ink);
+}
+.brutal-hero__stamp--2 {
+  right: clamp(8rem, 28vw, 18rem);
+  top: clamp(2.5rem, 14vh, 5rem);
+  left: auto;
+  width: 4rem;
+  height: 4rem;
+  font-size: 1rem;
+  background: var(--c-orange);
+  transform: rotate(-10deg);
+  box-shadow: 5px 5px 0 var(--c-ink);
+}
+.brutal-hero__shape {
+  position: absolute;
+  border: var(--border-thick);
+  background: transparent;
+}
+.brutal-hero__shape--1 {
+  width: 90px;
+  height: 90px;
+  right: 6%;
+  top: 26%;
+  transform: rotate(-8deg);
+  background: var(--c-yellow);
+  box-shadow: 5px 5px 0 var(--c-ink);
+}
+.brutal-hero__shape--2 {
+  width: 56px;
+  height: 56px;
+  right: 10%;
+  bottom: 30%;
+  border-radius: 50%;
+  transform: rotate(5deg);
+}
+.brutal-hero__shape--3 {
+  width: 32px;
+  height: 32px;
+  right: 26%;
+  bottom: 36%;
+  background: var(--c-ink);
+  transform: rotate(-15deg);
+  box-shadow: 4px 4px 0 var(--c-pink);
+}
+.brutal-hero__shape--4 {
+  width: 48px;
+  height: 48px;
+  right: 32%;
+  top: 42%;
+  left: auto;
+  background: var(--c-cyan);
+  transform: rotate(8deg);
+  box-shadow: 4px 4px 0 var(--c-ink);
+}
+.brutal-hero__shape--5 {
+  width: 24px;
+  height: 24px;
+  right: 22%;
+  bottom: 22%;
+  left: auto;
+  border-radius: 50%;
+  border-color: var(--c-ink);
+  transform: rotate(-6deg);
+}
+.brutal-hero__label {
+  position: absolute;
+  right: clamp(4rem, 20vw, 12rem);
+  left: auto;
+  bottom: clamp(8rem, 25vh, 14rem);
+  padding: 0.55rem 1.1rem;
+  border: var(--border-thick);
+  background: var(--c-cyan);
+  color: var(--c-ink);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+  box-shadow: 5px 5px 0 var(--c-ink);
+}
+.brutal-hero__label--2 {
+  right: clamp(2rem, 12vw, 5rem);
+  bottom: clamp(6rem, 20vh, 11rem);
+  background: var(--c-yellow);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  transform: rotate(6deg);
+  padding: 0.5rem 1rem;
+}
+.brutal-hero__tape-corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 80px 80px 0;
+  border-color: transparent var(--c-pink) transparent transparent;
+  border-right-width: 86px;
+  border-bottom-width: 86px;
+  border-right-color: var(--c-pink);
+  border-bottom-color: transparent;
+  box-shadow: -4px 4px 0 var(--c-ink);
+  opacity: 0.95;
+}
+.brutal-hero__tape-corner::after {
+  content: "DEV";
+  position: absolute;
+  top: 18px;
+  right: -72px;
+  font-family: var(--font-stamp);
+  font-size: 0.75rem;
+  color: var(--c-ink);
+  letter-spacing: 0.1em;
+  transform: rotate(45deg);
+}
+
+/* Hero ghost: brutalist outline, no neon */
 .brutal-hero__ghost {
   position: absolute;
   font-family: var(--font-stamp);
-  font-size: clamp(5rem, 18vw, 12rem);
+  font-size: clamp(4.5rem, 16vw, 11rem);
   color: transparent;
-  -webkit-text-stroke: 2px #fff;
-  left: 70%;
-  top: 52%;
+  -webkit-text-stroke: 3px var(--c-ink);
+  left: 68%;
+  top: 50%;
   transform: translate(-50%, -50%);
   white-space: nowrap;
   z-index: 1;
   pointer-events: none;
-  text-shadow:
-    0 0 8px rgba(255, 45, 120, 0.9),
-    0 0 20px rgba(255, 45, 120, 0.6),
-    0 0 40px rgba(255, 45, 120, 0.35);
-  animation: neon-flicker 4s ease-in-out infinite;
-}
-@keyframes neon-flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-    opacity: 1;
-    -webkit-text-stroke-color: #fff;
-    text-shadow:
-      0 0 8px rgba(255, 45, 120, 0.95),
-      0 0 20px rgba(255, 45, 120, 0.65),
-      0 0 40px rgba(255, 45, 120, 0.4);
-  }
-  20%, 24%, 55% {
-    opacity: 0.9;
-    -webkit-text-stroke-color: rgba(255, 255, 255, 0.85);
-    text-shadow:
-      0 0 4px rgba(255, 45, 120, 0.6),
-      0 0 12px rgba(255, 45, 120, 0.4),
-      0 0 24px rgba(255, 45, 120, 0.25);
-  }
-  22% {
-    opacity: 0.7;
-    text-shadow: 0 0 2px rgba(255, 45, 120, 0.5);
-  }
+  opacity: 0.35;
+  letter-spacing: 0.02em;
 }
 @media (max-width: 900px) {
-  .brutal-hero__ghost { left: 55%; top: 58%; font-size: clamp(3.5rem, 18vw, 8rem); }
+  .brutal-hero__ghost { left: 55%; top: 56%; font-size: clamp(3rem, 16vw, 7rem); opacity: 0.3; }
+  .brutal-hero__stamp { right: 1rem; top: 1.5rem; width: 3.75rem; height: 3.75rem; font-size: 1.1rem; }
+  .brutal-hero__stamp--2 { right: 5rem; top: 2rem; width: 3rem; height: 3rem; font-size: 0.8rem; }
+  .brutal-hero__shape--1 { width: 55px; height: 55px; right: 4%; top: 20%; }
+  .brutal-hero__shape--2 { width: 38px; height: 38px; right: 4%; bottom: 26%; }
+  .brutal-hero__shape--3 { width: 22px; height: 22px; right: 20%; bottom: 30%; }
+  .brutal-hero__shape--4 { width: 36px; height: 36px; right: 28%; top: 38%; }
+  .brutal-hero__shape--5 { width: 18px; height: 18px; right: 18%; bottom: 20%; }
+  .brutal-hero__label { right: 3rem; left: auto; bottom: 10rem; font-size: 0.65rem; letter-spacing: 0.12em; }
+  .brutal-hero__label--2 { right: 1rem; bottom: 8rem; font-size: 0.6rem; }
+  .brutal-hero__tape-corner { border-width: 0 50px 50px 0; border-right-width: 54px; border-bottom-width: 54px; }
+  .brutal-hero__tape-corner::after { font-size: 0.6rem; top: 12px; right: -44px; }
 }
 .brutal-hero__kicker {
   font-family: var(--font-mono);
@@ -337,6 +476,22 @@ body.brutalist {
   transition: background 0.2s, color 0.2s;
 }
 .brutal-hero__cta:hover { background: var(--c-pink); color: var(--c-ink); }
+.brutal-hero__cta:focus-visible { outline: 3px solid var(--c-cyan); outline-offset: 3px; }
+.brutal-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+.brutal-hero__cta--outline {
+  background: transparent;
+  color: var(--c-ink);
+  border-color: var(--c-ink);
+}
+.brutal-hero__cta--outline:hover {
+  background: var(--c-ink);
+  color: var(--c-yellow);
+}
 @keyframes brutalFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -433,6 +588,9 @@ body.brutalist {
   white-space: nowrap;
   z-index: 0;
   pointer-events: none;
+}
+.brutal-cta .brutal-section__ghost {
+  right: 15%;
 }
 .brutal-section__header { position: relative; z-index: 2; margin-bottom: 2.5rem; }
 .brutal-section__kicker {
@@ -836,6 +994,7 @@ body.brutalist {
 .brutal-contact-form__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
   margin-top: 1.25rem;
@@ -857,6 +1016,10 @@ body.brutalist {
   background: var(--c-pink);
   color: var(--c-ink);
 }
+.brutal-contact-form__submit:focus-visible {
+  outline: 3px solid var(--c-cyan);
+  outline-offset: 3px;
+}
 .brutal-contact-form__submit:disabled {
   opacity: 0.7;
   cursor: not-allowed;
@@ -869,18 +1032,75 @@ body.brutalist {
 .brutal-contact-form__feedback--success { color: var(--c-ink); }
 .brutal-contact-form__feedback--error { color: var(--c-ink); }
 
+/* ===== CLIPPY (fixed bottom-right, follows scroll) ===== */
+.clippy-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+.clippy-wrapper .clippy {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 120px;
+  pointer-events: auto;
+  cursor: none;
+  z-index: 10000;
+}
+.clippy-wrapper .clippy:hover,
+.clippy-wrapper .clippy.is-active {
+  cursor: none;
+}
+/* Popup Clippy in stile brutalist (bordo spesso, font, colori portfolio) */
+.clippy-wrapper .clippy-tooltip {
+  min-width: 140px;
+  width: max-content;
+  max-width: 200px;
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--c-ink);
+  background: var(--c-yellow);
+  border: var(--border-thick);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--c-ink);
+}
+.clippy-wrapper .clippy-tooltip::before {
+  border-top-color: var(--c-ink);
+}
+.clippy-wrapper .clippy-tooltip::after {
+  border-top-color: var(--c-yellow);
+  margin-top: -3px;
+}
+
+/* Clippy dist style.css includes a global `button { position:absolute; ... }`.
+   This breaks the portfolio layout, so we force the site buttons back. */
+.App button {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  height: auto !important;
+  width: auto !important;
+}
+
 /* ===== FOOTER ===== */
 .brutal-footer {
   background: var(--c-pink);
   color: var(--c-ink);
-  padding: clamp(1.5rem, 4vw, 2.5rem) 1.5rem;
-  padding-bottom: max(clamp(2rem, 5vw, 3rem), env(safe-area-inset-bottom, 0px));
+  padding: clamp(1.75rem, 5vw, 3rem) 1.5rem;
+  padding-bottom: max(clamp(2.25rem, 6vw, 3.5rem), env(safe-area-inset-bottom, 0px));
   border-top: var(--border-thick);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.25rem;
   font-family: var(--font-mono);
   font-size: 0.8rem;
 }
@@ -890,9 +1110,16 @@ body.brutalist {
   font-size: clamp(1rem, 2vw, 1.25rem);
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1.35;
+  margin: 0;
+  padding: 0.25em 0 0 0;
 }
-.brutal-footer__logo span { -webkit-text-stroke: 2px var(--c-ink); color: transparent; }
+.brutal-footer__logo span {
+  display: block;
+  margin-top: 0.15em;
+  -webkit-text-stroke: 2px var(--c-ink);
+  color: transparent;
+}
 
 .brutalist a { text-decoration: none; }
 
@@ -906,14 +1133,21 @@ body.brutalist {
   .brutal-hero__ghost {
     display: none;
   }
-  .brutal-hero__kicker { font-size: 0.75rem; }
+  .brutal-hero__kicker { font-size: 0.75rem; margin-bottom: 0.75rem; }
   .brutal-hero__title {
     font-size: clamp(2.25rem, 11vw, 3.5rem);
     letter-spacing: 0.02em;
+    margin-bottom: 1.25rem;
   }
   .brutal-hero__title span:nth-child(2) { -webkit-text-stroke: 3px var(--c-ink); }
-  .brutal-hero__tagline { font-size: 1rem; margin-bottom: 1.5rem; }
+  .brutal-hero__tagline { font-size: 1rem; margin-bottom: 2rem; }
   .brutal-hero__cta { padding: 0.875rem 1.5rem; font-size: 0.95rem; min-height: 44px; }
+
+  .brutal-hero__ctas {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 
   .brutal-tape__text { font-size: clamp(1rem, 4vw, 1.35rem); }
 
@@ -945,9 +1179,10 @@ body.brutalist {
   .brutal-cta__link { padding: 0.875rem 1.25rem; font-size: 0.85rem; min-height: 44px; }
 
   .brutal-footer {
-    padding: 1.25rem;
-    padding-bottom: max(1.75rem, env(safe-area-inset-bottom, 0px));
+    padding: 1.5rem 1.25rem;
+    padding-bottom: max(2rem, env(safe-area-inset-bottom, 0px));
+    gap: 1rem;
     font-size: 0.8rem;
   }
-  .brutal-footer__logo { font-size: clamp(0.95rem, 4vw, 1.1rem); }
+  .brutal-footer__logo { font-size: clamp(0.95rem, 4vw, 1.1rem); line-height: 1.4; }
 }
