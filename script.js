@@ -185,7 +185,7 @@
   var projectsContent = document.getElementById('projects-content')
   if (projectsContent && projects.length) {
     var featured = projects[0]
-    var restRaw = projects.slice(1, 5)
+    var restRaw = projects.slice(1)
     var polterIndex = -1
     for (var pi = 0; pi < restRaw.length; pi++) {
       if (restRaw[pi].title === 'polterTV') {
@@ -201,7 +201,7 @@
 
     var featuredHtml = featured
       ? '<article class="brutal-card brutal-featured brutal-card--yellow brutal-reveal brutal-reveal--card-sm" data-reveal>' +
-          '<div class="brutal-featured__img-wrap"><img src="' + featured.image + '" alt="' + featured.title + '" class="brutal-featured__img"></div>' +
+          '<div class="brutal-featured__img-wrap"><img src="' + featured.image + '" alt="' + featured.title + '" class="brutal-featured__img" loading="lazy"></div>' +
           '<div class="brutal-featured__body">' +
             '<span class="brutal-featured__badge">Featured</span>' +
             '<h3 class="brutal-featured__title">' + featured.title + '</h3>' +
@@ -215,35 +215,52 @@
             '</div>' +
           '</div></article>'
       : ''
-    var restHtml = rest.map(function (project, i) {
-      var isPolter = project.title === 'polterTV' && i === rest.length - 1
-      if (isPolter) {
-        return '<article class="brutal-card brutal-featured brutal-card--yellow brutal-reveal brutal-reveal--card-sm" data-reveal data-delay="' + (2 * 80) + '" style="grid-column:1/-1;margin-top:0">' +
-          '<div class="brutal-featured__img-wrap"><img src="' + project.image + '" alt="' + project.title + '" class="brutal-featured__img"></div>' +
-          '<div class="brutal-featured__body">' +
-            '<span class="brutal-featured__badge">Creative Lab</span>' +
-            '<h3 class="brutal-featured__title">' + project.title + '</h3>' +
-            '<p class="brutal-featured__desc">' + project.description + '</p>' +
-            '<div class="brutal-card__tags" style="margin-bottom:1rem">' +
-              project.tags.map(function (t) { return '<span class="brutal-card__tag">' + t + '</span>' }).join('') +
-            '</div>' +
-            '<div class="brutal-featured__actions">' +
-              (project.demo ? '<a href="' + project.demo + '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta brutal-featured__cta--live">Live view →</a>' : '') +
-              (project.github ? '<a href="' + project.github + '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta">View Code →</a>' : '') +
-            '</div>' +
-          '</div></article>'
-      }
+
+    function renderSmallProjectCard(project, i) {
       var demoLink = project.demo ? '<a href="' + project.demo + '" target="_blank" rel="noopener noreferrer" class="brutal-project__link brutal-project__link--live">Live view →</a>' : ''
       var codeLink = project.github ? '<a href="' + project.github + '" target="_blank" rel="noopener noreferrer" class="brutal-project__link">View Code →</a>' : ''
-      return '<article class="brutal-project brutal-reveal brutal-reveal--card-sm" data-reveal data-delay="' + (i % 2) * 100 + '">' +
+      return '<article class="brutal-project brutal-reveal brutal-reveal--card-sm" role="listitem" data-reveal data-delay="' + (i % 3) * 80 + '">' +
         '<div class="brutal-project-inner">' +
-          '<div class="brutal-project__img-wrap"><img src="' + project.image + '" alt="' + project.title + '" class="brutal-project__img"></div>' +
+          '<div class="brutal-project__img-wrap"><img src="' + project.image + '" alt="' + project.title + '" class="brutal-project__img" loading="lazy"></div>' +
           '<div class="brutal-project__body">' +
             '<h3 class="brutal-project__title">' + project.title + '</h3>' +
             '<p class="brutal-project__desc">' + project.description + '</p>' +
             '<div class="brutal-project__actions">' + demoLink + codeLink + '</div>' +
           '</div></div></article>'
-    }).join('')
+    }
+
+    var scrollProjects = rest.filter(function (p) { return p.title !== 'polterTV' })
+    var polterProject = rest.find(function (p) { return p.title === 'polterTV' })
+    var scrollHtml = scrollProjects.map(function (p, i) { return renderSmallProjectCard(p, i) }).join('')
+
+    var scrollSectionHtml = ''
+    if (scrollHtml) {
+      scrollSectionHtml =
+        '<div class="brutal-projects-grid-wrap brutal-reveal brutal-reveal--up" data-reveal data-delay="80">' +
+          '<p class="brutal-projects-grid__label" aria-hidden="true">Altri progetti</p>' +
+          '<div class="brutal-projects-grid" role="list">' + scrollHtml + '</div>' +
+        '</div>'
+    }
+
+    var polterHtml = ''
+    if (polterProject) {
+      polterHtml =
+        '<article class="brutal-card brutal-featured brutal-card--yellow brutal-reveal brutal-reveal--card-sm" data-reveal data-delay="' + (2 * 80) + '" style="grid-column:1/-1;margin-top:0">' +
+          '<div class="brutal-featured__img-wrap"><img src="' + polterProject.image + '" alt="' + polterProject.title + '" class="brutal-featured__img" loading="lazy"></div>' +
+          '<div class="brutal-featured__body">' +
+            '<span class="brutal-featured__badge">Creative Lab</span>' +
+            '<h3 class="brutal-featured__title">' + polterProject.title + '</h3>' +
+            '<p class="brutal-featured__desc">' + polterProject.description + '</p>' +
+            '<div class="brutal-card__tags" style="margin-bottom:1rem">' +
+              polterProject.tags.map(function (t) { return '<span class="brutal-card__tag">' + t + '</span>' }).join('') +
+            '</div>' +
+            '<div class="brutal-featured__actions">' +
+              (polterProject.demo ? '<a href="' + polterProject.demo + '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta brutal-featured__cta--live">Live view →</a>' : '') +
+              (polterProject.github ? '<a href="' + polterProject.github + '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta">View Code →</a>' : '') +
+            '</div>' +
+          '</div></article>'
+    }
+
     projectsContent.innerHTML =
       '<div class="brutal-section__header brutal-reveal brutal-reveal--left" data-reveal>' +
         '<p class="brutal-section__kicker">Portfolio</p>' +
@@ -251,7 +268,8 @@
       '</div>' +
       '<div class="brutal-grid" style="grid-template-columns:1fr;gap:0">' +
         featuredHtml +
-        '<div class="brutal-grid brutal-grid--3" style="grid-column:1/-1">' + restHtml + '</div>' +
+        scrollSectionHtml +
+        polterHtml +
       '</div>'
   }
 

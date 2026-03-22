@@ -656,6 +656,115 @@ body.brutalist {
 @media (max-width: 900px) { .brutal-grid--3 { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .brutal-grid--3 { grid-template-columns: 1fr; } }
 
+/* Griglia 4 progetti piccoli: colonne uguali, piena larghezza container */
+.brutal-projects-grid-wrap {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: var(--c-yellow);
+  border-bottom: var(--border-thick);
+}
+
+.brutal-projects-grid__label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 0.65rem 0 0.45rem;
+  color: var(--c-ink);
+  margin: 0;
+  text-align: center;
+  width: 100%;
+  max-width: none;
+  border-bottom: 3px solid var(--c-ink);
+  opacity: 0.88;
+}
+
+.brutal-projects-grid {
+  display: grid;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  align-items: stretch;
+}
+
+/* Bordo destro solo tra colonne; ultima colonna allineata al featured (no doppio bordo esterno) */
+.brutal-projects-grid .brutal-project {
+  min-width: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: var(--border-thick);
+  border-bottom: none;
+}
+
+.brutal-projects-grid .brutal-project:nth-child(4n) {
+  border-right: none;
+}
+
+.brutal-projects-grid .brutal-project-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.brutal-projects-grid .brutal-project__img-wrap {
+  aspect-ratio: 16 / 9;
+  flex-shrink: 0;
+}
+
+.brutal-projects-grid .brutal-project__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.brutal-projects-grid .brutal-project__actions {
+  margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  .brutal-projects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .brutal-projects-grid .brutal-project:nth-child(4n) {
+    border-right: var(--border-thick);
+  }
+  .brutal-projects-grid .brutal-project:nth-child(2n) {
+    border-right: none;
+  }
+  /* Separatore tra prima e seconda riga (4 card → 2×2) */
+  .brutal-projects-grid .brutal-project:nth-child(-n + 2) {
+    border-bottom: var(--border-thick);
+  }
+}
+
+@media (max-width: 600px) {
+  .brutal-projects-grid {
+    grid-template-columns: 1fr;
+  }
+  .brutal-projects-grid .brutal-project:nth-child(n) {
+    border-right: none;
+  }
+  .brutal-projects-grid .brutal-project:nth-child(-n + 2) {
+    border-bottom: none;
+  }
+  .brutal-projects-grid .brutal-project:not(:last-child) {
+    border-bottom: var(--border-thick);
+  }
+}
+
 .brutal-card {
   position: relative;
   overflow: hidden;
@@ -1208,6 +1317,9 @@ body.brutalist {
   .brutal-project__title { font-size: clamp(0.95rem, 4vw, 1.15rem); }
   .brutal-project__desc { font-size: 0.8rem; -webkit-line-clamp: 3; }
   .brutal-project__link { padding: 0.5rem 0.875rem; font-size: 0.85rem; min-height: 44px; }
+
+  .brutal-projects-grid .brutal-project__title { font-size: clamp(1.02rem, 4.5vw, 1.28rem); }
+  .brutal-projects-grid .brutal-project__body { padding: 1.2rem 1rem 1.35rem; }
 
   .brutal-featured__body { padding: 1.25rem; }
   .brutal-featured__title { font-size: clamp(1.35rem, 5vw, 1.75rem); }

@@ -22,6 +22,15 @@ const personal = {
 const projects = [
   {
     id: 1,
+    title: 'Photo Portfolio Demo',
+    description: 'Portfolio fotografico brutalist/editoriale: identità visiva forte, gallerie multi-progetto, animazioni GSAP e approccio performance-first senza framework.',
+    image: 'https://raw.githubusercontent.com/MichelBranche/photo-portfolio-demo/main/preview.jpg',
+    tags: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'Photography'],
+    github: 'https://github.com/MichelBranche/photo-portfolio-demo',
+    demo: 'https://michelbranche.github.io/photo-portfolio-demo/',
+  },
+  {
+    id: 2,
     title: 'Il Gusto',
     description: 'Modern Italian restaurant website featuring elegant design, menu showcase, and reservation system. Built with focus on visual appeal and user experience.',
     image: './assets/gustomok1.png',
@@ -30,7 +39,7 @@ const projects = [
     demo: 'https://michelbranche.github.io/ilgusto-demo-diner/',
   },
   {
-    id: 2,
+    id: 3,
     title: 'Osteria La Vache Folle',
     description: 'Authentic French bistro website with rich visual storytelling, menu display, and location information. Emphasizes brand identity and atmosphere.',
     image: 'https://raw.githubusercontent.com/MichelBranche/demosite-osteria-la-vache-folle/main/mockup-1.png',
@@ -39,7 +48,7 @@ const projects = [
     demo: 'https://michelbranche.github.io/demosite-osteria-la-vache-folle/',
   },
   {
-    id: 3,
+    id: 4,
     title: 'Netflix Mockup',
     description: 'High-fidelity Netflix interface recreation showcasing streaming service UI patterns, responsive grid layouts, and interactive components.',
     image: './assets/netflixmok1.png',
@@ -48,7 +57,7 @@ const projects = [
     demo: 'https://michelbranche.github.io/Netflix-Mockup/',
   },
   {
-    id: 4,
+    id: 5,
     title: 'Taco Star',
     description: 'Vibrant Mexican restaurant website with bold colors, appetizing food imagery, and streamlined ordering interface. Focus on conversion and engagement.',
     image: './assets/tacomok1.png',
@@ -57,7 +66,7 @@ const projects = [
     demo: null,
   },
   {
-    id: 5,
+    id: 6,
     title: 'polterTV',
     description: 'Interactive retro analog TV experience with channel surfing, progressive glitches, secret channels, and immersive audiovisual effects.',
     image: './assets/poltermok1.png',
