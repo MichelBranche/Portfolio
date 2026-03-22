@@ -112,8 +112,9 @@ const categoryGradients = {
   tools: 'from-yellow-500 to-orange-500',
 }
 
-const contactFormApiUrl = 'https://portfolio-three-ruby-wf4uz6dmu1.vercel.app/api/send-message'
-const statsApiUrl = (contactFormApiUrl || '').replace(/\/api\/send-message\/?$/, '') + '/api/stats'
+// Stesso dominio del deploy (es. https://devmichelbranche.vercel.app) — evita di puntare a un vecchio progetto Vercel.
+const contactFormApiUrl = '/api/send-message'
+const statsApiUrl = '/api/stats'
 
 window.PORTFOLIO_DATA = { 
   personal, 
