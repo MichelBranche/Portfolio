@@ -22,21 +22,21 @@ const personal = {
 const projects = [
   {
     id: 1,
-    title: 'Photo Portfolio Demo',
+    title: 'Personal portfolio for photographer',
     description: 'Portfolio fotografico brutalist/editoriale: identità visiva forte, gallerie multi-progetto, animazioni GSAP e approccio performance-first senza framework.',
     image: 'https://raw.githubusercontent.com/MichelBranche/photo-portfolio-demo/main/preview.jpg',
     tags: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'Photography'],
     github: 'https://github.com/MichelBranche/photo-portfolio-demo',
-    demo: 'https://michelbranche.github.io/photo-portfolio-demo/',
+    demo: 'https://rubinastradella.vercel.app/',
   },
   {
     id: 2,
     title: 'Il Gusto',
-    description: 'Modern Italian restaurant website featuring elegant design, menu showcase, and reservation system. Built with focus on visual appeal and user experience.',
+    description: 'Modern Italian restaurant website featuring Brutalism design, menu showcase, and reservation system. Built with focus on visual appeal and user experience.',
     image: './assets/gustomok1.png',
     tags: ['HTML', 'CSS', 'JavaScript', 'Responsive'],
     github: 'https://github.com/MichelBranche/Demo-IlGusto',
-    demo: 'https://michelbranche.github.io/ilgusto-demo-diner/',
+    demo: 'https://demo-il-gusto.vercel.app/',
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const projects = [
     image: 'https://raw.githubusercontent.com/MichelBranche/demosite-osteria-la-vache-folle/main/mockup-1.png',
     tags: ['HTML', 'CSS', 'JavaScript', 'UI/UX'],
     github: 'https://github.com/MichelBranche/demosite-osteria-la-vache-folle',
-    demo: 'https://michelbranche.github.io/demosite-osteria-la-vache-folle/',
+    demo: 'https://demosite-osteria-la-vache-folle.vercel.app/',
   },
   {
     id: 4,
@@ -54,7 +54,7 @@ const projects = [
     image: './assets/netflixmok1.png',
     tags: ['HTML', 'CSS', 'JavaScript', 'UI Clone'],
     github: 'https://github.com/MichelBranche/Netflix-Mockup',
-    demo: 'https://michelbranche.github.io/Netflix-Mockup/',
+    demo: 'https://netflix-mockup-sigma.vercel.app/',
   },
   {
     id: 5,
@@ -63,7 +63,7 @@ const projects = [
     image: './assets/tacomok1.png',
     tags: ['HTML', 'CSS', 'JavaScript', 'Performance'],
     github: 'https://github.com/MichelBranche/demo-tacostar',
-    demo: null,
+    demo: 'https://demo-tacostar.vercel.app/',
   },
   {
     id: 6,
@@ -72,7 +72,7 @@ const projects = [
     image: './assets/poltermok1.png',
     tags: ['JavaScript', 'CSS', 'HTML', 'Creative Coding'],
     github: 'https://github.com/MichelBranche/polterTV',
-    demo: 'https://michelbranche.github.io/polterTV/',
+    demo: 'https://polter-tv.vercel.app/',
   },
 ]
 
