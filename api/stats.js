@@ -23,6 +23,14 @@ function cors(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 }
 
+/** Vercel/CDN e browser non devono cacheare GET: altrimenti ?inc=visit non riesegue e il conteggio resta bloccato. */
+function noStore(res) {
+  res.setHeader('Cache-Control', 'private, no-store, no-cache, must-revalidate, max-age=0')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('Surrogate-Control', 'no-store')
+  res.setHeader('Vary', '*')
+}
+
 let upstashRedisClient = null
 let nodeRedisClient = null
 
@@ -98,6 +106,7 @@ async function increment(redis, inc, projectId) {
 
 module.exports = async function handler(req, res) {
   cors(res)
+  noStore(res)
   if (req.method === 'OPTIONS') return res.status(204).end()
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
 

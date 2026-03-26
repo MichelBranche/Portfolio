@@ -68,6 +68,17 @@
     if (el) el.scrollIntoView({ behavior: 'smooth' })
   }
 
+  /** Evita cache browser/CDN sulle GET /api/stats (altrimenti il conteggio resta “congelato”). */
+  function statsFetch(url, extra) {
+    var init = { cache: 'no-store', credentials: 'same-origin' }
+    if (extra && typeof extra === 'object') {
+      for (var k in extra) {
+        if (Object.prototype.hasOwnProperty.call(extra, k)) init[k] = extra[k]
+      }
+    }
+    return fetch(url, init)
+  }
+
   document.body.classList.add('brutalist')
   setLang(detectLang())
 
@@ -87,7 +98,7 @@
         el.textContent = String(n) + ' ' + vLabel
       })
     }
-    fetch(statsApiUrl)
+    statsFetch(statsApiUrl)
       .then(function (r) {
         if (!r.ok) throw new Error('stats')
         return r.json()
@@ -122,7 +133,7 @@
           try {
             sessionStorage.setItem('portfolio_pv_' + idNum, '1')
           } catch (e2) {}
-          fetch(statsApiUrl + '?inc=project&projectId=' + encodeURIComponent(String(idNum)))
+          statsFetch(statsApiUrl + '?inc=project&projectId=' + encodeURIComponent(String(idNum)))
             .then(function (r) {
               if (!r.ok) throw new Error('bad')
               return r.json()
@@ -755,7 +766,9 @@
           a.addEventListener('click', function () {
             if (!data.statsApiUrl) return
             try {
-              fetch(data.statsApiUrl + '?inc=contact', { method: 'GET', keepalive: true }).catch(function () {})
+              statsFetch(data.statsApiUrl + '?inc=contact', { method: 'GET', keepalive: true }).catch(
+              function () {}
+            )
             } catch (_) {}
           })
         })
@@ -860,7 +873,7 @@
         }
         contactForm.reset()
         if (data.statsApiUrl) {
-          fetch(data.statsApiUrl + '?inc=contact')
+          statsFetch(data.statsApiUrl + '?inc=contact')
             .then(function (r) { return r.json() })
             .then(function (s) {
               lastStatsPayload = s
@@ -928,7 +941,7 @@
     renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
     function fetchStats(inc) {
       var url = inc ? statsApiUrl + '?inc=' + encodeURIComponent(inc) : statsApiUrl
-      return fetch(url)
+      return statsFetch(url)
         .then(function (r) {
           if (!r.ok) throw new Error('HTTP ' + r.status)
           return r.json()
@@ -978,7 +991,7 @@
     document.body.addEventListener('click', function (e) {
       var a = e.target.closest('a[data-stats-cv="1"]')
       if (!a) return
-      fetch(statsApiUrl + '?inc=cv')
+      statsFetch(statsApiUrl + '?inc=cv')
         .then(function (r) { return r.json() })
         .then(renderStats)
         .catch(function () {})
