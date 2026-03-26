@@ -5,7 +5,7 @@
  * GET  /api/stats?inc=visit              → incrementa visite sito
  * GET  /api/stats?inc=cv                 → incrementa download CV
  * GET  /api/stats?inc=contact            → incrementa contatti
- * GET  /api/stats?inc=project&projectId=3 → incrementa visite card progetto 3
+ * GET  /api/stats?inc=project&projectId=3 → incrementa visite progetto 3 (il client conta al click “Live”, non allo scroll)
  *
  * Supporta 2 configurazioni (a seconda dell'opzione scelta in Vercel Storage):
  * 1) Upstash Redis (tipico): UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN

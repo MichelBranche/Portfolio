@@ -79,6 +79,24 @@
     return fetch(url, init)
   }
 
+  /** Aggiorna i numeri “N visite” sulle card progetto (stesso payload di GET /api/stats). */
+  function applyProjectVisitsToDom(map) {
+    if (!map || typeof map !== 'object') return
+    var root = document.getElementById('projects-content')
+    if (!root) return
+    var vLabel = t('projects_views')
+    root.querySelectorAll('[data-project-views-id]').forEach(function (el) {
+      var id = el.getAttribute('data-project-views-id')
+      var n = map[id]
+      if (n == null) n = map[String(id)]
+      if (n == null || n === '') n = 0
+      el.textContent = String(n) + ' ' + vLabel
+    })
+  }
+
+  /** Impostato quando stats API è attiva: permette a initProjectCardViews di aggiornare hero + card dopo ?inc=project. */
+  var refreshStatsFromApi = null
+
   document.body.classList.add('brutalist')
   setLang(detectLang())
 
@@ -104,7 +122,7 @@
         return r.json()
       })
       .then(function (s) {
-        applyProjectVisits(s.projectVisits || {})
+        applyProjectVisitsToDom(s.projectVisits || {})
       })
       .catch(function () {})
 
@@ -117,38 +135,35 @@
       })
     } catch (e) {}
 
-    if (typeof IntersectionObserver === 'undefined') return
-
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting || entry.intersectionRatio < 0.22) return
-          var node = entry.target
-          var pid = node.getAttribute('data-project-id')
-          if (!pid) return
-          var idNum = parseInt(pid, 10)
-          if (!Number.isFinite(idNum)) return
-          if (counted[idNum]) return
-          counted[idNum] = true
-          try {
-            sessionStorage.setItem('portfolio_pv_' + idNum, '1')
-          } catch (e2) {}
-          statsFetch(statsApiUrl + '?inc=project&projectId=' + encodeURIComponent(String(idNum)))
-            .then(function (r) {
-              if (!r.ok) throw new Error('bad')
-              return r.json()
-            })
-            .then(function (s) {
-              applyProjectVisits(s.projectVisits || {})
-            })
-            .catch(function () {})
-        })
+    /** Una sola card per click su “Vai al sito” (non scroll: altrimenti tutte le card in viewport incrementano insieme). */
+    root.addEventListener(
+      'click',
+      function (e) {
+        var link = e.target.closest('a.brutal-project__link--live, a.brutal-featured__cta--live')
+        if (!link) return
+        var article = link.closest('[data-project-id]')
+        if (!article) return
+        var pid = article.getAttribute('data-project-id')
+        var idNum = parseInt(pid, 10)
+        if (!Number.isFinite(idNum)) return
+        if (counted[idNum]) return
+        counted[idNum] = true
+        try {
+          sessionStorage.setItem('portfolio_pv_' + idNum, '1')
+        } catch (e2) {}
+        statsFetch(statsApiUrl + '?inc=project&projectId=' + encodeURIComponent(String(idNum)))
+          .then(function (r) {
+            if (!r.ok) throw new Error('bad')
+            return r.json()
+          })
+          .then(function (s) {
+            if (typeof refreshStatsFromApi === 'function') refreshStatsFromApi(s)
+            else applyProjectVisitsToDom(s.projectVisits || {})
+          })
+          .catch(function () {})
       },
-      { root: null, rootMargin: '0px 0px -12% 0px', threshold: [0, 0.22, 0.4] }
+      false
     )
-    root.querySelectorAll('[data-project-id]').forEach(function (node) {
-      io.observe(node)
-    })
   }
 
   function parseGithubRepo(url) {
@@ -893,6 +908,9 @@
                   '</strong> ' +
                   t('stats_contacts') +
                   '</span>'
+                if (s.projectVisits && typeof s.projectVisits === 'object') {
+                  applyProjectVisitsToDom(s.projectVisits)
+                }
               }
             })
             .catch(function () {})
@@ -937,7 +955,11 @@
         '</strong> ' +
         t('stats_contacts') +
         '</span>'
+      if (stats.projectVisits && typeof stats.projectVisits === 'object') {
+        applyProjectVisitsToDom(stats.projectVisits)
+      }
     }
+    refreshStatsFromApi = renderStats
     renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
     function fetchStats(inc) {
       var url = inc ? statsApiUrl + '?inc=' + encodeURIComponent(inc) : statsApiUrl
@@ -956,7 +978,7 @@
         })
     }
     var visitCounted = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('portfolio_visit_counted')
-    var pollMs = 8000
+    var pollMs = 5000
     var pollTimer = null
     function startPolling() {
       if (pollTimer) return
@@ -1095,6 +1117,9 @@
               '</strong> ' +
               t('stats_contacts') +
               '</span>'
+            if (s.projectVisits && typeof s.projectVisits === 'object') {
+              applyProjectVisitsToDom(s.projectVisits)
+            }
           }
         }
         initReveal()
