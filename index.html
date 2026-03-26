@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="html-root">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -32,12 +32,17 @@
         <li><button type="button" class="brutal-nav__link" data-section="skills" data-text="SKILLS">Skills</button></li>
         <li><button type="button" class="brutal-nav__link" data-section="contact" data-text="CONTACT">Contact</button></li>
       </ul>
+      <div class="brutal-nav__lang" id="nav-lang" role="group">
+        <button type="button" class="brutal-nav__lang-btn" id="lang-it" data-lang="it" aria-pressed="false">IT</button>
+        <span class="brutal-nav__lang-sep" aria-hidden="true">/</span>
+        <button type="button" class="brutal-nav__lang-btn brutal-nav__lang-btn--active" id="lang-en" data-lang="en" aria-pressed="true">EN</button>
+      </div>
       <button type="button" class="brutal-nav__menu-btn" id="nav-mobile-btn" aria-label="Open menu">☰</button>
     </header>
 
     <main>
       <section id="hero" class="brutal-hero">
-        <div class="brutal-hero__ghost" aria-hidden="true">PORTFOLIO</div>
+        <div class="brutal-hero__ghost" id="ghost-hero" aria-hidden="true">PORTFOLIO</div>
         <div class="brutal-hero__art" aria-hidden="true">
           <div class="brutal-hero__stamp">DEV</div>
           <div class="brutal-hero__stamp brutal-hero__stamp--2">UI/UX</div>
@@ -60,17 +65,17 @@
       </section>
 
       <section id="about" class="brutal-section brutal-section--lime">
-        <div class="brutal-section__ghost" aria-hidden="true">ABOUT</div>
+        <div class="brutal-section__ghost" id="ghost-about" aria-hidden="true">ABOUT</div>
         <div id="about-content"></div>
       </section>
 
       <section id="projects" class="brutal-section brutal-section--yellow">
-        <div class="brutal-section__ghost" aria-hidden="true">WORK</div>
+        <div class="brutal-section__ghost" id="ghost-projects" aria-hidden="true">WORK</div>
         <div id="projects-content"></div>
       </section>
 
       <section id="skills" class="brutal-section brutal-section--cyan">
-        <div class="brutal-section__ghost" aria-hidden="true">SKILLS</div>
+        <div class="brutal-section__ghost" id="ghost-skills" aria-hidden="true">SKILLS</div>
         <div id="skills-content"></div>
       </section>
 
@@ -100,6 +105,7 @@
       <div class="clippy-tooltip">Ciao! Sono Clippy. Trascinami dove vuoi.</div>
     </div>
   </div>
+  <script src="i18n.js"></script>
   <script src="data.js"></script>
   <script src="script.js"></script>
   <script src="assets/clippy/microsoft-clippy/dist/script.js"></script>

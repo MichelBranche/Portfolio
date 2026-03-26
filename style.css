@@ -173,7 +173,15 @@ body.brutalist {
   80% { transform: translate(2px, 2px); }
   100% { transform: translate(0); }
 }
-.brutal-nav__links { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+.brutal-nav__links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  justify-content: center;
+}
 .brutal-nav__link {
   font-family: var(--font-mono);
   font-size: 0.85rem;
@@ -199,6 +207,39 @@ body.brutalist {
 }
 .brutal-nav__link:hover { border-bottom-color: var(--c-lime); color: var(--c-lime); padding-left: 1rem; }
 .brutal-nav__link:hover::before { opacity: 1; left: 0; }
+
+.brutal-nav__lang {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  flex-shrink: 0;
+}
+.brutal-nav__lang-btn {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 0.3rem 0.4rem;
+  border: 2px solid transparent;
+  background: transparent;
+  color: var(--c-yellow);
+  cursor: none;
+  opacity: 0.5;
+  transition: opacity 0.2s, border-color 0.2s, color 0.2s;
+}
+.brutal-nav__lang-btn:hover { opacity: 1; color: var(--c-lime); }
+.brutal-nav__lang-btn--active {
+  opacity: 1;
+  border-color: var(--c-yellow);
+  color: var(--c-yellow);
+}
+.brutal-nav__lang-sep {
+  opacity: 0.35;
+  font-size: 0.65rem;
+  user-select: none;
+  padding: 0 0.05rem;
+}
+
 .brutal-nav__menu-btn {
   display: none;
   width: 44px;
@@ -218,7 +259,11 @@ body.brutalist {
     transition: padding 0.5s cubic-bezier(0.22, 1, 0.36, 1), background 0.5s, top 0.5s, left 0.5s, width 0.5s, border-radius 0.5s, border 0.5s, box-shadow 0.5s;
   }
   .brutal-nav.scrolled { min-width: auto; width: calc(100% - 2rem); left: 1rem; transform: none; }
-  .brutal-nav__links { display: none; }
+  .brutal-nav__links {
+    display: none;
+    flex: none;
+    justify-content: flex-start;
+  }
   .brutal-nav__menu-btn { display: flex; }
   .brutal-nav__menu-open .brutal-nav__links {
     display: flex;
@@ -871,8 +916,32 @@ body.brutalist {
   font-weight: 900;
   font-size: clamp(1rem, 1.5vw, 1.25rem);
   text-transform: uppercase;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
   color: var(--c-ink);
+}
+.brutal-project__meta {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 0.45rem;
+  line-height: 1.35;
+  color: var(--c-ink);
+  opacity: 0.48;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.45rem;
+}
+.brutal-project__meta-sep {
+  opacity: 0.55;
+  user-select: none;
+}
+.brutal-project__stars {
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  letter-spacing: 0.04em;
 }
 .brutal-project__desc {
   font-family: var(--font-mono);
@@ -946,7 +1015,12 @@ body.brutalist {
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   text-transform: uppercase;
   line-height: 1;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+.brutal-featured__body .brutal-project__meta {
+  color: var(--c-yellow);
+  opacity: 0.42;
+  margin-bottom: 0.65rem;
 }
 .brutal-featured__desc {
   font-family: var(--font-mono);
@@ -1220,12 +1294,20 @@ body.brutalist {
   padding-bottom: max(clamp(2.25rem, 6vw, 3.5rem), env(safe-area-inset-bottom, 0px));
   border-top: var(--border-thick);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1.25rem;
   font-family: var(--font-mono);
   font-size: 0.8rem;
+}
+.brutal-footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: min(720px, 100%);
+  text-align: center;
+  gap: 0.85rem;
 }
 .brutal-footer__logo {
   font-family: var(--font-display);
@@ -1236,6 +1318,7 @@ body.brutalist {
   line-height: 1.35;
   margin: 0;
   padding: 0.25em 0 0 0;
+  text-align: center;
 }
 .brutal-footer__logo span {
   display: block;
@@ -1243,12 +1326,12 @@ body.brutalist {
   -webkit-text-stroke: 2px var(--c-ink);
   color: transparent;
 }
-
-.brutal-footer__right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.5rem;
+.brutal-footer__tagline {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  text-align: center;
+  width: 100%;
 }
 .brutal-stats {
   display: flex;

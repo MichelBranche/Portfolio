@@ -1,20 +1,210 @@
 /**
  * Portfolio brutalist – vanilla 1:1 (no GSAP)
+ * i18n: IT / EN (i18n.js + data.js contenuti localizzati)
  */
-(function () {
+;(function () {
   var data = window.PORTFOLIO_DATA
+  var I18N = window.PORTFOLIO_I18N || { en: {}, it: {} }
   if (!data) return
+
   var personal = data.personal
   var projects = data.projects
   var skills = data.skills
-  var highlights = data.highlights
   var contactLinks = data.contactLinks
 
-  document.body.classList.add('brutalist')
+  var currentLang = 'en'
+  var lastStatsPayload = null
+
+  function detectLang() {
+    try {
+      var q = new URLSearchParams(window.location.search || '').get('lang')
+      if (q === 'it' || q === 'en') return q
+    } catch (e) {}
+    try {
+      var s = localStorage.getItem('portfolio_lang')
+      if (s === 'it' || s === 'en') return s
+    } catch (e2) {}
+    try {
+      var nav = (navigator.language || '').toLowerCase()
+      if (nav.indexOf('it') === 0) return 'it'
+    } catch (e3) {}
+    return 'en'
+  }
+
+  function setLang(lang) {
+    if (lang !== 'it' && lang !== 'en') return
+    currentLang = lang
+    try {
+      localStorage.setItem('portfolio_lang', lang)
+    } catch (e) {}
+    document.documentElement.lang = lang === 'it' ? 'it' : 'en'
+  }
+
+  function t(key) {
+    var L = I18N[currentLang] || {}
+    if (L[key] !== undefined) return L[key]
+    var E = I18N.en || {}
+    return E[key] !== undefined ? E[key] : key
+  }
+
+  function pickLocale(obj, field) {
+    var v = obj[field]
+    if (v && typeof v === 'object' && (v.en !== undefined || v.it !== undefined)) {
+      return v[currentLang] !== undefined ? v[currentLang] : v.en
+    }
+    return v
+  }
+
+  function personalText(key) {
+    var loc = personal.i18n && personal.i18n[currentLang]
+    var fallback = personal.i18n && personal.i18n.en
+    if (loc && loc[key] !== undefined) return loc[key]
+    if (fallback && fallback[key] !== undefined) return fallback[key]
+    return ''
+  }
 
   function scrollToSection(id) {
     var el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  document.body.classList.add('brutalist')
+  setLang(detectLang())
+
+  /** Visite per progetto */
+  function initProjectCardViews(statsApiUrl, projectsList) {
+    if (!statsApiUrl || !projectsList || !projectsList.length) return
+    var root = document.getElementById('projects-content')
+    if (!root) return
+    function applyProjectVisits(map) {
+      if (!map || typeof map !== 'object') return
+      var vLabel = t('projects_views')
+      root.querySelectorAll('[data-project-views-id]').forEach(function (el) {
+        var id = el.getAttribute('data-project-views-id')
+        var n = map[id]
+        if (n == null) n = map[String(id)]
+        if (n == null || n === '') n = 0
+        el.textContent = String(n) + ' ' + vLabel
+      })
+    }
+    fetch(statsApiUrl)
+      .then(function (r) {
+        if (!r.ok) throw new Error('stats')
+        return r.json()
+      })
+      .then(function (s) {
+        applyProjectVisits(s.projectVisits || {})
+      })
+      .catch(function () {})
+
+    var counted = {}
+    try {
+      projectsList.forEach(function (p) {
+        try {
+          if (sessionStorage.getItem('portfolio_pv_' + p.id)) counted[p.id] = true
+        } catch (e) {}
+      })
+    } catch (e) {}
+
+    if (typeof IntersectionObserver === 'undefined') return
+
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting || entry.intersectionRatio < 0.22) return
+          var node = entry.target
+          var pid = node.getAttribute('data-project-id')
+          if (!pid) return
+          var idNum = parseInt(pid, 10)
+          if (!Number.isFinite(idNum)) return
+          if (counted[idNum]) return
+          counted[idNum] = true
+          try {
+            sessionStorage.setItem('portfolio_pv_' + idNum, '1')
+          } catch (e2) {}
+          fetch(statsApiUrl + '?inc=project&projectId=' + encodeURIComponent(String(idNum)))
+            .then(function (r) {
+              if (!r.ok) throw new Error('bad')
+              return r.json()
+            })
+            .then(function (s) {
+              applyProjectVisits(s.projectVisits || {})
+            })
+            .catch(function () {})
+        })
+      },
+      { root: null, rootMargin: '0px 0px -12% 0px', threshold: [0, 0.22, 0.4] }
+    )
+    root.querySelectorAll('[data-project-id]').forEach(function (node) {
+      io.observe(node)
+    })
+  }
+
+  function parseGithubRepo(url) {
+    if (!url || typeof url !== 'string') return ''
+    var m = url.match(/github\.com\/([^/]+)\/([^/#?]+)/i)
+    if (!m) return ''
+    return m[1] + '/' + m[2].replace(/\.git$/i, '')
+  }
+
+  function renderProjectMeta(project) {
+    var vLabel = t('projects_views')
+    var views = '<span data-project-views-id="' + project.id + '">0 ' + vLabel + '</span>'
+    var repo = parseGithubRepo(project.github)
+    if (!repo) {
+      return '<p class="brutal-project__meta">' + views + '</p>'
+    }
+    return (
+      '<p class="brutal-project__meta">' +
+      views +
+      '<span class="brutal-project__meta-sep" aria-hidden="true"> · </span>' +
+      '<span class="brutal-project__stars" data-github-repo="' +
+      repo +
+      '">—</span></p>'
+    )
+  }
+
+  function initGithubStars() {
+    var root = document.getElementById('projects-content')
+    if (!root) return
+    var nodes = root.querySelectorAll('[data-github-repo]')
+    if (!nodes.length) return
+    var seen = {}
+    var list = []
+    nodes.forEach(function (el) {
+      var r = el.getAttribute('data-github-repo')
+      if (r && !seen[r]) {
+        seen[r] = true
+        list.push(r)
+      }
+    })
+    if (!list.length) return
+    fetch('/api/github-stars?repos=' + encodeURIComponent(list.join(',')))
+      .then(function (r) {
+        if (!r.ok) throw new Error('stars')
+        return r.json()
+      })
+      .then(function (map) {
+        nodes.forEach(function (el) {
+          var key = el.getAttribute('data-github-repo')
+          if (!key) return
+          var n = map[key]
+          if (typeof n !== 'number') {
+            el.textContent = ''
+            var sep = el.previousElementSibling
+            if (sep && sep.classList.contains('brutal-project__meta-sep')) sep.style.display = 'none'
+            return
+          }
+          el.textContent = '★ ' + n
+        })
+      })
+      .catch(function () {
+        nodes.forEach(function (el) {
+          el.textContent = ''
+          var sep = el.previousElementSibling
+          if (sep && sep.classList.contains('brutal-project__meta-sep')) sep.style.display = 'none'
+        })
+      })
   }
 
   // ----- Cursor -----
@@ -37,7 +227,6 @@
       if (!e.relatedTarget || !e.relatedTarget.closest('a, button')) cursor.classList.remove('brutal-cursor--large')
     })
 
-    // Durante il drag Clippy ha .is-active: mostra sempre la grab custom (niente grab/grabbing di Windows)
     if (clippyEl) {
       var obs = new MutationObserver(function () {
         if (clippyEl.classList.contains('is-active')) cursor.classList.add('brutal-cursor--grab')
@@ -46,7 +235,6 @@
       obs.observe(clippyEl, { attributes: true, attributeFilter: ['class'] })
     }
 
-    // Rimuove solo lo sfondo bianco (flood fill dai bordi → trasparente), mantiene contorno nero + interno bianco
     var clickImg = cursor.querySelector('.brutal-cursor__img--click')
     if (clickImg) {
       var img = new Image()
@@ -59,13 +247,15 @@
         canvas.height = h
         var ctx = canvas.getContext('2d')
         ctx.drawImage(img, 0, 0)
-        var data = ctx.getImageData(0, 0, w, h)
-        var p = data.data
+        var pdata = ctx.getImageData(0, 0, w, h)
+        var p = pdata.data
         var light = 240
         function isWhite(i) {
           return p[i] >= light && p[i + 1] >= light && p[i + 2] >= light
         }
-        function idx(x, y) { return (y * w + x) * 4 }
+        function idx(x, y) {
+          return (y * w + x) * 4
+        }
         var stack = []
         for (var x = 0; x < w; x++) {
           if (isWhite(idx(x, 0))) stack.push([x, 0])
@@ -92,7 +282,7 @@
           stack.push([px, py - 1])
           stack.push([px, py + 1])
         }
-        ctx.putImageData(data, 0, 0)
+        ctx.putImageData(pdata, 0, 0)
         try {
           clickImg.src = canvas.toDataURL('image/png')
         } catch (e) {}
@@ -101,7 +291,6 @@
     }
   }
 
-  // ----- Scroll progress -----
   var scrollProgress = document.getElementById('scrollProgress')
   if (scrollProgress) {
     function updateProgress() {
@@ -114,332 +303,644 @@
     updateProgress()
   }
 
-  // ----- Hero -----
-  var heroContent = document.getElementById('hero-content')
-  if (heroContent && personal) {
-    var words = personal.name.split(' ')
-    var cvLink = personal.cvPdfUrl
-      ? '<a href="' + personal.cvPdfUrl + '" class="brutal-hero__cta brutal-hero__cta--outline" download="Michel-Branche-CV.pdf" rel="noopener" data-stats-cv="1">Download CV</a>'
-      : personal.cvHtmlUrl
-        ? '<a href="' + personal.cvHtmlUrl + '" class="brutal-hero__cta brutal-hero__cta--outline" target="_blank" rel="noopener" data-stats-cv="1">Open CV</a>'
-        : ''
-    heroContent.innerHTML =
-      '<p class="brutal-hero__kicker">' + personal.title + '</p>' +
-      '<h1 class="brutal-hero__title"><span id="hero-name-michel">' + words[0] + '</span><span>' + words.slice(1).join(' ') + '</span></h1>' +
-      '<p class="brutal-hero__tagline">' + personal.tagline + '</p>' +
-      '<div class="brutal-hero__ctas">' +
-        '<button type="button" class="brutal-hero__cta" id="hero-cta">View My Work →</button>' +
-        (cvLink ? cvLink : '') +
-      '</div>' +
-      '<div class="brutal-stats brutal-hero-stats" id="hero-stats" aria-hidden="true"></div>'
-    document.getElementById('hero-cta').addEventListener('click', function () { scrollToSection('projects') })
-    var michelSpan = document.getElementById('hero-name-michel')
-    if (michelSpan && personal.cvHtmlUrl) {
-      var michelClicks = 0
-      var michelTimer = null
-      michelSpan.style.cursor = 'pointer'
-      michelSpan.addEventListener('click', function () {
-        michelClicks++
-        if (michelTimer) clearTimeout(michelTimer)
-        if (michelClicks >= 5) {
-          michelClicks = 0
-          window.open(personal.cvHtmlUrl, '_blank', 'noopener')
-        } else {
-          michelTimer = setTimeout(function () { michelClicks = 0 }, 1500)
-        }
-      })
-    }
+  function updatePageChrome() {
+    document.title = t('meta_title')
+    var md = document.querySelector('meta[name="description"]')
+    if (md) md.setAttribute('content', t('meta_description'))
+    var gh = document.getElementById('ghost-hero')
+    if (gh) gh.textContent = t('ghost_portfolio')
+    var ga = document.getElementById('ghost-about')
+    if (ga) ga.textContent = t('ghost_about')
+    var gw = document.getElementById('ghost-projects')
+    if (gw) gw.textContent = t('ghost_work')
+    var gs = document.getElementById('ghost-skills')
+    if (gs) gs.textContent = t('ghost_skills')
+    var gc = document.getElementById('ghost-contact')
+    if (gc) gc.textContent = t('ghost_contact')
+    var tip = document.querySelector('.clippy-tooltip')
+    if (tip) tip.textContent = t('clippy_tooltip')
   }
 
-  // About highlights (same as React)
-  var aboutHighlights = [
-    { title: 'Modern Development', description: 'HTML, CSS, JavaScript expertise', tag: 'Code', mod: 'yellow' },
-    { title: 'UI/UX Focus', description: 'Design coerente e identità visiva', tag: 'Design', mod: 'cyan' },
-    { title: 'Performance-First', description: 'Ottimizzato per mobile', tag: 'Speed', mod: 'lime' },
-    { title: 'Real Projects', description: 'Attenzione a conversione e utilizzo', tag: 'Ship', mod: 'pink' }
-  ]
-
-  // ----- About -----
-  var aboutContent = document.getElementById('about-content')
-  if (aboutContent && personal) {
-    aboutContent.innerHTML =
-      '<div class="brutal-section__header brutal-reveal brutal-reveal--left" data-reveal>' +
-        '<p class="brutal-section__kicker">About Me</p>' +
-        '<h2 class="brutal-section__title">Building Experiences</h2>' +
-        '<p class="brutal-card__desc" style="margin-top:1rem;border:none;padding:0;max-width:42rem">' + personal.bio + '</p>' +
-      '</div>' +
-      '<div class="brutal-grid brutal-grid--3">' +
-        aboutHighlights.map(function (item, i) {
-          return '<article class="brutal-card brutal-card--' + item.mod + ' brutal-reveal brutal-reveal--card" data-reveal data-delay="' + (i % 3) * 80 + '">' +
-            '<div class="brutal-card__top"><span class="brutal-card__number">0' + (i + 1) + '</span><span style="font-size:1.25rem;opacity:0.6">★</span></div>' +
-            '<div class="brutal-card__body">' +
-              '<h3 class="brutal-card__title">' + item.title + '</h3>' +
-              '<p class="brutal-card__desc">' + item.description + '</p>' +
-              '<div class="brutal-card__tags"><span class="brutal-card__tag">' + item.tag + '</span></div>' +
-            '</div></article>'
-        }).join('') +
-      '</div>'
-  }
-
-  // ----- Projects -----
-  var projectsContent = document.getElementById('projects-content')
-  if (projectsContent && projects.length) {
-    var featured = projects[0]
-    var restRaw = projects.slice(1)
-    var polterIndex = -1
-    for (var pi = 0; pi < restRaw.length; pi++) {
-      if (restRaw[pi].title === 'polterTV') {
-        polterIndex = pi
-        break
-      }
-    }
-    var rest = []
-    restRaw.forEach(function (p, idx) {
-      if (idx !== polterIndex) rest.push(p)
+  function updateNavLang() {
+    var items = [
+      { section: 'about', k: 'nav_about', g: 'nav_about_ghost' },
+      { section: 'projects', k: 'nav_projects', g: 'nav_projects_ghost' },
+      { section: 'skills', k: 'nav_skills', g: 'nav_skills_ghost' },
+      { section: 'contact', k: 'nav_contact', g: 'nav_contact_ghost' },
+    ]
+    items.forEach(function (item) {
+      var btn = document.querySelector('.brutal-nav__link[data-section="' + item.section + '"]')
+      if (!btn) return
+      btn.textContent = t(item.k)
+      btn.setAttribute('data-text', t(item.g))
+      btn.setAttribute('data-nav-label', t(item.k))
     })
-    if (polterIndex !== -1) rest.push(restRaw[polterIndex])
+    var logo = document.getElementById('nav-logo')
+    if (logo) logo.setAttribute('aria-label', t('aria_home'))
+    var bit = document.getElementById('lang-it')
+    var ben = document.getElementById('lang-en')
+    if (bit) {
+      bit.classList.toggle('brutal-nav__lang-btn--active', currentLang === 'it')
+      bit.setAttribute('aria-pressed', currentLang === 'it' ? 'true' : 'false')
+    }
+    if (ben) {
+      ben.classList.toggle('brutal-nav__lang-btn--active', currentLang === 'en')
+      ben.setAttribute('aria-pressed', currentLang === 'en' ? 'true' : 'false')
+    }
+    var navBtn = document.getElementById('nav-mobile-btn')
+    var header = document.getElementById('site-header')
+    if (navBtn && header && !header.classList.contains('brutal-nav__menu-open')) {
+      navBtn.setAttribute('aria-label', t('aria_menu_open'))
+    }
+  }
 
-    var featuredHtml = featured
-      ? '<article class="brutal-card brutal-featured brutal-card--yellow brutal-reveal brutal-reveal--card-sm" data-reveal>' +
-          '<div class="brutal-featured__img-wrap"><img src="' + featured.image + '" alt="' + featured.title + '" class="brutal-featured__img" loading="lazy"></div>' +
-          '<div class="brutal-featured__body">' +
-            '<span class="brutal-featured__badge">Featured</span>' +
-            '<h3 class="brutal-featured__title">' + featured.title + '</h3>' +
-            '<p class="brutal-featured__desc">' + featured.description + '</p>' +
-            '<div class="brutal-card__tags" style="margin-bottom:1rem">' +
-              featured.tags.map(function (t) { return '<span class="brutal-card__tag">' + t + '</span>' }).join('') +
-            '</div>' +
-            '<div class="brutal-featured__actions">' +
-              (featured.demo ? '<a href="' + featured.demo + '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta brutal-featured__cta--live">Live view →</a>' : '') +
-              (featured.github ? '<a href="' + featured.github + '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta">View Code →</a>' : '') +
-            '</div>' +
-          '</div></article>'
-      : ''
+  function renderPortfolio() {
+    var aboutHighlights = (I18N[currentLang] && I18N[currentLang].highlights) || I18N.en.highlights || []
 
-    function renderSmallProjectCard(project, i) {
-      var demoLink = project.demo ? '<a href="' + project.demo + '" target="_blank" rel="noopener noreferrer" class="brutal-project__link brutal-project__link--live">Live view →</a>' : ''
-      var codeLink = project.github ? '<a href="' + project.github + '" target="_blank" rel="noopener noreferrer" class="brutal-project__link">View Code →</a>' : ''
-      return '<article class="brutal-project brutal-reveal brutal-reveal--card-sm" role="listitem" data-reveal data-delay="' + (i % 3) * 80 + '">' +
-        '<div class="brutal-project-inner">' +
-          '<div class="brutal-project__img-wrap"><img src="' + project.image + '" alt="' + project.title + '" class="brutal-project__img" loading="lazy"></div>' +
-          '<div class="brutal-project__body">' +
-            '<h3 class="brutal-project__title">' + project.title + '</h3>' +
-            '<p class="brutal-project__desc">' + project.description + '</p>' +
-            '<div class="brutal-project__actions">' + demoLink + codeLink + '</div>' +
-          '</div></div></article>'
+    // ----- Hero -----
+    var heroContent = document.getElementById('hero-content')
+    if (heroContent && personal) {
+      var words = personal.name.split(' ')
+      var cvLink = personal.cvPdfUrl
+        ? '<a href="' +
+          personal.cvPdfUrl +
+          '" class="brutal-hero__cta brutal-hero__cta--outline" download="Michel-Branche-CV.pdf" rel="noopener" data-stats-cv="1">' +
+          t('hero_cv_download') +
+          '</a>'
+        : personal.cvHtmlUrl
+          ? '<a href="' +
+            personal.cvHtmlUrl +
+            '" class="brutal-hero__cta brutal-hero__cta--outline" target="_blank" rel="noopener" data-stats-cv="1">' +
+            t('hero_cv_open') +
+            '</a>'
+          : ''
+      heroContent.innerHTML =
+        '<p class="brutal-hero__kicker">' +
+        personalText('title') +
+        '</p>' +
+        '<h1 class="brutal-hero__title"><span id="hero-name-michel">' +
+        words[0] +
+        '</span><span>' +
+        words.slice(1).join(' ') +
+        '</span></h1>' +
+        '<p class="brutal-hero__tagline">' +
+        personalText('tagline') +
+        '</p>' +
+        '<div class="brutal-hero__ctas">' +
+        '<button type="button" class="brutal-hero__cta" id="hero-cta">' +
+        t('hero_cta') +
+        '</button>' +
+        (cvLink ? cvLink : '') +
+        '</div>' +
+        '<div class="brutal-stats brutal-hero-stats" id="hero-stats" aria-hidden="true"></div>'
     }
 
-    var scrollProjects = rest.filter(function (p) { return p.title !== 'polterTV' })
-    var polterProject = rest.find(function (p) { return p.title === 'polterTV' })
-    var scrollHtml = scrollProjects.map(function (p, i) { return renderSmallProjectCard(p, i) }).join('')
-
-    var scrollSectionHtml = ''
-    if (scrollHtml) {
-      scrollSectionHtml =
-        '<div class="brutal-projects-grid-wrap brutal-reveal brutal-reveal--up" data-reveal data-delay="80">' +
-          '<p class="brutal-projects-grid__label" aria-hidden="true">Altri progetti</p>' +
-          '<div class="brutal-projects-grid" role="list">' + scrollHtml + '</div>' +
+    // ----- About -----
+    var aboutContent = document.getElementById('about-content')
+    if (aboutContent && personal) {
+      aboutContent.innerHTML =
+        '<div class="brutal-section__header brutal-reveal brutal-reveal--left" data-reveal>' +
+        '<p class="brutal-section__kicker">' +
+        t('about_kicker') +
+        '</p>' +
+        '<h2 class="brutal-section__title">' +
+        t('about_title') +
+        '</h2>' +
+        '<p class="brutal-card__desc" style="margin-top:1rem;border:none;padding:0;max-width:42rem">' +
+        personalText('bio') +
+        '</p>' +
+        '</div>' +
+        '<div class="brutal-grid brutal-grid--3">' +
+        aboutHighlights
+          .map(function (item, i) {
+            return (
+              '<article class="brutal-card brutal-card--' +
+              item.mod +
+              ' brutal-reveal brutal-reveal--card" data-reveal data-delay="' +
+              (i % 3) * 80 +
+              '">' +
+              '<div class="brutal-card__top"><span class="brutal-card__number">0' +
+              (i + 1) +
+              '</span><span style="font-size:1.25rem;opacity:0.6">★</span></div>' +
+              '<div class="brutal-card__body">' +
+              '<h3 class="brutal-card__title">' +
+              item.title +
+              '</h3>' +
+              '<p class="brutal-card__desc">' +
+              item.description +
+              '</p>' +
+              '<div class="brutal-card__tags"><span class="brutal-card__tag">' +
+              item.tag +
+              '</span></div>' +
+              '</div></article>'
+            )
+          })
+          .join('') +
         '</div>'
     }
 
-    var polterHtml = ''
-    if (polterProject) {
-      polterHtml =
-        '<article class="brutal-card brutal-featured brutal-card--yellow brutal-reveal brutal-reveal--card-sm" data-reveal data-delay="' + (2 * 80) + '" style="grid-column:1/-1;margin-top:0">' +
-          '<div class="brutal-featured__img-wrap"><img src="' + polterProject.image + '" alt="' + polterProject.title + '" class="brutal-featured__img" loading="lazy"></div>' +
-          '<div class="brutal-featured__body">' +
-            '<span class="brutal-featured__badge">Creative Lab</span>' +
-            '<h3 class="brutal-featured__title">' + polterProject.title + '</h3>' +
-            '<p class="brutal-featured__desc">' + polterProject.description + '</p>' +
-            '<div class="brutal-card__tags" style="margin-bottom:1rem">' +
-              polterProject.tags.map(function (t) { return '<span class="brutal-card__tag">' + t + '</span>' }).join('') +
-            '</div>' +
-            '<div class="brutal-featured__actions">' +
-              (polterProject.demo ? '<a href="' + polterProject.demo + '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta brutal-featured__cta--live">Live view →</a>' : '') +
-              (polterProject.github ? '<a href="' + polterProject.github + '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta">View Code →</a>' : '') +
-            '</div>' +
-          '</div></article>'
-    }
+    // ----- Projects -----
+    var projectsContent = document.getElementById('projects-content')
+    if (projectsContent && projects.length) {
+      var featured = projects[0]
+      var restRaw = projects.slice(1)
+      var polterIndex = -1
+      for (var pi = 0; pi < restRaw.length; pi++) {
+        if (restRaw[pi].id === 6) {
+          polterIndex = pi
+          break
+        }
+      }
+      var rest = []
+      restRaw.forEach(function (p, idx) {
+        if (idx !== polterIndex) rest.push(p)
+      })
+      if (polterIndex !== -1) rest.push(restRaw[polterIndex])
 
-    projectsContent.innerHTML =
-      '<div class="brutal-section__header brutal-reveal brutal-reveal--left" data-reveal>' +
-        '<p class="brutal-section__kicker">Portfolio</p>' +
-        '<h2 class="brutal-section__title">Selected Projects</h2>' +
-      '</div>' +
-      '<div class="brutal-grid" style="grid-template-columns:1fr;gap:0">' +
+      var fTitle = pickLocale(featured, 'title')
+      var fDesc = pickLocale(featured, 'description')
+      var featuredHtml = featured
+        ? '<article class="brutal-card brutal-featured brutal-card--yellow brutal-reveal brutal-reveal--card-sm" data-project-id="' +
+          featured.id +
+          '" data-reveal>' +
+          '<div class="brutal-featured__img-wrap"><img src="' +
+          featured.image +
+          '" alt="' +
+          fTitle +
+          '" class="brutal-featured__img" loading="lazy"></div>' +
+          '<div class="brutal-featured__body">' +
+          '<span class="brutal-featured__badge">' +
+          t('projects_featured') +
+          '</span>' +
+          '<h3 class="brutal-featured__title">' +
+          fTitle +
+          '</h3>' +
+          renderProjectMeta(featured) +
+          '<p class="brutal-featured__desc">' +
+          fDesc +
+          '</p>' +
+          '<div class="brutal-card__tags" style="margin-bottom:1rem">' +
+          featured.tags.map(function (tg) { return '<span class="brutal-card__tag">' + tg + '</span>' }).join('') +
+          '</div>' +
+          '<div class="brutal-featured__actions">' +
+          (featured.demo
+            ? '<a href="' +
+              featured.demo +
+              '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta brutal-featured__cta--live">' +
+              t('projects_live') +
+              '</a>'
+            : '') +
+          (featured.github
+            ? '<a href="' +
+              featured.github +
+              '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta">' +
+              t('projects_code') +
+              '</a>'
+            : '') +
+          '</div>' +
+          '</div></article>'
+        : ''
+
+      function renderSmallProjectCard(project, i) {
+        var pTitle = pickLocale(project, 'title')
+        var pDesc = pickLocale(project, 'description')
+        var demoLink = project.demo
+          ? '<a href="' +
+            project.demo +
+            '" target="_blank" rel="noopener noreferrer" class="brutal-project__link brutal-project__link--live">' +
+            t('projects_live') +
+            '</a>'
+          : ''
+        var codeLink = project.github
+          ? '<a href="' +
+            project.github +
+            '" target="_blank" rel="noopener noreferrer" class="brutal-project__link">' +
+            t('projects_code') +
+            '</a>'
+          : ''
+        return (
+          '<article class="brutal-project brutal-reveal brutal-reveal--card-sm" role="listitem" data-project-id="' +
+          project.id +
+          '" data-reveal data-delay="' +
+          (i % 3) * 80 +
+          '">' +
+          '<div class="brutal-project-inner">' +
+          '<div class="brutal-project__img-wrap"><img src="' +
+          project.image +
+          '" alt="' +
+          pTitle +
+          '" class="brutal-project__img" loading="lazy"></div>' +
+          '<div class="brutal-project__body">' +
+          '<h3 class="brutal-project__title">' +
+          pTitle +
+          '</h3>' +
+          renderProjectMeta(project) +
+          '<p class="brutal-project__desc">' +
+          pDesc +
+          '</p>' +
+          '<div class="brutal-project__actions">' +
+          demoLink +
+          codeLink +
+          '</div>' +
+          '</div></div></article>'
+        )
+      }
+
+      var scrollProjects = rest.filter(function (p) { return p.id !== 6 })
+      var polterProject = rest.find(function (p) { return p.id === 6 })
+      var scrollHtml = scrollProjects.map(function (p, i) { return renderSmallProjectCard(p, i) }).join('')
+
+      var scrollSectionHtml = ''
+      if (scrollHtml) {
+        scrollSectionHtml =
+          '<div class="brutal-projects-grid-wrap brutal-reveal brutal-reveal--up" data-reveal data-delay="80">' +
+          '<p class="brutal-projects-grid__label" aria-hidden="true">' +
+          t('projects_other') +
+          '</p>' +
+          '<div class="brutal-projects-grid" role="list">' +
+          scrollHtml +
+          '</div>' +
+          '</div>'
+      }
+
+      var polterHtml = ''
+      if (polterProject) {
+        var plTitle = pickLocale(polterProject, 'title')
+        var plDesc = pickLocale(polterProject, 'description')
+        polterHtml =
+          '<article class="brutal-card brutal-featured brutal-card--yellow brutal-reveal brutal-reveal--card-sm" data-project-id="' +
+          polterProject.id +
+          '" data-reveal data-delay="' +
+          2 * 80 +
+          '" style="grid-column:1/-1;margin-top:0">' +
+          '<div class="brutal-featured__img-wrap"><img src="' +
+          polterProject.image +
+          '" alt="' +
+          plTitle +
+          '" class="brutal-featured__img" loading="lazy"></div>' +
+          '<div class="brutal-featured__body">' +
+          '<span class="brutal-featured__badge">' +
+          t('projects_creative') +
+          '</span>' +
+          '<h3 class="brutal-featured__title">' +
+          plTitle +
+          '</h3>' +
+          renderProjectMeta(polterProject) +
+          '<p class="brutal-featured__desc">' +
+          plDesc +
+          '</p>' +
+          '<div class="brutal-card__tags" style="margin-bottom:1rem">' +
+          polterProject.tags.map(function (tg) { return '<span class="brutal-card__tag">' + tg + '</span>' }).join('') +
+          '</div>' +
+          '<div class="brutal-featured__actions">' +
+          (polterProject.demo
+            ? '<a href="' +
+              polterProject.demo +
+              '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta brutal-featured__cta--live">' +
+              t('projects_live') +
+              '</a>'
+            : '') +
+          (polterProject.github
+            ? '<a href="' +
+              polterProject.github +
+              '" target="_blank" rel="noopener noreferrer" class="brutal-featured__cta">' +
+              t('projects_code') +
+              '</a>'
+            : '') +
+          '</div>' +
+          '</div></article>'
+      }
+
+      projectsContent.innerHTML =
+        '<div class="brutal-section__header brutal-reveal brutal-reveal--left" data-reveal>' +
+        '<p class="brutal-section__kicker">' +
+        t('projects_kicker') +
+        '</p>' +
+        '<h2 class="brutal-section__title">' +
+        t('projects_title') +
+        '</h2>' +
+        '</div>' +
+        '<div class="brutal-grid" style="grid-template-columns:1fr;gap:0">' +
         featuredHtml +
         scrollSectionHtml +
         polterHtml +
-      '</div>'
-  }
+        '</div>'
 
-  // ----- Skills -----
-  var cardMods = ['yellow', 'cyan', 'pink', 'lavender', 'orange', 'lime', 'green', 'yellow']
-  var skillsContent = document.getElementById('skills-content')
-  if (skillsContent && skills.length) {
-    skillsContent.innerHTML =
-      '<div class="brutal-section__header brutal-reveal brutal-reveal--left" data-reveal>' +
-        '<p class="brutal-section__kicker">Technical Expertise</p>' +
-        '<h2 class="brutal-section__title">Skills & Technologies</h2>' +
-      '</div>' +
-      '<div class="brutal-grid brutal-grid--3">' +
-        skills.map(function (skill, i) {
-          var mod = skill.cardMod || cardMods[i % cardMods.length]
-          return '<article class="brutal-card brutal-card--' + mod + ' brutal-reveal brutal-reveal--skill" data-reveal data-delay="' + i * 40 + '">' +
-            '<div class="brutal-card__top"><span class="brutal-card__number">' + String(i + 1).padStart(2, '0') + '</span></div>' +
-            '<div class="brutal-card__body"><h3 class="brutal-card__title">' + skill.name + '</h3></div></article>'
-        }).join('') +
-      '</div>'
-  }
+      if (data.statsApiUrl) {
+        initProjectCardViews(data.statsApiUrl, projects)
+      }
+      initGithubStars()
+    }
 
-  // ----- Contact -----
-  var contactContent = document.getElementById('contact-content')
-  if (contactContent && contactLinks) {
-    var faIconMap = { mail: 'envelope', github: 'github', linkedin: 'linkedin-square', instagram: 'instagram', facebook: 'facebook' }
-    var discordSvg = '<svg class="brutal-cta__icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>'
-    contactContent.innerHTML =
-      '<p class="brutal-section__kicker" style="text-align:center">Get In Touch</p>' +
-      '<h2 class="brutal-cta__title brutal-reveal brutal-reveal--cta" data-reveal>Let\'s Work<br><span>Together.</span></h2>' +
-      '<p class="brutal-card__desc" style="margin:0 auto 2rem;border:none;padding:0;text-align:center;max-width:28rem">Hai un progetto in mente? Collaboriamo per creare qualcosa di straordinario.</p>' +
-      '<div class="brutal-cta__links">' +
-        contactLinks.map(function (item, i) {
-          var iconHtml
-          if (item.icon === 'discord') {
-            iconHtml = discordSvg
-          } else {
-            var faClass = 'fa fa-' + (faIconMap[item.icon] || item.icon)
-            iconHtml = '<i class="' + faClass + '" aria-hidden="true"></i>'
-          }
-          return '' +
-            '<a href="' + item.href + '" target="_blank" rel="noopener noreferrer" class="brutal-cta__link brutal-reveal brutal-reveal--up" data-reveal data-delay="' + i * 100 + '" aria-label="' + item.label + '"' + (item.icon !== 'mail' ? ' data-stats-social="1"' : '') + '>' +
-              iconHtml + ' →' +
-            '</a>'
-        }).join('') +
-      '</div>' +
-      '<form class="brutal-contact-form brutal-reveal brutal-reveal--up" id="contact-form" data-reveal data-delay="200" novalidate>' +
+    // ----- Skills -----
+    var cardMods = ['yellow', 'cyan', 'pink', 'lavender', 'orange', 'lime', 'green', 'yellow']
+    var skillNames = t('skill_names')
+    if (!Array.isArray(skillNames)) skillNames = []
+    var skillsContent = document.getElementById('skills-content')
+    if (skillsContent && skills.length) {
+      skillsContent.innerHTML =
+        '<div class="brutal-section__header brutal-reveal brutal-reveal--left" data-reveal>' +
+        '<p class="brutal-section__kicker">' +
+        t('skills_kicker') +
+        '</p>' +
+        '<h2 class="brutal-section__title">' +
+        t('skills_title') +
+        '</h2>' +
+        '</div>' +
+        '<div class="brutal-grid brutal-grid--3">' +
+        skills
+          .map(function (skill, i) {
+            var mod = skill.cardMod || cardMods[i % cardMods.length]
+            var nm = skillNames[i] != null ? skillNames[i] : skill.name
+            return (
+              '<article class="brutal-card brutal-card--' +
+              mod +
+              ' brutal-reveal brutal-reveal--skill" data-reveal data-delay="' +
+              i * 40 +
+              '">' +
+              '<div class="brutal-card__top"><span class="brutal-card__number">' +
+              String(i + 1).padStart(2, '0') +
+              '</span></div>' +
+              '<div class="brutal-card__body"><h3 class="brutal-card__title">' +
+              nm +
+              '</h3></div></article>'
+            )
+          })
+          .join('') +
+        '</div>'
+    }
+
+    // ----- Contact -----
+    var contactContent = document.getElementById('contact-content')
+    if (contactContent && contactLinks) {
+      var faIconMap = { mail: 'envelope', github: 'github', linkedin: 'linkedin-square', instagram: 'instagram', facebook: 'facebook' }
+      var discordSvg =
+        '<svg class="brutal-cta__icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>'
+      contactContent.innerHTML =
+        '<p class="brutal-section__kicker" style="text-align:center">' +
+        t('contact_kicker') +
+        '</p>' +
+        '<h2 class="brutal-cta__title brutal-reveal brutal-reveal--cta" data-reveal>' +
+        t('contact_title_a') +
+        '<br><span>' +
+        t('contact_title_b') +
+        '</span></h2>' +
+        '<p class="brutal-card__desc" style="margin:0 auto 2rem;border:none;padding:0;text-align:center;max-width:28rem">' +
+        t('contact_intro') +
+        '</p>' +
+        '<div class="brutal-cta__links">' +
+        contactLinks
+          .map(function (item, i) {
+            var iconHtml
+            if (item.icon === 'discord') {
+              iconHtml = discordSvg
+            } else {
+              var faClass = 'fa fa-' + (faIconMap[item.icon] || item.icon)
+              iconHtml = '<i class="' + faClass + '" aria-hidden="true"></i>'
+            }
+            return (
+              '<a href="' +
+              item.href +
+              '" target="_blank" rel="noopener noreferrer" class="brutal-cta__link brutal-reveal brutal-reveal--up" data-reveal data-delay="' +
+              i * 100 +
+              '" aria-label="' +
+              item.label +
+              '"' +
+              (item.icon !== 'mail' ? ' data-stats-social="1"' : '') +
+              '>' +
+              iconHtml +
+              ' →</a>'
+            )
+          })
+          .join('') +
+        '</div>' +
+        '<form class="brutal-contact-form brutal-reveal brutal-reveal--up" id="contact-form" data-reveal data-delay="200" novalidate>' +
         '<div class="brutal-contact-form__grid">' +
-          '<div class="brutal-contact-form__group">' +
-            '<label class="brutal-contact-form__label" for="contact-name">Nome</label>' +
-            '<input type="text" id="contact-name" name="name" class="brutal-contact-form__input" required autocomplete="name" placeholder="Il tuo nome">' +
-          '</div>' +
-          '<div class="brutal-contact-form__group">' +
-            '<label class="brutal-contact-form__label" for="contact-email">Email</label>' +
-            '<input type="email" id="contact-email" name="email" class="brutal-contact-form__input" required autocomplete="email" placeholder="la-tua@email.com">' +
-          '</div>' +
+        '<div class="brutal-contact-form__group">' +
+        '<label class="brutal-contact-form__label" for="contact-name">' +
+        t('form_name') +
+        '</label>' +
+        '<input type="text" id="contact-name" name="name" class="brutal-contact-form__input" required autocomplete="name" placeholder="' +
+        t('ph_name') +
+        '">' +
         '</div>' +
         '<div class="brutal-contact-form__group">' +
-          '<label class="brutal-contact-form__label" for="contact-message">Messaggio</label>' +
-          '<textarea id="contact-message" name="message" class="brutal-contact-form__textarea" required rows="4" placeholder="Scrivi qui il tuo messaggio..."></textarea>' +
+        '<label class="brutal-contact-form__label" for="contact-email">' +
+        t('form_email') +
+        '</label>' +
+        '<input type="email" id="contact-email" name="email" class="brutal-contact-form__input" required autocomplete="email" placeholder="' +
+        t('ph_email') +
+        '">' +
+        '</div>' +
+        '</div>' +
+        '<div class="brutal-contact-form__group">' +
+        '<label class="brutal-contact-form__label" for="contact-message">' +
+        t('form_message') +
+        '</label>' +
+        '<textarea id="contact-message" name="message" class="brutal-contact-form__textarea" required rows="4" placeholder="' +
+        t('ph_message') +
+        '"></textarea>' +
         '</div>' +
         '<div class="brutal-contact-form__actions">' +
-          '<button type="submit" class="brutal-contact-form__submit" id="contact-submit">Invia messaggio</button>' +
-          '<p class="brutal-contact-form__feedback" id="contact-feedback" aria-live="polite"></p>' +
+        '<button type="submit" class="brutal-contact-form__submit" id="contact-submit">' +
+        t('form_submit') +
+        '</button>' +
+        '<p class="brutal-contact-form__feedback" id="contact-feedback" aria-live="polite"></p>' +
         '</div>' +
-      '</form>'
+        '</form>'
 
-    // Contare anche i click sulle icone SOCIAL (non la mail).
-    // Usiamo keepalive per far partire la request anche quando si apre una nuova tab.
-    try {
-      var socialIcons = contactContent.querySelectorAll('a[data-stats-social="1"]')
-      socialIcons.forEach(function (a) {
-        a.addEventListener('click', function () {
-          if (!data.statsApiUrl) return
-          try {
-            fetch(data.statsApiUrl + '?inc=contact', { method: 'GET', keepalive: true }).catch(function () {})
-          } catch (_) {}
-        })
-      })
-    } catch (_) {}
-  }
-
-  // ----- Contact form submit -----
-  var contactForm = document.getElementById('contact-form')
-  var contactFormApiUrl = data.contactFormApiUrl
-  if (contactForm && contactFormApiUrl) {
-    contactForm.addEventListener('submit', function (e) {
-      e.preventDefault()
-      var submitBtn = document.getElementById('contact-submit')
-      var feedback = document.getElementById('contact-feedback')
-      var fd = new FormData(contactForm)
-      var payload = { name: fd.get('name'), email: fd.get('email'), message: fd.get('message') }
-      submitBtn.disabled = true
-      feedback.textContent = ''
-      feedback.className = 'brutal-contact-form__feedback'
-      fetch(contactFormApiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-        .then(function (res) {
-          return res.text().then(function (t) {
-            var data
-            try { data = t ? JSON.parse(t) : {} } catch (_) { data = { raw: t } }
-            if (!res.ok) {
-              var detail = data && (data.error || data.details || data.raw) ? (' — ' + JSON.stringify(data)) : ''
-              throw new Error((res.statusText || 'Errore di invio') + detail)
-            }
-            return data
+      try {
+        var socialIcons = contactContent.querySelectorAll('a[data-stats-social="1"]')
+        socialIcons.forEach(function (a) {
+          a.addEventListener('click', function () {
+            if (!data.statsApiUrl) return
+            try {
+              fetch(data.statsApiUrl + '?inc=contact', { method: 'GET', keepalive: true }).catch(function () {})
+            } catch (_) {}
           })
         })
-        .then(function () {
-          feedback.textContent = 'Messaggio inviato. Ti rispondo al più presto!'
-          feedback.className = 'brutal-contact-form__feedback brutal-contact-form__feedback--success'
-          contactForm.reset()
-          if (data.statsApiUrl) {
-            fetch(data.statsApiUrl + '?inc=contact').then(function (r) { return r.json() }).then(function (s) {
-              var e = document.getElementById('hero-stats')
-              if (e && s) e.innerHTML = '<span class="brutal-stats__item"><strong class="brutal-stats__num">' + (s.visits || 0) + '</strong> visite</span><span class="brutal-stats__item"><strong class="brutal-stats__num">' + (s.cvDownloads || 0) + '</strong> CV</span><span class="brutal-stats__item"><strong class="brutal-stats__num">' + (s.contacts || 0) + '</strong> contatti</span>'
-            }).catch(function () {})
-          }
-        })
-        .catch(function (err) {
-          feedback.textContent = 'Invio fallito. ' + (err && err.message ? err.message : 'Riprova') + ' — oppure scrivimi a ' + (personal ? personal.email : '') + '.'
-          feedback.className = 'brutal-contact-form__feedback brutal-contact-form__feedback--error'
-        })
-        .finally(function () {
-          submitBtn.disabled = false
-        })
+      } catch (_) {}
+    }
+
+    // ----- Footer -----
+    var footer = document.getElementById('footer')
+    if (footer && personal) {
+      var parts = personal.name.split(' ')
+      var yr = new Date().getFullYear()
+      footer.innerHTML =
+        '<div class="brutal-footer__inner">' +
+        '<div class="brutal-footer__logo">' +
+        parts[0] +
+        '<br><span>' +
+        parts.slice(1).join(' ') +
+        '</span></div>' +
+        '<p class="brutal-footer__tagline">' +
+        t('footer_line').replace('{year}', String(yr)) +
+        '</p>' +
+        '</div>'
+    }
+
+    updatePageChrome()
+    updateNavLang()
+  }
+
+  renderPortfolio()
+
+  ;(function bindHeroInteractions() {
+    document.body.addEventListener('click', function (e) {
+      if (e.target.id === 'hero-cta') {
+        scrollToSection('projects')
+        return
+      }
+      if (e.target.id === 'hero-name-michel' && personal.cvHtmlUrl) {
+        if (!bindHeroInteractions.michel) bindHeroInteractions.michel = { clicks: 0, timer: null }
+        var m = bindHeroInteractions.michel
+        m.clicks++
+        if (m.timer) clearTimeout(m.timer)
+        if (m.clicks >= 5) {
+          m.clicks = 0
+          window.open(personal.cvHtmlUrl, '_blank', 'noopener')
+        } else {
+          m.timer = setTimeout(function () { m.clicks = 0 }, 1500)
+        }
+      }
     })
-  } else if (contactForm) {
-    document.getElementById('contact-feedback').textContent = 'Configura contactFormApiUrl in data.js e deploya l\'API per abilitare l\'invio.'
-  }
+    document.body.addEventListener('mouseover', function (e) {
+      if (e.target.id === 'hero-name-michel' && personal.cvHtmlUrl) e.target.style.cursor = 'pointer'
+    })
+  })()
 
-  // ----- Footer -----
-  var footer = document.getElementById('footer')
-  if (footer && personal) {
-    var parts = personal.name.split(' ')
-    footer.innerHTML =
-      '<div class="brutal-footer__logo">' + parts[0] + '<br><span>' + parts.slice(1).join(' ') + '</span></div>' +
-      '<div class="brutal-footer__right">' +
-        '<p>© ' + new Date().getFullYear() + ' · Designed & Built with passion</p>' +
-      '</div>'
-  }
+  // ----- Contact form (delegation, una tantum) -----
+  document.body.addEventListener('submit', function (e) {
+    if (e.target.id !== 'contact-form') return
+    e.preventDefault()
+    var contactForm = e.target
+    var contactFormApiUrl = data.contactFormApiUrl
+    if (!contactFormApiUrl) {
+      var fb = document.getElementById('contact-feedback')
+      if (fb) {
+        fb.textContent = t('form_config')
+        fb.className = 'brutal-contact-form__feedback brutal-contact-form__feedback--error'
+      }
+      return
+    }
+    var submitBtn = document.getElementById('contact-submit')
+    var feedback = document.getElementById('contact-feedback')
+    var fd = new FormData(contactForm)
+    var payload = { name: fd.get('name'), email: fd.get('email'), message: fd.get('message') }
+    if (submitBtn) submitBtn.disabled = true
+    if (feedback) {
+      feedback.textContent = ''
+      feedback.className = 'brutal-contact-form__feedback'
+    }
+    fetch(contactFormApiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then(function (res) {
+        return res.text().then(function (txt) {
+          var j
+          try {
+            j = txt ? JSON.parse(txt) : {}
+          } catch (_) {
+            j = { raw: txt }
+          }
+          if (!res.ok) {
+            var detail = j && (j.error || j.details || j.raw) ? ' — ' + JSON.stringify(j) : ''
+            throw new Error((res.statusText || t('form_error')) + detail)
+          }
+          return j
+        })
+      })
+      .then(function () {
+        if (feedback) {
+          feedback.textContent = t('form_success')
+          feedback.className = 'brutal-contact-form__feedback brutal-contact-form__feedback--success'
+        }
+        contactForm.reset()
+        if (data.statsApiUrl) {
+          fetch(data.statsApiUrl + '?inc=contact')
+            .then(function (r) { return r.json() })
+            .then(function (s) {
+              lastStatsPayload = s
+              var el = document.getElementById('hero-stats')
+              if (el && s) {
+                el.innerHTML =
+                  '<span class="brutal-stats__item"><strong class="brutal-stats__num">' +
+                  (s.visits || 0) +
+                  '</strong> ' +
+                  t('stats_visits') +
+                  '</span><span class="brutal-stats__item"><strong class="brutal-stats__num">' +
+                  (s.cvDownloads || 0) +
+                  '</strong> ' +
+                  t('stats_cv') +
+                  '</span><span class="brutal-stats__item"><strong class="brutal-stats__num">' +
+                  (s.contacts || 0) +
+                  '</strong> ' +
+                  t('stats_contacts') +
+                  '</span>'
+              }
+            })
+            .catch(function () {})
+        }
+      })
+      .catch(function (err) {
+        if (feedback) {
+          feedback.textContent =
+            t('form_error') +
+            ' ' +
+            (err && err.message ? err.message : t('form_error_retry')) +
+            ' — ' +
+            (personal ? personal.email : '')
+          feedback.className = 'brutal-contact-form__feedback brutal-contact-form__feedback--error'
+        }
+      })
+      .finally(function () {
+        if (submitBtn) submitBtn.disabled = false
+      })
+  })
 
-  // ----- Stats (visite, download CV, messaggi) -----
+  // ----- Stats -----
   var statsApiUrl = data.statsApiUrl
   if (statsApiUrl) {
     var statsEl = document.getElementById('hero-stats')
     function renderStats(stats) {
       if (!statsEl || !stats) return
+      lastStatsPayload = stats
       statsEl.innerHTML =
-        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-visits">' + (stats.visits || 0) + '</strong> visite</span>' +
-        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-cv">' + (stats.cvDownloads || 0) + '</strong> CV</span>' +
-        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-contacts">' + (stats.contacts || 0) + '</strong> contatti</span>'
+        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-visits">' +
+        (stats.visits || 0) +
+        '</strong> ' +
+        t('stats_visits') +
+        '</span>' +
+        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-cv">' +
+        (stats.cvDownloads || 0) +
+        '</strong> ' +
+        t('stats_cv') +
+        '</span>' +
+        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-contacts">' +
+        (stats.contacts || 0) +
+        '</strong> ' +
+        t('stats_contacts') +
+        '</span>'
     }
-    // Placeholder immediato: così vedi qualcosa anche se la fetch fallisce
     renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
     function fetchStats(inc) {
       var url = inc ? statsApiUrl + '?inc=' + encodeURIComponent(inc) : statsApiUrl
-      return fetch(url).then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status)
-        return r.json()
-      }).then(function (s) {
-        renderStats(s)
-        return s
-      }).catch(function () {
-        renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
-        return null
-      })
+      return fetch(url)
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status)
+          return r.json()
+        })
+        .then(function (s) {
+          renderStats(s)
+          return s
+        })
+        .catch(function () {
+          renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
+          return null
+        })
     }
     var visitCounted = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('portfolio_visit_counted')
     var pollMs = 8000
@@ -469,21 +970,19 @@
       fetchStats('visit').then(function (s) {
         if (s) startPolling()
       })
-      try { sessionStorage.setItem('portfolio_visit_counted', '1') } catch (_) {}
+      try {
+        sessionStorage.setItem('portfolio_visit_counted', '1')
+      } catch (_) {}
     }
 
-    // Aggiorna i numeri anche mentre resti sulla pagina (near real-time)
-    // Il polling viene avviato solo se l'endpoint `/api/stats` risponde OK.
-
-    // Incrementa CV al click sul link (PDF o HTML)
-    var cvLink = document.querySelector('a[data-stats-cv="1"]')
-    if (cvLink) {
-      cvLink.addEventListener('click', function () {
-        fetch(statsApiUrl + '?inc=cv').then(function (r) { return r.json() }).then(renderStats).catch(function () {})
-      })
-    }
-
-    // Incrementa contatti dopo invio form riuscito (sotto, nel submit handler)
+    document.body.addEventListener('click', function (e) {
+      var a = e.target.closest('a[data-stats-cv="1"]')
+      if (!a) return
+      fetch(statsApiUrl + '?inc=cv')
+        .then(function (r) { return r.json() })
+        .then(renderStats)
+        .catch(function () {})
+    })
   }
 
   // ----- Header -----
@@ -498,7 +997,6 @@
   window.addEventListener('scroll', setScrolled)
   setScrolled()
 
-  // Nav 3D tilt quando è in stato scrolled (stile hyper-kinetic)
   document.addEventListener('mousemove', function (e) {
     if (!header.classList.contains('scrolled')) return
     if (window.innerWidth <= 768) return
@@ -515,11 +1013,10 @@
     if (!header.classList.contains('scrolled')) header.style.transform = ''
   })
 
-  // Effetto hacker sui link nav (data-text)
   var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   document.querySelectorAll('.brutal-nav__link[data-text]').forEach(function (link) {
-    var original = link.getAttribute('data-text')
     link.addEventListener('mouseenter', function () {
+      var original = link.getAttribute('data-text')
       var iter = 0
       var interval = setInterval(function () {
         link.textContent = original.split('').map(function (l, i) {
@@ -533,7 +1030,8 @@
     })
     link.addEventListener('mouseleave', function () {
       if (link._hackerInterval) clearInterval(link._hackerInterval)
-      link.textContent = link.getAttribute('data-section').charAt(0).toUpperCase() + link.getAttribute('data-section').slice(1)
+      var lab = link.getAttribute('data-nav-label')
+      link.textContent = lab || link.textContent
     })
   })
 
@@ -548,27 +1046,71 @@
   if (navBtn) {
     navBtn.addEventListener('click', function () {
       header.classList.toggle('brutal-nav__menu-open')
-      navBtn.setAttribute('aria-label', header.classList.contains('brutal-nav__menu-open') ? 'Close menu' : 'Open menu')
+      navBtn.setAttribute(
+        'aria-label',
+        header.classList.contains('brutal-nav__menu-open') ? t('aria_menu_close') : t('aria_menu_open')
+      )
       navBtn.textContent = header.classList.contains('brutal-nav__menu-open') ? '✕' : '☰'
     })
   }
 
-  // ----- Reveal on scroll -----
+  function initLangSwitcher() {
+    var wrap = document.getElementById('nav-lang')
+    if (!wrap) return
+    wrap.setAttribute('aria-label', t('aria_switch_lang'))
+    wrap.querySelectorAll('[data-lang]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var L = btn.getAttribute('data-lang')
+        if (L !== 'it' && L !== 'en') return
+        setLang(L)
+        renderPortfolio()
+        if (lastStatsPayload) {
+          var statsEl = document.getElementById('hero-stats')
+          if (statsEl && data.statsApiUrl) {
+            var s = lastStatsPayload
+            statsEl.innerHTML =
+              '<span class="brutal-stats__item"><strong class="brutal-stats__num">' +
+              (s.visits || 0) +
+              '</strong> ' +
+              t('stats_visits') +
+              '</span><span class="brutal-stats__item"><strong class="brutal-stats__num">' +
+              (s.cvDownloads || 0) +
+              '</strong> ' +
+              t('stats_cv') +
+              '</span><span class="brutal-stats__item"><strong class="brutal-stats__num">' +
+              (s.contacts || 0) +
+              '</strong> ' +
+              t('stats_contacts') +
+              '</span>'
+          }
+        }
+        initReveal()
+        setTimeout(initTilt, 0)
+        try {
+          var url = new URL(window.location.href)
+          url.searchParams.set('lang', L)
+          window.history.replaceState({}, '', url.pathname + url.search + url.hash)
+        } catch (e) {}
+      })
+    })
+  }
+
   function initReveal() {
     var els = document.querySelectorAll('[data-reveal]')
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return
-        var el = entry.target
-        var delay = parseInt(el.getAttribute('data-delay') || '0', 10)
-        setTimeout(function () { el.classList.add('brutal-revealed') }, delay)
-      })
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' })
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return
+          var el = entry.target
+          var delay = parseInt(el.getAttribute('data-delay') || '0', 10)
+          setTimeout(function () { el.classList.add('brutal-revealed') }, delay)
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    )
     els.forEach(function (el) { observer.observe(el) })
   }
-  initReveal()
 
-  // ----- Card tilt -----
   function initTilt() {
     document.querySelectorAll('.brutal-project, .brutal-featured').forEach(function (card) {
       var inner = card.querySelector('.brutal-project-inner') || card
@@ -576,13 +1118,15 @@
         var r = card.getBoundingClientRect()
         var x = (e.clientX - r.left) / r.width - 0.5
         var y = (e.clientY - r.top) / r.height - 0.5
-        inner.style.transform = 'perspective(1000px) rotateX(' + (-y * 6) + 'deg) rotateY(' + (x * 6) + 'deg)'
+        inner.style.transform = 'perspective(1000px) rotateX(' + (-y * 6) + 'deg) rotateY(' + x * 6 + 'deg)'
       })
       card.addEventListener('mouseleave', function () {
         inner.style.transform = ''
       })
     })
   }
-  // Run after DOM for project cards
+
+  initReveal()
   setTimeout(initTilt, 0)
+  initLangSwitcher()
 })()

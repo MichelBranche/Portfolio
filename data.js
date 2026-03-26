@@ -1,13 +1,10 @@
 /**
  * Dati portfolio – versione vanilla.
- * Modifica questo file per aggiornare contenuti.
+ * Contenuti testuali bilingue: usa oggetti { en, it } per titoli e descrizioni.
  */
 
 const personal = {
   name: 'Michel Branche',
-  title: 'Front-End Developer',
-  tagline: 'Crafting modern, responsive interfaces with attention to detail',
-  bio: 'Front-End Developer con solide basi in HTML, CSS e JavaScript, orientato allo sviluppo di interfacce moderne e responsive. Forte attenzione a UI/UX, con focus su design coerente, leggibilità e identità visiva. Approccio performance-first: sviluppo leggero, senza dipendenze inutili e ottimizzato per mobile. Esperienza su progetti reali, con attenzione a conversione e utilizzo concreto.',
   email: 'michel.lavoro@gmail.com',
   github: 'https://github.com/MichelBranche',
   linkedin: 'https://www.linkedin.com/in/michel-branche-328501301/',
@@ -17,13 +14,35 @@ const personal = {
   facebook: 'https://www.facebook.com/michel.branche.56/',
   cvPdfUrl: './assets/Michel-Branche-CV.pdf',
   cvHtmlUrl: './assets/cv.html',
+  i18n: {
+    en: {
+      title: 'Front-End Developer',
+      tagline: 'Crafting modern, responsive interfaces with attention to detail',
+      bio:
+        'Front-End Developer with strong foundations in HTML, CSS and JavaScript, focused on modern, responsive interfaces. Strong UI/UX sensibility: coherent design, readability and visual identity. Performance-first: lean builds, no unnecessary dependencies, mobile-optimized. Real-world projects with attention to conversion and concrete use.',
+    },
+    it: {
+      title: 'Front-End Developer',
+      tagline: 'Interfacce moderne e responsive, cura al dettaglio',
+      bio:
+        'Front-End Developer con solide basi in HTML, CSS e JavaScript, orientato allo sviluppo di interfacce moderne e responsive. Forte attenzione a UI/UX, con focus su design coerente, leggibilità e identità visiva. Approccio performance-first: sviluppo leggero, senza dipendenze inutili e ottimizzato per mobile. Esperienza su progetti reali, con attenzione a conversione e utilizzo concreto.',
+    },
+  },
 }
 
 const projects = [
   {
     id: 1,
-    title: 'Personal portfolio for photographer',
-    description: 'Portfolio fotografico brutalist/editoriale: identità visiva forte, gallerie multi-progetto, animazioni GSAP e approccio performance-first senza framework.',
+    title: {
+      en: 'Personal portfolio for photographer',
+      it: 'Portfolio fotografico personale',
+    },
+    description: {
+      en:
+        'Brutalist/editorial photography portfolio: strong visual identity, multi-project galleries, GSAP animations and a performance-first approach without frameworks.',
+      it:
+        'Portfolio fotografico brutalist/editoriale: identità visiva forte, gallerie multi-progetto, animazioni GSAP e approccio performance-first senza framework.',
+    },
     image: 'https://raw.githubusercontent.com/MichelBranche/photo-portfolio-demo/main/preview.jpg',
     tags: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'Photography'],
     github: 'https://github.com/MichelBranche/photo-portfolio-demo',
@@ -31,8 +50,13 @@ const projects = [
   },
   {
     id: 2,
-    title: 'Il Gusto',
-    description: 'Modern Italian restaurant website featuring Brutalism design, menu showcase, and reservation system. Built with focus on visual appeal and user experience.',
+    title: { en: 'Il Gusto', it: 'Il Gusto' },
+    description: {
+      en:
+        'Italian restaurant site with brutalist-inspired design, menu showcase and reservation flow. Built for visual impact and a smooth user experience.',
+      it:
+        'Sito per ristorante italiano con design ispirato al brutalism, menu in evidenza e flusso prenotazioni. Pensato per impatto visivo e buona esperienza utente.',
+    },
     image: './assets/gustomok1.png',
     tags: ['HTML', 'CSS', 'JavaScript', 'Responsive'],
     github: 'https://github.com/MichelBranche/Demo-IlGusto',
@@ -40,8 +64,13 @@ const projects = [
   },
   {
     id: 3,
-    title: 'Osteria La Vache Folle',
-    description: 'Authentic French bistro website with rich visual storytelling, menu display, and location information. Emphasizes brand identity and atmosphere.',
+    title: { en: 'Osteria La Vache Folle', it: 'Osteria La Vache Folle' },
+    description: {
+      en:
+        'French bistro website with visual storytelling, menu and location info. Emphasizes brand identity and atmosphere.',
+      it:
+        'Sito per bistro francese con storytelling visivo, menu e informazioni sulla location. Enfatizza identità di brand e atmosfera.',
+    },
     image: 'https://raw.githubusercontent.com/MichelBranche/demosite-osteria-la-vache-folle/main/mockup-1.png',
     tags: ['HTML', 'CSS', 'JavaScript', 'UI/UX'],
     github: 'https://github.com/MichelBranche/demosite-osteria-la-vache-folle',
@@ -49,8 +78,13 @@ const projects = [
   },
   {
     id: 4,
-    title: 'Netflix Mockup',
-    description: 'High-fidelity Netflix interface recreation showcasing streaming service UI patterns, responsive grid layouts, and interactive components.',
+    title: { en: 'Netflix Mockup', it: 'Netflix Mockup' },
+    description: {
+      en:
+        'High-fidelity Netflix UI recreation: streaming patterns, responsive grid and interactive components.',
+      it:
+        'Ricostruzione fedele dell’interfaccia Netflix: pattern da streaming, griglia responsive e componenti interattivi.',
+    },
     image: './assets/netflixmok1.png',
     tags: ['HTML', 'CSS', 'JavaScript', 'UI Clone'],
     github: 'https://github.com/MichelBranche/Netflix-Mockup',
@@ -58,8 +92,13 @@ const projects = [
   },
   {
     id: 5,
-    title: 'Taco Star',
-    description: 'Vibrant Mexican restaurant website with bold colors, appetizing food imagery, and streamlined ordering interface. Focus on conversion and engagement.',
+    title: { en: 'Taco Star', it: 'Taco Star' },
+    description: {
+      en:
+        'Mexican restaurant site with bold colours, appetizing imagery and a streamlined ordering flow. Focus on conversion and engagement.',
+      it:
+        'Sito per ristorante messicano con colori decisi, immagini appetitose e flusso d’ordine snello. Focus su conversione e coinvolgimento.',
+    },
     image: './assets/tacomok1.png',
     tags: ['HTML', 'CSS', 'JavaScript', 'Performance'],
     github: 'https://github.com/MichelBranche/demo-tacostar',
@@ -67,8 +106,13 @@ const projects = [
   },
   {
     id: 6,
-    title: 'polterTV',
-    description: 'Interactive retro analog TV experience with channel surfing, progressive glitches, secret channels, and immersive audiovisual effects.',
+    title: { en: 'polterTV', it: 'polterTV' },
+    description: {
+      en:
+        'Interactive retro TV: channel surfing, progressive glitches, secret channels and immersive audio-visual effects.',
+      it:
+        'TV analogica retro interattiva: zapping, glitch progressivi, canali segreti ed effetti audiovisivi immersivi.',
+    },
     image: './assets/poltermok1.png',
     tags: ['JavaScript', 'CSS', 'HTML', 'Creative Coding'],
     github: 'https://github.com/MichelBranche/polterTV',
@@ -112,17 +156,16 @@ const categoryGradients = {
   tools: 'from-yellow-500 to-orange-500',
 }
 
-// Stesso dominio del deploy (es. https://devmichelbranche.vercel.app) — evita di puntare a un vecchio progetto Vercel.
 const contactFormApiUrl = '/api/send-message'
 const statsApiUrl = '/api/stats'
 
-window.PORTFOLIO_DATA = { 
-  personal, 
-  projects, 
-  skills, 
-  highlights, 
-  contactLinks, 
-  categoryGradients, 
+window.PORTFOLIO_DATA = {
+  personal,
+  projects,
+  skills,
+  highlights,
+  contactLinks,
+  categoryGradients,
   contactFormApiUrl,
-  statsApiUrl
+  statsApiUrl,
 }
