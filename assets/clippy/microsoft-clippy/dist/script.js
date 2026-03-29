@@ -164,6 +164,11 @@ window.dragClippy = dragClippy;
 
 window.addEventListener("load", () => {
   clippyInterval = setInterval(updateClippySrc, waitingTimer);
-  clippy.addEventListener("click", () => { toggleClippyTooltip(); });
+  clippy.addEventListener("click", () => {
+    try {
+      if (window.matchMedia("(max-width: 768px)").matches) return;
+    } catch (e) {}
+    toggleClippyTooltip();
+  });
   clippy.addEventListener("mousedown", dragClippy);
 });

@@ -24,6 +24,15 @@ body {
   display: block;
 }
 
+@media (max-width: 768px) {
+  .clippy-tooltip {
+    display: none !important;
+  }
+  .clippy:not(.is-active):hover .clippy-tooltip {
+    display: none !important;
+  }
+}
+
 .clippy-tooltip {
   position: absolute;
   padding: 12px;
