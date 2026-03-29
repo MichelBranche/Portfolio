@@ -825,6 +825,9 @@
     })
     .finally(function () {
       renderPortfolio()
+      initReveal()
+      setTimeout(initTilt, 0)
+      initLangSwitcher()
     })
   ;(function bindHeroInteractions() {
     document.body.addEventListener('click', function (e) {
@@ -947,8 +950,8 @@
   // ----- Stats -----
   var statsApiUrl = data.statsApiUrl
   if (statsApiUrl) {
-    var statsEl = document.getElementById('hero-stats')
     function renderStats(stats) {
+      var statsEl = document.getElementById('hero-stats')
       if (!statsEl || !stats) return
       lastStatsPayload = stats
       statsEl.innerHTML =
@@ -1176,7 +1179,4 @@
     })
   }
 
-  initReveal()
-  setTimeout(initTilt, 0)
-  initLangSwitcher()
 })()
