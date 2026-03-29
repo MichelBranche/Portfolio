@@ -1292,6 +1292,10 @@
   }
 
   function initTilt() {
+    /** Su touch lo scroll con dito premuto genera mousemove sintetici → rotazioni 3D assurde e layout che “esplode”. */
+    try {
+      if (window.matchMedia('(hover: none)').matches) return
+    } catch (e) {}
     document.querySelectorAll('.brutal-project, .brutal-featured').forEach(function (card) {
       var inner = card.querySelector('.brutal-project-inner') || card
       card.addEventListener('mousemove', function (e) {

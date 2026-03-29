@@ -1455,4 +1455,17 @@ body.brutalist {
   #projects .brutal-featured .brutal-card__tags {
     margin-bottom: 0.65rem;
   }
+  /* Griglia piccola: niente margin-top:auto + flex:1 che durante lo scroll touch possono allargare lo spazio cover→CTA */
+  #projects .brutal-projects-grid .brutal-project {
+    min-height: 0;
+  }
+  #projects .brutal-projects-grid .brutal-project-inner {
+    flex: 0 1 auto;
+  }
+  #projects .brutal-projects-grid .brutal-project__body {
+    flex: 0 1 auto;
+  }
+  #projects .brutal-projects-grid .brutal-project__actions {
+    margin-top: 0.75rem;
+  }
 }
