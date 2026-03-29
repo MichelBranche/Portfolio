@@ -176,6 +176,9 @@ const categoryGradients = {
 const contactFormApiUrl = '/api/send-message'
 const statsApiUrl = '/api/stats'
 
+/** Id progetto mostrato come card larga in basso (sezione “Creative Lab”). Deve essere tra i progetti dopo il primo. */
+const bottomFeaturedProjectId = 6
+
 window.PORTFOLIO_DATA = {
   personal,
   projects,
@@ -185,4 +188,5 @@ window.PORTFOLIO_DATA = {
   categoryGradients,
   contactFormApiUrl,
   statsApiUrl,
+  bottomFeaturedProjectId,
 }

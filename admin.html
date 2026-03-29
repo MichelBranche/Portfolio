@@ -70,6 +70,22 @@
 
     .new-project-card { border: 6px dashed #000; display: flex; align-items: center; justify-content: center; min-height: 250px; background: rgba(0,0,0,0.05); cursor: pointer; font-family: 'Bebas Neue'; font-size: 3rem; color: #000; transition: all 0.2s; }
     .new-project-card:hover { background: #ff3b3b; color: #fff; border-style: solid; box-shadow: 8px 8px 0 #000; transform: translate(-4px, -4px); }
+
+    .admin-section-block { margin-bottom: 2rem; }
+    .admin-section-label {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0 0 0.75rem 0;
+      padding: 0.5rem 0.75rem;
+      background: #000;
+      color: #fce8cd;
+      border: 3px solid #000;
+      box-shadow: 4px 4px 0 #ff3b3b;
+    }
+    .admin-section-label span { font-weight: 400; opacity: 0.9; font-size: 0.75rem; text-transform: none; letter-spacing: 0; }
   </style>
 </head>
 <body class="brutalist">
@@ -99,7 +115,7 @@
     </div>
     
     <p style="font-family:'Space Mono'; margin-bottom: 1.5rem; font-size: 0.95rem; background: #fff; padding: 1rem; border: 3px solid #000; box-shadow: 4px 4px 0 #000;">
-      <strong>Istruzioni WYSIWYG:</strong> <br>1. Trascina le card fisiche su questa pagina per cambiarne l'ordine. <br>2. Clicca su qualsiasi card per aprirne l'Editor dei testi. <br>3. Il primo progetto sarà SEMPRE automaticamente la Card Gigante Highlight.
+      <strong>Istruzioni WYSIWYG:</strong> <br>1. Trascina le card per cambiare l’ordine (stesso ordine salvato online). <br>2. Clicca su una card per modificarne testi e link. <br>3. La <strong>prima</strong> voce in lista = card grande in alto; l’id configurato in <code>data.js</code> (<code>bottomFeaturedProjectId</code>) = card grande in basso (Creative Lab); il resto = griglia centrale. Sul sito pubblico il layout è identico a queste tre zone.
     </p>
 
     <!-- Simulazione finestra portfolio -->

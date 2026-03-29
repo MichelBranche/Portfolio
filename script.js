@@ -468,20 +468,24 @@
     // ----- Projects -----
     var projectsContent = document.getElementById('projects-content')
     if (projectsContent && projects.length) {
+      var bottomFeaturedId =
+        data.bottomFeaturedProjectId != null && data.bottomFeaturedProjectId !== ''
+          ? Number(data.bottomFeaturedProjectId)
+          : 6
       var featured = projects[0]
       var restRaw = projects.slice(1)
-      var polterIndex = -1
+      var bottomIndexInRest = -1
       for (var pi = 0; pi < restRaw.length; pi++) {
-        if (restRaw[pi].id === 6) {
-          polterIndex = pi
+        if (restRaw[pi].id === bottomFeaturedId) {
+          bottomIndexInRest = pi
           break
         }
       }
       var rest = []
       restRaw.forEach(function (p, idx) {
-        if (idx !== polterIndex) rest.push(p)
+        if (idx !== bottomIndexInRest) rest.push(p)
       })
-      if (polterIndex !== -1) rest.push(restRaw[polterIndex])
+      if (bottomIndexInRest !== -1) rest.push(restRaw[bottomIndexInRest])
 
       var fTitle = pickLocale(featured, 'title')
       var fDesc = pickLocale(featured, 'description')
@@ -572,8 +576,8 @@
         )
       }
 
-      var scrollProjects = rest.filter(function (p) { return p.id !== 6 })
-      var polterProject = rest.find(function (p) { return p.id === 6 })
+      var scrollProjects = rest.filter(function (p) { return p.id !== bottomFeaturedId })
+      var polterProject = rest.find(function (p) { return p.id === bottomFeaturedId })
       var scrollHtml = scrollProjects.map(function (p, i) { return renderSmallProjectCard(p, i) }).join('')
 
       var scrollSectionHtml = ''

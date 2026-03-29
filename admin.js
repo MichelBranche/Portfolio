@@ -26,6 +26,36 @@ document.addEventListener('DOMContentLoaded', () => {
     return obj[key].it || obj[key].en || '';
   }
 
+  /** Stesso id usato in script.js per la card larga in basso (vedi data.js → bottomFeaturedProjectId). */
+  function getBottomFeaturedId() {
+    const v = window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.bottomFeaturedProjectId;
+    if (v == null || v === '') return 6;
+    const n = Number(v);
+    return Number.isNaN(n) ? 6 : n;
+  }
+
+  function renderLargeFeaturedCard(p, idx, badgeText) {
+    return `
+      <article class="brutal-card brutal-featured brutal-card--yellow" data-index="${idx}" draggable="true">
+        <div class="brutal-featured__img-wrap"><img src="${p.image}" class="brutal-featured__img" alt=""></div>
+        <div class="brutal-featured__body">
+          <span class="brutal-featured__badge">${badgeText}</span>
+          <h3 class="brutal-featured__title">${pickLocale(p, 'title')}</h3>
+          <p class="brutal-featured__desc">${pickLocale(p, 'description')}</p>
+          <div class="brutal-card__tags" style="margin-bottom:1rem">
+            ${(p.tags || []).map(tg => `<span class="brutal-card__tag">${tg}</span>`).join('')}
+          </div>
+          <div class="brutal-featured__actions">
+             ${p.demo ? `<span class="brutal-featured__cta brutal-featured__cta--live">Demo</span>` : ''}
+             ${p.github ? `<span class="brutal-featured__cta">Code</span>` : ''}
+          </div>
+        </div>
+        <div class="admin-edit-overlay">
+           <div class="admin-edit-btn">#${p.id} ✎ Modifica o sposta</div>
+        </div>
+      </article>`;
+  }
+
   // --- API Handlers ---
   const API_URL = '/api/admin-projects';
 
@@ -97,36 +127,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const featured = projectsArray[0];
     const rest = projectsArray.slice(1);
+    const bottomId = getBottomFeaturedId();
+    const bottomProject = rest.find((p) => p.id === bottomId) || null;
+    const middleProjects = rest.filter((p) => p.id !== bottomId);
 
-    // Render Featured (Index 0)
-    let fHtml = `
-      <article class="brutal-card brutal-featured brutal-card--yellow" data-index="0" draggable="true">
-        <div class="brutal-featured__img-wrap"><img src="${featured.image}" class="brutal-featured__img"></div>
-        <div class="brutal-featured__body">
-          <span class="brutal-featured__badge">Featured Highlight</span>
-          <h3 class="brutal-featured__title">${pickLocale(featured, 'title')}</h3>
-          <p class="brutal-featured__desc">${pickLocale(featured, 'description')}</p>
-          <div class="brutal-card__tags" style="margin-bottom:1rem">
-            ${(featured.tags || []).map(tg => `<span class="brutal-card__tag">${tg}</span>`).join('')}
-          </div>
-          <div class="brutal-featured__actions">
-             ${featured.demo ? `<span class="brutal-featured__cta brutal-featured__cta--live">Demo</span>` : ''}
-             ${featured.github ? `<span class="brutal-featured__cta">Code</span>` : ''}
-          </div>
-        </div>
-        <div class="admin-edit-overlay">
-           <div class="admin-edit-btn">#${featured.id} ✎ Modifica o sposta</div>
-        </div>
-      </article>
-    `;
+    const topHtml =
+      `<div class="admin-section-block">` +
+      `<p class="admin-section-label">1 · Card in alto <span>(primo progetto in lista)</span></p>` +
+      renderLargeFeaturedCard(featured, 0, 'Featured Highlight') +
+      `</div>`;
 
-    // Render Grid per i restanti
-    let sHtml = rest.map((p, i) => {
-      const realIdx = i + 1;
-      return `
+    let sHtml = middleProjects
+      .map((p) => {
+        const realIdx = projectsArray.indexOf(p);
+        return `
       <article class="brutal-project" data-index="${realIdx}" draggable="true">
         <div class="brutal-project-inner">
-          <div class="brutal-project__img-wrap"><img src="${p.image}" class="brutal-project__img"></div>
+          <div class="brutal-project__img-wrap"><img src="${p.image}" class="brutal-project__img" alt=""></div>
           <div class="brutal-project__body">
             <h3 class="brutal-project__title">${pickLocale(p, 'title')}</h3>
             <p class="brutal-project__desc">${pickLocale(p, 'description')}</p>
@@ -137,12 +154,34 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </article>
       `;
-    }).join('');
+      })
+      .join('');
 
-    sHtml += renderNewCard(); // Aggiungi il pulsante di add alla fine della griglia
+    sHtml += renderNewCard();
 
-    let mainHtml = fHtml + `<div class="brutal-projects-grid-wrap"><div class="brutal-projects-grid">${sHtml}</div></div>`;
-    projectsContent.innerHTML = mainHtml;
+    const gridHtml =
+      `<div class="admin-section-block">` +
+      `<p class="admin-section-label">2 · Griglia centrale <span>(tutti tranne la card bassa dedicata)</span></p>` +
+      `<div class="brutal-projects-grid-wrap"><div class="brutal-projects-grid">${sHtml}</div></div>` +
+      `</div>`;
+
+    let bottomHtml = '';
+    if (bottomProject) {
+      const bIdx = projectsArray.indexOf(bottomProject);
+      bottomHtml =
+        `<div class="admin-section-block">` +
+        `<p class="admin-section-label">3 · Card larga in basso <span>(id ${bottomId} · Creative Lab sul sito)</span></p>` +
+        renderLargeFeaturedCard(bottomProject, bIdx, 'Creative Lab') +
+        `</div>`;
+    } else {
+      bottomHtml =
+        `<div class="admin-section-block">` +
+        `<p class="admin-section-label">3 · Card larga in basso <span>(id ${bottomId} — nessun progetto con questo id dopo il primo)</span></p>` +
+        `<p style="font-family:'Space Mono';font-size:0.85rem;padding:1rem;border:3px dashed #000;background:#fff;">Aggiungi un progetto con id <strong>${bottomId}</strong> oppure cambia <code>bottomFeaturedProjectId</code> in <code>data.js</code>.</p>` +
+        `</div>`;
+    }
+
+    projectsContent.innerHTML = topHtml + gridHtml + bottomHtml;
 
     addCardListeners();
   }
