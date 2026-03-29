@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let token = sessionStorage.getItem('adminToken') || '';
   let projectsArray = [];
 
+  function publishProjectsForStats() {
+    try {
+      window.__ADMIN_PROJECTS_FOR_STATS__ = projectsArray.slice();
+    } catch (e) {}
+  }
+
   const SKILL_CATS = ['core', 'frameworks', 'design', 'optimization', 'tools'];
   const HL_MODS = ['yellow', 'cyan', 'pink', 'lavender', 'lime', 'green', 'orange'];
 
@@ -283,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fillSiteForm();
       renderGrid();
       showDashboard();
+      if (typeof window.loadAdminStats === 'function') window.loadAdminStats();
     } catch (e) {
       console.error(e);
       showToast('Errore di connessione al database.', true);
@@ -318,6 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       showToast('✅ Cambiamenti salvati online!');
+      if (typeof window.loadAdminStats === 'function') window.loadAdminStats();
     } catch (e) {
       console.error(e);
       showToast(e.message, true);
@@ -334,6 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (projectsArray.length === 0) {
       projectsContent.innerHTML = renderNewCard();
       addCardListeners();
+      publishProjectsForStats();
       return;
     }
 
@@ -395,6 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
     projectsContent.innerHTML = topHtml + gridHtml + bottomHtml;
 
     addCardListeners();
+    publishProjectsForStats();
   }
 
   function renderNewCard() {
