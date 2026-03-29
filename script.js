@@ -126,6 +126,19 @@
 
   /** Impostato quando stats API è attiva: permette a initProjectCardViews di aggiornare hero + card dopo ?inc=project. */
   var refreshStatsFromApi = null
+  /** Evita listener duplicati su #projects-content quando renderPortfolio() gira due volte (locale + Redis). */
+  var projectLiveClickBound = false
+
+  function fetchWithTimeout(url, ms) {
+    return Promise.race([
+      fetch(url, { cache: 'no-store', credentials: 'same-origin' }),
+      new Promise(function (_, reject) {
+        setTimeout(function () {
+          reject(new Error('timeout'))
+        }, ms)
+      }),
+    ])
+  }
 
   document.body.classList.add('brutalist')
   setLang(detectLang())
@@ -166,34 +179,37 @@
     } catch (e) {}
 
     /** Una sola card per click su “Vai al sito” (non scroll: altrimenti tutte le card in viewport incrementano insieme). */
-    root.addEventListener(
-      'click',
-      function (e) {
-        var link = e.target.closest('a.brutal-project__link--live, a.brutal-featured__cta--live')
-        if (!link) return
-        var article = link.closest('[data-project-id]')
-        if (!article) return
-        var pid = article.getAttribute('data-project-id')
-        var idNum = parseInt(pid, 10)
-        if (!Number.isFinite(idNum)) return
-        if (counted[idNum]) return
-        counted[idNum] = true
-        try {
-          sessionStorage.setItem('portfolio_pv_' + idNum, '1')
-        } catch (e2) {}
-        statsFetch(statsApiUrl + '?inc=project&projectId=' + encodeURIComponent(String(idNum)))
-          .then(function (r) {
-            if (!r.ok) throw new Error('bad')
-            return r.json()
-          })
-          .then(function (s) {
-            if (typeof refreshStatsFromApi === 'function') refreshStatsFromApi(s)
-            else applyProjectVisitsToDom(s.projectVisits || {})
-          })
-          .catch(function () {})
-      },
-      false
-    )
+    if (!projectLiveClickBound) {
+      projectLiveClickBound = true
+      root.addEventListener(
+        'click',
+        function (e) {
+          var link = e.target.closest('a.brutal-project__link--live, a.brutal-featured__cta--live')
+          if (!link) return
+          var article = link.closest('[data-project-id]')
+          if (!article) return
+          var pid = article.getAttribute('data-project-id')
+          var idNum = parseInt(pid, 10)
+          if (!Number.isFinite(idNum)) return
+          if (counted[idNum]) return
+          counted[idNum] = true
+          try {
+            sessionStorage.setItem('portfolio_pv_' + idNum, '1')
+          } catch (e2) {}
+          statsFetch(statsApiUrl + '?inc=project&projectId=' + encodeURIComponent(String(idNum)))
+            .then(function (r) {
+              if (!r.ok) throw new Error('bad')
+              return r.json()
+            })
+            .then(function (s) {
+              if (typeof refreshStatsFromApi === 'function') refreshStatsFromApi(s)
+              else applyProjectVisitsToDom(s.projectVisits || {})
+            })
+            .catch(function () {})
+        },
+        false
+      )
+    }
   }
 
   function parseGithubRepo(url) {
@@ -869,46 +885,152 @@
     updateNavLang()
   }
 
-  fetch('/api/admin-projects?t=' + new Date().getTime(), {
-    cache: 'no-store',
-    credentials: 'same-origin',
-  })
-    .then(function (r) { return r.json() })
+  function mergeRemoteSitePayload(json) {
+    if (!json || typeof json !== 'object') return
+    if (json.projects && Array.isArray(json.projects) && json.projects.length > 0) {
+      projects = json.projects
+      if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.projects = projects
+    }
+    if (json.personal && typeof json.personal === 'object') {
+      personal = json.personal
+      if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.personal = personal
+      contactLinks = buildContactLinksFromPersonal(personal)
+    }
+    if (json.skills && Array.isArray(json.skills)) {
+      skills = json.skills
+      if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.skills = skills
+    }
+    if (json.aboutHighlights && Array.isArray(json.aboutHighlights) && json.aboutHighlights.length > 0) {
+      customAboutHighlights = json.aboutHighlights
+      if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.aboutHighlights = customAboutHighlights
+    }
+    if (json.bottomFeaturedProjectId != null && json.bottomFeaturedProjectId !== '') {
+      var bf = Number(json.bottomFeaturedProjectId)
+      if (!isNaN(bf)) {
+        data.bottomFeaturedProjectId = bf
+        if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.bottomFeaturedProjectId = bf
+      }
+    }
+  }
+
+  /** Primo paint subito (data.js): su rete lenta / cold start non resta schermo vuoto in attesa di Redis. */
+  renderPortfolio()
+  initReveal()
+  setTimeout(initTilt, 0)
+  initLangSwitcher()
+
+  // ----- Stats (dopo il primo renderPortfolio: #hero-stats esiste) -----
+  var statsApiUrl = data.statsApiUrl
+  if (statsApiUrl) {
+    function renderStats(stats) {
+      if (!stats) return
+      lastStatsPayload = stats
+      var statsEl = document.getElementById('hero-stats')
+      if (!statsEl) return
+      statsEl.innerHTML =
+        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-visits">' +
+        (stats.visits || 0) +
+        '</strong> ' +
+        t('stats_visits') +
+        '</span>' +
+        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-cv">' +
+        (stats.cvDownloads || 0) +
+        '</strong> ' +
+        t('stats_cv') +
+        '</span>' +
+        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-contacts">' +
+        (stats.contacts || 0) +
+        '</strong> ' +
+        t('stats_contacts') +
+        '</span>'
+      if (stats.projectVisits && typeof stats.projectVisits === 'object') {
+        applyProjectVisitsToDom(stats.projectVisits)
+      }
+    }
+    refreshStatsFromApi = renderStats
+    renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
+    function fetchStats(inc) {
+      var url = inc ? statsApiUrl + '?inc=' + encodeURIComponent(inc) : statsApiUrl
+      return statsFetch(url)
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status)
+          return r.json()
+        })
+        .then(function (s) {
+          renderStats(s)
+          return s
+        })
+        .catch(function () {
+          renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
+          return null
+        })
+    }
+    var visitCounted = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('portfolio_visit_counted')
+    var pollMs =
+      typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 768px)').matches ? 12000 : 5000
+    var pollTimer = null
+    function startPolling() {
+      if (pollTimer) return
+      pollTimer = setInterval(function () {
+        try {
+          if (document.visibilityState === 'hidden') return
+        } catch (_) {}
+        fetchStats().then(function (s) {
+          if (!s) {
+            try {
+              clearInterval(pollTimer)
+            } catch (_) {}
+            pollTimer = null
+          }
+        })
+      }, pollMs)
+      window.addEventListener('beforeunload', function () {
+        try {
+          clearInterval(pollTimer)
+        } catch (_) {}
+      })
+    }
+    if (visitCounted) {
+      fetchStats().then(function (s) {
+        if (s) startPolling()
+      })
+    } else {
+      fetchStats('visit').then(function (s) {
+        if (s) startPolling()
+      })
+      try {
+        sessionStorage.setItem('portfolio_visit_counted', '1')
+      } catch (_) {}
+    }
+
+    document.body.addEventListener('click', function (e) {
+      var a = e.target.closest('a[data-stats-cv="1"]')
+      if (!a) return
+      statsFetch(statsApiUrl + '?inc=cv')
+        .then(function (r) {
+          return r.json()
+        })
+        .then(renderStats)
+        .catch(function () {})
+    })
+  }
+
+  var SITE_FETCH_MS = 12000
+  fetchWithTimeout('/api/admin-projects?t=' + Date.now(), SITE_FETCH_MS)
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status)
+      return r.json()
+    })
     .then(function (json) {
-      if (!json) return
-      if (json.projects && Array.isArray(json.projects) && json.projects.length > 0) {
-        projects = json.projects
-        if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.projects = projects
-      }
-      if (json.personal && typeof json.personal === 'object') {
-        personal = json.personal
-        if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.personal = personal
-        contactLinks = buildContactLinksFromPersonal(personal)
-      }
-      if (json.skills && Array.isArray(json.skills)) {
-        skills = json.skills
-        if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.skills = skills
-      }
-      if (json.aboutHighlights && Array.isArray(json.aboutHighlights) && json.aboutHighlights.length > 0) {
-        customAboutHighlights = json.aboutHighlights
-        if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.aboutHighlights = customAboutHighlights
-      }
-      if (json.bottomFeaturedProjectId != null && json.bottomFeaturedProjectId !== '') {
-        var bf = Number(json.bottomFeaturedProjectId)
-        if (!isNaN(bf)) {
-          data.bottomFeaturedProjectId = bf
-          if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.bottomFeaturedProjectId = bf
-        }
-      }
+      mergeRemoteSitePayload(json)
     })
     .catch(function (err) {
-      console.warn('Fallback to local data.js projects', err)
+      console.warn('Portfolio remote (admin-projects):', err)
     })
     .finally(function () {
       renderPortfolio()
       initReveal()
       setTimeout(initTilt, 0)
-      initLangSwitcher()
       if (typeof refreshStatsFromApi === 'function') {
         refreshStatsFromApi(lastStatsPayload || { visits: 0, cvDownloads: 0, contacts: 0 })
       }
@@ -1031,94 +1153,6 @@
       })
   })
 
-  // ----- Stats -----
-  var statsApiUrl = data.statsApiUrl
-  if (statsApiUrl) {
-    function renderStats(stats) {
-      var statsEl = document.getElementById('hero-stats')
-      if (!statsEl || !stats) return
-      lastStatsPayload = stats
-      statsEl.innerHTML =
-        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-visits">' +
-        (stats.visits || 0) +
-        '</strong> ' +
-        t('stats_visits') +
-        '</span>' +
-        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-cv">' +
-        (stats.cvDownloads || 0) +
-        '</strong> ' +
-        t('stats_cv') +
-        '</span>' +
-        '<span class="brutal-stats__item"><strong class="brutal-stats__num" id="stat-contacts">' +
-        (stats.contacts || 0) +
-        '</strong> ' +
-        t('stats_contacts') +
-        '</span>'
-      if (stats.projectVisits && typeof stats.projectVisits === 'object') {
-        applyProjectVisitsToDom(stats.projectVisits)
-      }
-    }
-    refreshStatsFromApi = renderStats
-    renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
-    function fetchStats(inc) {
-      var url = inc ? statsApiUrl + '?inc=' + encodeURIComponent(inc) : statsApiUrl
-      return statsFetch(url)
-        .then(function (r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status)
-          return r.json()
-        })
-        .then(function (s) {
-          renderStats(s)
-          return s
-        })
-        .catch(function () {
-          renderStats({ visits: 0, cvDownloads: 0, contacts: 0 })
-          return null
-        })
-    }
-    var visitCounted = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('portfolio_visit_counted')
-    var pollMs = 5000
-    var pollTimer = null
-    function startPolling() {
-      if (pollTimer) return
-      pollTimer = setInterval(function () {
-        try {
-          if (document.visibilityState === 'hidden') return
-        } catch (_) {}
-        fetchStats().then(function (s) {
-          if (!s) {
-            try { clearInterval(pollTimer) } catch (_) {}
-            pollTimer = null
-          }
-        })
-      }, pollMs)
-      window.addEventListener('beforeunload', function () {
-        try { clearInterval(pollTimer) } catch (_) {}
-      })
-    }
-    if (visitCounted) {
-      fetchStats().then(function (s) {
-        if (s) startPolling()
-      })
-    } else {
-      fetchStats('visit').then(function (s) {
-        if (s) startPolling()
-      })
-      try {
-        sessionStorage.setItem('portfolio_visit_counted', '1')
-      } catch (_) {}
-    }
-
-    document.body.addEventListener('click', function (e) {
-      var a = e.target.closest('a[data-stats-cv="1"]')
-      if (!a) return
-      statsFetch(statsApiUrl + '?inc=cv')
-        .then(function (r) { return r.json() })
-        .then(renderStats)
-        .catch(function () {})
-    })
-  }
-
   // ----- Header -----
   var header = document.getElementById('site-header')
   var navLogo = document.getElementById('nav-logo')
@@ -1234,6 +1268,8 @@
 
   function initReveal() {
     var els = document.querySelectorAll('[data-reveal]')
+    var narrow =
+      typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 768px)').matches
     var observer = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
@@ -1243,7 +1279,10 @@
           setTimeout(function () { el.classList.add('brutal-revealed') }, delay)
         })
       },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+      {
+        threshold: narrow ? 0.05 : 0.1,
+        rootMargin: narrow ? '0px 0px -12px 0px' : '0px 0px -50px 0px',
+      }
     )
     els.forEach(function (el) { observer.observe(el) })
   }
