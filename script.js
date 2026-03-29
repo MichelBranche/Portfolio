@@ -568,7 +568,7 @@
           featured.image +
           '" alt="' +
           fTitle +
-          '" class="brutal-featured__img" loading="lazy"></div>' +
+          '" class="brutal-featured__img" loading="eager" fetchpriority="high" decoding="async"></div>' +
           '<div class="brutal-featured__body">' +
           '<span class="brutal-featured__badge">' +
           t('projects_featured') +
@@ -580,7 +580,7 @@
           '<p class="brutal-featured__desc">' +
           fDesc +
           '</p>' +
-          '<div class="brutal-card__tags" style="margin-bottom:1rem">' +
+          '<div class="brutal-card__tags">' +
           featured.tags.map(function (tg) { return '<span class="brutal-card__tag">' + tg + '</span>' }).join('') +
           '</div>' +
           '<div class="brutal-featured__actions">' +
@@ -605,6 +605,8 @@
       function renderSmallProjectCard(project, i) {
         var pTitle = pickLocale(project, 'title')
         var pDesc = pickLocale(project, 'description')
+        /** eager: evita che il lazy carichi un’immagine alla volta in viewport; la griglia parte in parallelo. */
+        var imgLoading = i < 6 ? 'eager' : 'lazy'
         var demoLink = project.demo
           ? '<a href="' +
             project.demo +
@@ -630,7 +632,9 @@
           project.image +
           '" alt="' +
           pTitle +
-          '" class="brutal-project__img" loading="lazy"></div>' +
+          '" class="brutal-project__img" loading="' +
+          imgLoading +
+          '" decoding="async"></div>' +
           '<div class="brutal-project__body">' +
           '<h3 class="brutal-project__title">' +
           pTitle +
@@ -678,7 +682,7 @@
           polterProject.image +
           '" alt="' +
           plTitle +
-          '" class="brutal-featured__img" loading="lazy"></div>' +
+          '" class="brutal-featured__img" loading="lazy" fetchpriority="low" decoding="async"></div>' +
           '<div class="brutal-featured__body">' +
           '<span class="brutal-featured__badge">' +
           t('projects_creative') +
@@ -690,7 +694,7 @@
           '<p class="brutal-featured__desc">' +
           plDesc +
           '</p>' +
-          '<div class="brutal-card__tags" style="margin-bottom:1rem">' +
+          '<div class="brutal-card__tags">' +
           polterProject.tags.map(function (tg) { return '<span class="brutal-card__tag">' + tg + '</span>' }).join('') +
           '</div>' +
           '<div class="brutal-featured__actions">' +
