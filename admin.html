@@ -4,54 +4,72 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0a0a0a" />
-  <title>Admin Dashboard | Michel Branche</title>
+  <title>WYSIWYG Dashboard | Michel Branche</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700&family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Stili specifici per l'admin in stile brutalist */
+    /* Stili specifici per l'admin in stile brutalist WYSIWYG */
     body { background-color: #fce8cd; color: #0a0a0a; padding-bottom: 4rem; overflow-x: hidden; }
-    .admin-container { max-width: 1000px; margin: 4rem auto; padding: 2rem; }
+    .admin-container { max-width: 1400px; margin: 4rem auto; padding: 0 2rem; }
     .admin-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 6px solid #000; padding-bottom: 1rem; margin-bottom: 2rem; }
-    .admin-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; margin: 0; text-transform: uppercase; }
+    .admin-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; margin: 0; text-transform: uppercase; }
     
     .login-box { max-width: 400px; margin: 8rem auto; background: #fff; border: 4px solid #000; box-shadow: 8px 8px 0 #000; padding: 2rem; }
     .login-box h2 { font-family: 'Unbounded', sans-serif; font-size: 1.5rem; margin-top: 0; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 0.5rem; }
-    .form-group { margin-bottom: 1.5rem; }
+    
+    .form-group { margin-bottom: 1.2rem; }
     .form-label { display: block; font-family: 'Space Mono', monospace; font-weight: bold; margin-bottom: 0.5rem; }
-    .form-input { width: 100%; border: 3px solid #000; background: #fff; color: #000; padding: 0.75rem; font-family: 'Space Mono', monospace; flex: 1; min-width: 0; font-size: 1rem; transition: transform 0.1s; box-shadow: 4px 4px 0 rgba(0,0,0,0.1); }
+    .form-input { width: 100%; border: 3px solid #000; background: #fff; color: #000; padding: 0.75rem; font-family: 'Space Mono', monospace; font-size: 1rem; transition: transform 0.1s; box-shadow: 4px 4px 0 rgba(0,0,0,0.1); }
     .form-input:focus { outline: none; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 rgba(0,0,0,0.2); }
     .form-textarea { resize: vertical; min-height: 80px; }
-    .btn { background: #000; color: #fff; font-family: 'Unbounded', sans-serif; text-transform: uppercase; font-weight: bold; padding: 0.75rem 1.5rem; border: 3px solid #000; cursor: pointer; transition: all 0.2s; box-shadow: 6px 6px 0 transparent; display: inline-flex; align-items: center; justify-content: center; min-width: fit-content;}
+    
+    .btn { background: #000; color: #fff; font-family: 'Unbounded', sans-serif; text-transform: uppercase; font-weight: bold; padding: 0.75rem 1.5rem; border: 3px solid #000; cursor: pointer; transition: all 0.2s; box-shadow: 6px 6px 0 transparent; display: inline-flex; align-items: center; justify-content: center; }
     .btn:hover { background: #fff; color: #000; box-shadow: 6px 6px 0 #000; transform: translate(-2px, -2px); }
     .btn--danger { background: #ff3b3b; color: #fff; }
     .btn--danger:hover { background: #fff; color: #ff3b3b; box-shadow: 6px 6px 0 #ff3b3b; }
-    .btn--success { background: #00d26a; color: #000; }
+    .btn--success { background: #00d26a; color: #000; border-color: #000; }
     .btn--success:hover { background: #fff; color: #00d26a; box-shadow: 6px 6px 0 #00d26a; }
 
     #dashboard { display: none; }
-    .project-card { background: #fff; border: 4px solid #000; margin-bottom: 2rem; box-shadow: 8px 8px 0 #000; overflow: hidden; position: relative; }
-    .project-card__header { background: #e0e0e0; border-bottom: 4px solid #000; padding: 1rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; }
-    .project-card__header:hover { background: #d0d0d0; }
-    .project-card__header h3 { font-family: 'Space Mono', monospace; font-size: 1.25rem; margin: 0; font-weight: bold; }
-    .project-card__body { padding: 1.5rem; border-top: 4px solid #000; display: none; }
-    .project-card.is-open .project-card__body { display: block; }
     
+    /* WYSIWYG Simulated Area */
+    .admin-preview-window { border: 6px solid #000; border-radius: 0; overflow: hidden; position: relative; background: #fff; box-shadow: 12px 12px 0 #000; }
+    .preview-header { background: #000; padding: 0.5rem 1rem; color: #fff; font-family: 'Space Mono'; font-weight: bold; pointer-events:none; }
+    
+    /* Le card nel preview avranno il cursore a "move" o "pointer" per l'edit */
+    .admin-preview-window article.brutal-card, 
+    .admin-preview-window article.brutal-project { cursor: grab !important; transition: outline 0.1s; position: relative; }
+    .admin-preview-window article.brutal-project:active, 
+    .admin-preview-window article.brutal-card:active { cursor: grabbing !important; }
+    .admin-preview-window article:hover { outline: 4px dashed #ff3b3b; outline-offset: 4px; z-index: 10; }
+    .admin-preview-window article.dragging { opacity: 0.4; }
+
+    /* Overlay "Click to Edit" */
+    .admin-edit-overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 5; }
+    .admin-preview-window article:hover .admin-edit-overlay { opacity: 1; }
+    .admin-edit-btn { background: #fff; border: 4px solid #000; font-family: 'Unbounded', sans-serif; font-size: 1.2rem; font-weight: bold; padding: 1rem 2rem; color: #000; pointer-events: none; }
+
+    /* Modale Setup */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 1rem; }
+    .modal-overlay.is-open { display: flex; }
+    .modal-content { background: #fce8cd; border: 6px solid #000; padding: 2rem; box-shadow: 12px 12px 0 #ff3b3b; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #000; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+    .modal-header h2 { font-family: 'Unbounded'; margin: 0; font-size: 1.5rem; text-transform: uppercase; }
+    .close-modal-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: #000; transition: transform 0.2s; }
+    .close-modal-btn:hover { transform: scale(1.2); color: #ff3b3b; }
+
     .grid-2 { display: grid; grid-template-columns: 1fr; gap: 1rem; }
     @media (min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; gap: 2rem; } }
 
-    .tag-container { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
-    .tag { background: #000; color: #fff; padding: 0.25rem 0.5rem; font-family: 'Space Mono', monospace; font-size: 0.85rem; border: 2px solid #000; cursor: pointer; }
-    .tag:hover { background: #ff3b3b; text-decoration: line-through; }
-    
-    .status-toast { position: fixed; bottom: 2rem; right: 2rem; background: #00d26a; color: #000; padding: 1rem 2rem; border: 4px solid #000; box-shadow: 8px 8px 0 #000; font-family: 'Unbounded', sans-serif; font-weight: bold; transform: translateY(200%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; }
+    .status-toast { position: fixed; bottom: 2rem; right: 2rem; background: #00d26a; color: #000; padding: 1rem 2rem; border: 4px solid #000; box-shadow: 8px 8px 0 #000; font-family: 'Unbounded', sans-serif; font-weight: bold; transform: translateY(200%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10000; }
     .status-toast.show { transform: translateY(0); }
     .status-toast--error { background: #ff3b3b; color: #fff; }
 
-    .drag-handle { cursor: grab; padding: 0 1rem; font-size: 1.5rem; user-select: none; }
-    .project-card.dragging { opacity: 0.5; box-shadow: none; border-style: dashed; }
+    .new-project-card { border: 6px dashed #000; display: flex; align-items: center; justify-content: center; min-height: 250px; background: rgba(0,0,0,0.05); cursor: pointer; font-family: 'Bebas Neue'; font-size: 3rem; color: #000; transition: all 0.2s; }
+    .new-project-card:hover { background: #ff3b3b; color: #fff; border-style: solid; box-shadow: 8px 8px 0 #000; transform: translate(-4px, -4px); }
   </style>
 </head>
 <body class="brutalist">
@@ -62,7 +80,7 @@
     <h2>Admin Login</h2>
     <form id="login-form">
       <div class="form-group">
-        <label class="form-label" for="password">Password (Vercel ENV):</label>
+        <label class="form-label" for="password">Password Segmentata:</label>
         <input type="password" id="password" class="form-input" required autofocus />
       </div>
       <button type="submit" class="btn" style="width: 100%">Entra</button>
@@ -70,29 +88,114 @@
     </form>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- DASHBOARD WYSIWYG -->
   <div id="dashboard" class="admin-container">
     <div class="admin-header">
-      <h1>Progetti <span id="project-count" style="font-size: 2rem; vertical-align: middle; color:#ff3b3b">(0)</span></h1>
+      <h1>Live Editor <span id="project-count" style="font-size: 2rem; vertical-align: middle; color:#ff3b3b">(0)</span></h1>
       <div style="display:flex; gap:1rem;">
-        <button id="btn-add" class="btn" type="button">+ Nuovo Progetto</button>
-        <button id="btn-save" class="btn btn--success" type="button">💾 Salva Online</button>
+        <button id="btn-save" class="btn btn--success" type="button">💾 Salva Cambiamenti Online</button>
         <button id="btn-logout" class="btn" type="button" style="background:transparent; color:#000;">Logout</button>
       </div>
     </div>
     
-    <p style="font-family:'Space Mono'; margin-bottom: 2rem; font-size: 0.9rem;">Trascina le schede usando l'icona ☰ per riordinare (il primo in alto è il progetto in evidenza Featured).</p>
+    <p style="font-family:'Space Mono'; margin-bottom: 1.5rem; font-size: 0.95rem; background: #fff; padding: 1rem; border: 3px solid #000; box-shadow: 4px 4px 0 #000;">
+      <strong>Istruzioni WYSIWYG:</strong> <br>1. Trascina le card fisiche su questa pagina per cambiarne l'ordine. <br>2. Clicca su qualsiasi card per aprirne l'Editor dei testi. <br>3. Il primo progetto sarà SEMPRE automaticamente la Card Gigante Highlight.
+    </p>
 
-    <div id="projects-list">
-      <!-- Progetti renderizzati qui da admin.js -->
+    <!-- Simulazione finestra portfolio -->
+    <div class="admin-preview-window">
+      <div class="preview-header">🔴 🟡 🟢 devmichelbranche.vercel.app/portfolio</div>
+      <section class="brutal-section brutal-section--yellow" style="padding: 4rem 1rem;">
+        <div class="brutal-container" id="admin-projects-content">
+          <!-- I progetti Brutalist verranno renderizzati qui dentro da admin.js -->
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- MODAL EDITOR (Nascosto) -->
+  <div id="edit-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Modifica Progetto</h2>
+        <button class="close-modal-btn" id="btn-close-modal">&times;</button>
+      </div>
+
+      <form id="project-form">
+        <input type="hidden" id="modal-index" value="" />
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">ID Progetto</label>
+            <input type="number" class="form-input" id="modal-id" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL Immagine</label>
+            <input type="text" class="form-input" id="modal-img" placeholder="./assets/mokup.png">
+          </div>
+        </div>
+
+        <div class="grid-2">
+           <div class="form-group">
+              <label class="form-label">Titolo (Italiano)</label>
+              <input type="text" class="form-input" id="modal-title-it" required>
+           </div>
+           <div class="form-group">
+              <label class="form-label">Titolo (Inglese)</label>
+              <input type="text" class="form-input" id="modal-title-en" required>
+           </div>
+        </div>
+
+        <div class="grid-2">
+           <div class="form-group">
+              <label class="form-label">Descrizione (Italiano)</label>
+              <textarea class="form-input form-textarea" id="modal-desc-it"></textarea>
+           </div>
+           <div class="form-group">
+              <label class="form-label">Descrizione (Inglese)</label>
+              <textarea class="form-input form-textarea" id="modal-desc-en"></textarea>
+           </div>
+        </div>
+
+        <div class="grid-2">
+           <div class="form-group">
+              <label class="form-label">Demo URL/LiveSite</label>
+              <input type="text" class="form-input" id="modal-demo" placeholder="https://...">
+           </div>
+           <div class="form-group">
+              <label class="form-label">GitHub Repository</label>
+              <input type="text" class="form-input" id="modal-github" placeholder="https://github.com/...">
+           </div>
+        </div>
+
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label class="form-label">Tags (separati da virgola)</label>
+          <input type="text" class="form-input" id="modal-tags" placeholder="HTML, CSS, GSAP, CMS, E-Commerce...">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; border-top: 4px solid #000; padding-top: 1.5rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn--danger" id="btn-delete-project">Elimina</button>
+          
+          <div style="display:flex; gap:1rem;">
+            <button type="button" class="btn" id="btn-cancel-modal" style="background:#fff; color:#000;">Annulla</button>
+            <button type="submit" class="btn" style="background:#00d26a; color:#000;">Applica Visualmente</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 
   <div id="toast" class="status-toast">Salvato con successo.</div>
 
-  <!-- Fetch initial configuration locally as fallback data -->
+  <!-- I18N setup for rendering UI internally -->
+  <script>
+    window.PORTFOLIO_I18N = {
+      en: { demo: 'Live', code: 'Code' },
+      it: { demo: 'Live', code: 'Codice' }
+    };
+  </script>
+  <!-- Load old data as fallback -->
   <script src="data.js"></script>
-  <!-- Load Admin logic -->
+  <!-- Load new WYSIWYG logic -->
   <script src="admin.js"></script>
 </body>
 </html>
