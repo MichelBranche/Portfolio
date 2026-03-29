@@ -812,7 +812,10 @@
     updateNavLang()
   }
 
-  fetch('/api/admin-projects?t=' + new Date().getTime())
+  fetch('/api/admin-projects?t=' + new Date().getTime(), {
+    cache: 'no-store',
+    credentials: 'same-origin',
+  })
     .then(function (r) { return r.json() })
     .then(function (json) {
       if (json && json.projects && Array.isArray(json.projects) && json.projects.length > 0) {
