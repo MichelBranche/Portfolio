@@ -32,6 +32,23 @@ const personal = {
 
 const projects = [
   {
+    id: 7,
+    title: {
+      en: 'Sys-0ff // District Store',
+      it: 'Sys-0ff // District Store',
+    },
+    description: {
+      en:
+        'Brutalist streetwear & underground archives e-commerce platform. High-impact design, GSAP animations, and dynamic routing.',
+      it:
+        'Piattaforma e-commerce per streetwear underground con design brutalista. Impatto visivo elevato, animazioni GSAP e routing dinamico.',
+    },
+    image: 'https://raw.githubusercontent.com/MichelBranche/ecommerce-demo1/main/public/assets/mockup.png',
+    tags: ['React', 'GSAP', 'E-commerce', 'Brutalism', 'UI/UX'],
+    github: 'https://github.com/MichelBranche/ecommerce-demo1',
+    demo: 'https://sys-0ff.vercel.app/',
+  },
+  {
     id: 1,
     title: {
       en: 'Personal portfolio for photographer',

@@ -812,8 +812,20 @@
     updateNavLang()
   }
 
-  renderPortfolio()
-
+  fetch('/api/admin-projects')
+    .then(function (r) { return r.json() })
+    .then(function (json) {
+      if (json && json.projects && Array.isArray(json.projects) && json.projects.length > 0) {
+        projects = json.projects
+        if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.projects = projects
+      }
+    })
+    .catch(function (err) {
+      console.warn('Fallback to local data.js projects', err)
+    })
+    .finally(function () {
+      renderPortfolio()
+    })
   ;(function bindHeroInteractions() {
     document.body.addEventListener('click', function (e) {
       if (e.target.id === 'hero-cta') {
