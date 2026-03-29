@@ -10,7 +10,37 @@
   var personal = data.personal
   var projects = data.projects
   var skills = data.skills
-  var contactLinks = data.contactLinks
+  /** Link contatto ricostruiti da `personal` (email, social, CV). */
+  function buildContactLinksFromPersonal(p) {
+    if (!p) return []
+    return [
+      { label: 'Email', value: p.email || '', href: 'mailto:' + (p.email || ''), gradient: 'from-orange-500 to-red-500', icon: 'mail' },
+      {
+        label: 'GitHub',
+        value: (function () {
+          var u = p.github || ''
+          var m = String(u).match(/github\.com\/([^\/\?#]+)/)
+          return m ? m[1] : 'GitHub'
+        })(),
+        href: p.github || '#',
+        gradient: 'from-gray-700 to-gray-900',
+        icon: 'github',
+      },
+      { label: 'LinkedIn', value: 'Connect', href: p.linkedin || '#', gradient: 'from-blue-600 to-blue-800', icon: 'linkedin' },
+      {
+        label: p.discordUsername ? 'Discord (' + p.discordUsername + ')' : 'Discord',
+        value: p.discordUsername || '',
+        href: p.discord || '#',
+        gradient: 'from-indigo-500 to-purple-600',
+        icon: 'discord',
+      },
+      { label: 'Instagram', value: 'Instagram', href: p.instagram || '#', gradient: 'from-purple-500 to-pink-500', icon: 'instagram' },
+      { label: 'Facebook', value: 'Facebook', href: p.facebook || '#', gradient: 'from-blue-600 to-blue-800', icon: 'facebook' },
+    ]
+  }
+  var contactLinks = buildContactLinksFromPersonal(personal)
+  /** Se valorizzato da API, sostituisce i highlights About in i18n.js. */
+  var customAboutHighlights = null
 
   var currentLang = 'en'
   var lastStatsPayload = null
@@ -380,8 +410,33 @@
     }
   }
 
+  function skillDisplayName(skill, i) {
+    if (skill && skill.name && typeof skill.name === 'object' && (skill.name.en !== undefined || skill.name.it !== undefined)) {
+      var sn = skill.name[currentLang]
+      if (sn !== undefined && sn !== '') return sn
+      sn = skill.name.en
+      if (sn !== undefined && sn !== '') return sn
+      return skill.name.it || ''
+    }
+    var skillNames = t('skill_names')
+    if (Array.isArray(skillNames) && skillNames[i] != null) return skillNames[i]
+    return typeof skill.name === 'string' ? skill.name : ''
+  }
+
   function renderPortfolio() {
-    var aboutHighlights = (I18N[currentLang] && I18N[currentLang].highlights) || I18N.en.highlights || []
+    var aboutHighlights
+    if (customAboutHighlights && customAboutHighlights.length) {
+      aboutHighlights = customAboutHighlights.map(function (h) {
+        return {
+          title: pickLocale(h, 'title'),
+          description: pickLocale(h, 'description'),
+          tag: h.tag || '',
+          mod: h.mod || 'yellow',
+        }
+      })
+    } else {
+      aboutHighlights = (I18N[currentLang] && I18N[currentLang].highlights) || I18N.en.highlights || []
+    }
 
     // ----- Hero -----
     var heroContent = document.getElementById('hero-content')
@@ -664,8 +719,6 @@
 
     // ----- Skills -----
     var cardMods = ['yellow', 'cyan', 'pink', 'lavender', 'orange', 'lime', 'green', 'yellow']
-    var skillNames = t('skill_names')
-    if (!Array.isArray(skillNames)) skillNames = []
     var skillsContent = document.getElementById('skills-content')
     if (skillsContent && skills.length) {
       skillsContent.innerHTML =
@@ -681,7 +734,7 @@
         skills
           .map(function (skill, i) {
             var mod = skill.cardMod || cardMods[i % cardMods.length]
-            var nm = skillNames[i] != null ? skillNames[i] : skill.name
+            var nm = skillDisplayName(skill, i)
             return (
               '<article class="brutal-card brutal-card--' +
               mod +
@@ -822,9 +875,30 @@
   })
     .then(function (r) { return r.json() })
     .then(function (json) {
-      if (json && json.projects && Array.isArray(json.projects) && json.projects.length > 0) {
+      if (!json) return
+      if (json.projects && Array.isArray(json.projects) && json.projects.length > 0) {
         projects = json.projects
         if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.projects = projects
+      }
+      if (json.personal && typeof json.personal === 'object') {
+        personal = json.personal
+        if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.personal = personal
+        contactLinks = buildContactLinksFromPersonal(personal)
+      }
+      if (json.skills && Array.isArray(json.skills)) {
+        skills = json.skills
+        if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.skills = skills
+      }
+      if (json.aboutHighlights && Array.isArray(json.aboutHighlights) && json.aboutHighlights.length > 0) {
+        customAboutHighlights = json.aboutHighlights
+        if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.aboutHighlights = customAboutHighlights
+      }
+      if (json.bottomFeaturedProjectId != null && json.bottomFeaturedProjectId !== '') {
+        var bf = Number(json.bottomFeaturedProjectId)
+        if (!isNaN(bf)) {
+          data.bottomFeaturedProjectId = bf
+          if (window.PORTFOLIO_DATA) window.PORTFOLIO_DATA.bottomFeaturedProjectId = bf
+        }
       }
     })
     .catch(function (err) {

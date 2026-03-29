@@ -1,9 +1,11 @@
 /**
- * API amministrazione progetti: GET per leggere da Redis, POST per salvare.
- * Autenticazione basata sulla variabile d'ambiente ADMIN_PASSWORD
+ * API amministrazione: progetti + contenuti sito (Redis).
+ * GET: progetti + personal, skills, highlights About, bottomFeaturedProjectId
+ * POST: salva (login invia solo projects: [] senza toccare il sito)
  */
 
 const KEY_PROJECTS = 'portfolio_data:projects'
+const KEY_SITE = 'portfolio_data:site'
 
 function cors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -44,6 +46,20 @@ async function getNodeRedis() {
   return nodeRedisClient
 }
 
+async function loadSite(redis) {
+  const raw = await redis.get(KEY_SITE)
+  if (!raw) return null
+  return typeof raw === 'string' ? JSON.parse(raw) : raw
+}
+
+function parseProjects(raw) {
+  if (!raw) return null
+  const p = typeof raw === 'string' ? JSON.parse(raw) : raw
+  if (Array.isArray(p)) return p
+  if (p && Array.isArray(p.projects)) return p.projects
+  return null
+}
+
 module.exports = async function handler(req, res) {
   cors(res)
   noStore(res)
@@ -61,12 +77,17 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
-      const data = await redis.get(KEY_PROJECTS)
-      if (!data) {
-         // Database è vuoto, il frontend saprà di dover caricare data.js come fallback
-         return res.status(200).json({ projects: null })
-      }
-      return res.status(200).json({ projects: typeof data === 'string' ? JSON.parse(data) : data })
+      const rawP = await redis.get(KEY_PROJECTS)
+      const site = await loadSite(redis)
+      const projects = parseProjects(rawP)
+      return res.status(200).json({
+        projects: projects,
+        personal: site && site.personal ? site.personal : null,
+        skills: site && site.skills ? site.skills : null,
+        aboutHighlights: site && site.aboutHighlights ? site.aboutHighlights : null,
+        bottomFeaturedProjectId:
+          site && site.bottomFeaturedProjectId != null ? site.bottomFeaturedProjectId : null,
+      })
     }
 
     if (req.method === 'POST') {
@@ -87,11 +108,25 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Payload non valido. Atteso array di projects.' })
       }
 
-      // Salva l'array aggiornato dei progetti su Redis
-      const jsonStr = JSON.stringify(body.projects)
-      await redis.set(KEY_PROJECTS, jsonStr)
+      await redis.set(KEY_PROJECTS, JSON.stringify(body.projects))
 
-      return res.status(200).json({ success: true, message: 'Progetti salvati con successo in Redis.' })
+      const hasSitePayload =
+        body.personal !== undefined ||
+        body.skills !== undefined ||
+        body.aboutHighlights !== undefined ||
+        body.bottomFeaturedProjectId !== undefined
+
+      if (hasSitePayload) {
+        const existingSite = (await loadSite(redis)) || {}
+        const newSite = Object.assign({}, existingSite)
+        if (body.personal !== undefined) newSite.personal = body.personal
+        if (body.skills !== undefined) newSite.skills = body.skills
+        if (body.aboutHighlights !== undefined) newSite.aboutHighlights = body.aboutHighlights
+        if (body.bottomFeaturedProjectId !== undefined) newSite.bottomFeaturedProjectId = body.bottomFeaturedProjectId
+        await redis.set(KEY_SITE, JSON.stringify(newSite))
+      }
+
+      return res.status(200).json({ success: true, message: 'Salvato.' })
     }
 
     return res.status(405).json({ error: 'Method not allowed' })
