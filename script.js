@@ -812,7 +812,7 @@
     updateNavLang()
   }
 
-  fetch('/api/admin-projects')
+  fetch('/api/admin-projects?t=' + new Date().getTime())
     .then(function (r) { return r.json() })
     .then(function (json) {
       if (json && json.projects && Array.isArray(json.projects) && json.projects.length > 0) {
