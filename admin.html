@@ -68,7 +68,7 @@
     .status-toast.show { transform: translateY(0); }
     .status-toast--error { background: #ff3b3b; color: #fff; }
 
-    .new-project-card { border: 6px dashed #000; display: flex; align-items: center; justify-content: center; min-height: 250px; background: rgba(0,0,0,0.05); cursor: pointer; font-family: 'Bebas Neue'; font-size: 3rem; color: #000; transition: all 0.2s; }
+    .new-project-card { border: 6px dashed #000; display: flex; align-items: center; justify-content: center; min-height: 250px; background: rgba(0,0,0,0.05); font-family: 'Bebas Neue'; font-size: 3rem; color: #000; transition: all 0.2s; }
     .new-project-card:hover { background: #ff3b3b; color: #fff; border-style: solid; box-shadow: 8px 8px 0 #000; transform: translate(-4px, -4px); }
 
     .admin-section-block { margin-bottom: 2rem; }
@@ -95,10 +95,75 @@
     .site-skill-row, .site-hl-row { border: 3px solid #000; padding: 0.75rem; margin-bottom: 0.5rem; background: #fce8cd; }
     .site-skill-row-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-family: 'Space Mono', monospace; font-weight: bold; font-size: 0.8rem; }
     .btn-small { padding: 0.35rem 0.75rem; font-size: 0.75rem; }
+
+    /* Pannelli a scomparsa */
+    .admin-collapse {
+      border: 4px solid #000;
+      margin-bottom: 1.25rem;
+      background: #fff;
+      box-shadow: 8px 8px 0 #000;
+    }
+    .admin-collapse > summary {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.85rem 1rem;
+      background: #000;
+      color: #fce8cd;
+      list-style: none;
+      border: 3px solid #000;
+    }
+    .admin-collapse > summary::-webkit-details-marker { display: none; }
+    .admin-collapse > summary::before {
+      content: '▸ ';
+      margin-right: 0.35rem;
+      opacity: 0.9;
+    }
+    .admin-collapse[open] > summary::before { content: '▾ '; }
+    .admin-collapse__body { padding: 1rem 1.25rem 1.25rem; }
+    .admin-collapse--nested {
+      margin-top: 0.75rem;
+      border: 3px solid #000;
+      background: #fce8cd;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.12);
+    }
+    .admin-collapse--nested > summary {
+      font-size: 0.82rem;
+      background: #fff;
+      color: #000;
+      border-bottom: 3px solid #000;
+    }
+    .admin-collapse--modal { margin-bottom: 0.75rem; box-shadow: 4px 4px 0 rgba(0,0,0,0.1); }
+    .admin-collapse--modal > summary { font-size: 0.78rem; padding: 0.65rem 0.85rem; }
+
+    /* Cursore custom: niente puntatore nativo su controlli (come portfolio) */
+    .admin-body button,
+    .admin-body input,
+    .admin-body textarea,
+    .admin-body select,
+    .admin-body summary,
+    .admin-body label { cursor: none !important; }
+
+    /* Preview progetti: cursore gestito da JS (#brutalCursor), non grab nativo */
+    .admin-preview-window article.brutal-card,
+    .admin-preview-window article.brutal-project { cursor: none !important; }
+    .admin-preview-window article.brutal-project:active,
+    .admin-preview-window article.brutal-card:active { cursor: none !important; }
+
+    /* Cursore sopra la modale (stesso livello del portfolio sulle pagine con overlay) */
+    .admin-body .brutal-cursor { z-index: 10050; }
+    .admin-body .status-toast { z-index: 10060; }
   </style>
 </head>
-<body class="brutalist">
+<body class="brutalist admin-body">
   <div class="brutal-noise" aria-hidden="true"></div>
+  <div class="brutal-cursor" id="brutalCursor" aria-hidden="true">
+    <img class="brutal-cursor__img brutal-cursor__img--default" src="assets/cursor-default.png" alt="" />
+    <img class="brutal-cursor__img brutal-cursor__img--click" src="assets/cursor-click.png" alt="" />
+    <img class="brutal-cursor__img brutal-cursor__img--grab" src="assets/cursor-grab.png" alt="" />
+  </div>
 
   <!-- LOGIN -->
   <div id="login-section" class="login-box">
@@ -123,72 +188,97 @@
       </div>
     </div>
     
-    <div class="site-editor" id="site-editor">
-      <h2>Contenuti sito (hero, bio, link, skills, highlights)</h2>
-      <p style="font-family:'Space Mono'; font-size:0.85rem; margin:0 0 1rem 0;">Modifica qui i testi e i link: con <strong>Salva cambiamenti online</strong> si aggiornano anche questi dati (Redis), senza modificare <code>data.js</code> in locale.</p>
+    <details class="admin-collapse" id="site-editor" open>
+      <summary>Contenuti sito · hero, bio, link, skills, highlights</summary>
+      <div class="admin-collapse__body">
+        <p style="font-family:'Space Mono'; font-size:0.85rem; margin:0 0 1rem 0;">Modifica qui testi e link; con <strong>Salva cambiamenti online</strong> si aggiornano anche questi dati (Redis), senza modificare <code>data.js</code> in locale.</p>
 
-      <h3>Nome &amp; hero / about (bilingue)</h3>
-      <div class="site-editor-grid">
-        <div class="form-group">
-          <label class="form-label" for="site-name">Nome visualizzato</label>
-          <input type="text" id="site-name" class="form-input" />
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="site-bottom-id">Id progetto · card larga in basso (Creative Lab)</label>
-          <input type="number" id="site-bottom-id" class="form-input" min="1" step="1" />
+        <details class="admin-collapse admin-collapse--nested" open>
+          <summary>Nome &amp; hero / about (IT / EN)</summary>
+          <div class="admin-collapse__body">
+            <div class="site-editor-grid">
+              <div class="form-group">
+                <label class="form-label" for="site-name">Nome visualizzato</label>
+                <input type="text" id="site-name" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="site-bottom-id">Id progetto · card larga in basso (Creative Lab)</label>
+                <input type="number" id="site-bottom-id" class="form-input" min="1" step="1" />
+              </div>
+            </div>
+            <div class="site-editor-grid site-editor-grid--2">
+              <div>
+                <h3 style="margin-top:0.5rem;font-family:'Unbounded',sans-serif;font-size:0.85rem;">Italiano</h3>
+                <div class="form-group"><label class="form-label" for="site-it-title">Titolo (hero)</label><input type="text" id="site-it-title" class="form-input" /></div>
+                <div class="form-group"><label class="form-label" for="site-it-tagline">Tagline</label><input type="text" id="site-it-tagline" class="form-input" /></div>
+                <div class="form-group"><label class="form-label" for="site-it-bio">Bio (about)</label><textarea id="site-it-bio" class="form-input form-textarea" rows="4"></textarea></div>
+              </div>
+              <div>
+                <h3 style="margin-top:0.5rem;font-family:'Unbounded',sans-serif;font-size:0.85rem;">English</h3>
+                <div class="form-group"><label class="form-label" for="site-en-title">Title (hero)</label><input type="text" id="site-en-title" class="form-input" /></div>
+                <div class="form-group"><label class="form-label" for="site-en-tagline">Tagline</label><input type="text" id="site-en-tagline" class="form-input" /></div>
+                <div class="form-group"><label class="form-label" for="site-en-bio">Bio (about)</label><textarea id="site-en-bio" class="form-input form-textarea" rows="4"></textarea></div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="admin-collapse admin-collapse--nested">
+          <summary>Email, social &amp; CV</summary>
+          <div class="admin-collapse__body">
+            <div class="site-editor-grid site-editor-grid--2">
+              <div class="form-group"><label class="form-label" for="site-email">Email</label><input type="email" id="site-email" class="form-input" /></div>
+              <div class="form-group"><label class="form-label" for="site-github">GitHub (URL)</label><input type="url" id="site-github" class="form-input" placeholder="https://github.com/..." /></div>
+              <div class="form-group"><label class="form-label" for="site-linkedin">LinkedIn (URL)</label><input type="url" id="site-linkedin" class="form-input" /></div>
+              <div class="form-group"><label class="form-label" for="site-discord">Discord (URL)</label><input type="url" id="site-discord" class="form-input" /></div>
+              <div class="form-group"><label class="form-label" for="site-discord-user">Username Discord</label><input type="text" id="site-discord-user" class="form-input" /></div>
+              <div class="form-group"><label class="form-label" for="site-instagram">Instagram (URL)</label><input type="url" id="site-instagram" class="form-input" /></div>
+              <div class="form-group"><label class="form-label" for="site-facebook">Facebook (URL)</label><input type="url" id="site-facebook" class="form-input" /></div>
+              <div class="form-group"><label class="form-label" for="site-cv-pdf">CV PDF (path o URL)</label><input type="text" id="site-cv-pdf" class="form-input" placeholder="./assets/... o https://..." /></div>
+              <div class="form-group"><label class="form-label" for="site-cv-html">CV HTML (path o URL)</label><input type="text" id="site-cv-html" class="form-input" /></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="admin-collapse admin-collapse--nested">
+          <summary>Skills (griglia competenze)</summary>
+          <div class="admin-collapse__body">
+            <p style="font-family:'Space Mono'; font-size:0.8rem; margin:0 0 0.5rem 0;">Nome per lingua; categoria per il colore di sfondo.</p>
+            <div id="skills-editor-rows"></div>
+            <button type="button" class="btn btn-small" id="btn-add-skill" style="margin-bottom:0;">+ Aggiungi skill</button>
+          </div>
+        </details>
+
+        <details class="admin-collapse admin-collapse--nested">
+          <summary>Highlights (4 card sotto «About»)</summary>
+          <div class="admin-collapse__body">
+            <p style="font-family:'Space Mono'; font-size:0.8rem; margin:0 0 0.5rem 0;">Titoli e descrizioni IT/EN; tag e variante colore (mod).</p>
+            <div id="highlights-editor-rows"></div>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="admin-collapse">
+      <summary>Istruzioni progetti (WYSIWYG)</summary>
+      <div class="admin-collapse__body">
+        <p style="font-family:'Space Mono'; margin:0; font-size: 0.95rem;">
+          <strong>Progetti:</strong> <br>1. Trascina le card per cambiare l’ordine (stesso ordine salvato online). <br>2. Clicca su una card per modificarne testi e link. <br>3. La <strong>prima</strong> voce in lista = card grande in alto; l’id in «Nome &amp; hero» = card grande in basso (Creative Lab); il resto = griglia centrale.
+        </p>
+      </div>
+    </details>
+
+    <details class="admin-collapse">
+      <summary>Anteprima progetti (layout sito)</summary>
+      <div class="admin-collapse__body" style="padding:0;">
+        <div class="admin-preview-window" style="box-shadow:none;border-width:4px;">
+          <div class="preview-header">🔴 🟡 🟢 devmichelbranche.vercel.app/portfolio</div>
+          <section class="brutal-section brutal-section--yellow" style="padding: 4rem 1rem;">
+            <div class="brutal-container" id="admin-projects-content"></div>
+          </section>
         </div>
       </div>
-      <div class="site-editor-grid site-editor-grid--2">
-        <div>
-          <h3 style="margin-top:0.5rem">Italiano</h3>
-          <div class="form-group"><label class="form-label" for="site-it-title">Titolo (hero)</label><input type="text" id="site-it-title" class="form-input" /></div>
-          <div class="form-group"><label class="form-label" for="site-it-tagline">Tagline</label><input type="text" id="site-it-tagline" class="form-input" /></div>
-          <div class="form-group"><label class="form-label" for="site-it-bio">Bio (about)</label><textarea id="site-it-bio" class="form-input form-textarea" rows="4"></textarea></div>
-        </div>
-        <div>
-          <h3 style="margin-top:0.5rem">English</h3>
-          <div class="form-group"><label class="form-label" for="site-en-title">Title (hero)</label><input type="text" id="site-en-title" class="form-input" /></div>
-          <div class="form-group"><label class="form-label" for="site-en-tagline">Tagline</label><input type="text" id="site-en-tagline" class="form-input" /></div>
-          <div class="form-group"><label class="form-label" for="site-en-bio">Bio (about)</label><textarea id="site-en-bio" class="form-input form-textarea" rows="4"></textarea></div>
-        </div>
-      </div>
-
-      <h3>Email, social &amp; CV</h3>
-      <div class="site-editor-grid site-editor-grid--2">
-        <div class="form-group"><label class="form-label" for="site-email">Email</label><input type="email" id="site-email" class="form-input" /></div>
-        <div class="form-group"><label class="form-label" for="site-github">GitHub (URL)</label><input type="url" id="site-github" class="form-input" placeholder="https://github.com/..." /></div>
-        <div class="form-group"><label class="form-label" for="site-linkedin">LinkedIn (URL)</label><input type="url" id="site-linkedin" class="form-input" /></div>
-        <div class="form-group"><label class="form-label" for="site-discord">Discord (URL)</label><input type="url" id="site-discord" class="form-input" /></div>
-        <div class="form-group"><label class="form-label" for="site-discord-user">Username Discord</label><input type="text" id="site-discord-user" class="form-input" /></div>
-        <div class="form-group"><label class="form-label" for="site-instagram">Instagram (URL)</label><input type="url" id="site-instagram" class="form-input" /></div>
-        <div class="form-group"><label class="form-label" for="site-facebook">Facebook (URL)</label><input type="url" id="site-facebook" class="form-input" /></div>
-        <div class="form-group"><label class="form-label" for="site-cv-pdf">CV PDF (path o URL)</label><input type="text" id="site-cv-pdf" class="form-input" placeholder="./assets/... o https://..." /></div>
-        <div class="form-group"><label class="form-label" for="site-cv-html">CV HTML (path o URL)</label><input type="text" id="site-cv-html" class="form-input" /></div>
-      </div>
-
-      <h3>Skills (griglia competenze)</h3>
-      <p style="font-family:'Space Mono'; font-size:0.8rem; margin:0 0 0.5rem 0;">Nome per lingua; categoria per il colore di sfondo.</p>
-      <div id="skills-editor-rows"></div>
-      <button type="button" class="btn btn-small" id="btn-add-skill" style="margin-bottom:1rem;">+ Aggiungi skill</button>
-
-      <h3>Highlights (4 card sotto “About”)</h3>
-      <p style="font-family:'Space Mono'; font-size:0.8rem; margin:0 0 0.5rem 0;">Titoli e descrizioni IT/EN; tag e variante colore (mod).</p>
-      <div id="highlights-editor-rows"></div>
-    </div>
-
-    <p style="font-family:'Space Mono'; margin-bottom: 1.5rem; font-size: 0.95rem; background: #fff; padding: 1rem; border: 3px solid #000; box-shadow: 4px 4px 0 #000;">
-      <strong>Progetti (WYSIWYG):</strong> <br>1. Trascina le card per cambiare l’ordine (stesso ordine salvato online). <br>2. Clicca su una card per modificarne testi e link. <br>3. La <strong>prima</strong> voce in lista = card grande in alto; l’id sopra in “Contenuti sito” = card grande in basso (Creative Lab); il resto = griglia centrale.
-    </p>
-
-    <!-- Simulazione finestra portfolio -->
-    <div class="admin-preview-window">
-      <div class="preview-header">🔴 🟡 🟢 devmichelbranche.vercel.app/portfolio</div>
-      <section class="brutal-section brutal-section--yellow" style="padding: 4rem 1rem;">
-        <div class="brutal-container" id="admin-projects-content">
-          <!-- I progetti Brutalist verranno renderizzati qui dentro da admin.js -->
-        </div>
-      </section>
-    </div>
+    </details>
   </div>
 
   <!-- MODAL EDITOR (Nascosto) -->
@@ -201,54 +291,68 @@
 
       <form id="project-form">
         <input type="hidden" id="modal-index" value="" />
-        <div class="grid-2">
-          <div class="form-group">
-            <label class="form-label">ID Progetto</label>
-            <input type="number" class="form-input" id="modal-id" required>
+
+        <details class="admin-collapse admin-collapse--nested admin-collapse--modal" open>
+          <summary>ID, immagine e titoli</summary>
+          <div class="admin-collapse__body">
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">ID Progetto</label>
+                <input type="number" class="form-input" id="modal-id" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">URL Immagine</label>
+                <input type="text" class="form-input" id="modal-img" placeholder="./assets/mokup.png">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Titolo (Italiano)</label>
+                <input type="text" class="form-input" id="modal-title-it" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Titolo (Inglese)</label>
+                <input type="text" class="form-input" id="modal-title-en" required>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">URL Immagine</label>
-            <input type="text" class="form-input" id="modal-img" placeholder="./assets/mokup.png">
+        </details>
+
+        <details class="admin-collapse admin-collapse--nested admin-collapse--modal">
+          <summary>Descrizioni</summary>
+          <div class="admin-collapse__body">
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Descrizione (Italiano)</label>
+                <textarea class="form-input form-textarea" id="modal-desc-it"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Descrizione (Inglese)</label>
+                <textarea class="form-input form-textarea" id="modal-desc-en"></textarea>
+              </div>
+            </div>
           </div>
-        </div>
+        </details>
 
-        <div class="grid-2">
-           <div class="form-group">
-              <label class="form-label">Titolo (Italiano)</label>
-              <input type="text" class="form-input" id="modal-title-it" required>
-           </div>
-           <div class="form-group">
-              <label class="form-label">Titolo (Inglese)</label>
-              <input type="text" class="form-input" id="modal-title-en" required>
-           </div>
-        </div>
-
-        <div class="grid-2">
-           <div class="form-group">
-              <label class="form-label">Descrizione (Italiano)</label>
-              <textarea class="form-input form-textarea" id="modal-desc-it"></textarea>
-           </div>
-           <div class="form-group">
-              <label class="form-label">Descrizione (Inglese)</label>
-              <textarea class="form-input form-textarea" id="modal-desc-en"></textarea>
-           </div>
-        </div>
-
-        <div class="grid-2">
-           <div class="form-group">
-              <label class="form-label">Demo URL/LiveSite</label>
-              <input type="text" class="form-input" id="modal-demo" placeholder="https://...">
-           </div>
-           <div class="form-group">
-              <label class="form-label">GitHub Repository</label>
-              <input type="text" class="form-input" id="modal-github" placeholder="https://github.com/...">
-           </div>
-        </div>
-
-        <div class="form-group" style="grid-column: 1 / -1;">
-          <label class="form-label">Tags (separati da virgola)</label>
-          <input type="text" class="form-input" id="modal-tags" placeholder="HTML, CSS, GSAP, CMS, E-Commerce...">
-        </div>
+        <details class="admin-collapse admin-collapse--nested admin-collapse--modal">
+          <summary>Demo, GitHub e tag</summary>
+          <div class="admin-collapse__body">
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Demo URL/LiveSite</label>
+                <input type="text" class="form-input" id="modal-demo" placeholder="https://...">
+              </div>
+              <div class="form-group">
+                <label class="form-label">GitHub Repository</label>
+                <input type="text" class="form-input" id="modal-github" placeholder="https://github.com/...">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tags (separati da virgola)</label>
+              <input type="text" class="form-input" id="modal-tags" placeholder="HTML, CSS, GSAP, CMS, E-Commerce...">
+            </div>
+          </div>
+        </details>
 
         <div style="display: flex; justify-content: space-between; border-top: 4px solid #000; padding-top: 1.5rem; margin-top: 1.5rem;">
           <button type="button" class="btn btn--danger" id="btn-delete-project">Elimina</button>
@@ -267,5 +371,6 @@
   <script src="i18n.js"></script>
   <script src="data.js"></script>
   <script src="admin.js"></script>
+  <script src="admin-cursor.js"></script>
 </body>
 </html>
