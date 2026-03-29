@@ -828,6 +828,9 @@
       initReveal()
       setTimeout(initTilt, 0)
       initLangSwitcher()
+      if (typeof refreshStatsFromApi === 'function') {
+        refreshStatsFromApi(lastStatsPayload || { visits: 0, cvDownloads: 0, contacts: 0 })
+      }
     })
   ;(function bindHeroInteractions() {
     document.body.addEventListener('click', function (e) {
