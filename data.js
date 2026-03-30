@@ -60,7 +60,7 @@ const projects = [
       it:
         'Portfolio fotografico brutalist/editoriale: identità visiva forte, gallerie multi-progetto, animazioni GSAP e approccio performance-first senza framework.',
     },
-    image: 'https://raw.githubusercontent.com/MichelBranche/photo-portfolio-demo/main/preview.jpg',
+    image: './assets/rubmok1.webp',
     tags: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'Photography'],
     github: 'https://github.com/MichelBranche/photo-portfolio-demo',
     demo: 'https://rubinastradella.vercel.app/',
@@ -74,7 +74,7 @@ const projects = [
       it:
         'Sito per ristorante italiano con design ispirato al brutalism, menu in evidenza e flusso prenotazioni. Pensato per impatto visivo e buona esperienza utente.',
     },
-    image: './assets/gustomok1.png',
+    image: './assets/gustomok1.webp',
     tags: ['HTML', 'CSS', 'JavaScript', 'Responsive'],
     github: 'https://github.com/MichelBranche/Demo-IlGusto',
     demo: 'https://demo-il-gusto.vercel.app/',
@@ -102,7 +102,7 @@ const projects = [
       it:
         'Ricostruzione fedele dell’interfaccia Netflix: pattern da streaming, griglia responsive e componenti interattivi.',
     },
-    image: './assets/netflixmok1.png',
+    image: './assets/netflixmok1.webp',
     tags: ['HTML', 'CSS', 'JavaScript', 'UI Clone'],
     github: 'https://github.com/MichelBranche/Netflix-Mockup',
     demo: 'https://netflix-mockup-sigma.vercel.app/',
@@ -116,7 +116,7 @@ const projects = [
       it:
         'Sito per ristorante messicano con colori decisi, immagini appetitose e flusso d’ordine snello. Focus su conversione e coinvolgimento.',
     },
-    image: './assets/tacomok1.png',
+    image: './assets/tacomok1.webp',
     tags: ['HTML', 'CSS', 'JavaScript', 'Performance'],
     github: 'https://github.com/MichelBranche/demo-tacostar',
     demo: 'https://demo-tacostar.vercel.app/',
@@ -130,7 +130,7 @@ const projects = [
       it:
         'TV analogica retro interattiva: zapping, glitch progressivi, canali segreti ed effetti audiovisivi immersivi.',
     },
-    image: './assets/poltermok1.png',
+    image: './assets/poltermok1.webp',
     tags: ['JavaScript', 'CSS', 'HTML', 'Creative Coding'],
     github: 'https://github.com/MichelBranche/polterTV',
     demo: 'https://polter-tv.vercel.app/',

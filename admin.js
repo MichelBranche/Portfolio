@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .map((p) => {
         const realIdx = projectsArray.indexOf(p);
         return `
-      <article class="brutal-project" data-index="${realIdx}" draggable="true">
+      <article class="brutal-project brutal-project--marquee" data-index="${realIdx}" draggable="true">
         <div class="brutal-project-inner">
           <div class="brutal-project__img-wrap"><img src="${p.image}" class="brutal-project__img" alt=""></div>
           <div class="brutal-project__body">
@@ -379,10 +379,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sHtml += renderNewCard();
 
-    const gridHtml =
+    const carouselHtml =
       `<div class="admin-section-block">` +
-      `<p class="admin-section-label">2 · Griglia centrale <span>(tutti tranne la card bassa dedicata)</span></p>` +
-      `<div class="brutal-projects-grid-wrap"><div class="brutal-projects-grid">${sHtml}</div></div>` +
+      `<p class="admin-section-label">2 · Carosello «Altri progetti» <span>(fila orizzontale: sul sito animato + scroll; qui anteprima statica scrollabile)</span></p>` +
+      `<div class="brutal-projects-grid-wrap admin-preview-carousel-wrap">` +
+      `<p class="brutal-projects-grid__label" aria-hidden="true">Altri progetti</p>` +
+      `<div class="brutal-projects-carousel brutal-projects-carousel--static">` +
+      `<div class="brutal-projects-carousel__track brutal-projects-carousel__track--single">` +
+      `<div class="brutal-projects-carousel__loop">` +
+      sHtml +
+      `</div></div></div></div>` +
       `</div>`;
 
     let bottomHtml = '';
@@ -401,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `</div>`;
     }
 
-    projectsContent.innerHTML = topHtml + gridHtml + bottomHtml;
+    projectsContent.innerHTML = topHtml + carouselHtml + bottomHtml;
 
     addCardListeners();
     publishProjectsForStats();

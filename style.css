@@ -117,6 +117,192 @@ body.brutalist {
 
 .brutalist .App { min-height: 100vh; position: relative; }
 
+/* Transizione sezioni (navbar): liquido — blob sfocati + contrast (effetto goo) */
+.brutal-section-paint {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  width: 100%;
+  /* Altezza reale su mobile (barra indirizzi / iOS): 100% da solo non basta */
+  height: 100vh;
+  height: 100dvh;
+  height: -webkit-fill-available;
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease, visibility 0.15s;
+  box-sizing: border-box;
+}
+.brutal-section-paint.is-on {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+}
+/* Strato pieno sotto il blur (non filtrato): niente fessure ai bordi su iOS / Android */
+.brutal-section-paint::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  width: 140%;
+  height: 140%;
+  min-height: 120vh;
+  min-height: 120dvh;
+  background: var(--paint-color, var(--c-yellow));
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.brutal-section-paint.is-on::before {
+  opacity: 1;
+}
+/* MB gialla sopra il liquido (stesso stile brutal del logo) */
+.brutal-section-paint__mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  z-index: 2;
+  font-family: var(--font-stamp);
+  font-size: clamp(3.25rem, 17vw, 8.5rem);
+  letter-spacing: 0.1em;
+  color: var(--c-yellow);
+  -webkit-text-stroke: 3px var(--c-ink);
+  paint-order: stroke fill;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.4s cubic-bezier(0.28, 1.35, 0.4, 1);
+}
+.brutal-section-paint.is-on.is-fill .brutal-section-paint__mark {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.brutal-section-paint.is-on.is-drain .brutal-section-paint__mark {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.brutal-section-paint__pool {
+  position: absolute;
+  top: -18%;
+  left: -18%;
+  right: -18%;
+  bottom: -18%;
+  width: auto;
+  height: auto;
+  min-height: 136%;
+  min-width: 136%;
+  overflow: hidden;
+  isolation: isolate;
+  filter: blur(16px) contrast(1.22) saturate(1.08);
+  z-index: 1;
+}
+.brutal-section-paint__blob {
+  position: absolute;
+  background: var(--paint-color, var(--c-yellow));
+  border-radius: 50%;
+  will-change: transform;
+  box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.06);
+}
+/* Goccia centrale: cresce dall’alto con easing “viscoso” */
+.brutal-section-paint__blob--main {
+  width: 160vmax;
+  height: 160vmax;
+  left: 50%;
+  top: -78vmax;
+  margin-left: -80vmax;
+  transform: scale(0.04);
+  transition: transform 0.48s cubic-bezier(0.28, 1.35, 0.4, 1);
+}
+.brutal-section-paint.is-on.is-fill .brutal-section-paint__blob--main {
+  transform: scale(1);
+}
+/* Due masse laterali che si uniscono con ritardo → sensazione di liquido */
+.brutal-section-paint__blob--l {
+  width: 95vmax;
+  height: 95vmax;
+  left: -28%;
+  top: -35%;
+  transform: scale(0);
+  border-radius: 48% 52% 55% 45% / 50% 45% 55% 50%;
+  transition: transform 0.52s 0.08s cubic-bezier(0.25, 1.45, 0.42, 1);
+}
+.brutal-section-paint.is-on.is-fill .brutal-section-paint__blob--l {
+  transform: scale(1);
+}
+.brutal-section-paint__blob--r {
+  width: 85vmax;
+  height: 85vmax;
+  right: -22%;
+  top: -28%;
+  transform: scale(0);
+  border-radius: 52% 48% 48% 52% / 48% 52% 50% 50%;
+  transition: transform 0.52s 0.12s cubic-bezier(0.25, 1.45, 0.42, 1);
+}
+.brutal-section-paint.is-on.is-fill .brutal-section-paint__blob--r {
+  transform: scale(1);
+}
+/* Piccola goccia che “segue” la massa */
+.brutal-section-paint__blob--drip {
+  width: 42vmax;
+  height: 42vmax;
+  left: 18%;
+  top: 5%;
+  transform: scale(0);
+  opacity: 0.92;
+  transition: transform 0.42s 0.16s cubic-bezier(0.4, 1.5, 0.5, 1);
+}
+.brutal-section-paint.is-on.is-fill .brutal-section-paint__blob--drip {
+  transform: scale(1);
+}
+@media (max-width: 768px) {
+  .brutal-section-paint__blob--main {
+    width: 200vmax;
+    height: 200vmax;
+    top: -98vmax;
+    margin-left: -100vmax;
+  }
+  .brutal-section-paint__blob--l {
+    width: 110vmax;
+    height: 110vmax;
+  }
+  .brutal-section-paint__blob--r {
+    width: 100vmax;
+    height: 100vmax;
+  }
+}
+/* Deflusso: tutto scivola verso il basso con leggere rotazioni diverse */
+.brutal-section-paint.is-on.is-drain .brutal-section-paint__blob--main {
+  transform: scale(0.12) translate(2%, 160vh) rotate(4deg);
+  transition: transform 0.45s cubic-bezier(0.55, 0.02, 0.35, 1);
+}
+.brutal-section-paint.is-on.is-drain .brutal-section-paint__blob--l {
+  transform: scale(0.1) translate(-35%, 155vh) rotate(-10deg);
+  transition: transform 0.45s 0.03s cubic-bezier(0.55, 0.02, 0.35, 1);
+}
+.brutal-section-paint.is-on.is-drain .brutal-section-paint__blob--r {
+  transform: scale(0.1) translate(40%, 158vh) rotate(8deg);
+  transition: transform 0.45s 0.05s cubic-bezier(0.55, 0.02, 0.35, 1);
+}
+.brutal-section-paint.is-on.is-drain .brutal-section-paint__blob--drip {
+  transform: scale(0.08) translate(10%, 165vh) rotate(-5deg);
+  transition: transform 0.4s cubic-bezier(0.55, 0.02, 0.35, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .brutal-section-paint,
+  .brutal-section-paint__blob {
+    transition: none !important;
+  }
+  .brutal-section-paint__mark {
+    opacity: 0 !important;
+  }
+  .brutal-section-paint__pool {
+    filter: none;
+  }
+}
+
 /* ===== HEADER (hyper-kinetic style + portfolio stile) ===== */
 .brutal-nav {
   position: fixed;
@@ -696,6 +882,8 @@ body.brutalist {
   gap: 0;
   position: relative;
   z-index: 2;
+  min-width: 0;
+  max-width: 100%;
 }
 .brutal-grid--3 { grid-template-columns: repeat(3, 1fr); }
 @media (max-width: 900px) { .brutal-grid--3 { grid-template-columns: repeat(2, 1fr); } }
@@ -705,12 +893,14 @@ body.brutalist {
 .brutal-projects-grid-wrap {
   grid-column: 1 / -1;
   width: 100%;
-  max-width: none;
+  max-width: 100%;
+  min-width: 0;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   background: var(--c-yellow);
   border-bottom: var(--border-thick);
+  overflow: hidden;
 }
 
 .brutal-projects-grid__label {
@@ -729,85 +919,110 @@ body.brutalist {
   opacity: 0.88;
 }
 
-.brutal-projects-grid {
-  display: grid;
+/* Carosello: animazione CSS sul track + scroll orizzontale sul contenitore; pausa su hover / scroll manuale */
+.brutal-projects-carousel {
+  overflow-x: auto;
+  overflow-y: hidden;
   width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 0;
+  max-width: 100%;
+  min-width: 0;
+  position: relative;
+  border-bottom: var(--border-thick);
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
   box-sizing: border-box;
-  list-style: none;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
+}
+
+.brutal-projects-carousel__track {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: max-content;
+  will-change: transform;
+  animation: brutal-projects-marquee 85s linear infinite;
+}
+
+.brutal-projects-carousel:hover .brutal-projects-carousel__track,
+.brutal-projects-carousel:focus-within .brutal-projects-carousel__track,
+.brutal-projects-carousel:active .brutal-projects-carousel__track,
+.brutal-projects-carousel--user-scrolling .brutal-projects-carousel__track {
+  animation-play-state: paused;
+}
+
+.brutal-projects-carousel__loop {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: stretch;
 }
 
-/* Bordo destro solo tra colonne; ultima colonna allineata al featured (no doppio bordo esterno) */
-.brutal-projects-grid .brutal-project {
-  min-width: 0;
-  min-height: 100%;
+.brutal-projects-carousel--static .brutal-projects-carousel__track {
+  animation: none;
+  width: max-content;
+  max-width: 100%;
+  will-change: auto;
+}
+
+.brutal-projects-carousel--static {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.brutal-projects-carousel__track--single {
+  flex-wrap: nowrap;
+}
+
+@keyframes brutal-projects-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brutal-projects-carousel:not(.brutal-projects-carousel--static) .brutal-projects-carousel__track {
+    animation: none;
+    will-change: auto;
+  }
+}
+
+.brutal-projects-carousel__track .brutal-project.brutal-project--marquee {
+  flex: 0 0 auto;
+  width: min(300px, 82vw);
+  min-width: 240px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   border-right: var(--border-thick);
   border-bottom: none;
 }
 
-.brutal-projects-grid .brutal-project:nth-child(4n) {
-  border-right: none;
-}
-
-.brutal-projects-grid .brutal-project-inner {
+.brutal-projects-carousel__track .brutal-project--marquee .brutal-project-inner {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
 
-.brutal-projects-grid .brutal-project__img-wrap {
+.brutal-projects-carousel__track .brutal-project--marquee .brutal-project__img-wrap {
   aspect-ratio: 16 / 9;
   flex-shrink: 0;
 }
 
-.brutal-projects-grid .brutal-project__body {
+.brutal-projects-carousel__track .brutal-project--marquee .brutal-project__body {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
 
-.brutal-projects-grid .brutal-project__actions {
+.brutal-projects-carousel__track .brutal-project--marquee .brutal-project__actions {
   margin-top: auto;
-}
-
-@media (max-width: 900px) {
-  .brutal-projects-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .brutal-projects-grid .brutal-project:nth-child(4n) {
-    border-right: var(--border-thick);
-  }
-  .brutal-projects-grid .brutal-project:nth-child(2n) {
-    border-right: none;
-  }
-  /* Separatore tra prima e seconda riga (4 card → 2×2) */
-  .brutal-projects-grid .brutal-project:nth-child(-n + 2) {
-    border-bottom: var(--border-thick);
-  }
-}
-
-@media (max-width: 600px) {
-  .brutal-projects-grid {
-    grid-template-columns: 1fr;
-  }
-  .brutal-projects-grid .brutal-project:nth-child(n) {
-    border-right: none;
-  }
-  .brutal-projects-grid .brutal-project:nth-child(-n + 2) {
-    border-bottom: none;
-  }
-  .brutal-projects-grid .brutal-project:not(:last-child) {
-    border-bottom: var(--border-thick);
-  }
 }
 
 .brutal-card {
@@ -909,7 +1124,14 @@ body.brutalist {
 .brutal-project a { color: inherit; display: block; }
 .brutal-project-inner { transform-style: preserve-3d; perspective: 1000px; transition: transform 0.35s ease; }
 .brutal-project__img-wrap { aspect-ratio: 16/10; overflow: hidden; border-bottom: var(--border); }
-.brutal-project__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.brutal-project__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
 .brutal-project__body { padding: 1.25rem; background: var(--c-yellow); position: relative; z-index: 2; }
 .brutal-project__title {
   font-family: var(--font-display);
@@ -989,11 +1211,19 @@ body.brutalist {
   border-right: none;
   border-bottom: var(--border-thick);
   min-height: auto;
+  min-width: 0;
+  max-width: 100%;
 }
 @media (max-width: 768px) { .brutal-featured { grid-template-columns: 1fr; } }
 .brutal-featured__img-wrap { aspect-ratio: 4/3; overflow: hidden; border-right: var(--border-thick); }
 @media (max-width: 768px) { .brutal-featured__img-wrap { border-right: none; border-bottom: var(--border); } }
-.brutal-featured__img { width: 100%; height: 100%; object-fit: cover; }
+.brutal-featured__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
 .brutal-featured__body {
   padding: clamp(1.5rem, 4vw, 3rem);
   background: var(--c-ink);
@@ -1402,8 +1632,12 @@ body.brutalist {
   .brutal-project__desc { font-size: 0.8rem; -webkit-line-clamp: 3; }
   .brutal-project__link { padding: 0.5rem 0.875rem; font-size: 0.85rem; min-height: 44px; }
 
-  .brutal-projects-grid .brutal-project__title { font-size: clamp(1.02rem, 4.5vw, 1.28rem); }
-  .brutal-projects-grid .brutal-project__body { padding: 1.2rem 1rem 1.35rem; }
+  .brutal-projects-carousel__track .brutal-project--marquee .brutal-project__title {
+    font-size: clamp(1.02rem, 4.5vw, 1.28rem);
+  }
+  .brutal-projects-carousel__track .brutal-project--marquee .brutal-project__body {
+    padding: 1.2rem 1rem 1.35rem;
+  }
 
   .brutal-featured__body { padding: 1.25rem; }
   .brutal-featured__title { font-size: clamp(1.35rem, 5vw, 1.75rem); }
@@ -1446,26 +1680,26 @@ body.brutalist {
     padding: 0.45rem 0 0.3rem;
     font-size: 0.62rem;
   }
-  #projects .brutal-projects-grid .brutal-project__img-wrap {
+  #projects .brutal-projects-carousel__track .brutal-project--marquee .brutal-project__img-wrap {
     aspect-ratio: 3 / 2;
   }
-  #projects .brutal-projects-grid .brutal-project__body {
+  #projects .brutal-projects-carousel__track .brutal-project--marquee .brutal-project__body {
     padding: 0.85rem 0.875rem 0.95rem;
   }
   #projects .brutal-featured .brutal-card__tags {
     margin-bottom: 0.65rem;
   }
-  /* Griglia piccola: niente margin-top:auto + flex:1 che durante lo scroll touch possono allargare lo spazio cover→CTA */
-  #projects .brutal-projects-grid .brutal-project {
+  /* Card carosello su touch: niente stretch verticale anomalo */
+  #projects .brutal-projects-carousel__track .brutal-project--marquee {
     min-height: 0;
   }
-  #projects .brutal-projects-grid .brutal-project-inner {
+  #projects .brutal-projects-carousel__track .brutal-project--marquee .brutal-project-inner {
     flex: 0 1 auto;
   }
-  #projects .brutal-projects-grid .brutal-project__body {
+  #projects .brutal-projects-carousel__track .brutal-project--marquee .brutal-project__body {
     flex: 0 1 auto;
   }
-  #projects .brutal-projects-grid .brutal-project__actions {
+  #projects .brutal-projects-carousel__track .brutal-project--marquee .brutal-project__actions {
     margin-top: 0.75rem;
   }
 }

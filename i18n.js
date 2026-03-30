@@ -37,6 +37,8 @@ window.PORTFOLIO_I18N = {
     projects_title: 'Selected Projects',
     projects_featured: 'Featured',
     projects_other: 'More projects',
+    projects_carousel_aria:
+      'Other projects — animated row; scroll sideways or hover to pause',
     projects_live: 'Live view →',
     projects_code: 'View Code →',
     projects_creative: 'Creative Lab',
@@ -114,6 +116,8 @@ window.PORTFOLIO_I18N = {
     projects_title: 'Progetti in evidenza',
     projects_featured: 'In evidenza',
     projects_other: 'Altri progetti',
+    projects_carousel_aria:
+      'Altri progetti — fila animata; scorri in orizzontale o passa sopra per mettere in pausa',
     projects_live: 'Vai al sito →',
     projects_code: 'Vedi codice →',
     projects_creative: 'Creative Lab',

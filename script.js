@@ -85,12 +85,86 @@
     return v
   }
 
+  function escapeHtml(s) {
+    if (s == null) return ''
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+  }
+
   function personalText(key) {
     var loc = personal.i18n && personal.i18n[currentLang]
     var fallback = personal.i18n && personal.i18n.en
     if (loc && loc[key] !== undefined) return loc[key]
     if (fallback && fallback[key] !== undefined) return fallback[key]
     return ''
+  }
+
+  var SECTION_PAINT_COLORS = {
+    hero: 'var(--c-ink)',
+    about: 'var(--c-lime)',
+    projects: 'var(--c-yellow)',
+    skills: 'var(--c-cyan)',
+    contact: 'var(--c-orange)',
+  }
+  var paintNavTimers = []
+
+  function clearPaintNavigation() {
+    paintNavTimers.forEach(function (tid) {
+      clearTimeout(tid)
+    })
+    paintNavTimers = []
+    try {
+      document.body.style.overflow = ''
+    } catch (e) {}
+    var overlay = document.getElementById('section-paint-overlay')
+    if (overlay) {
+      overlay.classList.remove('is-on', 'is-fill', 'is-drain')
+      overlay.setAttribute('aria-hidden', 'true')
+    }
+  }
+
+  /** Navbar / logo: transizione “vernice” poi scroll; rispetta prefers-reduced-motion. */
+  function paintNavigateToSection(id) {
+    var el = document.getElementById(id)
+    if (!el) return
+    var reduced = false
+    try {
+      reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    } catch (e) {}
+    if (reduced) {
+      el.scrollIntoView({ behavior: 'smooth' })
+      return
+    }
+    var overlay = document.getElementById('section-paint-overlay')
+    if (!overlay) {
+      el.scrollIntoView({ behavior: 'smooth' })
+      return
+    }
+    clearPaintNavigation()
+    try {
+      document.body.style.overflow = 'hidden'
+    } catch (e) {}
+    var color = SECTION_PAINT_COLORS[id] || SECTION_PAINT_COLORS.projects
+    overlay.style.setProperty('--paint-color', color)
+    overlay.setAttribute('aria-hidden', 'false')
+    overlay.classList.add('is-on')
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        overlay.classList.add('is-fill')
+      })
+    })
+    var t1 = setTimeout(function () {
+      el.scrollIntoView({ behavior: 'auto' })
+      overlay.classList.remove('is-fill')
+      overlay.classList.add('is-drain')
+    }, 650)
+    var t2 = setTimeout(function () {
+      clearPaintNavigation()
+    }, 650 + 500)
+    paintNavTimers.push(t1, t2)
   }
 
   function scrollToSection(id) {
@@ -128,6 +202,25 @@
   var refreshStatsFromApi = null
   /** Evita listener duplicati su #projects-content quando renderPortfolio() gira due volte (locale + Redis). */
   var projectLiveClickBound = false
+  /** Carosello: animazione in CSS; pausa mentre l’utente scrolla orizzontalmente (classe --user-scrolling). */
+  function initProjectsCarouselMarquee() {
+    var el = document.querySelector(
+      '#projects .brutal-projects-carousel:not(.brutal-projects-carousel--static)'
+    )
+    if (!el) return
+    var scrollEndTimer = null
+    el.addEventListener(
+      'scroll',
+      function () {
+        el.classList.add('brutal-projects-carousel--user-scrolling')
+        clearTimeout(scrollEndTimer)
+        scrollEndTimer = setTimeout(function () {
+          el.classList.remove('brutal-projects-carousel--user-scrolling')
+        }, 280)
+      },
+      { passive: true }
+    )
+  }
 
   function fetchWithTimeout(url, ms) {
     return Promise.race([
@@ -568,7 +661,7 @@
           featured.image +
           '" alt="' +
           fTitle +
-          '" class="brutal-featured__img" loading="eager" fetchpriority="high" decoding="async"></div>' +
+          '" class="brutal-featured__img" loading="eager" fetchpriority="high" decoding="sync"></div>' +
           '<div class="brutal-featured__body">' +
           '<span class="brutal-featured__badge">' +
           t('projects_featured') +
@@ -602,30 +695,35 @@
           '</div></article>'
         : ''
 
-      function renderSmallProjectCard(project, i) {
+      function renderSmallProjectCard(project, i, opts) {
+        opts = opts || {}
         var pTitle = pickLocale(project, 'title')
         var pDesc = pickLocale(project, 'description')
-        /** eager: evita che il lazy carichi un’immagine alla volta in viewport; la griglia parte in parallelo. */
-        var imgLoading = i < 6 ? 'eager' : 'lazy'
+        /** Copia per marquee: lazy + link fuori tab (la prima fila è quella “vera” per a11y). */
+        var dup = !!opts.duplicateCopy
+        var imgLoading = dup ? 'lazy' : i < 6 ? 'eager' : 'lazy'
+        var tabDup = dup ? ' tabindex="-1"' : ''
         var demoLink = project.demo
           ? '<a href="' +
             project.demo +
-            '" target="_blank" rel="noopener noreferrer" class="brutal-project__link brutal-project__link--live">' +
+            '"' +
+            tabDup +
+            ' target="_blank" rel="noopener noreferrer" class="brutal-project__link brutal-project__link--live">' +
             t('projects_live') +
             '</a>'
           : ''
         var codeLink = project.github
           ? '<a href="' +
             project.github +
-            '" target="_blank" rel="noopener noreferrer" class="brutal-project__link">' +
+            '"' +
+            tabDup +
+            ' target="_blank" rel="noopener noreferrer" class="brutal-project__link">' +
             t('projects_code') +
             '</a>'
           : ''
         return (
-          '<article class="brutal-project brutal-reveal brutal-reveal--card-sm" role="listitem" data-project-id="' +
+          '<article class="brutal-project brutal-project--marquee" role="listitem" data-project-id="' +
           project.id +
-          '" data-reveal data-delay="' +
-          (i % 3) * 80 +
           '">' +
           '<div class="brutal-project-inner">' +
           '<div class="brutal-project__img-wrap"><img src="' +
@@ -634,7 +732,7 @@
           pTitle +
           '" class="brutal-project__img" loading="' +
           imgLoading +
-          '" decoding="async"></div>' +
+          '" decoding="sync"></div>' +
           '<div class="brutal-project__body">' +
           '<h3 class="brutal-project__title">' +
           pTitle +
@@ -654,6 +752,9 @@
       var scrollProjects = rest.filter(function (p) { return p.id !== bottomFeaturedId })
       var polterProject = rest.find(function (p) { return p.id === bottomFeaturedId })
       var scrollHtml = scrollProjects.map(function (p, i) { return renderSmallProjectCard(p, i) }).join('')
+      var scrollHtmlDup = scrollProjects.map(function (p, i) {
+        return renderSmallProjectCard(p, i, { duplicateCopy: true })
+      }).join('')
 
       var scrollSectionHtml = ''
       if (scrollHtml) {
@@ -662,9 +763,17 @@
           '<p class="brutal-projects-grid__label" aria-hidden="true">' +
           t('projects_other') +
           '</p>' +
-          '<div class="brutal-projects-grid" role="list">' +
+          '<div class="brutal-projects-carousel" role="region" aria-label="' +
+          escapeHtml(t('projects_carousel_aria')) +
+          '">' +
+          '<div class="brutal-projects-carousel__track">' +
+          '<div class="brutal-projects-carousel__loop" role="list">' +
           scrollHtml +
           '</div>' +
+          '<div class="brutal-projects-carousel__loop" role="presentation" aria-hidden="true">' +
+          scrollHtmlDup +
+          '</div>' +
+          '</div></div>' +
           '</div>'
       }
 
@@ -682,7 +791,7 @@
           polterProject.image +
           '" alt="' +
           plTitle +
-          '" class="brutal-featured__img" loading="lazy" fetchpriority="low" decoding="async"></div>' +
+          '" class="brutal-featured__img" loading="eager" decoding="sync"></div>' +
           '<div class="brutal-featured__body">' +
           '<span class="brutal-featured__badge">' +
           t('projects_creative') +
@@ -735,6 +844,7 @@
         initProjectCardViews(data.statsApiUrl, projects)
       }
       initGithubStars()
+      initProjectsCarouselMarquee()
     }
 
     // ----- Skills -----
@@ -1042,7 +1152,7 @@
   ;(function bindHeroInteractions() {
     document.body.addEventListener('click', function (e) {
       if (e.target.id === 'hero-cta') {
-        scrollToSection('projects')
+        paintNavigateToSection('projects')
         return
       }
       if (e.target.id === 'hero-name-michel' && personal.cvHtmlUrl) {
@@ -1207,11 +1317,11 @@
     })
   })
 
-  if (navLogo) navLogo.addEventListener('click', function () { scrollToSection('hero') })
+  if (navLogo) navLogo.addEventListener('click', function () { paintNavigateToSection('hero') })
   document.querySelectorAll('.brutal-nav__link').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var id = btn.getAttribute('data-section')
-      if (id) scrollToSection(id)
+      if (id) paintNavigateToSection(id)
       header.classList.remove('brutal-nav__menu-open')
     })
   })
