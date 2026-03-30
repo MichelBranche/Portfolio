@@ -34,8 +34,8 @@ const projects = [
   {
     id: 7,
     title: {
-      en: 'Sys-0ff // District Store',
-      it: 'Sys-0ff // District Store',
+      en: '(E-commerce) Sys-0ff // District Store',
+      it: '(E-commerce) Sys-0ff // District Store',
     },
     description: {
       en:
@@ -67,7 +67,7 @@ const projects = [
   },
   {
     id: 2,
-    title: { en: 'Il Gusto', it: 'Il Gusto' },
+    title: { en: '(Demo) Il Gusto', it: '(Demo) Il Gusto' },
     description: {
       en:
         'Italian restaurant site with brutalist-inspired design, menu showcase and reservation flow. Built for visual impact and a smooth user experience.',
@@ -81,7 +81,7 @@ const projects = [
   },
   {
     id: 3,
-    title: { en: 'Osteria La Vache Folle', it: 'Osteria La Vache Folle' },
+    title: { en: '(Old) Osteria La Vache Folle', it: '(Old) Osteria La Vache Folle' },
     description: {
       en:
         'French bistro website with visual storytelling, menu and location info. Emphasizes brand identity and atmosphere.',
@@ -95,7 +95,7 @@ const projects = [
   },
   {
     id: 4,
-    title: { en: 'Netflix Mockup', it: 'Netflix Mockup' },
+    title: { en: '(Test) Netflix Mockup', it: '(Test) Netflix Mockup' },
     description: {
       en:
         'High-fidelity Netflix UI recreation: streaming patterns, responsive grid and interactive components.',
@@ -109,7 +109,7 @@ const projects = [
   },
   {
     id: 5,
-    title: { en: 'Taco Star', it: 'Taco Star' },
+    title: { en: '(Unfinished) Taco Star', it: '(Unfinished) Taco Star' },
     description: {
       en:
         'Mexican restaurant site with bold colours, appetizing imagery and a streamlined ordering flow. Focus on conversion and engagement.',
