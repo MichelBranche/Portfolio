@@ -39,8 +39,11 @@
     ]
   }
   var contactLinks = buildContactLinksFromPersonal(personal)
-  /** Se valorizzato da API, sostituisce i highlights About in i18n.js. */
+  /** Se valorizzato da API o da data.js, sostituisce i highlights About in i18n.js. */
   var customAboutHighlights = null
+  if (data.aboutHighlights && Array.isArray(data.aboutHighlights) && data.aboutHighlights.length) {
+    customAboutHighlights = data.aboutHighlights
+  }
 
   var currentLang = 'en'
   var lastStatsPayload = null

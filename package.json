@@ -1,6 +1,9 @@
 {
   "name": "portfolio-michelbranche",
   "private": true,
+  "scripts": {
+    "sync-data": "node scripts/sync-from-production.js"
+  },
   "dependencies": {
     "@upstash/redis": "^1.34.0",
     "redis": "^4.7.0"

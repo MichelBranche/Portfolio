@@ -149,6 +149,9 @@ const skills = [
   { name: 'Canva', category: 'design', cardMod: 'lavender' },
 ]
 
+/** Highlights About (stesso formato dell’admin); se vuoto si usano quelli in i18n.js. */
+const aboutHighlights = []
+
 const highlights = [
   { title: 'Modern Development', description: 'HTML, CSS, JavaScript expertise', color: 'from-orange-500 to-red-500' },
   { title: 'UI/UX Focus', description: 'Design coerente e identità visiva', color: 'from-teal-500 to-cyan-500' },
@@ -184,6 +187,7 @@ window.PORTFOLIO_DATA = {
   projects,
   skills,
   highlights,
+  aboutHighlights,
   contactLinks,
   categoryGradients,
   contactFormApiUrl,
