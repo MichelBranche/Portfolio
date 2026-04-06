@@ -44,7 +44,7 @@ const projects = [
         'Front-end dimostrativo immersivo ispirato al Museo Egizio: hero, pagine istituzionali, anteprima biglietti e shop, interfaccia multilingua, scroll fluido Lenis e animazioni GSAP. Non è il sito ufficiale.',
     },
     image:
-      'https://raw.githubusercontent.com/MichelBranche/Museo-Egizio-Torino-Demo/main/public/hero.webp',
+      'https://raw.githubusercontent.com/MichelBranche/Museo-Egizio-Torino-Demo/main/preview.png',
     tags: ['React', 'Vite', 'Tailwind', 'GSAP', 'i18n', 'UI/UX'],
     github: 'https://github.com/MichelBranche/Museo-Egizio-Torino-Demo',
     demo: 'https://museoegiziotorino.vercel.app/',
