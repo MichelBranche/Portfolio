@@ -65,7 +65,7 @@ function buildDataJs(json) {
   const bottomFeaturedProjectId =
     json.bottomFeaturedProjectId != null && json.bottomFeaturedProjectId !== ''
       ? Number(json.bottomFeaturedProjectId)
-      : 6
+      : 1
 
   if (!projects.length) {
     console.warn('Attenzione: nessun progetto nella risposta API; data.js potrebbe non essere valido per il sito.')
@@ -91,7 +91,7 @@ function buildDataJs(json) {
   out += "const contactFormApiUrl = '" + CONTACT_FORM_API + "'\n"
   out += "const statsApiUrl = '" + STATS_API + "'\n\n"
   out += '/** Id progetto mostrato come card larga in basso (sezione “Creative Lab”). Deve essere tra i progetti dopo il primo. */\n'
-  out += 'const bottomFeaturedProjectId = ' + JSON.stringify(Number.isFinite(bottomFeaturedProjectId) ? bottomFeaturedProjectId : 6) + '\n\n'
+  out += 'const bottomFeaturedProjectId = ' + JSON.stringify(Number.isFinite(bottomFeaturedProjectId) ? bottomFeaturedProjectId : 1) + '\n\n'
   out += 'window.PORTFOLIO_DATA = {\n'
   out += '  personal,\n'
   out += '  projects,\n'

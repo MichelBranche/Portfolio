@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const p = ensurePersonalShape(siteState.personal);
     document.getElementById('site-name').value = p.name || '';
     document.getElementById('site-bottom-id').value =
-      siteState.bottomFeaturedProjectId != null ? siteState.bottomFeaturedProjectId : 6;
+      siteState.bottomFeaturedProjectId != null ? siteState.bottomFeaturedProjectId : 1;
     document.getElementById('site-it-title').value = p.i18n.it.title || '';
     document.getElementById('site-it-tagline').value = p.i18n.it.tagline || '';
     document.getElementById('site-it-bio').value = p.i18n.it.bio || '';
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     p.i18n.en.tagline = document.getElementById('site-en-tagline').value;
     p.i18n.en.bio = document.getElementById('site-en-bio').value;
     const bid = parseInt(document.getElementById('site-bottom-id').value, 10);
-    siteState.bottomFeaturedProjectId = Number.isNaN(bid) ? 6 : bid;
+    siteState.bottomFeaturedProjectId = Number.isNaN(bid) ? 1 : bid;
 
     siteState.skills = [];
     document.querySelectorAll('#skills-editor-rows .site-skill-row').forEach((row) => {

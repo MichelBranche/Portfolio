@@ -638,7 +638,7 @@
       var bottomFeaturedId =
         data.bottomFeaturedProjectId != null && data.bottomFeaturedProjectId !== ''
           ? Number(data.bottomFeaturedProjectId)
-          : 6
+          : 1
       var featured = projects[0]
       var restRaw = projects.slice(1)
       var bottomIndexInRest = -1
