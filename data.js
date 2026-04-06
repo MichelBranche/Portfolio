@@ -32,6 +32,24 @@ const personal = {
 
 const projects = [
   {
+    id: 8,
+    title: {
+      en: '(Demo) Museo Egizio Torino',
+      it: '(Demo) Museo Egizio Torino',
+    },
+    description: {
+      en:
+        'Immersive museum-inspired front-end: hero media, institutional pages, tickets & shop preview, multi-language UI, Lenis smooth scroll and GSAP animations. Not affiliated with the official museum.',
+      it:
+        'Front-end dimostrativo immersivo ispirato al Museo Egizio: hero, pagine istituzionali, anteprima biglietti e shop, interfaccia multilingua, scroll fluido Lenis e animazioni GSAP. Non è il sito ufficiale.',
+    },
+    image:
+      'https://raw.githubusercontent.com/MichelBranche/Museo-Egizio-Torino-Demo/main/public/hero.webp',
+    tags: ['React', 'Vite', 'Tailwind', 'GSAP', 'i18n', 'UI/UX'],
+    github: 'https://github.com/MichelBranche/Museo-Egizio-Torino-Demo',
+    demo: 'https://museoegiziotorino.vercel.app/',
+  },
+  {
     id: 7,
     title: {
       en: '(E-commerce) Sys-0ff // District Store',
