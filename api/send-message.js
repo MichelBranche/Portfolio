@@ -24,12 +24,20 @@ module.exports = async function handler(req, res) {
   }
 
   const { name = '', email = '', message = '' } = body
-  const nameTrim = String(name).trim()
-  const emailTrim = String(email).trim()
-  const messageTrim = String(message).trim()
+  const nameTrim = String(name).trim().slice(0, 200)
+  const emailTrim = String(email).trim().slice(0, 320)
+  let messageTrim = String(message).trim()
+  if (messageTrim.length > 3500) {
+    messageTrim = `${messageTrim.slice(0, 3497)}…`
+  }
 
   if (!nameTrim || !emailTrim || !messageTrim) {
     return res.status(400).json({ error: 'Name, email and message are required' })
+  }
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrim)
+  if (!emailOk) {
+    return res.status(400).json({ error: 'Invalid email address' })
   }
 
   const errors = []

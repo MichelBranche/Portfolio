@@ -1,33 +1,27 @@
-# API Form di contatto (Email + Telegram)
+# API Form di contatto (Telegram)
 
-Questa cartella contiene la serverless **Vercel** che riceve il messaggio del form, lo invia alla tua email (Resend) e al tuo Telegram.
+La serverless **Vercel** `send-message` riceve il POST del form e invia il messaggio al tuo **Telegram** (Bot API).
 
 ## Cosa fare
 
 1. **Deploy su Vercel**  
-   Collega il repo a [Vercel](https://vercel.com); l’endpoint sarà tipo:  
-   `https://tuo-progetto.vercel.app/api/send-message`
+   Collega il repo a [Vercel](https://vercel.com); l’endpoint sarà:  
+   `https://tuo-progetto.vercel.app/api/send-message`  
+   Il frontend usa lo stesso dominio (`/api/send-message`). In locale, con solo `vite`, imposta nel file `.env`:  
+   `VITE_CONTACT_API_URL=https://tuo-progetto.vercel.app/api/send-message`
 
-2. **In `data.js`** imposta l’URL dell’API:
-   ```js
-   const contactFormApiUrl = 'https://tuo-progetto.vercel.app/api/send-message'
-   ```
-
-3. **Variabili d’ambiente** (Vercel → Project → Settings → Environment Variables):
+2. **Variabili d’ambiente** (Vercel → Project → Settings → Environment Variables):
 
    | Nome                 | Descrizione |
    |----------------------|-------------|
-   | `RESEND_API_KEY`     | API key da [resend.com](https://resend.com) (invio email) |
-   | `TO_EMAIL`           | Email dove ricevere i messaggi (es. `michel.lavoro@gmail.com`) |
-   | `FROM_EMAIL`         | Mittente (per test: `onboarding@resend.dev`; in produzione usa un dominio verificato su Resend) |
-   | `TELEGRAM_BOT_TOKEN` | Token del bot da [@BotFather](https://t.me/BotFather) su Telegram |
-   | `TELEGRAM_CHAT_ID`   | Il tuo chat_id (scrivendo a [@userinfobot](https://t.me/userinfobot) te lo dice) |
-   | `GITHUB_TOKEN`       | *(opzionale)* Per `/api/github-stars`: più richieste/ora verso l’API GitHub (repo pubblici: PAT senza scope) |
+   | `TELEGRAM_BOT_TOKEN` | Token del bot da [@BotFather](https://t.me/BotFather) |
+   | `TELEGRAM_CHAT_ID`   | Il tuo `chat_id` (es. [@userinfobot](https://t.me/userinfobot)) |
+   | `GITHUB_TOKEN`       | *(opzionale)* Per `/api/github-stars` |
 
-4. **Telegram**  
-   Crea un bot con @BotFather, avvia una chat con il bot, poi usa @userinfobot per ottenere il tuo `chat_id` e inseriscilo in `TELEGRAM_CHAT_ID`.
+3. **Telegram**  
+   Crea un bot con @BotFather, **avvia una chat** con il bot (invia `/start`), poi imposta `TELEGRAM_CHAT_ID` con il tuo id utente (o id di un gruppo se il bot è nel gruppo).
 
-Dopo il deploy e la configurazione, il form invierà i messaggi sia alla mail che al tuo profilo Telegram.
+Dopo il deploy, il form in **Contact** invia i messaggi su Telegram.
 
 ---
 

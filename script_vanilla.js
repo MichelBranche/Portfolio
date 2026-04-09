@@ -238,6 +238,21 @@
 
   document.body.classList.add('brutalist')
   setLang(detectLang())
+  
+  // Initialize Lenis
+  if (typeof window.Lenis !== 'undefined') {
+    var lenis = new window.Lenis({
+      duration: 1.2,
+      easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)) },
+      smooth: true,
+      direction: 'vertical'
+    })
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+    requestAnimationFrame(raf)
+  }
 
   /** Visite per progetto */
   function initProjectCardViews(statsApiUrl, projectsList) {
@@ -379,84 +394,19 @@
   var cursor = document.getElementById('brutalCursor')
   if (cursor) {
     function positionCursor(x, y) {
-      cursor.style.transform = 'translate(' + x + 'px, ' + y + 'px) translate(-3px, -3px)'
+      cursor.style.transform = 'translate(' + x + 'px, ' + y + 'px) translate(-50%, -50%)'
     }
     document.addEventListener('mousemove', function (e) {
       positionCursor(e.clientX, e.clientY)
     })
     document.addEventListener('mouseover', function (e) {
-      if (e.target.closest('#clippy')) cursor.classList.add('brutal-cursor--grab')
-      else if (e.target.closest('a, button')) cursor.classList.add('brutal-cursor--large')
+      if (e.target.closest('a, button, input, textarea')) cursor.classList.add('brutal-cursor--large')
     })
-    var clippyEl = document.getElementById('clippy')
     document.addEventListener('mouseout', function (e) {
-      if (!e.relatedTarget || !e.relatedTarget.closest('#clippy'))
-        if (!clippyEl || !clippyEl.classList.contains('is-active')) cursor.classList.remove('brutal-cursor--grab')
-      if (!e.relatedTarget || !e.relatedTarget.closest('a, button')) cursor.classList.remove('brutal-cursor--large')
-    })
-
-    if (clippyEl) {
-      var obs = new MutationObserver(function () {
-        if (clippyEl.classList.contains('is-active')) cursor.classList.add('brutal-cursor--grab')
-        else cursor.classList.remove('brutal-cursor--grab')
-      })
-      obs.observe(clippyEl, { attributes: true, attributeFilter: ['class'] })
-    }
-
-    var clickImg = cursor.querySelector('.brutal-cursor__img--click')
-    if (clickImg) {
-      var img = new Image()
-      img.crossOrigin = 'anonymous'
-      img.onload = function () {
-        var w = img.naturalWidth
-        var h = img.naturalHeight
-        var canvas = document.createElement('canvas')
-        canvas.width = w
-        canvas.height = h
-        var ctx = canvas.getContext('2d')
-        ctx.drawImage(img, 0, 0)
-        var pdata = ctx.getImageData(0, 0, w, h)
-        var p = pdata.data
-        var light = 240
-        function isWhite(i) {
-          return p[i] >= light && p[i + 1] >= light && p[i + 2] >= light
-        }
-        function idx(x, y) {
-          return (y * w + x) * 4
-        }
-        var stack = []
-        for (var x = 0; x < w; x++) {
-          if (isWhite(idx(x, 0))) stack.push([x, 0])
-          if (h > 1 && isWhite(idx(x, h - 1))) stack.push([x, h - 1])
-        }
-        for (var y = 0; y < h; y++) {
-          if (isWhite(idx(0, y))) stack.push([0, y])
-          if (w > 1 && isWhite(idx(w - 1, y))) stack.push([w - 1, y])
-        }
-        var seen = {}
-        while (stack.length) {
-          var pt = stack.pop()
-          var px = pt[0]
-          var py = pt[1]
-          var k = px + ',' + py
-          if (seen[k]) continue
-          if (px < 0 || px >= w || py < 0 || py >= h) continue
-          var i = idx(px, py)
-          if (!isWhite(i)) continue
-          seen[k] = true
-          p[i + 3] = 0
-          stack.push([px - 1, py])
-          stack.push([px + 1, py])
-          stack.push([px, py - 1])
-          stack.push([px, py + 1])
-        }
-        ctx.putImageData(pdata, 0, 0)
-        try {
-          clickImg.src = canvas.toDataURL('image/png')
-        } catch (e) {}
+      if (!e.relatedTarget || !e.relatedTarget.closest('a, button, input, textarea')) {
+        cursor.classList.remove('brutal-cursor--large')
       }
-      img.src = clickImg.getAttribute('src') || 'assets/cursor-click.png'
-    }
+    })
   }
 
   var scrollProgress = document.getElementById('scrollProgress')

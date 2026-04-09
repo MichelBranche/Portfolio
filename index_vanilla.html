@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Michel Branche – Front-End Developer Portfolio. Brutalist design, modern interfaces." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://raw.githubusercontent.com" />
+  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700&family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+  <title>Michel Branche | Front-End Developer Portfolio</title>
+  <link rel="stylesheet" href="assets/clippy/microsoft-clippy/dist/style.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="App">
+    <div class="brutal-noise" aria-hidden="true"></div>
+    <div class="brutal-cursor" id="brutalCursor" aria-hidden="true">
+      <img class="brutal-cursor__img brutal-cursor__img--default" src="assets/cursor-default.png" alt="" />
+      <img class="brutal-cursor__img brutal-cursor__img--click" src="assets/cursor-click.png" alt="" />
+      <img class="brutal-cursor__img brutal-cursor__img--grab" src="assets/cursor-grab.png" alt="" />
+    </div>
+    <div class="brutal-scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <header class="brutal-nav" id="site-header">
+      <div class="brutal-nav__top">
+        <button type="button" class="brutal-nav__logo" id="nav-logo" aria-label="Home">MB</button>
+        <div class="brutal-nav__lang" id="nav-lang" role="group">
+          <button type="button" class="brutal-nav__lang-btn" id="lang-it" data-lang="it" aria-pressed="false">IT</button>
+          <span class="brutal-nav__lang-sep" aria-hidden="true">/</span>
+          <button type="button" class="brutal-nav__lang-btn brutal-nav__lang-btn--active" id="lang-en" data-lang="en" aria-pressed="true">EN</button>
+        </div>
+      </div>
+      <div class="brutal-nav__bottom">
+        <button type="button" class="brutal-nav__menu-btn" id="nav-mobile-btn" aria-label="Open menu">MENU</button>
+        <ul class="brutal-nav__links">
+          <li><button type="button" class="brutal-nav__link" data-section="about" data-text="ABOUT">About</button></li>
+          <li><button type="button" class="brutal-nav__link" data-section="projects" data-text="PROJECTS">Projects</button></li>
+          <li><button type="button" class="brutal-nav__link" data-section="skills" data-text="SKILLS">Skills</button></li>
+          <li><button type="button" class="brutal-nav__link" data-section="contact" data-text="CONTACT">Contact</button></li>
+        </ul>
+      </div>
+    </header>
+
+    <main>
+      <section id="hero" class="brutal-hero">
+        <div class="brutal-hero__grid-bracket top-left"></div>
+        <div class="brutal-hero__grid-bracket top-right"></div>
+        <div class="brutal-hero__grid-bracket bottom-left"></div>
+        <div class="brutal-hero__grid-bracket bottom-right"></div>
+        <div id="hero-content" class="brutal-hero__content"></div>
+      </section>
+
+      <section id="about" class="brutal-section brutal-section--lime">
+        <div class="brutal-section__ghost" id="ghost-about" aria-hidden="true">ABOUT</div>
+        <div id="about-content"></div>
+      </section>
+
+      <section id="projects" class="brutal-section brutal-section--yellow">
+        <div class="brutal-section__ghost" id="ghost-projects" aria-hidden="true">WORK</div>
+        <div id="projects-content"></div>
+      </section>
+
+      <section id="skills" class="brutal-section brutal-section--cyan">
+        <div class="brutal-section__ghost" id="ghost-skills" aria-hidden="true">SKILLS</div>
+        <div id="skills-content"></div>
+      </section>
+
+      <div class="brutal-tape-wrap brutal-tape-wrap--green" aria-hidden="true">
+        <div class="brutal-tape brutal-tape--green">
+          <div class="brutal-tape__track">
+            <div class="brutal-tape__track-inner">
+              <span class="brutal-tape__text">FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦</span>
+              <span class="brutal-tape__text">FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦ MICHEL BRANCHE ✦ FRONT-END DEVELOPER ✦ UI/UX ✦ PERFORMANCE ✦</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section id="contact" class="brutal-section brutal-section--orange brutal-cta">
+        <div class="brutal-section__ghost" aria-hidden="true">CONTACT</div>
+        <div id="contact-content"></div>
+      </section>
+    </main>
+
+    <div id="section-paint-overlay" class="brutal-section-paint" aria-hidden="true">
+      <span class="brutal-section-paint__mark" aria-hidden="true">MB</span>
+      <div class="brutal-section-paint__pool" role="presentation">
+        <div class="brutal-section-paint__blob brutal-section-paint__blob--main"></div>
+        <div class="brutal-section-paint__blob brutal-section-paint__blob--l"></div>
+        <div class="brutal-section-paint__blob brutal-section-paint__blob--r"></div>
+        <div class="brutal-section-paint__blob brutal-section-paint__blob--drip"></div>
+      </div>
+    </div>
+
+    <footer id="footer" class="brutal-footer"></footer>
+  </div>
+
+  <div class="clippy-wrapper" id="clippy-wrapper" aria-hidden="true" style="display:none;">
+    <div class="clippy" id="clippy">
+      <img src="https://media.tenor.com/ztJ2dTLGgygAAAAi/clippy.gif" alt="Clippy" />
+      <div class="clippy-tooltip">Ciao! Sono Clippy. Trascinami dove vuoi.</div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+  <script src="i18n.js"></script>
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+  <script src="assets/clippy/microsoft-clippy/dist/script.js"></script>
+  <script src="assets/clippy/clippy-portfolio.js"></script>
+</body>
+</html>
