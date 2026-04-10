@@ -64,18 +64,26 @@ export default function Preloader({ onComplete }) {
           style={{ width: '80px', height: '80px', objectFit: 'contain' }} 
         />
         <h1 className="preloader-number" style={{ 
-          fontSize: '6rem', 
+          fontSize: 'clamp(3rem, 10vw, 6rem)', 
           fontWeight: 900, 
           margin: 0, 
           lineHeight: 1,
-          fontFamily: 'var(--font-display)' 
+          fontFamily: 'var(--font-display)',
+          wordBreak: 'keep-all',
+          whiteSpace: 'nowrap'
         }}>
           {percent.toString().padStart(3, '0')}
         </h1>
       </div>
       
       <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <p style={{ textTransform: 'uppercase', letterSpacing: '0.4em', fontSize: '0.7rem' }}>
+        <p style={{ 
+          textTransform: 'uppercase', 
+          letterSpacing: '0.4em', 
+          fontSize: 'clamp(0.6rem, 2vw, 0.7rem)',
+          maxWidth: '300px',
+          margin: '0 auto' 
+        }}>
           {t.preloader_initializing}
         </p>
         <div style={{ width: '200px', height: '1px', background: 'rgba(255,255,255,0.2)', marginTop: '1rem', position: 'relative', overflow: 'hidden' }}>

@@ -15,10 +15,7 @@ export default function SplitText({ children, type = 'lines,chars', delay = 0, s
   useLayoutEffect(() => {
     if (!textRef.current) return
 
-    // Reset state first so the animation effect always re-fires
-    setIsSplit(false)
-
-    // Revert previous split
+    // Revert previous split first
     if (splitRef.current) {
       splitRef.current.revert()
     }
@@ -26,6 +23,10 @@ export default function SplitText({ children, type = 'lines,chars', delay = 0, s
     // Kill any in-progress animations on this element
     gsap.killTweensOf(textRef.current)
 
+    // Reset state before re-splitting
+    setIsSplit(false)
+
+    // Create new split
     splitRef.current = new SplitType(textRef.current, { 
       types: type,
       tagName: 'span' 
@@ -34,18 +35,17 @@ export default function SplitText({ children, type = 'lines,chars', delay = 0, s
     // Hide while waiting for animation
     gsap.set(textRef.current, { opacity: 0 })
 
-    // Use rAF to ensure DOM is updated before setting ready
-    requestAnimationFrame(() => {
-      setIsSplit(true)
-    })
+    setIsSplit(true)
 
     return () => {
       if (splitRef.current) {
         splitRef.current.revert()
         splitRef.current = null
       }
+      setIsSplit(false)
     }
-  }, [type, contentKey])
+  }, [type, contentKey, children])
+
 
   // 2. Animation (Quando ready è true o scroll triggera)
   useGSAP(() => {

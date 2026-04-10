@@ -9,9 +9,11 @@ import { useCursor } from '../context/CursorContext'
 import { useLanguage } from '../context/LanguageContext'
 import { projects } from '../data/projects'
 import { i18nStrings } from '../data/i18n'
-import CollabMusicCard from '../components/CollabMusicCard'
 import SplitText from '../components/SplitText'
 import SplitType from 'split-type'
+import { useMediaQuery } from '../hooks/useMediaQuery'
+import HomeMobile from '../components/HomeMobile'
+import CollabMusicCard from '../components/CollabMusicCard'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
@@ -45,6 +47,7 @@ export default function Home({ ready }) {
   const { handleMouseEnter, handleMouseLeave } = useCursor()
   const { lang } = useLanguage()
   const t = i18nStrings[lang]
+  const isMobile = useMediaQuery('(max-width: 768px)')
   const container = useRef()
   const magneticButton = useRef()
   const manifestoSplitsRef = useRef([])
@@ -464,11 +467,25 @@ export default function Home({ ready }) {
     }
   }, { scope: container, dependencies: [ready, lang] })
 
+  // If mobile, render the exclusive mobile version
+  if (isMobile) {
+    return (
+      <div key={`mob-${lang}`} ref={container} className="mobile-only-home" style={{ position: 'relative' }}>
+        <div className="noise" />
+        <PageTransition>
+           <HomeMobile ready={ready} t={t} lang={lang} handleMouseEnter={handleMouseEnter} />
+        </PageTransition>
+      </div>
+    )
+  }
+
   return (
-    <div ref={container} style={{ position: 'relative' }}>
+    <div key={`desktop-${lang}`} ref={container} style={{ position: 'relative' }}>
       <div className="noise" />
 
       <PageTransition>
+        {/* Desktop Version (Existing code) */}
+        {/* ... (the rest of the original return) */}
         <section
           style={{
             position: 'relative',
@@ -495,28 +512,32 @@ export default function Home({ ready }) {
           </div>
 
           {/* HUD CORNER DATA BLOCKS */}
-          <div className="hud-block" style={{ position: 'absolute', top: '2rem', left: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.1em', opacity: ready ? 0.4 : 0 }}>
-            [ {t.home_hud_status}: <span style={{ color: '#00ff00' }}>{t.home_hud_connected}</span> ]<br/>
-            [ {t.home_hud_encryption} ]<br/>
+          <div className="hud-block" style={{ position: 'absolute', top: 'clamp(5.5rem, 15vh, 7rem)', left: 'var(--mobile-gutter, 2.5rem)', fontFamily: 'var(--font-mono)', fontSize: '0.62rem', letterSpacing: '0.08em', opacity: ready ? 0.35 : 0, zIndex: 10 }}>
+            [ {t.home_hud_status}: <span style={{ color: '#00ff00' }}>{t.home_hud_connected}</span> ]<br className="mobile-hide" />
+            <span className="mobile-hide">[ {t.home_hud_encryption} ]<br/></span>
             [ {t.home_hud_mode} ]
           </div>
 
-          <div className="hud-block" style={{ position: 'absolute', top: '2rem', right: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textAlign: 'right', letterSpacing: '0.1em', opacity: ready ? 0.4 : 0 }}>
+
+          <div className="hud-block mobile-hide" style={{ position: 'absolute', top: '2rem', right: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textAlign: 'right', letterSpacing: '0.1em', opacity: ready ? 0.4 : 0 }}>
             [ {t.home_hud_build} ]<br/>
             [ {t.home_hud_dep} ]<br/>
             <HudClockLine locale={lang} />
           </div>
 
-          <div className="hud-block" style={{ position: 'absolute', bottom: '2rem', left: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.1em', opacity: ready ? 0.4 : 0 }}>
+
+          <div className="hud-block mobile-hide" style={{ position: 'absolute', bottom: '2rem', left: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.1em', opacity: ready ? 0.4 : 0 }}>
             [ {t.home_hud_coords} ]<br/>
             [ {t.home_hud_altitude} ]<br/>
             [ {t.home_hud_temp} ]
           </div>
 
-          <div className="hud-block" style={{ position: 'absolute', bottom: '2rem', right: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textAlign: 'right', letterSpacing: '0.1em', opacity: ready ? 0.4 : 0 }}>
+
+          <div className="hud-block mobile-hide" style={{ position: 'absolute', bottom: '2rem', right: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textAlign: 'right', letterSpacing: '0.1em', opacity: ready ? 0.4 : 0 }}>
             [ {t.home_hud_scroll} ]<br/>
             [ {t.home_hud_counter} ]
           </div>
+
 
           {/* Brackets */}
           <div style={{ position: 'absolute', width: '80%', height: '80%', maxWidth: '1200px', pointerEvents: 'none', opacity: ready ? 1 : 0 }}>
@@ -563,7 +584,7 @@ export default function Home({ ready }) {
                     src="/assets/logo-hero-mbgs.png"
                     alt=""
                     style={{
-                      width: 'min(calc(72vw * 1.4), 392px)',
+                      width: 'min(calc(88vw), 392px)',
                       height: 'auto',
                       maxHeight: 'min(calc(42vh * 1.4), 392px)',
                       aspectRatio: '1',
@@ -577,13 +598,13 @@ export default function Home({ ready }) {
             ) : (
               <>
                 <SplitText type="chars" delay={0.8} ready={ready} contentKey={lang}>
-                  <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(4rem, 15vw, 12rem)', lineHeight: 0.8, letterSpacing: '-0.06em', textTransform: 'uppercase', margin: 0, color: 'var(--text-primary)' }}>
+                  <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(2.5rem, 12vw, 12rem)', lineHeight: 0.8, letterSpacing: '-0.06em', textTransform: 'uppercase', margin: 0, color: 'var(--text-primary)' }}>
                     {t.hero_name_michel}
                   </h1>
                 </SplitText>
                 
                 <SplitText type="chars" delay={1} ready={ready} contentKey={lang}>
-                  <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(4rem, 15vw, 12rem)', lineHeight: 0.8, letterSpacing: '-0.06em', textTransform: 'uppercase', margin: 0, WebkitTextStroke: '2px var(--c-border)', color: 'transparent', display: 'block' }}>
+                  <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(2.5rem, 12vw, 12rem)', lineHeight: 0.8, letterSpacing: '-0.06em', textTransform: 'uppercase', margin: 0, WebkitTextStroke: '1.5px var(--c-border)', color: 'transparent', display: 'block' }}>
                     {t.hero_name_branche}
                   </h1>
                 </SplitText>
@@ -596,6 +617,7 @@ export default function Home({ ready }) {
                 <span style={{ fontSize: '0.65rem', opacity: 0.5 }}>{t.home_established}</span>
               </div>
             </SplitText>
+
 
             <div className="hero-cta-wrap" style={{ marginTop: '5rem', visibility: ready ? 'visible' : 'hidden' }}>
               <Link 

@@ -1,0 +1,178 @@
+﻿[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "c2cc4ca525ce5996c91494741f3f7346c5d1b2c6",
+    "size": 54,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/.gitignore?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/.gitignore",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/c2cc4ca525ce5996c91494741f3f7346c5d1b2c6",
+    "download_url": "https://raw.githubusercontent.com/MichelBranche/ecommerce-demo1/main/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/.gitignore?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/c2cc4ca525ce5996c91494741f3f7346c5d1b2c6",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/.gitignore"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "7adc55c1a9d1deb57b0551fe7a72780a2fb48305",
+    "size": 3271,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/README.md?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/README.md",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/7adc55c1a9d1deb57b0551fe7a72780a2fb48305",
+    "download_url": "https://raw.githubusercontent.com/MichelBranche/ecommerce-demo1/main/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/README.md?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/7adc55c1a9d1deb57b0551fe7a72780a2fb48305",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/README.md"
+    }
+  },
+  {
+    "name": "dist",
+    "path": "dist",
+    "sha": "887f6fc15c860cf213b3591e0508cbf801cad997",
+    "size": 0,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/dist?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/tree/main/dist",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/trees/887f6fc15c860cf213b3591e0508cbf801cad997",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/dist?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/trees/887f6fc15c860cf213b3591e0508cbf801cad997",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/tree/main/dist"
+    }
+  },
+  {
+    "name": "index.html",
+    "path": "index.html",
+    "sha": "c80816f5b1b530b007f648b43cdcedc978053d88",
+    "size": 1171,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/index.html?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/index.html",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/c80816f5b1b530b007f648b43cdcedc978053d88",
+    "download_url": "https://raw.githubusercontent.com/MichelBranche/ecommerce-demo1/main/index.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/index.html?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/c80816f5b1b530b007f648b43cdcedc978053d88",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/index.html"
+    }
+  },
+  {
+    "name": "north_editorial_hardcore.html",
+    "path": "north_editorial_hardcore.html",
+    "sha": "bcc9cd79a9f6c5d2589339524d5feb377499c2da",
+    "size": 25466,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/north_editorial_hardcore.html?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/north_editorial_hardcore.html",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/bcc9cd79a9f6c5d2589339524d5feb377499c2da",
+    "download_url": "https://raw.githubusercontent.com/MichelBranche/ecommerce-demo1/main/north_editorial_hardcore.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/north_editorial_hardcore.html?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/bcc9cd79a9f6c5d2589339524d5feb377499c2da",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/north_editorial_hardcore.html"
+    }
+  },
+  {
+    "name": "package-lock.json",
+    "path": "package-lock.json",
+    "sha": "02940a4ac6ac27ac6b5cc30656dadf804f144bf5",
+    "size": 80190,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/package-lock.json?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/package-lock.json",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/02940a4ac6ac27ac6b5cc30656dadf804f144bf5",
+    "download_url": "https://raw.githubusercontent.com/MichelBranche/ecommerce-demo1/main/package-lock.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/package-lock.json?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/02940a4ac6ac27ac6b5cc30656dadf804f144bf5",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/package-lock.json"
+    }
+  },
+  {
+    "name": "package.json",
+    "path": "package.json",
+    "sha": "f63b2bc89c14b4fd14c758809b2eb6cb19823b05",
+    "size": 557,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/package.json?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/package.json",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/f63b2bc89c14b4fd14c758809b2eb6cb19823b05",
+    "download_url": "https://raw.githubusercontent.com/MichelBranche/ecommerce-demo1/main/package.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/package.json?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/f63b2bc89c14b4fd14c758809b2eb6cb19823b05",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/package.json"
+    }
+  },
+  {
+    "name": "public",
+    "path": "public",
+    "sha": "01cb4241c54a27c0df06a577ec333914f6a8ef58",
+    "size": 0,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/public?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/tree/main/public",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/trees/01cb4241c54a27c0df06a577ec333914f6a8ef58",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/public?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/trees/01cb4241c54a27c0df06a577ec333914f6a8ef58",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/tree/main/public"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "6e573b566e07076588ab0355403c1b1161fac406",
+    "size": 0,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/src?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/tree/main/src",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/trees/6e573b566e07076588ab0355403c1b1161fac406",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/src?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/trees/6e573b566e07076588ab0355403c1b1161fac406",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/tree/main/src"
+    }
+  },
+  {
+    "name": "style.css",
+    "path": "style.css",
+    "sha": "7dcd9f088a00a7d70dbdbb44ee25036db9b920c8",
+    "size": 17278,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/style.css?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/style.css",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/7dcd9f088a00a7d70dbdbb44ee25036db9b920c8",
+    "download_url": "https://raw.githubusercontent.com/MichelBranche/ecommerce-demo1/main/style.css",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/style.css?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/7dcd9f088a00a7d70dbdbb44ee25036db9b920c8",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/style.css"
+    }
+  },
+  {
+    "name": "vite.config.js",
+    "path": "vite.config.js",
+    "sha": "86d0462e8dd52a813cc2d5266a548be3a336b2a4",
+    "size": 177,
+    "url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/vite.config.js?ref=main",
+    "html_url": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/vite.config.js",
+    "git_url": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/86d0462e8dd52a813cc2d5266a548be3a336b2a4",
+    "download_url": "https://raw.githubusercontent.com/MichelBranche/ecommerce-demo1/main/vite.config.js",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/contents/vite.config.js?ref=main",
+      "git": "https://api.github.com/repos/MichelBranche/ecommerce-demo1/git/blobs/86d0462e8dd52a813cc2d5266a548be3a336b2a4",
+      "html": "https://github.com/MichelBranche/ecommerce-demo1/blob/main/vite.config.js"
+    }
+  }
+]

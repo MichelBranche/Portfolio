@@ -5,9 +5,11 @@ import PageTransition from '../components/PageTransition'
 import { useAggressivePageGsap } from '../animations/useAggressivePageGsap'
 import { useCursor } from '../context/CursorContext'
 import { useLanguage } from '../context/LanguageContext'
-import { projects } from '../data/projects'
 import { i18nStrings } from '../data/i18n'
+import { projects } from '../data/projects'
 import ProjectOverlay from '../components/ProjectOverlay'
+import { useMediaQuery } from '../hooks/useMediaQuery'
+import WorksMobile from '../components/WorksMobile'
 
 const PLACEHOLDER =
   'https://placehold.co/800x500/f4efe6/1a1917?text=Project+Preview'
@@ -42,6 +44,10 @@ export default function Works() {
     if (!list.length) return null
     const found = list.find((p) => p.id === selectedId)
     return found ?? list[0]
+  }, [filteredProjects, selectedId])
+
+  const idxInList = useMemo(() => {
+    return filteredProjects.findIndex(p => p.id === selectedId)
   }, [filteredProjects, selectedId])
 
   useEffect(() => {
@@ -109,9 +115,37 @@ export default function Works() {
     return () => window.removeEventListener('keydown', onKey)
   }, [filteredProjects, selectedProject, expandedProject, openDemo])
 
-  const idxInList = selectedProject
-    ? filteredProjects.findIndex((p) => p.id === selectedProject.id)
-    : -1
+  const isMobile = useMediaQuery('(max-width: 768px)')
+
+  if (isMobile) {
+    return (
+      <div key={`mob-works-${lang}`}>
+        <PageTransition>
+          <WorksMobile 
+            t={t} 
+            lang={lang} 
+            projects={projects} 
+            filteredProjects={filteredProjects}
+            filterTag={filterTag}
+            setFilterTag={setFilterTag}
+            allTags={allTags}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+            setExpandedProject={setExpandedProject}
+            handleMouseEnter={handleMouseEnter}
+          />
+        </PageTransition>
+        <AnimatePresence>
+          {expandedProject && (
+            <ProjectOverlay
+              project={expandedProject}
+              onClose={() => setExpandedProject(null)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    )
+  }
 
   return (
     <PageTransition>
@@ -217,8 +251,8 @@ export default function Works() {
                 </button>
               ))}
             </nav>
-
-            <p className="works-preview__hint">{t.works_hint_keyboard}</p>
+            <p className="works-preview__hint mobile-hide">{t.works_hint_keyboard}</p>
+            <p className="works-preview__hint desktop-hide">{t.works_hint_touch}</p>
           </div>
 
           <section

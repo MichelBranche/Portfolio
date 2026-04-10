@@ -39,6 +39,7 @@ export default function ProjectOverlay({ project, onClose }) {
       }}
     >
       <motion.div
+        className="project-overlay-inner"
         onClick={(e) => e.stopPropagation()}
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -62,7 +63,7 @@ export default function ProjectOverlay({ project, onClose }) {
             position: 'absolute',
             top: '2rem',
             right: '2rem',
-            background: 'none',
+            background: 'var(--bg-primary)',
             border: '1px solid var(--text-primary)',
             color: 'var(--text-primary)',
             padding: '0.5rem 1rem',
@@ -77,7 +78,7 @@ export default function ProjectOverlay({ project, onClose }) {
         </button>
 
         {/* LEFT SIDE: Media Section */}
-        <div style={{ position: 'relative', background: 'var(--bg-surface)', overflow: 'hidden' }}>
+        <div className="project-overlay-media" style={{ position: 'relative', background: 'var(--bg-surface)', overflow: 'hidden' }}>
           <motion.img
             layoutId={`img-${project.id}`}
             src={project.image}
@@ -92,7 +93,7 @@ export default function ProjectOverlay({ project, onClose }) {
         </div>
 
         {/* RIGHT SIDE: Data Section */}
-        <div style={{ padding: '6rem 4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: '1px solid var(--c-border)' }}>
+        <div className="project-overlay-data" style={{ padding: '6rem 4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: '1px solid var(--c-border)' }}>
           <div>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', opacity: 0.5, letterSpacing: '0.2em' }}>
               {t.overlay_project_label} // 0{project.id}

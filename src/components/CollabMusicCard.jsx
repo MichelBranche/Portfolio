@@ -25,6 +25,47 @@ export default function CollabMusicCard() {
   const rafRef = useRef(0)
   const visibleRef = useRef(true)
 
+  const audioRef = useRef(null)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+
+  // Sync playing state with actual audio
+  useEffect(() => {
+    if (!audioRef.current) return
+    if (playing) {
+      audioRef.current.play().catch(() => setPlaying(false))
+    } else {
+      audioRef.current.pause()
+    }
+  }, [playing])
+
+  const onTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime)
+    }
+  }
+
+  const onLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration)
+    }
+  }
+
+  const onScrub = (e) => {
+    const val = parseFloat(e.target.value)
+    if (audioRef.current && duration) {
+      const newTime = (val / 100) * duration
+      audioRef.current.currentTime = newTime
+      setCurrentTime(newTime)
+    }
+  }
+
+  const formatTime = (time) => {
+    const m = Math.floor(time / 60)
+    const s = Math.floor(time % 60)
+    return `${m}:${s.toString().padStart(2, '0')}`
+  }
+
   const updatePointer = useCallback((clientX, clientY) => {
     const limit = { x: 16, y: 16 }
     const w = window.innerWidth || 1
@@ -109,6 +150,14 @@ export default function CollabMusicCard() {
       className="home-collab-music"
       aria-label={t.layout_collab_music_aria}
     >
+      <audio 
+        ref={audioRef}
+        src="/assets/music/track1.mp3"
+        onTimeUpdate={onTimeUpdate}
+        onLoadedMetadata={onLoadedMetadata}
+        onEnded={() => setPlaying(false)}
+      />
+
       <div className={cardClass}>
         <svg
           className="collab-music-card__menu"
@@ -147,6 +196,8 @@ export default function CollabMusicCard() {
               viewBox="0 0 18 12"
               width="18"
               aria-hidden
+              style={{ cursor: 'pointer' }}
+              onClick={() => { if(audioRef.current) audioRef.current.currentTime = 0 }}
             >
               <path
                 fill="currentColor"
@@ -161,15 +212,21 @@ export default function CollabMusicCard() {
               aria-label={t.layout_collab_music_play_label}
               onClick={() => setPlaying((p) => !p)}
             >
-              <svg
-                className="collab-music-card__play"
-                height="20"
-                viewBox="0 0 48 48"
-                width="20"
-                aria-hidden
-              >
-                <path d="M16 10v28l22-14z" fill="currentColor" />
-              </svg>
+              {playing ? (
+                <svg height="20" viewBox="0 0 24 24" width="20" aria-hidden>
+                  <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                </svg>
+              ) : (
+                <svg
+                  className="collab-music-card__play"
+                  height="20"
+                  viewBox="0 0 48 48"
+                  width="20"
+                  aria-hidden
+                >
+                  <path d="M16 10v28l22-14z" fill="currentColor" />
+                </svg>
+              )}
             </button>
 
             <svg
@@ -178,6 +235,7 @@ export default function CollabMusicCard() {
               viewBox="0 0 18 12"
               width="18"
               aria-hidden
+              style={{ opacity: 0.3 }}
             >
               <path
                 fill="currentColor"
@@ -191,22 +249,24 @@ export default function CollabMusicCard() {
               type="range"
               min="0"
               max="100"
-              defaultValue="35"
-              tabIndex={-1}
+              value={duration ? (currentTime / duration) * 100 : 0}
+              onChange={onScrub}
               className="collab-music-card__range"
+              style={{ pointerEvents: 'auto' }}
             />
             <div className="collab-music-card__times">
-              <span>{t.layout_collab_music_time_cur}</span>
-              <span>{t.layout_collab_music_time_end}</span>
+              <span>{formatTime(currentTime)}</span>
+              <span>{duration ? formatTime(duration) : t.layout_collab_music_time_end}</span>
             </div>
           </div>
         </div>
 
         <div
           className="collab-music-card__art"
-          style={{ backgroundImage: `url(${COVER_URL})` }}
+          style={{ backgroundImage: `url(/assets/covers/cover1.jpg)`, backgroundSize: 'cover' }}
           role="presentation"
           aria-hidden
+          onError={(e) => { e.target.style.backgroundImage = `url(${COVER_URL})` }}
         />
 
         <div className="collab-music-card__avatar" aria-hidden>
@@ -246,5 +306,6 @@ export default function CollabMusicCard() {
         </svg>
       </div>
     </div>
+
   )
 }

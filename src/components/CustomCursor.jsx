@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useCursor } from '../context/CursorContext'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 
 export default function CustomCursor() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
   const { cursorType } = useCursor()
   
   const cursorX = useMotionValue(-100)
@@ -50,6 +52,8 @@ export default function CustomCursor() {
       mixBlendMode: 'difference'
     }
   }
+
+  if (isMobile) return null
 
   return (
     <motion.div
