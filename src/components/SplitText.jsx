@@ -83,6 +83,11 @@ export default function SplitText({ children, type = 'lines,chars', delay = 0, s
       delay: delay,
       ease: 'expo.out'
     }, 0)
+    
+    // Refresh ScrollTrigger after splitting and initial animation set to avoid sync issues
+    if (scroll) {
+      ScrollTrigger.refresh()
+    }
 
   }, { scope: textRef, dependencies: [isSplit, ready, delay, scroll, type] })
 

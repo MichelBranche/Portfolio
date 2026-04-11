@@ -426,6 +426,9 @@ export default function Home({ ready }) {
           }
         })
       })
+      
+      // Force refresh all triggers after layout is established
+      ScrollTrigger.refresh()
     }, container)
 
     const btn = magneticButton.current
@@ -681,7 +684,7 @@ export default function Home({ ready }) {
           <div className="home-featured__inner">
             <p className="home-featured__kicker">{t.home_featured_kicker}</p>
             <div className="home-featured__head">
-              <SplitText scroll type="lines" contentKey={lang} className="home-featured__title-wrap">
+              <SplitText scroll ready={ready} type="chars" contentKey={lang} className="home-featured__title-wrap">
                 <h2 id="featured-reel-heading" className="home-featured__title">
                   {t.home_featured_reel}{' '}
                   <span className="home-featured__title-stroke">{t.home_featured_reel_b}</span>

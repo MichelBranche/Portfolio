@@ -1059,21 +1059,79 @@ h1, h2, h3, h4, h5, h6 {
     color 0.2s ease;
 }
 
-.collab-music-card__volume {
+.collab-music-card__volume-container {
   grid-column: 3 / 4;
   grid-row: 7 / -1;
   align-self: end;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 20;
+}
+
+.collab-music-card__volume {
   margin: 12px 0 18px clamp(12px, 3.5cqw, 25px);
   color: var(--cm-highlight);
-  transition: opacity 0.6s 1.05s var(--cm-easing), transform 0.6s 1.05s var(--cm-easing);
+  transition: opacity 0.6s 1.05s var(--cm-easing), transform 0.6s 1.05s var(--cm-easing), color 0.2s ease;
   transform: translateY(25%) scale(0.3);
   transform-origin: 50% 50%;
   opacity: 0;
 }
 
+.collab-music-card__volume.is-muted {
+  color: var(--cm-accent);
+  opacity: 0.5;
+}
+
 .collab-music-card--loaded .collab-music-card__volume {
   transform: scale(1) translateY(0);
   opacity: 1;
+}
+
+.collab-music-card__volume-slider-wrap {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  padding: 12px 6px;
+  border: 1px solid var(--cm-highlight);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  animation: cm-fade-up 0.2s ease-out;
+}
+
+@keyframes cm-fade-up {
+  from { opacity: 0; transform: translateX(-50%) translateY(0); }
+  to { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+}
+
+.collab-music-card__volume-slider {
+  -webkit-appearance: none;
+  width: 4px;
+  height: 80px;
+  background: rgba(255,255,255,0.1);
+  outline: none;
+  cursor: pointer;
+  writing-mode: bt-lr; /* Vertical fallback */
+  appearance: slider-vertical; /* Modern vertical */
+}
+
+/* Custom styling for volume slider track and thumb */
+.collab-music-card__volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--cm-highlight);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
 }
 
 @media (max-width: 640px) {
@@ -1152,6 +1210,7 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase;
   margin: 0;
   color: var(--text-primary);
+  max-width: 14ch;
 }
 
 
@@ -1161,7 +1220,8 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.02em;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 1.5px var(--text-primary);
+  -webkit-text-stroke: 1px var(--text-primary);
+  paint-order: stroke fill;
 }
 
 .home-featured__title-wrap {

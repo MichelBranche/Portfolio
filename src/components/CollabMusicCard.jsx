@@ -17,6 +17,7 @@ export default function CollabMusicCard() {
   const { lang } = useLanguage()
   const t = i18nStrings[lang]
   const rootRef = useRef(null)
+  const volContainerRef = useRef(null)
   const [loaded, setLoaded] = useState(false)
   const [parallaxOn, setParallaxOn] = useState(false)
   const [playing, setPlaying] = useState(false)
@@ -28,6 +29,9 @@ export default function CollabMusicCard() {
   const audioRef = useRef(null)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [volume, setVolume] = useState(0.8)
+  const [isMuted, setIsMuted] = useState(false)
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false)
 
   // Sync playing state with actual audio
   useEffect(() => {
@@ -38,6 +42,29 @@ export default function CollabMusicCard() {
       audioRef.current.pause()
     }
   }, [playing])
+
+  // Sync volume and muted state
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume
+      audioRef.current.muted = isMuted
+    }
+  }, [volume, isMuted])
+
+  // Click outside to close volume slider
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (volContainerRef.current && !volContainerRef.current.contains(event.target)) {
+        setShowVolumeSlider(false)
+      }
+    }
+    if (showVolumeSlider) {
+      document.addEventListener('click', handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [showVolumeSlider])
 
   const onTimeUpdate = () => {
     if (audioRef.current) {
@@ -58,6 +85,16 @@ export default function CollabMusicCard() {
       audioRef.current.currentTime = newTime
       setCurrentTime(newTime)
     }
+  }
+
+  const onVolumeChange = (e) => {
+    const val = parseFloat(e.target.value)
+    setVolume(val / 100)
+    if (val > 0) setIsMuted(false)
+  }
+
+  const toggleMute = () => {
+    setIsMuted((prev) => !prev)
   }
 
   const formatTime = (time) => {
@@ -152,7 +189,7 @@ export default function CollabMusicCard() {
     >
       <audio 
         ref={audioRef}
-        src="/assets/music/track1.mp3"
+        src="/assets/music/Tom Tom __ by Holy F_ck.mp3"
         onTimeUpdate={onTimeUpdate}
         onLoadedMetadata={onLoadedMetadata}
         onEnded={() => setPlaying(false)}
@@ -263,7 +300,7 @@ export default function CollabMusicCard() {
 
         <div
           className="collab-music-card__art"
-          style={{ backgroundImage: `url(/assets/covers/cover1.jpg)`, backgroundSize: 'cover' }}
+          style={{ backgroundImage: `url("/assets/covers/Tom Tom __ by Holy F_ck.jpg")`, backgroundSize: 'cover' }}
           role="presentation"
           aria-hidden
           onError={(e) => { e.target.style.backgroundImage = `url(${COVER_URL})` }}
@@ -292,18 +329,40 @@ export default function CollabMusicCard() {
           </span>
         </div>
 
-        <svg
-          className="collab-music-card__volume"
-          viewBox="0 0 512 512"
-          width="20"
-          height="20"
-          aria-hidden
+        <div 
+          ref={volContainerRef}
+          className="collab-music-card__volume-container"
         >
-          <path
-            fill="currentColor"
-            d="M114.8,368.1H32.1c-5.8,0-10.5-4.7-10.5-10.5V154.4c0-5.8,4.7-10.5,10.5-10.5h82.7   c5.8,0,10.5,4.7,10.5,10.5v203.2C125.4,363.4,120.7,368.1,114.8,368.1z M42.7,347.1h61.6V165H42.7V347.1z M303.7,512c-2.3,0-4.5-0.7-6.4-2.2L108.4,366c-2.6-2-4.2-5.1-4.2-8.4V154.4c0-3.3,1.5-6.4,4.2-8.4   L297.3,2.2c3.2-2.4,7.5-2.8,11.1-1.1c3.6,1.8,5.9,5.4,5.9,9.5v490.9c0,4-2.3,7.7-5.9,9.5C306.8,511.6,305.2,512,303.7,512z    M125.4,352.4l167.7,127.8V31.8L125.4,159.6V352.4z M393.6,334.9c-5.8,0-10.5-4.7-10.5-10.5V187.7c0-5.8,4.7-10.5,10.5-10.5c5.8,0,10.5,4.7,10.5,10.5v136.7   C404.1,330.2,399.4,334.9,393.6,334.9z M479.9,392.4c-5.8,0-10.5-4.7-10.5-10.5V130.1c0-5.8,4.7-10.5,10.5-10.5c5.8,0,10.5,4.7,10.5,10.5v251.7   C490.4,387.7,485.7,392.4,479.9,392.4z"
-          />
-        </svg>
+          {showVolumeSlider && (
+            <div className="collab-music-card__volume-slider-wrap">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={isMuted ? 0 : volume * 100}
+                onChange={onVolumeChange}
+                className="collab-music-card__volume-slider"
+              />
+            </div>
+          )}
+          <svg
+            className={`collab-music-card__volume${isMuted || volume === 0 ? ' is-muted' : ''}${showVolumeSlider ? ' is-active' : ''}`}
+            viewBox="0 0 512 512"
+            width="20"
+            height="20"
+            aria-hidden
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowVolumeSlider(!showVolumeSlider)
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            <path
+              fill="currentColor"
+              d="M114.8,368.1H32.1c-5.8,0-10.5-4.7-10.5-10.5V154.4c0-5.8,4.7-10.5,10.5-10.5h82.7   c5.8,0,10.5,4.7,10.5,10.5v203.2C125.4,363.4,120.7,368.1,114.8,368.1z M42.7,347.1h61.6V165H42.7V347.1z M303.7,512c-2.3,0-4.5-0.7-6.4-2.2L108.4,366c-2.6-2-4.2-5.1-4.2-8.4V154.4c0-3.3,1.5-6.4,4.2-8.4   L297.3,2.2c3.2-2.4,7.5-2.8,11.1-1.1c3.6,1.8,5.9,5.4,5.9,9.5v490.9c0,4-2.3,7.7-5.9,9.5C306.8,511.6,305.2,512,303.7,512z    M125.4,352.4l167.7,127.8V31.8L125.4,159.6V352.4z M393.6,334.9c-5.8,0-10.5-4.7-10.5-10.5V187.7c0-5.8,4.7-10.5,10.5-10.5c5.8,0,10.5,4.7,10.5,10.5v136.7   C404.1,330.2,399.4,334.9,393.6,334.9z M479.9,392.4c-5.8,0-10.5-4.7-10.5-10.5V130.1c0-5.8,4.7-10.5,10.5-10.5c5.8,0,10.5,4.7,10.5,10.5v251.7   C490.4,387.7,485.7,392.4,479.9,392.4z"
+            />
+          </svg>
+        </div>
       </div>
     </div>
 
