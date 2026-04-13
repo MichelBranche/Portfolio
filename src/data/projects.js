@@ -31,6 +31,23 @@ export const personal = {
 
 export const projects = [
   {
+    id: 9,
+    title: {
+      en: '(Clone) Spotify',
+      it: '(Clone) Spotify',
+    },
+    description: {
+      en:
+        'Pixel-perfect Spotify web player clone with track playback, artist pages, and a persistent playlist system. Built for an authentic user experience.',
+      it:
+        'Clone pixel-perfect del web player di Spotify con riproduzione tracce, pagine artista e sistema di playlist persistente. Sviluppato per un\'esperienza utente autentica.',
+    },
+    image: '/assets/spotifymok1.webp', 
+    tags: ['JavaScript', 'HTML', 'CSS', 'UI Clone', 'Audio'],
+    github: 'https://github.com/MichelBranche/Spotify-Clone',
+    demo: 'https://spotify-clone-mbdev-umber.vercel.app/',
+  },
+  {
     id: 8,
     title: {
       en: '(Demo) Museo Egizio Torino',
