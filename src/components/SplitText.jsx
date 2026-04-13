@@ -44,7 +44,7 @@ export default function SplitText({ children, type = 'lines,chars', delay = 0, s
       }
       setIsSplit(false)
     }
-  }, [type, contentKey, children])
+  }, [type, contentKey])
 
 
   // 2. Animation (Quando ready è true o scroll triggera)

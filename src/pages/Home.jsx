@@ -13,7 +13,10 @@ import SplitText from '../components/SplitText'
 import SplitType from 'split-type'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import HomeMobile from '../components/HomeMobile'
-import CollabMusicCard from '../components/CollabMusicCard'
+
+import WordScroll from '../components/WordScroll'
+import WaterDroplets from '../components/WaterDroplets'
+import CreepyButton from '../components/CreepyButton'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
@@ -431,33 +434,6 @@ export default function Home({ ready }) {
       ScrollTrigger.refresh()
     }, container)
 
-    const btn = magneticButton.current
-    if (!btn) {
-      return () => {
-        manifestoSplitsRef.current.forEach((s) => s.revert())
-        manifestoSplitsRef.current = []
-        homeCollabSplitsRef.current.forEach((s) => s.revert())
-        homeCollabSplitsRef.current = []
-        featuredMM?.revert()
-        ctx.revert()
-      }
-    }
-
-    const handleMouseMove = (e) => {
-      const { clientX, clientY } = e
-      const { left, top, width, height } = btn.getBoundingClientRect()
-      const x = clientX - (left + width / 2)
-      const y = clientY - (top + height / 2)
-      gsap.to(btn, { x: x * 0.58, y: y * 0.58, rotation: x * 0.02, duration: 0.35, ease: 'power3.out' })
-    }
-
-    const handleMouseLeaveBtn = () => {
-      gsap.to(btn, { x: 0, y: 0, rotation: 0, duration: 0.65, ease: 'elastic.out(1, 0.45)' })
-    }
-
-    btn.addEventListener('mousemove', handleMouseMove)
-    btn.addEventListener('mouseleave', handleMouseLeaveBtn)
-
     return () => {
       manifestoSplitsRef.current.forEach((s) => s.revert())
       manifestoSplitsRef.current = []
@@ -465,8 +441,6 @@ export default function Home({ ready }) {
       homeCollabSplitsRef.current = []
       featuredMM?.revert()
       ctx.revert()
-      btn.removeEventListener('mousemove', handleMouseMove)
-      btn.removeEventListener('mouseleave', handleMouseLeaveBtn)
     }
   }, { scope: container, dependencies: [ready, lang] })
 
@@ -501,6 +475,7 @@ export default function Home({ ready }) {
             overflow: 'hidden',
           }}
         >
+          <WaterDroplets />
           <div className="tech-grid" />
           <div className="scan-line" />
 
@@ -623,19 +598,15 @@ export default function Home({ ready }) {
 
 
             <div className="hero-cta-wrap" style={{ marginTop: '5rem', visibility: ready ? 'visible' : 'hidden' }}>
-              <Link 
-                ref={magneticButton}
-                to="/works" 
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                className="magnetic-btn"
-                style={{ display: 'inline-flex', alignItems: 'center', padding: '1.25rem 3.5rem', border: '1px solid var(--text-primary)', background: 'var(--text-primary)', color: 'var(--bg-primary)', textDecoration: 'none', fontFamily: 'var(--font-mono)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', fontSize: '0.85rem' }}
-              >
+              <CreepyButton to="/works">
                 {t.home_enter_hub}
-              </Link>
+              </CreepyButton>
             </div>
           </div>
         </section>
+
+        {/* CSS Scroll Timeline Words */}
+        <WordScroll />
 
         {/* Collaboration CTA — GSAP timeline + ScrollTrigger */}
         <section
@@ -675,7 +646,7 @@ export default function Home({ ready }) {
                 → {t.nav_contact}
               </span>
             </Link>
-            <CollabMusicCard />
+
           </div>
         </section>
 
@@ -690,14 +661,14 @@ export default function Home({ ready }) {
                   <span className="home-featured__title-stroke">{t.home_featured_reel_b}</span>
                 </h2>
               </SplitText>
-              <Link
+              <CreepyButton
                 to="/works"
-                className="home-featured__cta hoverable"
+                className="home-featured__cta"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
                 {t.home_view_all}
-              </Link>
+              </CreepyButton>
             </div>
 
             <div className="home-featured-reel-outer">

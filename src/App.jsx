@@ -13,6 +13,7 @@ import Preloader from './components/Preloader'
 import { CursorProvider } from './context/CursorContext'
 import CustomCursor from './components/CustomCursor'
 import { LanguageProvider } from './context/LanguageContext'
+import MiniMusicPlayer from './components/MiniMusicPlayer'
 
 function App() {
   const location = useLocation()
@@ -28,6 +29,7 @@ function App() {
           
           <div style={{ visibility: isLoading ? 'hidden' : 'visible' }}>
             <CustomCursor />
+            <MiniMusicPlayer />
             <Layout>
               <AnimatePresence mode="wait">
                 <Routes location={location} key={location.pathname}>

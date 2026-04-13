@@ -216,17 +216,13 @@ export default function Layout({ children }) {
         </div>
       )}
 
-      <div className="nav-coords-hud nav-glass nav-glass--coords mobile-hide">
-        <div className="nav-glass--coords-inner">
-          45.4642° N // 9.1900° E
-        </div>
-      </div>
+
 
       <main 
         className="main-content"
         style={{ 
           padding: mobileMenuOpen ? '0' : '0 var(--mobile-gutter, 2.5rem)', 
-          marginTop: 'calc(var(--nav-height, 80px) + 2rem)',
+          marginTop: 'var(--nav-height, 80px)',
           transition: 'padding 0.3s ease'
         }}
       >

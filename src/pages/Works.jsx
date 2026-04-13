@@ -10,6 +10,7 @@ import { projects } from '../data/projects'
 import ProjectOverlay from '../components/ProjectOverlay'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import WorksMobile from '../components/WorksMobile'
+import CreepyButton from '../components/CreepyButton'
 
 const PLACEHOLDER =
   'https://placehold.co/800x500/f4efe6/1a1917?text=Project+Preview'
@@ -292,36 +293,16 @@ export default function Works() {
                   />
                 </div>
 
-                <div className="works-preview__actions">
-                  <a
-                    href={selectedProject.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="works-preview__btn"
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  >
+                <div className="works-preview__actions" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '1rem' }}>
+                  <CreepyButton href={selectedProject.demo} target="_blank" style={{ minWidth: 0, width: '100%' }}>
                     {t.works_visit} ↗
-                  </a>
-                  <a
-                    href={selectedProject.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="works-preview__btn works-preview__btn--ghost"
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  >
+                  </CreepyButton>
+                  <CreepyButton href={selectedProject.github} target="_blank" style={{ minWidth: 0, width: '100%' }}>
                     {t.works_source}
-                  </a>
-                  <button
-                    type="button"
-                    className="works-preview__btn works-preview__btn--ghost"
-                    onClick={() => setExpandedProject(selectedProject)}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  >
+                  </CreepyButton>
+                  <CreepyButton onClick={() => setExpandedProject(selectedProject)} style={{ minWidth: 0, width: '100%' }}>
                     {t.works_details}
-                  </button>
+                  </CreepyButton>
                 </div>
 
                 {idxInList >= 0 && (

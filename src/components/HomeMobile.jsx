@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { projects } from '../data/projects'
 import SplitText from './SplitText'
-import CollabMusicCard from './CollabMusicCard'
+
+import WordScroll from './WordScroll'
+import WaterDroplets from './WaterDroplets'
+import CreepyButton from './CreepyButton'
 import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
 
@@ -49,12 +52,13 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
         flexDirection: 'column', 
         justifyContent: 'space-between', 
         alignItems: 'center',
-        padding: '6rem 1rem 4rem', 
+        padding: '8rem 1rem 4rem', 
         position: 'relative',
         textAlign: 'center',
         width: '100%',
         overflow: 'hidden'
       }}>
+        <WaterDroplets />
         <div className="hm-grid" style={{ pointerEvents: 'none', position: 'absolute', inset: 0 }} />
         
         {/* Top HUD Bar */}
@@ -63,10 +67,10 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
           display: 'flex', 
           justifyContent: 'space-between', 
           fontFamily: 'var(--font-mono)', 
-          fontSize: '0.45rem', 
-          opacity: 0.6,
+          fontSize: '0.65rem', 
+          opacity: 0.8,
           position: 'absolute',
-          top: '6rem',
+          top: '8rem',
           left: 0,
           padding: '0 1.5rem',
           textTransform: 'uppercase',
@@ -91,27 +95,10 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
             />
           </div>
 
-          <div className="hm-contact-dock" style={{ width: '100%', maxWidth: '280px' }}>
-             <Link 
-               to="/works" 
-               className="hm-cta"
-               style={{ 
-                 display: 'block', 
-                 background: 'var(--text-primary)', 
-                 color: 'var(--bg-primary)', 
-                 textAlign: 'center', 
-                 padding: '1.25rem', 
-                 textDecoration: 'none', 
-                 fontFamily: 'var(--font-display)', 
-                 fontWeight: 900, 
-                 textTransform: 'uppercase',
-                 fontSize: '0.85rem',
-                 letterSpacing: '0.05em',
-                 border: '1px solid var(--text-primary)'
-               }}
-             >
+          <div className="hm-contact-dock" style={{ width: '100%', maxWidth: '280px', display: 'flex', justifyContent: 'center' }}>
+             <CreepyButton to="/works" className="hm-cta" style={{ width: '100%' }}>
                {t.home_enter_hub}
-             </Link>
+             </CreepyButton>
           </div>
         </div>
 
@@ -121,9 +108,9 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
           display: 'flex', 
           justifyContent: 'space-between', 
           fontFamily: 'var(--font-mono)', 
-          fontSize: '0.45rem', 
-          opacity: 0.4,
-          padding: '0 1.5rem',
+          fontSize: '0.6rem', 
+          opacity: 0.6,
+          padding: '2rem 1.5rem',
           letterSpacing: '0.05em'
         }}>
            <span>BUILD: STABLE_V882</span>
@@ -131,32 +118,50 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
         </div>
       </section>
 
+      {/* CSS Scroll Timeline Words */}
+      <div style={{ margin: '4rem 0' }}>
+        <WordScroll />
+      </div>
+
       {/* 2. REIMAGINED REEL: Vertical Reveal Stack */}
       <section className="hm-reel" style={{ padding: '6rem 2rem' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.5, display: 'block', marginBottom: '1.25rem' }}>
+          {t.home_featured_kicker}
+        </span>
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, marginBottom: '3rem' }}>
           {t.home_featured_reel}<br/>
           <span style={{ color: 'transparent', WebkitTextStroke: '1px var(--text-primary)' }}>{t.home_featured_reel_b}</span>
         </h2>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5rem' }}>
-          {projects.slice(0, 3).map((project, idx) => (
-            <motion.article 
-              key={project.id}
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, ease: "circOut" }}
-            >
-              <div style={{ position: 'relative', width: '100%', aspectRatio: '1', overflow: 'hidden', border: '1px solid var(--c-border)', marginBottom: '1.5rem' }}>
-                <img src={project.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'var(--bg-primary)', padding: '0.2rem 0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.6rem', border: '1px solid var(--text-primary)' }}>
-                   0{idx + 1}
+          {projects.slice(0, 3).map((project, idx) => {
+            const varStyles = [
+              { width: '100%', ratio: '16/10', align: 'center', ml: 0, mr: 0 },
+              { width: '85%', ratio: '3/4', align: 'flex-end', ml: 'auto', mr: 0 },
+              { width: '90%', ratio: '4/3', align: 'flex-start', ml: 0, mr: 'auto' }
+            ];
+            const currentStyle = varStyles[idx % 3];
+
+            return (
+              <motion.article 
+                key={project.id}
+                initial={{ y: 50, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, ease: "circOut", delay: idx * 0.1 }}
+                style={{ alignSelf: currentStyle.align, marginLeft: currentStyle.ml, marginRight: currentStyle.mr, width: currentStyle.width }}
+              >
+                <div style={{ position: 'relative', width: '100%', aspectRatio: currentStyle.ratio, overflow: 'hidden', border: '1px solid var(--c-border)', marginBottom: '1.5rem' }}>
+                  <img src={project.image} alt={project.title[lang]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'var(--bg-primary)', padding: '0.2rem 0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.6rem', border: '1px solid var(--text-primary)' }}>
+                     0{idx + 1}
+                  </div>
                 </div>
-              </div>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.5rem' }}>{project.title[lang]}</h3>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', opacity: 0.6, lineHeight: 1.5 }}>{project.description[lang]}</p>
-            </motion.article>
-          ))}
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.5rem' }}>{project.title[lang]}</h3>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', opacity: 0.6, lineHeight: 1.5 }}>{project.description[lang]}</p>
+              </motion.article>
+            );
+          })}
         </div>
 
         <Link to="/works" style={{ display: 'block', marginTop: '4rem', textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', textDecoration: 'none', color: 'var(--text-primary)', borderBottom: '1px solid var(--text-primary)', paddingBottom: '0.5rem', width: 'fit-content', marginInline: 'auto' }}>
@@ -165,16 +170,16 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
       </section>
 
       {/* 3. MANIFESTO: Aggressive Vertical Flow */}
-      <section style={{ background: 'var(--text-primary)', color: 'var(--bg-primary)', padding: '6rem 2rem' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.5 }}>{t.home_manifesto_kicker}</span>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, marginTop: '2rem' }}>
+      <section style={{ background: 'var(--text-primary)', color: 'var(--bg-primary)', padding: '8rem 2rem' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.5 }}>{t.home_manifesto_kicker}</span>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 12vw, 3.8rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.85, marginTop: '2.5rem' }}>
           {t.home_manifesto_title.split('\n').join(' ')}
         </h2>
       </section>
 
       {/* 4. COLLABORATION: Sticky Footer Theme */}
       <section style={{ padding: '6rem 2rem 10rem' }}>
-         <CollabMusicCard />
+
          <div style={{ marginTop: '4rem', textAlign: 'center' }}>
             <Link to="/contact" style={{ display: 'block', fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 900, textTransform: 'uppercase', textDecoration: 'none', color: 'var(--text-primary)', lineHeight: 0.9 }}>
                LET'S<br/>

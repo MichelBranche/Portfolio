@@ -131,16 +131,16 @@ export const i18nStrings = {
     clippy_tooltip: 'Hi! I’m Clippy. Drag me anywhere.',
     // Agency
     agency_kicker: '001 // The Manifesto',
-    agency_title_a: 'AGENCY',
-    agency_title_b: 'OF ONE',
+    agency_title_a: 'BUILT',
+    agency_title_b: 'ALONE.',
     agency_subtitle: 'Independent Creative Engineer',
     agency_footer_version: 'Version 3.0.0-react',
-    agency_footer_infra: 'Infrastucture: Vercel / Vite',
+    agency_footer_infra: 'Infrastructure: Vercel / Vite',
     agency_footer_location: 'Location: Milan, IT',
     agency_sections: [
-      { num: '01', title: 'Precision Architecture', content: 'We believe code is the invisible skeleton of a brand. Every pixel must be anchored to a mathematical grid, and every interaction must feel industrial: heavy but efficient, minimal but powerful.' },
-      { num: '02', title: 'Performance Manifesto', content: "Speed is the ultimate luxury. We optimize for the first millisecond, ensuring that modern interfaces don't just look good, but react instantly to the user's intent." },
-      { num: '03', title: 'Kinetic Identity', content: 'Static design is dead. We create living digital entities that breathe through motion, parallax, and adaptive layouts, inspired by the raw power of brutalist machinery.' }
+      { num: '01', title: 'Precision Architecture', content: 'I believe code is the invisible skeleton of a brand. Every pixel is anchored to a mathematical grid, and every interaction must feel industrial: heavy but efficient, minimal but powerful. I design systems, not just pages.' },
+      { num: '02', title: 'Performance Manifesto', content: "Speed is the ultimate luxury. I optimize for the first millisecond, ensuring that every interface I build doesn't just look good — it reacts instantly to the user's intent. No bloat. No compromise." },
+      { num: '03', title: 'Kinetic Identity', content: 'Static design is dead. I create living digital entities that breathe through motion, parallax, and adaptive layouts — inspired by the raw power of brutalist machinery. One person. Full ownership. Zero compromise.' }
     ],
     // Contact
     contact_heading_a: 'START A',
@@ -319,16 +319,16 @@ export const i18nStrings = {
     clippy_tooltip: 'Ciao! Sono Clippy. Trascinami dove vuoi.',
     // Agency
     agency_kicker: '001 // Il Manifesto',
-    agency_title_a: 'STUDIO',
-    agency_title_b: 'DI UNO',
+    agency_title_a: 'FATTO',
+    agency_title_b: 'DA ME.',
     agency_subtitle: 'Ingegnere Creativo Indipendente',
     agency_footer_version: 'Versione 3.0.0-react',
     agency_footer_infra: 'Infrastruttura: Vercel / Vite',
     agency_footer_location: 'Posizione: Milano, IT',
     agency_sections: [
-      { num: '01', title: 'Architettura di Precisione', content: 'Crediamo che il codice sia lo scheletro invisibile di un brand. Ogni pixel deve essere ancorato a una griglia matematica, e ogni interazione deve avere un peso industriale: pesante ma efficiente, minimale ma potente.' },
-      { num: '02', title: 'Manifesto della Performance', content: 'La velocità è il lusso definitivo. Ottimizziamo dal primo millisecondo, assicurando che le interfacce moderne non si limitino ad avere un bell\'aspetto, ma reagiscano istantaneamente all\'intenzione dell\'utente.' },
-      { num: '03', title: 'Identità Cinetica', content: 'Il design statico è morto. Creiamo entità digitali viventi che respirano attraverso il movimento, il parallasse e i layout adattivi, ispirati alla potenza grezza delle macchine brutaliste.' }
+      { num: '01', title: 'Architettura di Precisione', content: 'Credo che il codice sia lo scheletro invisibile di un brand. Ogni pixel è ancorato a una griglia matematica, e ogni interazione deve avere un peso industriale: pesante ma efficiente, minimale ma potente. Progetto sistemi, non solo pagine.' },
+      { num: '02', title: 'Manifesto della Performance', content: 'La velocità è il lusso definitivo. Ottimizzo dal primo millisecondo, assicurando che ogni interfaccia che costruisco non si limiti ad avere un bell\'aspetto — ma reagisca istantaneamente all\'intenzione dell\'utente. Zero bloat. Zero compromessi.' },
+      { num: '03', title: 'Identità Cinetica', content: 'Il design statico è morto. Creo entità digitali viventi che respirano attraverso il movimento, il parallasse e i layout adattivi — ispirati alla potenza grezza delle macchine brutaliste. Una persona. Piena responsabilità. Zero compromessi.' }
     ],
     // Contact
     contact_heading_a: 'AVVIA UN',

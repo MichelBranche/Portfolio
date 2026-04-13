@@ -106,7 +106,7 @@ export default function WorksMobile({
             <div style={{ width: '100%', aspectRatio: '16/10', overflow: 'hidden' }}>
               <img 
                  src={project.image} 
-                 alt="" 
+                 alt={project.title[lang]} 
                  style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }} 
               />
             </div>

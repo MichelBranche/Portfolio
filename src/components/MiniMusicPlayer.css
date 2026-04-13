@@ -1,0 +1,251 @@
+.mmp-fixed {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 200;
+  transform-origin: bottom left;
+  user-select: none;
+  font-family: var(--font-mono, monospace);
+
+  /* Prevent native transitions from fighting with Framer Motion */
+  transition: none;
+  /* Required for smooth dragging on mobile */
+  touch-action: pan-y; 
+}
+
+/* ── Restore Handle (Mobile only) ───────────────────────────── */
+.mmp__restore-handle {
+  position: absolute;
+  top: 0;
+  right: -45px; /* Stick out from the card right edge */
+  width: 50px;
+  height: 100%;
+  background: var(--text-primary);
+  border: 2px solid var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  cursor: pointer;
+  z-index: 5;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+}
+
+.mmp__restore-bar {
+  width: 3px;
+  height: 32px;
+  background: var(--bg-primary);
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+/* ── Card ───────────────────────────────────────────────────── */
+.mmp {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 300px;
+  background: var(--bg-primary, #0d0d0d);
+  border: 2px solid var(--text-primary, #f0ece3);
+  color: var(--text-primary, #f0ece3);
+  box-shadow: 4px 4px 0 var(--text-primary, #f0ece3);
+}
+
+/* ── Cover image ────────────────────────────────────────────── */
+.mmp__cover {
+  flex-shrink: 0;
+  width: 88px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-right: 2px solid var(--text-primary, #f0ece3);
+}
+
+/* ── Body ───────────────────────────────────────────────────── */
+.mmp__body {
+  flex: 1;
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* ── Track info ─────────────────────────────────────────────── */
+.mmp__info {
+  overflow: hidden;
+}
+
+.mmp__artist {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.55;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mmp__title {
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-display, sans-serif);
+}
+
+/* ── Controls row ───────────────────────────────────────────── */
+.mmp__controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Generic button ─────────────────────────────────────────── */
+.mmp__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1.5px solid var(--text-primary, #f0ece3);
+  color: var(--text-primary, #f0ece3);
+  cursor: pointer;
+  padding: 4px;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+  line-height: 0;
+}
+
+.mmp__btn:hover {
+  background: var(--text-primary, #f0ece3);
+  color: var(--bg-primary, #0d0d0d);
+}
+
+.mmp__btn--sm {
+  width: 24px;
+  height: 24px;
+}
+
+/* ── Play/Pause (larger) ─────────────────────────────────────── */
+.mmp__btn--play {
+  width: 32px;
+  height: 32px;
+  border-width: 2px;
+  margin: 0 2px;
+}
+
+.mmp__btn--play.is-playing {
+  background: var(--text-primary, #f0ece3);
+  color: var(--bg-primary, #0d0d0d);
+}
+
+.mmp__btn.is-muted {
+  opacity: 0.4;
+}
+
+/* ── Volume ──────────────────────────────────────────────────── */
+.mmp__vol-wrap {
+  position: relative;
+  margin-left: auto;
+}
+
+.mmp__vol-panel {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-primary, #0d0d0d);
+  border: 2px solid var(--text-primary, #f0ece3);
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 2px 2px 0 var(--text-primary, #f0ece3);
+  z-index: 50;
+}
+
+.mmp__vol-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  font-weight: 700;
+  min-width: 24px;
+  text-align: center;
+}
+
+.mmp__vol-slider {
+  -webkit-appearance: slider-vertical;
+  appearance: slider-vertical;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 4px;
+  height: 64px;
+  cursor: pointer;
+  accent-color: var(--text-primary, #f0ece3);
+}
+
+/* ── Progress bar ───────────────────────────────────────────── */
+.mmp__progress {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mmp__seek {
+  width: 100%;
+  height: 3px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mmp__seek::-webkit-slider-runnable-track {
+  height: 3px;
+  background: rgba(255,255,255,0.2);
+}
+
+.mmp__seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  background: var(--text-primary, #f0ece3);
+  margin-top: -3.5px;
+  cursor: pointer;
+}
+
+.mmp__seek::-moz-range-track {
+  height: 3px;
+  background: rgba(255,255,255,0.2);
+}
+
+.mmp__seek::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  background: var(--text-primary, #f0ece3);
+  border: none;
+  cursor: pointer;
+}
+
+.mmp__times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.5rem;
+  opacity: 0.5;
+  letter-spacing: 0.05em;
+}
+
+/* ── Mobile scale ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .mmp-fixed {
+    transform: scale(0.65);
+    left: 5px;
+    bottom: 5px;
+    transform-origin: bottom left;
+  }
+}
