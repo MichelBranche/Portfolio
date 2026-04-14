@@ -1,22 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useMediaQuery as useReactResponsiveMediaQuery } from 'react-responsive';
 
 /**
- * Custom hook to detect if a media query matches.
+ * Custom wrapper around react-responsive useMediaQuery to maintain
+ * consistent API with previous hook and prevent hydration issues.
  * Defaults to 768px for mobile.
  */
 export function useMediaQuery(query = '(max-width: 768px)') {
-  const [matches, setMatches] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia(query);
-    if (media.matches !== matches) {
-      setMatches(media.matches);
-    }
-
-    const listener = () => setMatches(media.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
-  }, [matches, query]);
-
+  const matches = useReactResponsiveMediaQuery({ query });
   return matches;
 }

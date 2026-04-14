@@ -501,11 +501,11 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   max-width: 1120px;
   margin-inline: auto;
-  margin-top: clamp(3.5rem, 11vw, 8rem);
+  margin-top: clamp(0rem, 2vw, 2rem);
   margin-bottom: clamp(4.5rem, 14vw, 10rem);
-  padding: clamp(5.5rem, 15vw, 10.5rem) clamp(1.25rem, 4.5vw, 3rem);
+  padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 4.5vw, 3rem);
   text-align: center;
-  min-height: clamp(34rem, 58vh, 54rem);
+  min-height: clamp(28rem, 48vh, 48rem);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3132,7 +3132,8 @@ body.brutalist {
 
 @media (max-width: 768px) {
   html, body, #root {
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
     overflow-x: hidden !important;
     position: relative;
     box-sizing: border-box;
@@ -3332,7 +3333,8 @@ body.brutalist {
   /* Mobile-Exclusive Component Styles */
   .home-mobile-v3 {
     background: var(--bg-primary);
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
     overflow-x: hidden;
     position: relative;
   }

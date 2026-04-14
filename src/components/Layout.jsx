@@ -171,7 +171,7 @@ export default function Layout({ children }) {
       {/* Mobile Drawer */}
       {isMobile && (
         <div className={`mobile-nav-drawer ${mobileMenuOpen ? 'is-open' : ''}`}>
-          <div className="mobile-nav-drawer__inner">
+          <div className="mobile-nav-drawer__inner" style={{ paddingTop: 'calc(var(--nav-height, 80px) + env(safe-area-inset-top, 0px))', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
             <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--c-border)', paddingBottom: '1rem' }}>
                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', opacity: 0.5 }}>STATUS: ACTIVE_NODE</span>
                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', opacity: 0.5 }}>MILAN // 2026</span>
@@ -224,8 +224,8 @@ export default function Layout({ children }) {
           padding: mobileMenuOpen || (isMobile && location.pathname === '/') ? '0' : '0 var(--mobile-gutter, 2.5rem)', 
           marginTop: (isMobile && location.pathname === '/') ? '0' : 'var(--nav-height, 80px)',
           transition: 'padding 0.3s ease',
-          width: '100vw',
-          maxWidth: '100%',
+          width: '100%',
+          boxSizing: 'border-box',
           overflowX: 'clip',
         }}
       >

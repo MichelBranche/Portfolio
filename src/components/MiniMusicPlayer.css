@@ -245,7 +245,7 @@
   .mmp-fixed {
     transform: none;
     left: 10px;
-    bottom: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom, 10px));
     right: 10px;
   }
   .mmp {
