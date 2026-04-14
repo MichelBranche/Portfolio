@@ -58,6 +58,7 @@ export default function Home({ ready }) {
 
   useGSAP(() => {
     if (!ready) return
+    if (isMobile) return
 
     let featuredMM = null
 
@@ -449,7 +450,7 @@ export default function Home({ ready }) {
     return (
       <div key={`mob-${lang}`} ref={container} className="mobile-only-home" style={{ position: 'relative' }}>
         <div className="noise" />
-        <PageTransition>
+        <PageTransition noPadding style={{ display: 'block', width: '100%', minHeight: '100vh', alignItems: 'unset' }}>
            <HomeMobile ready={ready} t={t} lang={lang} handleMouseEnter={handleMouseEnter} />
         </PageTransition>
       </div>
@@ -460,7 +461,7 @@ export default function Home({ ready }) {
     <div key={`desktop-${lang}`} ref={container} style={{ position: 'relative' }}>
       <div className="noise" />
 
-      <PageTransition>
+      <PageTransition style={{ padding: 0, width: '100%', display: 'block' }}>
         {/* Desktop Version (Existing code) */}
         {/* ... (the rest of the original return) */}
         <section

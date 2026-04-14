@@ -114,11 +114,13 @@ export default function WorksMobile({
             <div style={{ padding: '1.25rem' }}>
                <h3 className="mobile-wrap-text" style={{ 
                  fontFamily: 'var(--font-display)', 
-                 fontSize: '1.4rem', 
+                 fontSize: 'clamp(1.1rem, 6vw, 1.4rem)', 
                  fontWeight: 900, 
                  textTransform: 'uppercase', 
                  lineHeight: 1.1, 
-                 marginBottom: '0.5rem'
+                 marginBottom: '0.5rem',
+                 wordBreak: 'break-word',
+                 hyphens: 'auto'
                }}>
                   {project.title[lang]}
                </h3>

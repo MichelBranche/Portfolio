@@ -25,7 +25,7 @@ export default function Agency() {
   if (isMobile) {
     return (
       <PageTransition>
-        <div key={lang} ref={pageRef} style={{ paddingBottom: '6rem' }}>
+        <div key={lang} ref={pageRef} style={{ paddingBottom: '6rem', paddingTop: '3.5rem' }}>
 
           {/* Hero photo — full width mobile */}
           <div className="ag-reveal" style={{ margin: '0 -2.5rem 3rem', overflow: 'hidden' }}>

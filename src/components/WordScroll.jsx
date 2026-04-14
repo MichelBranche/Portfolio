@@ -70,13 +70,14 @@ export default function WordScroll() {
     // Calcoliamo esattamente quanto la lista deve salire per portare l'ultimo item nel 'mirino'
     const totalScrollDistance = items[items.length - 1].offsetTop - items[0].offsetTop;
 
-    // Timeline Master
+    // Timeline Master con Pinning invece di CSS sticky
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
-        start: 'top 25%', 
-        end: 'bottom 75%', 
+        start: 'top top', 
+        end: '+=250%', // the duration of the pin scroll
         scrub: 1, 
+        pin: true,
         snap: {
           snapTo: 1 / (items.length - 1),
           duration: { min: 0.1, max: 0.4 },
@@ -123,7 +124,7 @@ export default function WordScroll() {
   // Stile condiviso
   const sharedTextStyle = {
     fontFamily: "'Zodiak', serif", 
-    fontSize: 'clamp(1.2rem, 4vw, 3.5rem)', 
+    fontSize: 'clamp(1rem, 6vw, 3.5rem)', 
     fontWeight: 400,
     letterSpacing: '-0.02em',
     lineHeight: 1.2
@@ -132,20 +133,18 @@ export default function WordScroll() {
   return (
     <section ref={containerRef} style={{ 
       width: '100%', 
-      height: '350svh', 
+      height: '100vh', 
       position: 'relative', 
-      margin: '0', // Rimossi i margini esterni per avvicinare il contenuto sottostante
-      background: 'transparent'
+      margin: '0', 
+      background: 'transparent',
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      overflow: 'hidden'
     }}>
-      {/* 
-        Box sticky posizionato geometricamente senza transform.
-        Iniziando al 25svh con 25vh di padding centrano perfettamente il mirino testuale al 50vh,
-        garantendo lo sblocco esatto e annullando gli spazi vuoti a fine corsa.
-      */}
       <div style={{ 
-        position: 'sticky',
-        top: '25svh',
-
+        width: '100%',
+        boxSizing: 'border-box',
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center', 
@@ -155,11 +154,10 @@ export default function WordScroll() {
         maskRepeat: 'no-repeat',
         maskSize: '100% 100%',
         padding: '25vh 0',
-        overflow: 'hidden'
       }}>
         
         {/* L'header fisso a sinistra */}
-        <div style={{ flex: '0 0 auto', paddingRight: '0.5rem', textAlign: 'right' }}>
+        <div style={{ flex: '1 1 50%', paddingRight: '0.2rem', textAlign: 'right', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
           <h2 style={{ 
               ...sharedTextStyle,
               fontFamily: "'Satoshi', sans-serif",
@@ -178,7 +176,7 @@ export default function WordScroll() {
           come se fosse solo alto 1 riga (quella in cima),
           così il primo elemento si allinea sempre con "Costruisco".
         */}
-        <div style={{ position: 'relative', flex: '0 0 auto', height: '1.2em' }}>
+        <div style={{ position: 'relative', flex: '1 1 50%', height: '1.2em', textAlign: 'left' }}>
           <ul ref={listRef} style={{ 
               position: 'absolute',
               top: 0,

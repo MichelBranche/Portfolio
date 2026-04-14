@@ -221,9 +221,12 @@ export default function Layout({ children }) {
       <main 
         className="main-content"
         style={{ 
-          padding: mobileMenuOpen ? '0' : '0 var(--mobile-gutter, 2.5rem)', 
-          marginTop: 'var(--nav-height, 80px)',
-          transition: 'padding 0.3s ease'
+          padding: mobileMenuOpen || (isMobile && location.pathname === '/') ? '0' : '0 var(--mobile-gutter, 2.5rem)', 
+          marginTop: (isMobile && location.pathname === '/') ? '0' : 'var(--nav-height, 80px)',
+          transition: 'padding 0.3s ease',
+          width: '100vw',
+          maxWidth: '100%',
+          overflowX: 'clip',
         }}
       >
         {children}

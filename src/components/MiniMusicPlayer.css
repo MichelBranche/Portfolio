@@ -240,12 +240,41 @@
   letter-spacing: 0.05em;
 }
 
-/* ── Mobile scale ───────────────────────────────────────────── */
+/* ── Mobile UI - Compact Mode ─────────────────────────────── */
 @media (max-width: 768px) {
   .mmp-fixed {
-    transform: scale(0.65);
-    left: 5px;
-    bottom: 5px;
-    transform-origin: bottom left;
+    transform: none;
+    left: 10px;
+    bottom: 10px;
+    right: 10px;
+  }
+  .mmp {
+    width: auto;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .mmp__cover {
+    width: 60px;
+    height: auto;
+  }
+  .mmp__body {
+    padding: 8px 10px;
+    gap: 4px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .mmp__info {
+    flex: 1;
+    min-width: 0; /* allows text truncation */
+  }
+  .mmp__controls {
+    flex-shrink: 0;
+  }
+  .mmp__progress {
+    display: none; /* Hide scrubber on mobile to save space */
+  }
+  .mmp__vol-wrap {
+    display: none; /* Hide volume on mobile since OS handles it */
   }
 }

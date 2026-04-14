@@ -14,25 +14,28 @@ const variants = {
   }
 }
 
-export default function PageTransition({ children }) {
+export default function PageTransition({ children, style, className, noPadding }) {
   return (
     <motion.main
       variants={variants}
       initial="initial"
       animate="enter"
       exit="exit"
+      className={className}
       style={{
-        paddingTop: '8rem',
-        paddingBottom: '6rem',
-        paddingLeft: '2rem',
-        paddingRight: '2rem',
+        paddingTop: noPadding ? 0 : '8rem',
+        paddingBottom: noPadding ? 0 : '6rem',
+        paddingLeft: noPadding ? 0 : '2rem',
+        paddingRight: noPadding ? 0 : '2rem',
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        ...style
       }}
     >
       {children}
     </motion.main>
   )
 }
+

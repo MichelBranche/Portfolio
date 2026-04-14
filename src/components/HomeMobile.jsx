@@ -44,7 +44,7 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
   }, { scope: container, dependencies: [ready] })
 
   return (
-    <div ref={container} className="home-mobile-v3">
+    <div ref={container} className="home-mobile-v3" style={{ overflowX: 'clip', width: '100%', position: 'relative' }}>
       {/* 1. MOBILE HERO: Vertical Technical Stack */}
       <section className="hm-hero" style={{ 
         height: '100vh', 
@@ -52,10 +52,13 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
         flexDirection: 'column', 
         justifyContent: 'space-between', 
         alignItems: 'center',
-        padding: '8rem 1rem 4rem', 
+        padding: '0 1rem 4rem', /* Tolto il padding top gigantesco per farlo toccare l'alto */
+        paddingTop: 'calc(var(--nav-height, 80px) + 2rem)', /* Spazio dinamico solo per la navbar trasparente */
         position: 'relative',
         textAlign: 'center',
         width: '100%',
+        maxWidth: '100vw',
+        boxSizing: 'border-box',
         overflow: 'hidden'
       }}>
         <WaterDroplets />
@@ -82,7 +85,14 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
 
         <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
           <SplitText type="words" delay={0.5} ready={ready} contentKey={lang}>
-             <span className="tech-label-xs" style={{ letterSpacing: '0.25em', fontSize: '0.45rem' }}>
+             <span className="tech-label-xs" style={{ 
+               letterSpacing: '0.15em', 
+               fontSize: '0.55rem', 
+               lineHeight: '1.6', 
+               display: 'inline-block', 
+               padding: '0 10px',
+               maxWidth: '90vw'
+             }}>
                {t.home_tagline}
              </span>
           </SplitText>
@@ -119,16 +129,16 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
       </section>
 
       {/* CSS Scroll Timeline Words */}
-      <div style={{ margin: '4rem 0' }}>
+      <div style={{ margin: '0 0' }}>
         <WordScroll />
       </div>
 
       {/* 2. REIMAGINED REEL: Vertical Reveal Stack */}
-      <section className="hm-reel" style={{ padding: '6rem 2rem' }}>
+      <section className="hm-reel" style={{ padding: '2rem 1rem 6rem', width: '100%', boxSizing: 'border-box', overflow: 'hidden' }}>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.5, display: 'block', marginBottom: '1.25rem' }}>
           {t.home_featured_kicker}
         </span>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, marginBottom: '3rem' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 10vw, 3.5rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, marginBottom: '3rem', wordBreak: 'keep-all', hyphens: 'none' }}>
           {t.home_featured_reel}<br/>
           <span style={{ color: 'transparent', WebkitTextStroke: '1px var(--text-primary)' }}>{t.home_featured_reel_b}</span>
         </h2>
@@ -145,10 +155,10 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
             return (
               <motion.article 
                 key={project.id}
-                initial={{ y: 50, opacity: 0 }}
+                initial={{ y: 30, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8, ease: "circOut", delay: idx * 0.1 }}
+                viewport={{ once: true, margin: "0px" }}
+                transition={{ duration: 0.7, ease: "easeOut", delay: idx * 0.1 }}
                 style={{ alignSelf: currentStyle.align, marginLeft: currentStyle.ml, marginRight: currentStyle.mr, width: currentStyle.width }}
               >
                 <div style={{ position: 'relative', width: '100%', aspectRatio: currentStyle.ratio, overflow: 'hidden', border: '1px solid var(--c-border)', marginBottom: '1.5rem' }}>
@@ -157,7 +167,7 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
                      0{idx + 1}
                   </div>
                 </div>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.5rem' }}>{project.title[lang]}</h3>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem, 6vw, 1.5rem)', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.5rem', wordBreak: 'keep-all', hyphens: 'none' }}>{project.title[lang]}</h3>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', opacity: 0.6, lineHeight: 1.5 }}>{project.description[lang]}</p>
               </motion.article>
             );
@@ -170,17 +180,19 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
       </section>
 
       {/* 3. MANIFESTO: Aggressive Vertical Flow */}
-      <section style={{ background: 'var(--text-primary)', color: 'var(--bg-primary)', padding: '8rem 2rem' }}>
+      <section style={{ width: '100%', boxSizing: 'border-box', background: 'var(--text-primary)', color: 'var(--bg-primary)', padding: '6rem 1.5rem', overflow: 'hidden' }}>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.5 }}>{t.home_manifesto_kicker}</span>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 12vw, 3.8rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.85, marginTop: '2.5rem' }}>
-          {t.home_manifesto_title.split('\n').join(' ')}
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 10vw, 3.8rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.85, marginTop: '2.5rem', wordBreak: 'normal', hyphens: 'none' }}>
+          {t.home_manifesto_title.split('\n').map((line, i) => (
+            <span key={i}>{line}<br /></span>
+          ))}
         </h2>
       </section>
 
       {/* 4. COLLABORATION: Sticky Footer Theme */}
-      <section style={{ padding: '6rem 2rem 10rem' }}>
+      <section style={{ width: '100%', boxSizing: 'border-box', padding: '6rem 1.5rem 10rem', overflow: 'hidden' }}>
 
-         <div style={{ marginTop: '4rem', textAlign: 'center' }}>
+         <div style={{ marginTop: '2rem', textAlign: 'center' }}>
             <Link to="/contact" style={{ display: 'block', fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 900, textTransform: 'uppercase', textDecoration: 'none', color: 'var(--text-primary)', lineHeight: 0.9 }}>
                LET'S<br/>
                <span style={{ color: 'transparent', WebkitTextStroke: '1px var(--text-primary)' }}>START</span>

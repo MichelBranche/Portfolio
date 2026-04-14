@@ -222,11 +222,11 @@ export default function MiniMusicPlayer() {
       <motion.div
         layout
         drag="x"
-        dragConstraints={{ left: -300, right: 0 }}
+        dragConstraints={{ left: -400, right: 0 }}
         dragElastic={0.1}
         onDragEnd={handleDragEnd}
         animate={{
-          x: isMinimized ? -280 : 0,
+          x: isMinimized ? 'calc(-100% - 20px)' : 0,
           opacity: visible ? 1 : 0,
           y: visible ? 0 : 20,
         }}

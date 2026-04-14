@@ -204,7 +204,7 @@ export default function Contact() {
   if (isMobile) {
     return (
       <PageTransition>
-        <div style={{ paddingBottom: '5rem' }}>
+        <div style={{ paddingBottom: '5rem', paddingTop: '3rem' }}>
           <header style={{ marginBottom: '2.5rem', padding: '0 1.25rem' }}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', opacity: 0.45, textTransform: 'uppercase', letterSpacing: '0.2em' }}>{t.contact_page_kicker}</span>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.2rem, 9vw, 3.2rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.85, marginTop: '0.5rem' }}>
