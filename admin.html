@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0a0a0a" />
-  <title>WYSIWYG Dashboard | Michel Branche</title>
+  <title>Portfolio Control Room v3 | Michel Branche</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -263,6 +263,108 @@
       background: #fce8cd;
     }
     .admin-stats-empty--err { border-color: #ff3b3b; color: #600; }
+
+    /* --- v3 alignment: tema coerente col portfolio React --- */
+    :root {
+      --admin-bg: #050505;
+      --admin-surface: #0f0f0f;
+      --admin-surface-2: #161616;
+      --admin-text: #f4f4f4;
+      --admin-muted: #b8b8b8;
+      --admin-border: rgba(255,255,255,0.2);
+      --admin-accent: #ffe500;
+    }
+    body.admin-body {
+      background: var(--admin-bg);
+      color: var(--admin-text);
+    }
+    .login-box,
+    .site-editor,
+    .admin-collapse,
+    .admin-stats-panel,
+    .modal-content,
+    .admin-preview-window,
+    .site-skill-row,
+    .site-hl-row {
+      background: var(--admin-surface);
+      color: var(--admin-text);
+      border-color: var(--admin-border);
+      box-shadow: none;
+    }
+    .admin-header,
+    .admin-stats-head,
+    .modal-header,
+    .site-editor h2,
+    .admin-collapse > summary {
+      border-color: var(--admin-border);
+    }
+    .admin-collapse > summary {
+      background: #101010;
+      color: var(--admin-text);
+    }
+    .admin-collapse--nested > summary {
+      background: var(--admin-surface-2);
+      color: var(--admin-text);
+    }
+    .admin-stats-title,
+    .admin-header h1,
+    .site-editor h2 {
+      color: var(--admin-text);
+    }
+    .admin-stats-sub,
+    .admin-stats-meta,
+    .admin-section-label span {
+      color: var(--admin-muted);
+    }
+    .admin-section-label {
+      background: #0d0d0d;
+      color: var(--admin-text);
+      border-color: var(--admin-border);
+      box-shadow: none;
+    }
+    .form-input {
+      background: #0d0d0d;
+      border-color: var(--admin-border);
+      color: var(--admin-text);
+      box-shadow: none;
+    }
+    .form-input:focus {
+      box-shadow: 0 0 0 1px var(--admin-accent);
+      transform: none;
+    }
+    .btn {
+      background: transparent;
+      color: var(--admin-text);
+      border-color: var(--admin-border);
+      box-shadow: none;
+    }
+    .btn:hover {
+      background: var(--admin-accent);
+      color: #000;
+      border-color: var(--admin-accent);
+      transform: none;
+      box-shadow: none;
+    }
+    .preview-header {
+      background: #0d0d0d;
+      color: var(--admin-muted);
+      border-bottom: 1px solid var(--admin-border);
+    }
+    .new-project-card {
+      border-color: var(--admin-border);
+      color: var(--admin-muted);
+      background: #0d0d0d;
+    }
+    .new-project-card:hover {
+      background: var(--admin-accent);
+      color: #000;
+      border-color: var(--admin-accent);
+      box-shadow: none;
+      transform: none;
+    }
+    code {
+      color: var(--admin-accent);
+    }
   </style>
 </head>
 <body class="brutalist admin-body">
@@ -314,9 +416,12 @@
       <h1>Live Editor <span id="project-count" style="font-size: 2rem; vertical-align: middle; color:#ff3b3b">(0)</span></h1>
       <div style="display:flex; gap:1rem;">
         <button id="btn-save" class="btn btn--success" type="button">💾 Salva Cambiamenti Online</button>
-        <button id="btn-logout" class="btn" type="button" style="background:transparent; color:#000;">Logout</button>
+        <button id="btn-logout" class="btn" type="button" style="background:transparent;">Logout</button>
       </div>
     </div>
+    <p style="font-family:'Space Mono'; font-size:0.8rem; color:#b8b8b8; margin:-0.5rem 0 1.5rem 0;">
+      Control Room v3 · sincronizzato con portfolio React (Home / Works / Agency / Contact)
+    </p>
     
     <details class="admin-collapse" id="site-editor" open>
       <summary>Contenuti sito · hero, bio, link, skills, highlights</summary>
