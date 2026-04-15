@@ -153,13 +153,13 @@ export default function WordScroll() {
         WebkitMaskRepeat: 'no-repeat',
         maskRepeat: 'no-repeat',
         maskSize: '100% 100%',
-        padding: isMobile ? '5vh 0' : '25vh 0',
+        padding: isMobile ? '12vh 0' : '25vh 0',
       }}>
 
         {isMobile ? (
           /* ── MOBILE: stacked (prefix above, words below) ── */
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
-            <h2 style={prefixStyle}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%' }}>
+            <h2 style={{ ...prefixStyle, margin: '0 0 0.5rem 0' }}>
               {buildText.trim()}
             </h2>
             <div style={{
@@ -169,7 +169,7 @@ export default function WordScroll() {
               height: '1.15em',
               minWidth: 0,
             }}>
-              <ul ref={listRef} style={{ position: 'absolute', top: 0, left: 0, listStyle: 'none', margin: 0, padding: 0 }}>
+              <ul ref={listRef} style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', listStyle: 'none', margin: 0, padding: 0, textAlign: 'center' }}>
                 {words.map((word, idx) => (
                   <li key={idx} className="word-scroll-item" style={{ margin: '0 0 1.1rem 0', whiteSpace: 'nowrap' }}>
                     <span className="word-scroll-span" style={{ ...sharedTextStyle, display: 'inline-block', color: 'var(--text-primary)' }}>

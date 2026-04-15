@@ -82,9 +82,27 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
       </section>
 
       {/* WordScroll — pulled up close to hero */}
-      <div style={{ marginTop: '-4rem' }}>
+      <div style={{ marginTop: '-1rem' }}>
         <WordScroll />
       </div>
+
+      {/* 3. COLLAB — mobile "002 // Availability" */}
+      <section style={{ width: '100%', boxSizing: 'border-box', padding: '5rem 1.5rem', borderTop: '1px solid var(--c-border)' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.45, display: 'block', marginBottom: '2.5rem' }}>
+          {t.layout_collab_kicker}
+        </span>
+        <Link to="/contact" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 7.5vw, 3.5rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.03em', marginBottom: '0.4rem', wordBreak: 'break-word' }}>
+            {t.layout_collab_line1}
+          </h2>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 7.5vw, 3.5rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.03em', color: 'transparent', WebkitTextStroke: '1px var(--text-primary)', marginBottom: '2.5rem', wordBreak: 'break-word' }}>
+            {t.layout_collab_line2}
+          </h2>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.6 }}>
+            → {t.nav_contact}
+          </span>
+        </Link>
+      </section>
 
       {/* 2. FEATURED REEL */}
       <section style={{ padding: '3rem 1.25rem 6rem', width: '100%', boxSizing: 'border-box' }}>
@@ -142,30 +160,13 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
         </Link>
       </section>
 
-      {/* 3. COLLAB — mobile "002 // Availability" */}
-      <section style={{ width: '100%', boxSizing: 'border-box', padding: '5rem 1.5rem', borderTop: '1px solid var(--c-border)' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.45, display: 'block', marginBottom: '2.5rem' }}>
-          {t.layout_collab_kicker}
-        </span>
-        <Link to="/contact" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 9vw, 4rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.03em', marginBottom: '0.4rem' }}>
-            {t.layout_collab_line1}
-          </h2>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 9vw, 4rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.03em', color: 'transparent', WebkitTextStroke: '1px var(--text-primary)', marginBottom: '2.5rem' }}>
-            {t.layout_collab_line2}
-          </h2>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.6 }}>
-            → {t.nav_contact}
-          </span>
-        </Link>
-      </section>
 
       {/* 4. MANIFESTO */}
       <section style={{ width: '100%', boxSizing: 'border-box', background: 'var(--text-primary)', color: 'var(--bg-primary)', padding: '5rem 1.5rem 6rem' }}>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', opacity: 0.5, letterSpacing: '0.12em', display: 'block', marginBottom: '2rem' }}>
           {t.home_manifesto_kicker}
         </span>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 6.5vw, 2.8rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.02em', textAlign: 'left', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem, 5.5vw, 2.5rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.02em', textAlign: 'left', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
           {t.home_manifesto_title.split('\n').map((line, i) => (
             <span key={i} style={{ display: 'block' }}>{line}</span>
           ))}
