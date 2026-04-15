@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { projects } from '../data/projects'
@@ -7,12 +7,19 @@ import SplitText from './SplitText'
 import WordScroll from './WordScroll'
 import CreepyButton from './CreepyButton'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
 
-gsap.registerPlugin(useGSAP)
+gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
   const container = useRef()
+  const featureVideoRef = useRef(null)
+  const featureVideoSectionRef = useRef(null)
+  const hasTriedAutoAudioRef = useRef(false)
+  const hasVideoFinishedRef = useRef(false)
+  const [isVideoAudioOn, setIsVideoAudioOn] = useState(false)
+  const [isVideoErrorOverlayVisible, setIsVideoErrorOverlayVisible] = useState(false)
 
   useGSAP(() => {
     if (!ready) return
@@ -20,7 +27,127 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
     tl.from('.hm-hud-item', { y: -20, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out' }, 0.5)
     tl.from('.hm-hero-logo', { scale: 1.1, opacity: 0, duration: 1.5, ease: 'expo.out' }, 0.8)
     tl.from('.hm-cta', { y: 30, opacity: 0, duration: 1, ease: 'power4.out' }, 1.2)
+
+    // Mobile Logo Disassembly on Scroll
+    gsap.registerPlugin(ScrollTrigger)
+    const mobLogoTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container.current,
+        start: 'top top',
+        end: '+=500',
+        scrub: 0.8,
+      }
+    })
+    mobLogoTl
+      .to('.logo-letter-m', { y: 300, x: -80, rotation: -35, ease: 'power1.inOut' }, 0)
+      .to('.logo-letter-b', { y: 350, x: 80, rotation: 45, ease: 'power1.inOut' }, 0)
+      .to('.logo-letter-g', { y: 450, x: -120, rotation: -80, ease: 'power1.inOut' }, 0)
+      .to('.logo-letter-s', { y: 500, x: 120, rotation: 100, ease: 'power1.inOut' }, 0)
+
+    if (featureVideoSectionRef.current && featureVideoRef.current) {
+      gsap.fromTo(
+        featureVideoSectionRef.current,
+        { autoAlpha: 0, y: 42 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: featureVideoSectionRef.current,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      )
+
+      gsap.fromTo(
+        featureVideoRef.current,
+        { scale: 1.08, yPercent: -5 },
+        {
+          scale: 1,
+          yPercent: 8,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: featureVideoSectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        }
+      )
+
+      ScrollTrigger.create({
+        trigger: featureVideoSectionRef.current,
+        start: 'top 120%',
+        onEnter: () => {
+          if (hasTriedAutoAudioRef.current || hasVideoFinishedRef.current || isVideoErrorOverlayVisible) return
+          hasTriedAutoAudioRef.current = true
+          enableFeatureVideoAudio()
+        },
+        onEnterBack: () => {
+          if (hasTriedAutoAudioRef.current || hasVideoFinishedRef.current || isVideoErrorOverlayVisible) return
+          hasTriedAutoAudioRef.current = true
+          enableFeatureVideoAudio()
+        },
+      })
+    }
   }, { scope: container, dependencies: [ready] })
+
+  const toggleFeatureVideoAudio = async () => {
+    const el = featureVideoRef.current
+    if (!el) return
+
+    if (!isVideoAudioOn) {
+      el.muted = false
+      el.volume = 0.75
+      try {
+        await el.play()
+        setIsVideoAudioOn(true)
+      } catch {
+        el.muted = true
+        setIsVideoAudioOn(false)
+      }
+      return
+    }
+
+    el.muted = true
+    setIsVideoAudioOn(false)
+  }
+
+  const enableFeatureVideoAudio = async () => {
+    const el = featureVideoRef.current
+    if (!el) return false
+    if (hasVideoFinishedRef.current || isVideoErrorOverlayVisible) return false
+    if (!el.muted) {
+      setIsVideoAudioOn(true)
+      return true
+    }
+
+    el.muted = false
+    el.volume = 0.75
+    try {
+      await el.play()
+      setIsVideoAudioOn(true)
+      return true
+    } catch {
+      el.muted = true
+      setIsVideoAudioOn(false)
+      return false
+    }
+  }
+
+  const handleFeatureVideoEnded = () => {
+    const el = featureVideoRef.current
+    if (!el) return
+    if (isVideoErrorOverlayVisible) return
+
+    hasVideoFinishedRef.current = true
+    el.pause()
+    el.muted = true
+    setIsVideoAudioOn(false)
+    setIsVideoErrorOverlayVisible(true)
+  }
 
   return (
     <div ref={container} className="home-mobile-v3" style={{ width: '100%', position: 'relative', overflowX: 'clip' }}>
@@ -61,7 +188,29 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
           </SplitText>
 
           <div className="hm-hero-logo" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <img src="/assets/logo-hero-mbgs.png" alt="" style={{ width: '65%', maxWidth: '240px', height: 'auto', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.15))' }} />
+            <div
+              style={{
+                fontFamily: "'SK Quadratica', 'Unbounded', sans-serif",
+                fontSize: 'clamp(6rem, 36vw, 15rem)',
+                lineHeight: 0.78,
+                letterSpacing: '0',
+                display: 'grid',
+                gridTemplateColumns: 'max-content max-content',
+                gridTemplateRows: 'max-content max-content',
+                justifyContent: 'center',
+                gap: '0.04em 0.06em',
+                width: '100%',
+                margin: '0 auto',
+                alignItems: 'center',
+                paddingTop: '0.12em',
+                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.15))'
+              }}
+            >
+              <span className="logo-letter-m" style={{ color: '#0053a4', display: 'block', transform: 'translateY(0.04em)' }}>M</span>
+              <span className="logo-letter-b" style={{ color: '#159647', display: 'block', transform: 'translateY(0.04em)' }}>B</span>
+              <span className="logo-letter-g" style={{ color: '#c41d24', display: 'block', transform: 'translateY(-0.04em)' }}>G</span>
+              <span className="logo-letter-s" style={{ color: '#edcc4b', display: 'block', transform: 'translateY(-0.04em)' }}>S</span>
+            </div>
           </div>
 
           <div className="hm-contact-dock" style={{ width: '100%', maxWidth: '260px' }}>
@@ -87,7 +236,7 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
       </div>
 
       {/* 3. COLLAB — mobile "002 // Availability" */}
-      <section style={{ width: '100%', boxSizing: 'border-box', padding: '5rem 1.5rem', borderTop: '1px solid var(--c-border)' }}>
+      <section id="part1" style={{ width: '100%', boxSizing: 'border-box', padding: '5rem 1.5rem', borderTop: '1px solid var(--c-border)' }}>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.45, display: 'block', marginBottom: '2.5rem' }}>
           {t.layout_collab_kicker}
         </span>
@@ -105,18 +254,19 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
       </section>
 
       {/* 2. FEATURED REEL */}
-      <section style={{ padding: '3rem 1.25rem 6rem', width: '100%', boxSizing: 'border-box' }}>
+      <section id="part2" style={{ padding: '3rem 1.25rem 6rem', width: '100%', boxSizing: 'border-box' }}>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', opacity: 0.45, display: 'block', marginBottom: '1rem', letterSpacing: '0.1em' }}>
           {t.home_featured_kicker}
         </span>
 
         <h2 style={{ 
-          fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 14vw, 4rem)',
-          fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.88, 
-          marginBottom: '3rem', letterSpacing: '-0.03em', textAlign: 'left',
+          fontFamily: 'var(--font-display)', fontSize: 'clamp(2.1rem, 11.5vw, 3.4rem)',
+          fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.92, 
+          marginBottom: '3rem', letterSpacing: '-0.02em', textAlign: 'left',
+          wordBreak: 'normal', overflowWrap: 'anywhere', textWrap: 'balance',
         }}>
-          {t.home_featured_reel}<br/>
-          <span style={{ color: 'transparent', WebkitTextStroke: '1px var(--text-primary)' }}>
+          {t.home_featured_reel}{' '}
+          <span style={{ color: 'transparent', WebkitTextStroke: '1px var(--text-primary)', whiteSpace: 'normal' }}>
             {t.home_featured_reel_b}
           </span>
         </h2>
@@ -160,13 +310,77 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
         </Link>
       </section>
 
+      {/* 2B. VIDEO BLOCK (aligned with desktop flow) */}
+      <section
+        id="part2b-video"
+        ref={featureVideoSectionRef}
+        style={{
+          width: '100%',
+          boxSizing: 'border-box',
+          padding: '0 1.25rem 4.5rem',
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            aspectRatio: '4 / 3',
+            border: '1px solid rgba(255,255,255,0.16)',
+            overflow: 'hidden',
+            background: '#0f0f10',
+          }}
+        >
+          <video
+            ref={featureVideoRef}
+            autoPlay
+            muted={!isVideoAudioOn}
+            playsInline
+            preload="metadata"
+            onEnded={handleFeatureVideoEnded}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: 0.88,
+            }}
+          >
+            <source src="/assets/hero-bg.mp4" type="video/mp4" />
+          </video>
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to bottom, rgba(10,10,10,0.2), rgba(10,10,10,0.44))',
+            }}
+          />
+          {isVideoErrorOverlayVisible && (
+            <div className="video-error-overlay" aria-hidden="true">
+              <div className="video-error-overlay__stripes" />
+              {Array.from({ length: 8 }).map((_, idx) => (
+                <div
+                  key={`err-row-mobile-${idx}`}
+                  className={`video-error-overlay__text-track ${idx % 2 === 0 ? 'is-left' : 'is-right'}`}
+                  style={{ top: `${10 + idx * 11.5}%` }}
+                >
+                  ERROR • ERROR • ERROR • ERROR • ERROR • ERROR • ERROR • ERROR • ERROR • ERROR • ERROR • ERROR • ERROR • ERROR •
+                </div>
+              ))}
+            </div>
+          )}
+
+        </div>
+      </section>
+
 
       {/* 4. MANIFESTO */}
-      <section style={{ width: '100%', boxSizing: 'border-box', background: 'var(--text-primary)', color: 'var(--bg-primary)', padding: '5rem 1.5rem 6rem' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', opacity: 0.5, letterSpacing: '0.12em', display: 'block', marginBottom: '2rem' }}>
+      <section id="part3" style={{ width: '100%', boxSizing: 'border-box', background: '#111', color: '#f6f2ea', padding: '4rem 1.5rem 4.5rem', borderTop: '1px solid rgba(255,255,255,0.16)', borderBottom: '1px solid rgba(255,255,255,0.16)' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', opacity: 0.62, letterSpacing: '0.12em', display: 'block', marginBottom: '1.4rem' }}>
           {t.home_manifesto_kicker}
         </span>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem, 5.5vw, 2.5rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.02em', textAlign: 'left', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.7rem, 7vw, 2.9rem)', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.95, letterSpacing: '-0.015em', textAlign: 'left', overflowWrap: 'anywhere', wordBreak: 'normal', textWrap: 'balance' }}>
           {t.home_manifesto_title.split('\n').map((line, i) => (
             <span key={i} style={{ display: 'block' }}>{line}</span>
           ))}
@@ -174,8 +388,11 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
       </section>
 
       {/* 5. LET'S START */}
-      <section style={{ width: '100%', boxSizing: 'border-box', padding: '6rem 1.5rem 10rem', textAlign: 'center' }}>
-        <Link to="/contact" style={{ display: 'inline-block', fontFamily: 'var(--font-display)', fontSize: 'clamp(2.2rem, 12vw, 4rem)', fontWeight: 900, textTransform: 'uppercase', textDecoration: 'none', color: 'var(--text-primary)', lineHeight: 0.88, letterSpacing: '-0.03em' }}>
+      <section style={{ width: '100%', boxSizing: 'border-box', padding: '3.5rem 1.5rem 5.5rem', textAlign: 'center', borderTop: '1px solid var(--c-border)' }}>
+        <p style={{ margin: '0 0 1rem', fontFamily: 'var(--font-mono)', fontSize: '0.66rem', letterSpacing: '0.14em', textTransform: 'uppercase', opacity: 0.55 }}>
+          004 // Final call
+        </p>
+        <Link to="/contact" style={{ display: 'inline-block', fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 10.5vw, 3.4rem)', fontWeight: 900, textTransform: 'uppercase', textDecoration: 'none', color: 'var(--text-primary)', lineHeight: 0.9, letterSpacing: '-0.02em' }}>
           LET'S<br/>
           <span style={{ color: 'transparent', WebkitTextStroke: '1px var(--text-primary)' }}>START</span>
         </Link>

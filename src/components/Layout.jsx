@@ -65,7 +65,59 @@ export default function Layout({ children }) {
       '/works': tr.meta_title_works,
       '/contact': tr.meta_title_contact,
     }
-    document.title = titles[location.pathname] || tr.meta_title_home
+
+    const baseTitle = titles[location.pathname] || tr.meta_title_home
+    const animatedTitle = `${baseTitle}   //   `
+    const awayTitle = lang === 'it' ? 'HEY TORNA QUA' : 'COME BACK!!'
+    const activeFavicon = '/assets/logo-hero-mbgs.png?v=3'
+    const awayFavicon = '/assets/favicon-alert.png?v=1'
+    let titleBuffer = animatedTitle
+    let intervalId = null
+
+    const setFavicon = (href) => {
+      const iconRels = ['icon', 'shortcut icon', 'apple-touch-icon']
+      iconRels.forEach((rel) => {
+        const selector = `link[rel="${rel}"]`
+        let link = document.querySelector(selector)
+        if (!link) {
+          link = document.createElement('link')
+          link.setAttribute('rel', rel)
+          document.head.appendChild(link)
+        }
+        link.setAttribute('href', href)
+      })
+    }
+
+    const startActiveTitle = () => {
+      if (intervalId) clearInterval(intervalId)
+      intervalId = setInterval(() => {
+        titleBuffer = `${titleBuffer.slice(1)}${titleBuffer[0]}`
+        document.title = titleBuffer
+      }, 180)
+    }
+
+    const startAwayTitle = () => {
+      if (intervalId) clearInterval(intervalId)
+      document.title = awayTitle
+      let showAlt = false
+      intervalId = setInterval(() => {
+        document.title = showAlt ? awayTitle : `${awayTitle} •`
+        showAlt = !showAlt
+      }, 700)
+    }
+
+    const syncTitleMode = () => {
+      if (document.visibilityState === 'visible') {
+        setFavicon(activeFavicon)
+        titleBuffer = animatedTitle
+        document.title = titleBuffer
+        startActiveTitle()
+      } else {
+        setFavicon(awayFavicon)
+        startAwayTitle()
+      }
+    }
+
     document.documentElement.lang = lang === 'it' ? 'it' : 'en'
     let meta = document.querySelector('meta[name="description"]')
     if (!meta) {
@@ -74,6 +126,15 @@ export default function Layout({ children }) {
       document.head.appendChild(meta)
     }
     meta.setAttribute('content', tr.meta_description)
+
+    syncTitleMode()
+    document.addEventListener('visibilitychange', syncTitleMode)
+
+    return () => {
+      document.removeEventListener('visibilitychange', syncTitleMode)
+      if (intervalId) clearInterval(intervalId)
+      setFavicon(activeFavicon)
+    }
   }, [lang, location.pathname])
 
   const navItems = [
@@ -81,16 +142,22 @@ export default function Layout({ children }) {
     { key: 'works', label: t.nav_projects, path: '/works' },
     { key: 'contact', label: t.nav_contact, path: '/contact' },
   ]
+  const footerEmail = 'michel.lavoro@gmail.com'
+  const socialItems = [
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/michel-branche-328501301/' },
+    { label: 'GitHub', href: 'https://github.com/MichelBranche' },
+    { label: 'Instagram', href: 'https://www.instagram.com/80_sete_/' },
+    { label: 'Facebook', href: 'https://www.facebook.com/michel.branche.56/' },
+  ]
 
   return (
     <div
       className="layout-wrapper"
       style={{
-        backgroundColor: 'var(--bg-primary)',
-        backgroundImage: 'radial-gradient(ellipse 110% 78% at 50% -8%, rgba(255, 252, 245, 0.95), transparent 60%)',
         color: 'var(--text-primary)',
         minHeight: '100vh',
-        cursor: 'none'
+        cursor: 'none',
+        position: 'relative',
       }}
     >
       
@@ -231,6 +298,60 @@ export default function Layout({ children }) {
       >
         {children}
       </main>
+
+      <footer className="site-footer" aria-label="Footer">
+        <div className="site-footer__top">
+          <div className="site-footer__brand">
+            <p className="site-footer__kicker">
+              {lang === 'it' ? 'Milano, IT // Portfolio personale' : 'Milan, IT // Personal portfolio'}
+            </p>
+            <h2 className="site-footer__title">
+              <span>MICHEL</span>
+              <span>BRANCHE</span>
+            </h2>
+          </div>
+
+          <div className="site-footer__newsletter">
+            <p className="site-footer__copy">
+              {lang === 'it'
+                ? 'Progetti digitali, collaborazioni e sviluppo creativo: scrivimi per lavorare insieme.'
+                : 'Digital products, collaborations, and creative development: reach out to work together.'}
+            </p>
+            <a className="site-footer__mail" href={`mailto:${footerEmail}`}>
+              {footerEmail}
+            </a>
+          </div>
+
+          <nav className="site-footer__links" aria-label="Footer links">
+            {navItems.map((item) => (
+              <Link key={`footer-${item.key}`} to={item.path} className="site-footer__link">
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="site-footer__socials">
+            {socialItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                className="site-footer__link"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div className="site-footer__bottom">
+          <span className="site-footer__signature">MICHEL BRANCHE // CREATIVE DEVELOPER</span>
+          <span className="site-footer__copyright">
+            {t.footer_line.replace('{year}', new Date().getFullYear())}
+          </span>
+        </div>
+      </footer>
     </div>
   )
 }

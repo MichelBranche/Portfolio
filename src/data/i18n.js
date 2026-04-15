@@ -172,7 +172,7 @@ export const i18nStrings = {
     home_view_all: 'View All Projects ↗',
     home_featured_scroll_hint: 'Scroll — the reel moves horizontally ↔',
     home_manifesto_kicker: '001 // The Core',
-    home_manifesto_title: 'We build \ninfrastructure \nfor the \nfuture.',
+    home_manifesto_title: 'We design \ndigital products \nbuilt to last.',
     skill_names: [
       'HTML5',
       'CSS3',
@@ -360,7 +360,7 @@ export const i18nStrings = {
     home_view_all: 'Vedi Tutti i Progetti ↗',
     home_featured_scroll_hint: 'Scorri — il reel scorre in orizzontale ↔',
     home_manifesto_kicker: '001 // Il Core',
-    home_manifesto_title: 'Costruiamo \ninfrastruttura \nper il \nfuturo.',
+    home_manifesto_title: 'Progettiamo \nprodotti digitali \nche durano davvero.',
     skill_names: [
       'HTML5',
       'CSS3',

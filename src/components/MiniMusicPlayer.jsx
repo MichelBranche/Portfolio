@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 import './MiniMusicPlayer.css'
 
 // ─── Playlist ────────────────────────────────────────────────────────────────
@@ -64,6 +65,11 @@ export default function MiniMusicPlayer() {
 
   const location = useLocation()
   const isHome = location.pathname === '/' || location.pathname === ''
+  const isMobile = useMediaQuery('(max-width: 768px)')
+
+  useEffect(() => {
+    if (isMobile && isMinimized) setIsMinimized(false)
+  }, [isMobile, isMinimized])
 
   // ── Scroll-driven visibility ──────────────────────────────────
   // On Home: show after hero (85% vh). On all other pages: show immediately.
@@ -153,10 +159,8 @@ export default function MiniMusicPlayer() {
     }
   }, [seeking])
 
-  // ── Autoplay unlock from Preloader (random track, vol 10) ─────────────────
-  // IMPORTANT: audio.play() must be called directly here (not via useEffect)
-  // while still inside the user-interaction call stack — otherwise browsers
-  // block it as an unprompted autoplay.
+  // ── Preloader unlock (no autoplay) ─────────────────────────────────────────
+  // Keep player ready after preload interaction, but don't auto-start music.
   useEffect(() => {
     const onUnlock = () => {
       const randomIdx = Math.floor(Math.random() * PLAYLIST.length)
@@ -165,13 +169,9 @@ export default function MiniMusicPlayer() {
         audio.src = PLAYLIST[randomIdx].url
         audio.volume = 0.1
         audio.load()
-        audio.play().catch((err) => {
-          console.warn('Autoplay blocked:', err)
-          setPlaying(false)
-        })
       }
       setTrackIdx(randomIdx)
-      setPlaying(true)
+      setPlaying(false)
     }
     window.addEventListener('PLAY_PORTFOLIO_MUSIC', onUnlock)
     return () => window.removeEventListener('PLAY_PORTFOLIO_MUSIC', onUnlock)
@@ -209,6 +209,7 @@ export default function MiniMusicPlayer() {
 
   // ── Drag Logic ──────────────────────────────────────────────────────────
   const handleDragEnd = (_, info) => {
+    if (isMobile) return
     // Threshold for swipe: either enough distance or high enough velocity
     if (info.offset.x < -40 || info.velocity.x < -300) {
       setIsMinimized(true)
@@ -221,7 +222,7 @@ export default function MiniMusicPlayer() {
     <AnimatePresence>
       <motion.div
         layout
-        drag="x"
+        drag={isMobile ? false : 'x'}
         dragConstraints={{ left: -400, right: 0 }}
         dragElastic={0.1}
         onDragEnd={handleDragEnd}
