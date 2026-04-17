@@ -127,6 +127,82 @@ export default function Layout({ children }) {
     }
     meta.setAttribute('content', tr.meta_description)
 
+    // SEO: canonical + social tags (Open Graph / Twitter) allineati alla route corrente.
+    const path = location.pathname || '/'
+    const origin =
+      typeof window !== 'undefined' && window.location && window.location.origin
+        ? window.location.origin
+        : 'https://devmichelbranche.vercel.app'
+    const pageUrl = `${origin}${path}`
+    const socialTitle = baseTitle
+    const socialDescription = tr.meta_description
+    const socialImage = `${origin}/assets/logo-hero-mbgs.png?v=3`
+
+    const upsertMeta = (selector, attrs) => {
+      let tag = document.querySelector(selector)
+      if (!tag) {
+        tag = document.createElement('meta')
+        Object.keys(attrs).forEach((k) => {
+          if (k !== 'content') tag.setAttribute(k, attrs[k])
+        })
+        document.head.appendChild(tag)
+      }
+      tag.setAttribute('content', attrs.content)
+    }
+
+    let canonical = document.querySelector('link[rel="canonical"]')
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.setAttribute('rel', 'canonical')
+      document.head.appendChild(canonical)
+    }
+    canonical.setAttribute('href', pageUrl)
+
+    upsertMeta('meta[property="og:type"]', {
+      property: 'og:type',
+      content: 'website',
+    })
+    upsertMeta('meta[property="og:site_name"]', {
+      property: 'og:site_name',
+      content: 'Michel Branche Portfolio',
+    })
+    upsertMeta('meta[property="og:title"]', {
+      property: 'og:title',
+      content: socialTitle,
+    })
+    upsertMeta('meta[property="og:description"]', {
+      property: 'og:description',
+      content: socialDescription,
+    })
+    upsertMeta('meta[property="og:url"]', {
+      property: 'og:url',
+      content: pageUrl,
+    })
+    upsertMeta('meta[property="og:image"]', {
+      property: 'og:image',
+      content: socialImage,
+    })
+    upsertMeta('meta[property="og:locale"]', {
+      property: 'og:locale',
+      content: lang === 'it' ? 'it_IT' : 'en_US',
+    })
+    upsertMeta('meta[name="twitter:card"]', {
+      name: 'twitter:card',
+      content: 'summary_large_image',
+    })
+    upsertMeta('meta[name="twitter:title"]', {
+      name: 'twitter:title',
+      content: socialTitle,
+    })
+    upsertMeta('meta[name="twitter:description"]', {
+      name: 'twitter:description',
+      content: socialDescription,
+    })
+    upsertMeta('meta[name="twitter:image"]', {
+      name: 'twitter:image',
+      content: socialImage,
+    })
+
     syncTitleMode()
     document.addEventListener('visibilitychange', syncTitleMode)
 

@@ -3265,6 +3265,10 @@ body.brutalist {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.site-footer__top > * {
+  min-width: 0;
+}
+
 .site-footer__kicker {
   margin: 0 0 1.2rem;
   font-family: var(--font-mono);
@@ -3363,6 +3367,15 @@ body.brutalist {
     gap: 2rem 1.2rem;
   }
 
+  .site-footer__title {
+    font-size: clamp(2.2rem, 10.5vw, 5.2rem);
+    line-height: 0.9;
+  }
+
+  .site-footer__title span {
+    white-space: normal;
+  }
+
   .site-footer__newsletter,
   .site-footer__links,
   .site-footer__socials {
@@ -3374,16 +3387,26 @@ body.brutalist {
   .site-footer__top {
     grid-template-columns: 1fr;
     gap: 1.6rem;
+    padding: clamp(1.5rem, 6vw, 2.2rem) clamp(1rem, 5vw, 1.5rem);
   }
 
   .site-footer__title {
-    font-size: clamp(2.3rem, 17vw, 4.7rem);
+    font-size: clamp(2rem, 15vw, 4rem);
+    line-height: 0.92;
+    max-width: 100%;
   }
 
   .site-footer__bottom {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.7rem;
+    padding-top: 0.85rem;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .site-footer__signature,
+  .site-footer__copyright {
+    letter-spacing: 0.11em;
   }
 }
 .brutal-footer__tagline {
