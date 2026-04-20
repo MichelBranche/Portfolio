@@ -31,6 +31,23 @@ export const personal = {
 
 export const projects = [
   {
+    id: 10,
+    title: {
+      en: '(Demo) Le Vele Residence',
+      it: '(Demo) Le Vele Residence',
+    },
+    description: {
+      en:
+        'Immersive hospitality website concept for Le Vele Residence: full-screen hero video, editorial typography and lightweight animations focused on atmosphere and conversion.',
+      it:
+        'Concept website immersivo per Le Vele Residence: hero video full-screen, tipografia editoriale e animazioni leggere, con focus su atmosfera e conversione.',
+    },
+    image: 'https://raw.githubusercontent.com/MichelBranche/Demo-LeVeleResidence/main/preview.png',
+    tags: ['JavaScript', 'HTML', 'CSS', 'UI/UX', 'Hospitality'],
+    github: 'https://github.com/MichelBranche/Demo-LeVeleResidence',
+    demo: 'https://demo-le-vele-residence.vercel.app/',
+  },
+  {
     id: 9,
     title: {
       en: '(Clone) Spotify',
