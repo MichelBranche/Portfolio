@@ -31,6 +31,23 @@ export const personal = {
 
 export const projects = [
   {
+    id: 11,
+    title: {
+      en: '(Demo) Caffe Nazionale - Stella di Paolo Griffa',
+      it: '(Demo) Caffe Nazionale - Stella di Paolo Griffa',
+    },
+    description: {
+      en:
+        'Editorial showcase website for Caffe Nazionale Stella di Paolo Griffa, with immersive storytelling, GSAP motion design, Lenis smooth scrolling and fully responsive page architecture.',
+      it:
+        'Sito vetrina/editoriale per Caffe Nazionale Stella di Paolo Griffa, con storytelling immersivo, motion design GSAP, smooth scrolling Lenis e architettura pagine completamente responsive.',
+    },
+    image: 'https://raw.githubusercontent.com/MichelBranche/demo-paologriffa/main/preview.png',
+    tags: ['React', 'Vite', 'GSAP', 'Lenis', 'UI/UX'],
+    github: 'https://github.com/MichelBranche/demo-paologriffa',
+    demo: 'https://demo-paologriffa.vercel.app/',
+  },
+  {
     id: 10,
     title: {
       en: '(Demo) Le Vele Residence',
