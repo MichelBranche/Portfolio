@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { projects } from '../data/projects'
@@ -20,6 +20,37 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
   const hasVideoFinishedRef = useRef(false)
   const [isVideoAudioOn, setIsVideoAudioOn] = useState(false)
   const [isVideoErrorOverlayVisible, setIsVideoErrorOverlayVisible] = useState(false)
+
+  useEffect(() => {
+    const videoEl = featureVideoRef.current
+    const sectionEl = featureVideoSectionRef.current
+    if (!videoEl || !sectionEl) return undefined
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0]
+        if (!entry) return
+
+        // On mobile we only start when the section is actually visible.
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+          if (!hasVideoFinishedRef.current && !isVideoErrorOverlayVisible) {
+            videoEl.play().catch(() => {})
+          }
+          return
+        }
+
+        if (!videoEl.paused) {
+          videoEl.pause()
+        }
+      },
+      {
+        threshold: [0, 0.3, 0.6, 0.85],
+      }
+    )
+
+    observer.observe(sectionEl)
+    return () => observer.disconnect()
+  }, [isVideoErrorOverlayVisible])
 
   useGSAP(() => {
     if (!ready) return
@@ -332,7 +363,6 @@ export default function HomeMobile({ ready, t, lang, handleMouseEnter }) {
         >
           <video
             ref={featureVideoRef}
-            autoPlay
             muted={!isVideoAudioOn}
             playsInline
             preload="metadata"
