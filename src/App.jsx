@@ -39,6 +39,12 @@ function applyDocumentFavicon(href) {
   })
 }
 
+/** Dito / stilo: niente “hover reale” → comandi a tocco persistente */
+function isCoarsePointerDevice() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia('(hover: none) and (pointer: coarse)').matches
+}
+
 function HeroTitleLetters({ text }) {
   return (
     <>
@@ -244,6 +250,17 @@ function App() {
       }
     }
 
+    const isStickyTouch = isCoarsePointerDevice()
+    let activeTouchProjectItem = null
+    let activeProjectLeave = null
+    const clearActiveProjectTouch = () => {
+      if (activeProjectLeave) {
+        activeProjectLeave()
+        activeProjectLeave = null
+        activeTouchProjectItem = null
+      }
+    }
+
     const onMouseMove = (e) => {
       gsap.to(cursor, {
         x: e.clientX,
@@ -252,6 +269,9 @@ function App() {
         ease: 'power2.out',
         overwrite: 'auto',
       })
+      if (isStickyTouch && activeTouchProjectItem) {
+        return
+      }
       // Fallback when mouseleave is missed (e.g. fast scroll) or old tweens leave opacity>0.
       const top = document.elementFromPoint(e.clientX, e.clientY)
       if (!top?.closest?.('.project-item')) {
@@ -265,9 +285,15 @@ function App() {
     }
     window.addEventListener('mousemove', onMouseMove)
     cleanupFns.push(() => window.removeEventListener('mousemove', onMouseMove))
-    const onWindowBlur = () => hideAllProjectFloats()
+    const onWindowBlur = () => {
+      clearActiveProjectTouch()
+      hideAllProjectFloats()
+    }
     const onVisChange = () => {
-      if (document.visibilityState === 'hidden') hideAllProjectFloats()
+      if (document.visibilityState === 'hidden') {
+        clearActiveProjectTouch()
+        hideAllProjectFloats()
+      }
     }
     window.addEventListener('blur', onWindowBlur)
     document.addEventListener('visibilitychange', onVisChange)
@@ -276,16 +302,31 @@ function App() {
       document.removeEventListener('visibilitychange', onVisChange)
     })
 
-    interactables.forEach((el) => {
-      const onEnter = () => gsap.to(cursor, { scale: 4, duration: 0.3, ease: 'back.out(2)' })
-      const onLeave = () => gsap.to(cursor, { scale: 1, duration: 0.3, ease: 'power2.out' })
-      el.addEventListener('mouseenter', onEnter)
-      el.addEventListener('mouseleave', onLeave)
-      cleanupFns.push(() => {
-        el.removeEventListener('mouseenter', onEnter)
-        el.removeEventListener('mouseleave', onLeave)
+    if (!isStickyTouch) {
+      interactables.forEach((el) => {
+        const onEnter = () => gsap.to(cursor, { scale: 4, duration: 0.3, ease: 'back.out(2)' })
+        const onLeave = () => gsap.to(cursor, { scale: 1, duration: 0.3, ease: 'power2.out' })
+        el.addEventListener('mouseenter', onEnter)
+        el.addEventListener('mouseleave', onLeave)
+        cleanupFns.push(() => {
+          el.removeEventListener('mouseenter', onEnter)
+          el.removeEventListener('mouseleave', onLeave)
+        })
       })
-    })
+    }
+
+    if (isStickyTouch) {
+      const onDocProjectTouch = (e) => {
+        if (e.pointerType === 'mouse') return
+        if (!activeTouchProjectItem) return
+        if (activeTouchProjectItem.contains(e.target)) return
+        clearActiveProjectTouch()
+      }
+      document.addEventListener('pointerdown', onDocProjectTouch, true)
+      cleanupFns.push(() => {
+        document.removeEventListener('pointerdown', onDocProjectTouch, true)
+      })
+    }
 
     easterTriggers.forEach((trigger) => {
       const showImg = () => gsap.to(easterImg, { opacity: 1, scale: 1, duration: 0.3 })
@@ -791,17 +832,43 @@ function App() {
         })
       }
 
-      item.addEventListener('mouseenter', onEnter)
-      item.addEventListener('mouseleave', onLeave)
-      item.addEventListener('mousemove', onMove)
-      cleanupFns.push(() => {
-        item.removeEventListener('mouseenter', onEnter)
-        item.removeEventListener('mouseleave', onLeave)
-        item.removeEventListener('mousemove', onMove)
-      })
+      if (isStickyTouch) {
+        const onItemPointerDown = (e) => {
+          if (e.pointerType === 'mouse') return
+          if (activeTouchProjectItem && activeTouchProjectItem !== item) {
+            if (activeProjectLeave) {
+              activeProjectLeave()
+            }
+            activeProjectLeave = null
+            activeTouchProjectItem = null
+          }
+          if (activeTouchProjectItem === item) {
+            return
+          }
+          activeTouchProjectItem = item
+          activeProjectLeave = onLeave
+          onEnter()
+        }
+        item.addEventListener('pointerdown', onItemPointerDown, true)
+        item.addEventListener('pointermove', onMove)
+        cleanupFns.push(() => {
+          item.removeEventListener('pointerdown', onItemPointerDown, true)
+          item.removeEventListener('pointermove', onMove)
+        })
+      } else {
+        item.addEventListener('mouseenter', onEnter)
+        item.addEventListener('mouseleave', onLeave)
+        item.addEventListener('mousemove', onMove)
+        cleanupFns.push(() => {
+          item.removeEventListener('mouseenter', onEnter)
+          item.removeEventListener('mouseleave', onLeave)
+          item.removeEventListener('mousemove', onMove)
+        })
+      }
     })
 
     return () => {
+      clearActiveProjectTouch()
       cleanupFns.forEach((cleanup) => cleanup())
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
       cancelAnimationFrame(rafId)
@@ -966,6 +1033,25 @@ function App() {
     })
   }, [modalData])
 
+  useEffect(() => {
+    if (!isCoarsePointerDevice()) return
+    const onDocClearSounds = (e) => {
+      if (e.pointerType === 'mouse') return
+      if (e.target?.closest?.('.interactable, .self-destruct-keep, .self-destruct-btn')) {
+        return
+      }
+      stopFooterSound('michel')
+      stopFooterSound('branche')
+      stopFooterSound('linkedin')
+      stopFooterSound('instagram')
+      stopFooterSound('email')
+      stopFooterSound('scrivimi')
+      setShowConfetti(false)
+    }
+    document.addEventListener('pointerdown', onDocClearSounds, true)
+    return () => document.removeEventListener('pointerdown', onDocClearSounds, true)
+  }, [])
+
   // publishedAt = data di creazione repo su GitHub (stessa base della “prima pubblicazione”)
   const projectEntries = [
     {
@@ -1081,7 +1167,14 @@ function App() {
               target="_blank"
               rel="noreferrer"
               aria-label="LinkedIn"
-              onPointerEnter={() => playFooterSound('linkedin')}
+              onPointerEnter={(e) => {
+                if (e.pointerType !== 'mouse') return
+                playFooterSound('linkedin')
+              }}
+              onPointerDown={(e) => {
+                if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+                playFooterSound('linkedin')
+              }}
             >
               <svg className="social-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -1096,7 +1189,14 @@ function App() {
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram"
-              onPointerEnter={() => playFooterSound('instagram')}
+              onPointerEnter={(e) => {
+                if (e.pointerType !== 'mouse') return
+                playFooterSound('instagram')
+              }}
+              onPointerDown={(e) => {
+                if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+                playFooterSound('instagram')
+              }}
             >
               <svg className="social-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -1109,7 +1209,14 @@ function App() {
               href={FOOTER_SOCIAL.email}
               className="hero-social-link interactable"
               aria-label="Email"
-              onPointerEnter={() => playFooterSound('email')}
+              onPointerEnter={(e) => {
+                if (e.pointerType !== 'mouse') return
+                playFooterSound('email')
+              }}
+              onPointerDown={(e) => {
+                if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+                playFooterSound('email')
+              }}
             >
               <svg
                 className="social-icon social-icon--stroke"
@@ -1130,8 +1237,18 @@ function App() {
         <div className="hero-name">
           <h1
             className="hero-title interactable easter-trigger"
-            onPointerEnter={() => playFooterSound('michel')}
-            onPointerLeave={() => stopFooterSound('michel')}
+            onPointerEnter={(e) => {
+              if (e.pointerType !== 'mouse') return
+              playFooterSound('michel')
+            }}
+            onPointerDown={(e) => {
+              if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+              playFooterSound('michel')
+            }}
+            onPointerLeave={() => {
+              if (isCoarsePointerDevice()) return
+              stopFooterSound('michel')
+            }}
           >
             <HeroTitleLetters text="MICHEL" />
             <span
@@ -1147,8 +1264,18 @@ function App() {
           <br />
           <h1
             className="hero-title interactable easter-trigger"
-            onPointerEnter={() => playFooterSound('branche')}
-            onPointerLeave={() => stopFooterSound('branche')}
+            onPointerEnter={(e) => {
+              if (e.pointerType !== 'mouse') return
+              playFooterSound('branche')
+            }}
+            onPointerDown={(e) => {
+              if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+              playFooterSound('branche')
+            }}
+            onPointerLeave={() => {
+              if (isCoarsePointerDevice()) return
+              stopFooterSound('branche')
+            }}
           >
             <HeroTitleLetters text="BRANCHE" />
           </h1>
@@ -1226,11 +1353,18 @@ function App() {
         <a
           href={FOOTER_SOCIAL.email}
           className="magnetic-wrap interactable"
-          onPointerEnter={() => {
+          onPointerEnter={(e) => {
+            if (e.pointerType !== 'mouse') return
+            playFooterSound('scrivimi')
+            setShowConfetti(true)
+          }}
+          onPointerDown={(e) => {
+            if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
             playFooterSound('scrivimi')
             setShowConfetti(true)
           }}
           onPointerLeave={() => {
+            if (isCoarsePointerDevice()) return
             setShowConfetti(false)
             handleScrivimiLeave()
           }}
