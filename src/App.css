@@ -71,21 +71,25 @@ section {
 
 .preloader {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
+  z-index: 10000;
   width: 100%;
+  min-height: 100%;
   min-height: 100vh;
   min-height: 100dvh;
-  min-height: -webkit-fill-available;
+  min-height: 100lvh; /* niente striscia in basso: copre l’altezza massima (chrome mobile) */
+  min-height: -webkit-fill-available; /* iOS: riempi davvero lo schermo */
   background-color: var(--fg);
   color: var(--bg);
-  z-index: 10000;
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
   padding: max(5vw, env(safe-area-inset-top, 0px)) max(5vw, env(safe-area-inset-right, 0px))
     max(5vw, env(safe-area-inset-bottom, 0px)) max(5vw, env(safe-area-inset-left, 0px));
   box-sizing: border-box;
+  /* evita 1px di “gap” sotto a causa del compositing / subpixel */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .preloader--cta {
