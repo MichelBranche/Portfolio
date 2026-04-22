@@ -351,7 +351,7 @@ section {
 
 .hero-foreground {
   position: relative;
-  z-index: 1;
+  z-index: 4;
   display: flex;
   flex: 1;
   min-height: 0;
@@ -364,7 +364,9 @@ section {
 
 .hero-foreground .interactable,
 .hero-foreground a[href],
-.hero-foreground .hero-tag {
+.hero-foreground .hero-tag,
+.hero-foreground .hero-social-icons,
+.hero-foreground .hero-lang-corner {
   pointer-events: auto;
 }
 
@@ -504,19 +506,41 @@ section {
 }
 
 .hero-social {
+  --social-icon: clamp(1.35rem, 2.8vw, 1.75rem);
+  --social-hit: calc(var(--social-icon) + 0.5rem);
+  --social-gap: clamp(0.28rem, 0.9vw, 0.55rem);
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: clamp(1rem, 3vw, 1.75rem);
-  flex-shrink: 0;
-  padding-top: 0.15em;
+  flex-shrink: 1;
+  min-width: 0;
+  width: max-content;
+  max-width: 100%;
+  margin-inline-start: auto;
+  padding-top: 0;
   will-change: transform;
+  position: relative;
+  z-index: 6;
+  /* Il proxy confetti (HeroFlair) è sotto, ma senza cluster i “buchi” tra icone prendevano i pointer sotto */
+  pointer-events: none;
+}
+
+.hero-social-icons {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  column-gap: var(--social-gap);
+  pointer-events: auto;
 }
 
 .hero-social-link {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: var(--social-hit);
+  min-height: var(--social-hit);
   color: var(--fg);
   text-decoration: none;
   will-change: transform, color;
@@ -529,14 +553,36 @@ section {
 }
 
 .social-icon {
-  width: clamp(1.35rem, 2.8vw, 1.75rem);
-  height: clamp(1.35rem, 2.8vw, 1.75rem);
+  width: var(--social-icon, clamp(1.35rem, 2.8vw, 1.75rem));
+  height: var(--social-icon, clamp(1.35rem, 2.8vw, 1.75rem));
   display: block;
   flex-shrink: 0;
 }
 
 .social-icon--stroke {
   overflow: visible;
+}
+
+/* Lingua: desktop = angolo del blocco hero; mobile = in flusso sotto “BRANCHE” */
+.hero-lang-corner {
+  --social-icon: clamp(1.35rem, 2.8vw, 1.75rem);
+  --social-hit: calc(var(--social-icon) + 0.65rem);
+  position: absolute;
+  right: max(1rem, env(safe-area-inset-right, 0px));
+  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  z-index: 8;
+  pointer-events: none;
+}
+
+.hero-lang-corner .hero-lang {
+  pointer-events: auto;
+}
+
+.hero-lang-corner .hero-lang-list {
+  top: auto;
+  bottom: calc(100% + 0.35rem);
+  left: auto;
+  right: 0;
 }
 
 @media (max-width: 720px) {
@@ -566,11 +612,43 @@ section {
   }
 
   .hero-social {
+    --social-hit: 48px;
+    --social-icon: clamp(1.45rem, 4.2vw, 1.75rem);
     justify-content: flex-start;
     flex-wrap: wrap;
     row-gap: 0.4rem;
     /* Cuscinetto sotto l’ultima riga: la pill “ITALY” (top: -2.2em) non sale sulla riga icone */
     margin-bottom: clamp(0.5rem, 1.4svh, 0.9rem);
+  }
+
+  .hero-lang-corner {
+    --social-hit: 48px;
+    --social-icon: clamp(1.45rem, 4.2vw, 1.75rem);
+    position: static;
+    right: auto;
+    bottom: auto;
+    align-self: flex-start;
+    width: 100%;
+    max-width: 100%;
+    margin-top: clamp(0.08rem, 0.55svh, 0.45rem);
+    margin-bottom: 0;
+    pointer-events: none;
+  }
+
+  .hero-lang-corner .hero-lang-list {
+    top: calc(100% + 0.35rem);
+    bottom: auto;
+    left: 0;
+    right: auto;
+  }
+
+  .hero-lang-corner .hero-lang {
+    align-items: flex-start;
+  }
+
+  .hero-lang-corner .hero-lang-hint {
+    max-width: min(82vw, 20rem);
+    text-align: left;
   }
 
   .hero-name {
@@ -804,13 +882,126 @@ section {
 
 .footer {
   height: 60vh;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 0;
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+.footer-stack {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 2.5vh;
-  background-color: var(--fg);
-  color: var(--bg);
+  min-height: 0;
+  /* Ripristina respiro sotto il marquee: il meta in basso non deve “tirare su” tutto il blocco */
+  padding-block: clamp(1.75rem, 5.5vh, 4rem) clamp(0.75rem, 2vh, 1.5rem);
+  box-sizing: border-box;
+}
+
+.footer-stack-lead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.35rem, 1vh, 0.75rem);
+}
+
+/* Il 10vmin su tutti i lati staccava troppo “Lavoriamo insieme.” da SCRIVIMI */
+.footer-stack .magnetic-wrap {
+  padding-top: clamp(0.5rem, 1.8vmin, 1.25rem);
+  padding-bottom: clamp(2rem, 8vmin, 10vmin);
+  padding-left: 10vmin;
+  padding-right: 10vmin;
+}
+
+.footer-meta {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(0.75rem, 3vw, 2rem);
+  padding-block: clamp(0.85rem, 2vh, 1.35rem) clamp(1rem, 2.5vh, 1.5rem);
+  padding-inline: max(1rem, 4vw, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  /* Una sola linea sotto il blocco “pavimento”: niente secondo bordo qui (c’è già .self-destruct-floor) */
+  border-top: none;
+  box-sizing: border-box;
+}
+
+.footer-copyright,
+.footer-motto {
+  margin: 0;
+  font-size: clamp(0.62rem, 1.05vw, 0.76rem);
+  letter-spacing: 0.08em;
+  line-height: 1.45;
+}
+
+.footer-copyright {
+  flex: 0 1 auto;
+  max-width: 46%;
+  text-align: left;
+  font-weight: 650;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.footer-motto {
+  flex: 0 1 auto;
+  max-width: 52%;
+  margin-top: 0;
+  text-align: right;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  opacity: 0.62;
+}
+
+@media (max-width: 720px) {
+  .footer-stack {
+    padding-block: clamp(1rem, 3.5svh, 2.5rem) clamp(0.55rem, 1.6svh, 1rem);
+    gap: clamp(1rem, 2.2svh, 1.65rem);
+  }
+
+  .footer-meta {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding-block: clamp(0.7rem, 1.8svh, 1rem) clamp(0.85rem, 2svh, 1.2rem);
+  }
+
+  .footer-copyright,
+  .footer-motto {
+    flex: 0 1 auto;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .footer-stack .scrivimi-hint {
+    margin-top: clamp(-0.15rem, -0.8vmin, 0.2rem);
+  }
+
+  .footer .self-destruct-keep {
+    margin-top: 0.35rem;
+  }
+
+  .footer .self-destruct-floor {
+    margin-top: 0.65rem;
+    padding-top: 0.75rem;
+    max-width: min(100%, calc(100vw - 1.5rem));
+    padding-inline: 0.35rem;
+    box-sizing: border-box;
+  }
 }
 
 .footer p {
@@ -1165,6 +1356,13 @@ body.self-destruct-mode .project-modal {
 
   .magnetic-wrap {
     padding: min(12vmin, 3rem) min(4vmin, 1.5rem);
+  }
+
+  .footer-stack .magnetic-wrap {
+    padding-top: clamp(0.4rem, 1.4vmin, 0.95rem);
+    padding-bottom: min(10vmin, 2.75rem);
+    padding-left: min(4vmin, 1.5rem);
+    padding-right: min(4vmin, 1.5rem);
   }
 }
 

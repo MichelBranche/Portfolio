@@ -1,0 +1,17 @@
+/* Dimensioni effettive definite in LanguageSwitch.css (.hero-lang …) */
+
+.flag-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.flag-icon-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}

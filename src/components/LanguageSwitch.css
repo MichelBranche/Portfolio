@@ -1,0 +1,202 @@
+/* Box lingua = stesso --social-hit dei link (App.css .hero-social); bandiera = --social-icon */
+
+.hero-lang {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: 0 0 auto;
+  width: max-content;
+  max-width: 100%;
+  flex-shrink: 0;
+  z-index: 2;
+  line-height: 0;
+}
+
+.hero-lang-row {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(0.35rem, 1.2vw, 0.65rem);
+  line-height: normal;
+}
+
+.hero-lang-hint {
+  margin: 0;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.32em;
+  max-width: min(46vw, 13.5rem);
+  font-size: clamp(0.65rem, 1.45vw, 0.8rem);
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  text-align: right;
+  line-height: 1.18;
+}
+
+.hero-lang-hint-text {
+  display: block;
+  font-family: inherit;
+}
+
+.hero-lang-hint-arrow {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  color: var(--fg);
+  animation: hero-lang-hint-nudge 1.08s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hero-lang-hint-arrow-svg {
+  display: block;
+  width: 1.45em;
+  height: 0.58em;
+}
+
+@keyframes hero-lang-hint-nudge {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0.28em, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-lang-hint-arrow {
+    animation: none;
+  }
+}
+
+.hero-lang-btn {
+  width: var(--social-hit, 2.65rem);
+  height: var(--social-hit, 2.65rem);
+  min-width: var(--social-hit, 2.65rem);
+  min-height: var(--social-hit, 2.65rem);
+  border-radius: 50%;
+  border: 1.5px solid var(--fg);
+  background: var(--bg);
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  line-height: 0;
+  box-sizing: border-box;
+  box-shadow: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  overflow: hidden;
+}
+
+.hero-lang-btn .flag-icon,
+.hero-lang-btn .flag-icon-svg {
+  width: var(--social-icon, clamp(1.35rem, 2.8vw, 1.75rem));
+  height: var(--social-icon, clamp(1.35rem, 2.8vw, 1.75rem));
+  display: block;
+}
+
+.hero-lang-btn:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.hero-lang-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hero-lang-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0.45rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.28rem;
+  position: absolute;
+  top: calc(100% + 0.28rem);
+  left: 0;
+  z-index: 30;
+  min-width: max-content;
+  max-width: min(92vw, 15rem);
+  background: var(--bg);
+  border: 1.5px solid var(--fg);
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+
+.hero-lang-option {
+  width: clamp(2rem, 4.2vw, 2.45rem);
+  height: clamp(2rem, 4.2vw, 2.45rem);
+  min-width: clamp(2rem, 4.2vw, 2.45rem);
+  min-height: clamp(2rem, 4.2vw, 2.45rem);
+  border-radius: 50%;
+  border: 1.5px solid var(--fg);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+  overflow: hidden;
+  line-height: 0;
+  box-sizing: border-box;
+}
+
+.hero-lang-option .flag-icon,
+.hero-lang-option .flag-icon-svg {
+  width: clamp(1.25rem, 2.6vw, 1.62rem);
+  height: clamp(1.25rem, 2.6vw, 1.62rem);
+  display: block;
+}
+
+.hero-lang-option[aria-selected='true'] {
+  background: #e8e8e0;
+  transform: scale(1.03);
+  box-shadow: inset 0 0 0 1px var(--fg);
+}
+
+.hero-lang-option:hover {
+  background: var(--fg);
+}
+
+.hero-lang-option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .hero-lang-btn {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .hero-lang-btn .flag-icon,
+  .hero-lang-btn .flag-icon-svg {
+    width: var(--social-icon, clamp(1.45rem, 4.2vw, 1.75rem));
+    height: var(--social-icon, clamp(1.45rem, 4.2vw, 1.75rem));
+  }
+
+  .hero-lang-option {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .hero-lang-option .flag-icon,
+  .hero-lang-option .flag-icon-svg {
+    width: clamp(1.35rem, 3.8vw, 1.62rem);
+    height: clamp(1.35rem, 3.8vw, 1.62rem);
+  }
+}

@@ -1,11 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import ConfettiRain from './components/ConfettiRain'
+import { LanguageSwitch } from './components/LanguageSwitch.jsx'
 import MoneyRain from './components/MoneyRain'
 import FireworksRain from './components/FireworksRain'
+import { useLanguage } from './context/LanguageContext.jsx'
 import './App.css'
+import { translate } from './i18n/translations'
 import { initFlairConfetti } from './lib/flairConfetti'
 
 const FOOTER_SOCIAL = {
@@ -25,12 +28,6 @@ const FOOTER_SOUNDS = {
   rizz: '/sounds/rizz-sound-effect.mp3',
 }
 
-const DOC_TITLE_FRAMES = [
-  'MICHEL BRANCHE | Sviluppatore Web',
-  'Sviluppatore web · dritto al punto',
-  'Disponibile per nuovi progetti',
-]
-const DOC_TITLE_AWAY = 'No dai ti prego torna qui...'
 const FAVICON_DEFAULT = '/favicon.png'
 const DOC_TITLE_INTERVAL_MS = 3200
 const PRELOADER_AMBIENT = '/sounds/preloader-ambient.mp3'
@@ -72,11 +69,6 @@ function ProjectTitleWords({ text }) {
   )
 }
 
-const HERO_SUBTITLE_LINES = [
-  'Sviluppatore Web Indipendente.',
-  'Creo siti web veloci, dritti al punto e che convertono.',
-]
-
 const FLAIR_CDN = 'https://assets.codepen.io/16327/'
 
 const HERO_FLAIR_PRELOAD_3D = [
@@ -106,6 +98,67 @@ const HERO_FLAIR_PRELOAD_XP = [
   ['semi', '3D-semi.png'],
 ]
 
+const GH = (repo, file) => `https://raw.githubusercontent.com/MichelBranche/${repo}/main/${file}`
+
+const PROJECT_META = [
+  {
+    slug: 'rubina',
+    tech: 'JavaScript / GSAP / CSS',
+    link: 'https://rubinastradella.vercel.app/',
+    img: GH('photo-portfolio-demo', 'preview.jpg'),
+    thumb: GH('photo-portfolio-demo', 'preview.jpg'),
+    publishedAt: '2026-03-21',
+  },
+  {
+    slug: 'streetwear',
+    tech: 'React / Router / GSAP / Lenis',
+    link: 'https://sys-0ff.vercel.app/',
+    img: GH('ecommerce-demo1', 'public/assets/mockup.png'),
+    thumb: GH('ecommerce-demo1', 'public/assets/mockup.png'),
+    publishedAt: '2026-03-29',
+  },
+  {
+    slug: 'museo',
+    tech: 'React / Vite / GSAP / Lenis',
+    link: 'https://museoegiziotorino.vercel.app/',
+    img: GH('Museo-Egizio-Torino-Demo', 'preview.png'),
+    thumb: GH('Museo-Egizio-Torino-Demo', 'preview.png'),
+    publishedAt: '2026-04-06',
+  },
+  {
+    slug: 'spotify',
+    tech: 'HTML / CSS / JavaScript',
+    link: 'https://spotify-clone-mbdev-umber.vercel.app/',
+    img: GH('Spotify-Clone', 'preview.png'),
+    thumb: GH('Spotify-Clone', 'preview.png'),
+    publishedAt: '2026-04-13',
+  },
+  {
+    slug: 'levele',
+    tech: 'React / Vite / API / Redis',
+    link: 'https://demoleveleresidence.vercel.app/',
+    img: GH('Demo-LeVeleResidence', 'preview.png'),
+    thumb: GH('Demo-LeVeleResidence', 'preview.png'),
+    publishedAt: '2026-04-18',
+  },
+  {
+    slug: 'caffestella',
+    tech: 'React Router / GSAP / Framer Motion',
+    link: 'https://demo-paologriffa.vercel.app/',
+    img: GH('demo-paologriffa', 'preview.png'),
+    thumb: GH('demo-paologriffa', 'preview.png'),
+    publishedAt: '2026-04-20',
+  },
+  {
+    slug: 'ilgusto',
+    tech: 'HTML / CSS / JavaScript',
+    link: 'https://demo-il-gusto.vercel.app/',
+    img: GH('Demo-IlGusto', 'preview-hero.png'),
+    thumb: GH('Demo-IlGusto', 'preview-hero.png'),
+    publishedAt: '2026-04-22',
+  },
+]
+
 function HeroFlair() {
   return (
     <div className="hero-flair" aria-hidden>
@@ -125,10 +178,10 @@ function HeroFlair() {
   )
 }
 
-function HeroSubtitle() {
+function HeroSubtitle({ lines = [] }) {
   return (
     <div className="hero-subtitle gs-reveal">
-      {HERO_SUBTITLE_LINES.map((line, lineIdx) => (
+      {lines.map((line, lineIdx) => (
         <div className="hero-subtitle-line" key={lineIdx}>
           {line.split(' ').map((word, i) => (
             <span className="hero-subtitle-word" key={`${lineIdx}-${i}-${word}`}>
@@ -142,6 +195,7 @@ function HeroSubtitle() {
 }
 
 function App() {
+  const { t, lang } = useLanguage()
   const [modalData, setModalData] = useState(null)
   const lenisRef = useRef(null)
   const modalRef = useRef(null)
@@ -163,6 +217,23 @@ function App() {
   const preloaderPart2DoneRef = useRef(false)
   const heroRef = useRef(null)
   const preloaderAmbientRef = useRef(null)
+
+  const projects = useMemo(() => {
+    return [...PROJECT_META]
+      .map((p) => ({
+        ...p,
+        title: t(`projects.${p.slug}.title`),
+        desc: t(`projects.${p.slug}.desc`),
+      }))
+      .sort((a, b) => a.publishedAt.localeCompare(b.publishedAt, lang, { sensitivity: 'base' }))
+  }, [t, lang])
+
+  const heroSubtitleLines = useMemo(() => {
+    const raw = t('hero.lines')
+    return Array.isArray(raw) ? raw : [String(raw)]
+  }, [t])
+
+  const marqueeLine = String(t('marquee.line'))
 
   useEffect(() => {
     if (preloaderPhase !== 'counting') {
@@ -279,14 +350,17 @@ function App() {
   }, [])
 
   useEffect(() => {
+    const docCycleRaw = translate(lang, 'doc.cycle')
+    const away = translate(lang, 'doc.away')
+    const titleFrames = Array.isArray(docCycleRaw) ? docCycleRaw : [String(docCycleRaw)]
     const preferReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let frame = 0
     let titleTimer = null
 
     const applyVisible = () => {
       document.title = preferReduced
-        ? DOC_TITLE_FRAMES[0]
-        : DOC_TITLE_FRAMES[frame % DOC_TITLE_FRAMES.length]
+        ? titleFrames[0]
+        : titleFrames[frame % titleFrames.length]
     }
 
     const startTitleCycle = () => {
@@ -312,9 +386,9 @@ function App() {
     const onVisibility = () => {
       if (document.hidden) {
         stopTitleCycle()
-        document.title = DOC_TITLE_AWAY
+        document.title = String(away)
       } else {
-        document.title = DOC_TITLE_FRAMES[0]
+        document.title = titleFrames[0]
         frame = 0
         applyDocumentFavicon(FAVICON_DEFAULT)
         startTitleCycle()
@@ -322,7 +396,7 @@ function App() {
     }
 
     if (document.hidden) {
-      document.title = DOC_TITLE_AWAY
+      document.title = String(away)
     } else {
       applyDocumentFavicon(FAVICON_DEFAULT)
       startTitleCycle()
@@ -332,10 +406,10 @@ function App() {
     return () => {
       document.removeEventListener('visibilitychange', onVisibility)
       stopTitleCycle()
-      document.title = DOC_TITLE_FRAMES[0]
+      document.title = titleFrames[0]
       applyDocumentFavicon(FAVICON_DEFAULT)
     }
-  }, [])
+  }, [lang])
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -1176,6 +1250,7 @@ function App() {
       'section.footer p.gs-reveal',
       'section.footer a.magnetic-wrap',
       'section.footer .scrivimi-hint',
+      'section.footer .footer-meta',
     ]
 
     const seen = new Set()
@@ -1281,66 +1356,6 @@ function App() {
   }, [])
 
   // publishedAt = data di creazione repo su GitHub (stessa base della “prima pubblicazione”)
-  const projectEntries = [
-    {
-      title: 'Fotografia - Rubina',
-      desc: 'Portfolio fotografico brutal/editoriale con layout dinamici, animazioni GSAP e approccio performance-first senza framework.',
-      link: 'https://github.com/MichelBranche/photo-portfolio-demo',
-      img: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1200&q=80',
-      thumb: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=800&q=80',
-      tech: 'JavaScript / GSAP / CSS',
-      publishedAt: '2026-03-21',
-    },
-    {
-      title: 'E-commerce - Streetwear',
-      desc: 'E-commerce sperimentale in stile brutalist con routing client-side, transizioni custom, carrello e checkout dimostrativo.',
-      link: 'https://github.com/MichelBranche/ecommerce-demo1',
-      img: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80',
-      thumb: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80',
-      tech: 'React / Router / GSAP / Lenis',
-      publishedAt: '2026-03-29',
-    },
-    {
-      title: 'Istituzionale - Museo Egizio',
-      desc: 'Demo front-end immersiva con pagine istituzionali, biglietteria e shop in anteprima, i18n multi-lingua e animazioni avanzate.',
-      link: 'https://github.com/MichelBranche/Museo-Egizio-Torino-Demo',
-      img: 'https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=1200&q=80',
-      thumb: 'https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=800&q=80',
-      tech: 'React / Vite / GSAP / Lenis',
-      publishedAt: '2026-04-06',
-    },
-    {
-      title: 'Clone interfaccia - Spotify',
-      desc: 'Clone UI di Spotify realizzato con stack web classico, focalizzato su struttura frontend e resa visuale.',
-      link: 'https://github.com/MichelBranche/Spotify-Clone',
-      img: 'https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?auto=format&fit=crop&w=1200&q=80',
-      thumb: 'https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?auto=format&fit=crop&w=800&q=80',
-      tech: 'HTML / CSS / JavaScript',
-      publishedAt: '2026-04-13',
-    },
-    {
-      title: 'Hospitality - Le Vele',
-      desc: 'Web app full stack per residence con landing animata, flusso prenotazioni, area admin e API serverless.',
-      link: 'https://github.com/MichelBranche/Demo-LeVeleResidence',
-      img: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80',
-      thumb: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80',
-      tech: 'React / Vite / API / Redis',
-      publishedAt: '2026-04-18',
-    },
-    {
-      title: 'Gastronomia - Caffè Stella',
-      desc: 'Sito vetrina/editoriale multi-pagina per Caffe Stella con routing SPA, animazioni GSAP, smooth scroll Lenis e layout responsive.',
-      link: 'https://github.com/MichelBranche/demo-paologriffa',
-      img: 'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=1200&q=80',
-      thumb: 'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=800&q=80',
-      tech: 'React Router / GSAP / Framer Motion',
-      publishedAt: '2026-04-20',
-    },
-  ]
-  const projects = [...projectEntries].sort((a, b) =>
-    a.publishedAt.localeCompare(b.publishedAt),
-  )
-
   return (
     <>
       <div className="cursor" aria-hidden>
@@ -1370,7 +1385,7 @@ function App() {
             <div className="preloader-sprinkler-wrap">
               <iframe
                 className="preloader-sprinkler-iframe"
-                title="Animazione di caricamento"
+                title={String(t('preloader.iframeTitle'))}
                 src="/water-sprinkler-loader/loader-embed.html"
                 loading="eager"
                 scrolling="no"
@@ -1384,9 +1399,9 @@ function App() {
             type="button"
             className="preloader-continue interactable"
             onClick={handlePreloaderEnter}
-            aria-label="Entra nel sito"
+            aria-label={String(t('preloader.enterAria'))}
           >
-            ENTER
+            {String(t('preloader.enter'))}
           </button>
         )}
       </div>
@@ -1394,7 +1409,7 @@ function App() {
       <img
         src="/images/michel-easter.png"
         className="easter-egg-img"
-        alt="Ritratto"
+        alt={String(t('easter.imageAlt'))}
       />
 
       <div
@@ -1412,8 +1427,9 @@ function App() {
         <HeroFlair />
         <div className="hero-foreground">
         <div className="hero-top">
-          <HeroSubtitle />
-          <div className="hero-social" aria-label="Contatti social">
+          <HeroSubtitle lines={heroSubtitleLines} />
+          <div className="hero-social" aria-label={String(t('hero.socialAria'))}>
+            <div className="hero-social-icons">
             <a
               href={FOOTER_SOCIAL.linkedin}
               className="hero-social-link interactable"
@@ -1485,6 +1501,7 @@ function App() {
                 <path d="M2.5 6.5 12 12.5l9.5-6" />
               </svg>
             </a>
+            </div>
           </div>
         </div>
         <div className="hero-name">
@@ -1507,10 +1524,10 @@ function App() {
             <span
               className="hero-tag"
               role="img"
-              aria-label="Italia. Tocca o passa sopra per l'interazione"
+              aria-label={String(t('hero.italyTagAria'))}
             >
               <span className="hero-tag-text" aria-hidden="true">
-                ITALY
+                {String(t('hero.italy'))}
               </span>
             </span>
           </h1>
@@ -1533,16 +1550,19 @@ function App() {
             <HeroTitleLetters text="BRANCHE" />
           </h1>
         </div>
+        <div className="hero-lang-corner">
+          <LanguageSwitch />
+        </div>
         </div>
       </section>
 
       <section className="projects">
-        <h2 className="projects-header gs-reveal">Lavori Selezionati</h2>
+        <h2 className="projects-header gs-reveal">{String(t('projects.header'))}</h2>
         <div className="project-list">
           {projects.map((project) => (
             <a
               href="#"
-              key={project.title}
+              key={project.slug}
               className="project-item interactable project-trigger"
               onClick={(e) => {
                 e.preventDefault()
@@ -1562,20 +1582,25 @@ function App() {
       <div className="project-modal" ref={modalRef}>
         <div className="modal-layout">
           <div className="modal-image-container">
-            <img className="modal-img" ref={modalImgRef} src={modalData?.img ?? ''} alt="Project visual" />
+            <img
+              className="modal-img"
+              ref={modalImgRef}
+              src={modalData?.img ?? ''}
+              alt={String(t('modal.imgAlt'))}
+            />
           </div>
           <div className="modal-content">
             <div className="modal-close-wrap">
               <button type="button" className="modal-close interactable" onClick={closeModal} ref={modalCloseRef}>
-                CHIUDI [X]
+                {String(t('modal.close'))}
               </button>
             </div>
             <div className="modal-body">
               <h2 className="modal-title" ref={modalTitleRef}>
-                {modalData?.title ?? 'TITLE'}
+                {modalData ? String(t(`projects.${modalData.slug}.title`)) : String(t('modal.titlePlaceholder'))}
               </h2>
               <p className="modal-desc" ref={modalDescRef}>
-                {modalData?.desc ?? 'Description goes here.'}
+                {modalData ? String(t(`projects.${modalData.slug}.desc`)) : String(t('modal.descPlaceholder'))}
               </p>
               <a
                 href={modalData?.link ?? '#'}
@@ -1584,7 +1609,7 @@ function App() {
                 className="modal-link interactable"
                 ref={modalLinkRef}
               >
-                VAI AL SITO WEB ↗
+                {String(t('modal.visit'))}
               </a>
             </div>
           </div>
@@ -1593,17 +1618,19 @@ function App() {
 
       <div className="marquee">
         <div className="marquee-inner">
-          <span>DISPONIBILE PER NUOVI PROGETTI -</span>
-          <span>DISPONIBILE PER NUOVI PROGETTI -</span>
-          <span>DISPONIBILE PER NUOVI PROGETTI -</span>
-          <span>DISPONIBILE PER NUOVI PROGETTI -</span>
-          <span>DISPONIBILE PER NUOVI PROGETTI -</span>
-          <span>DISPONIBILE PER NUOVI PROGETTI -</span>
+          <span>{marqueeLine}</span>
+          <span>{marqueeLine}</span>
+          <span>{marqueeLine}</span>
+          <span>{marqueeLine}</span>
+          <span>{marqueeLine}</span>
+          <span>{marqueeLine}</span>
         </div>
       </div>
 
       <section className="footer">
-        <p className="gs-reveal">Lavoriamo insieme.</p>
+        <div className="footer-stack">
+        <div className="footer-stack-lead">
+        <p className="gs-reveal">{String(t('footer.cta'))}</p>
         <a
           href={FOOTER_SOCIAL.email}
           className="magnetic-wrap interactable"
@@ -1625,7 +1652,9 @@ function App() {
         >
           <span className="magnetic-text">
             <span className="magnetic-text-shake">
-              {'SCRIVIMI'.split('').map((letter, i) => (
+              {String(t('footer.scrivimi'))
+                .split('')
+                .map((letter, i) => (
                 <span
                   key={i}
                   className="magnetic-text-letter"
@@ -1637,11 +1666,14 @@ function App() {
             </span>
           </span>
         </a>
+        </div>
         <span className="scrivimi-hint" aria-hidden="true">
           <span className="scrivimi-hint-arrow">↑</span>
-          <span className="scrivimi-hint-text scrivimi-hint-text--coarse">p.s. tocca o tieni premuto</span>
+          <span className="scrivimi-hint-text scrivimi-hint-text--coarse">
+            {String(t('footer.hintCoarse'))}
+          </span>
           <span className="scrivimi-hint-text scrivimi-hint-text--fine">
-            p.s. passaci sopra col cursore
+            {String(t('footer.hintFine'))}
           </span>
         </span>
         <div className="self-destruct-keep self-destruct-floor">
@@ -1650,10 +1682,17 @@ function App() {
             className="self-destruct-btn"
             disabled={selfDestructed}
             onClick={runSelfDestruct}
-            aria-label="Scherzo: tanto ci pensa ammiocuggino, tutto cade in basso (demo)"
+            aria-label={String(t('footer.selfDestructAria'))}
           >
-            {selfDestructed ? 'OK, CHIARO.' : 'TANTO CI PENSA AMMIOCUGGINO'}
+            {selfDestructed
+              ? String(t('footer.selfDestructDone'))
+              : String(t('footer.selfDestruct'))}
           </button>
+        </div>
+        </div>
+        <div className="footer-meta">
+          <p className="footer-copyright">© {new Date().getFullYear()} Michel Branche</p>
+          <p className="footer-motto">{String(t('footer.motto'))}</p>
         </div>
       </section>
     </>
