@@ -1270,11 +1270,7 @@ function App() {
     if (!el) {
       return undefined
     }
-    let release = () => {}
-    const run = async () => {
-      release = await initFlairConfetti(el)
-    }
-    void run()
+    const release = initFlairConfetti(el)
     return () => {
       try {
         release()

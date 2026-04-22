@@ -1,39 +1,9 @@
 import gsap from 'gsap'
 import { Observer } from 'gsap/Observer'
+import Physics2DPlugin from 'gsap/Physics2DPlugin'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger, Observer)
-
-const CLUB = 'https://assets.codepen.io/16327/'
-
-let pluginLoadPromise = null
-
-function loadClubPlugins() {
-  if (typeof document === 'undefined' || pluginLoadPromise) {
-    return pluginLoadPromise
-  }
-  pluginLoadPromise = (async () => {
-    if (typeof window === 'undefined') return
-    window.gsap = gsap
-    const files = ['Physics2DPlugin3.min.js']
-    for (const f of files) {
-      await new Promise((resolve, reject) => {
-        if (document.querySelector(`script[data-flair="${f}"]`)) {
-          resolve()
-          return
-        }
-        const s = document.createElement('script')
-        s.src = CLUB + f
-        s.async = false
-        s.dataset.flair = f
-        s.onload = () => resolve()
-        s.onerror = () => reject(new Error(`flair: ${f}`))
-        document.head.appendChild(s)
-      })
-    }
-  })()
-  return pluginLoadPromise
-}
+gsap.registerPlugin(ScrollTrigger, Observer, Physics2DPlugin)
 
 class ConfettiCannon {
   constructor(hero) {
@@ -261,17 +231,11 @@ class ConfettiCannon {
   }
 }
 
-export async function initFlairConfetti(heroElement) {
+export function initFlairConfetti(heroElement) {
   if (!heroElement || typeof window === 'undefined') {
     return () => {}
   }
   if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
-    return () => {}
-  }
-  try {
-    await loadClubPlugins()
-  } catch (e) {
-    console.warn('[flair-confetti]', e)
     return () => {}
   }
   const cannon = new ConfettiCannon(heroElement)
