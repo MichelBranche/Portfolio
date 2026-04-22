@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Water sprinkler</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        max-height: 100%;
+        width: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #0a0a0a;
+        overscroll-behavior: none;
+      }
+      .wrapper {
+        width: 100%;
+        max-width: 420px;
+        max-height: 100%;
+        margin: 0 auto;
+        position: relative;
+        padding: 0 0 4px;
+        overflow: hidden;
+      }
+      svg {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        vertical-align: top;
+      }
+      .loading-text {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <svg viewBox="0 0 200 110" aria-hidden="true"></svg>
+      <div class="loading-text">Loading</div>
+    </div>
+    <script type="module" src="/water-sprinkler-loader/water-sprinkler-loader-svg/dist/script.js"></script>
+  </body>
+</html>

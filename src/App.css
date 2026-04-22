@@ -42,13 +42,22 @@ section {
   left: 0;
   width: 20px;
   height: 20px;
-  background-color: white;
-  border-radius: 50%;
+  color: #fff;
   pointer-events: none;
   z-index: 10002;
   mix-blend-mode: difference;
-  transform: translate(-50%, -50%);
-  will-change: transform, width, height;
+  transform: translate3d(-50%, -50%, 0);
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.cursor-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  shape-rendering: geometricPrecision;
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -97,11 +106,54 @@ section {
   align-items: center;
 }
 
+.preloader--counting {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: max(4vh, env(safe-area-inset-top, 0px)) max(4vw, env(safe-area-inset-right, 0px))
+    max(4vh, env(safe-area-inset-bottom, 0px)) max(4vw, env(safe-area-inset-left, 0px));
+}
+
+.preloader-counting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: min(96vw, 720px);
+  gap: min(0.5rem, 1.2vh);
+}
+
+.preloader-sprinkler-wrap {
+  width: min(92vw, 420px);
+  aspect-ratio: 200 / 110;
+  max-height: min(40vh, 240px);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.preloader-sprinkler-iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: #0a0a0a;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
 .preloader-counter {
   font-size: clamp(4rem, 20vw, 25rem);
   font-weight: 700;
   line-height: 0.8;
   letter-spacing: -0.05em;
+}
+
+.preloader--counting .preloader-counter {
+  font-size: clamp(3rem, 16vw, 12rem);
+  text-align: center;
+  width: 100%;
 }
 
 .preloader-continue {
@@ -242,6 +294,78 @@ section {
   justify-content: space-between;
   overflow: visible;
   position: relative;
+  isolation: isolate;
+}
+
+/* Flair confetti (GSAP): trascinamento su zone “vuote” dello sfondo; i link/ titoli hanno pointer-events: auto */
+.hero-flair {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.hero .image-preload,
+.hero .explosion-preload {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.hero .image-preload img,
+.hero .explosion-preload img {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  max-width: none;
+}
+
+.hero .pricing-hero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.hero .pricing-hero__proxy {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.explosion-img {
+  will-change: transform, opacity;
+}
+
+.hero-foreground {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  min-height: inherit;
+  pointer-events: none;
+}
+
+.hero-foreground .interactable,
+.hero-foreground a[href],
+.hero-foreground .hero-tag {
+  pointer-events: auto;
 }
 
 .hero-top {
@@ -349,6 +473,34 @@ section {
   max-width: 600px;
   flex: 1;
   min-width: 0;
+  will-change: transform;
+}
+
+.hero-subtitle-line {
+  display: block;
+  line-height: 1.35;
+}
+
+.hero-subtitle-line + .hero-subtitle-line {
+  margin-top: 0.28em;
+}
+
+.hero-subtitle-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  margin-right: 0.22em;
+  margin-bottom: 0.05em;
+}
+
+.hero-subtitle-word:last-of-type {
+  margin-right: 0;
+}
+
+.hero-subtitle-word-inner {
+  display: inline-block;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
 }
 
 .hero-social {
@@ -358,6 +510,7 @@ section {
   gap: clamp(1rem, 3vw, 1.75rem);
   flex-shrink: 0;
   padding-top: 0.15em;
+  will-change: transform;
 }
 
 .hero-social-link {
@@ -490,6 +643,13 @@ section {
   z-index: 10;
   opacity: 0;
   filter: grayscale(100%);
+}
+
+/* Touch / mobile: niente anteprima al tap (stessa euristica di isCoarsePointerDevice in App.jsx) */
+@media (hover: none) and (pointer: coarse) {
+  .project-img-float {
+    display: none;
+  }
 }
 
 .project-modal {
@@ -650,6 +810,13 @@ section {
 .magnetic-wrap {
   padding: 10vmin;
   display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.magnetic-wrap:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 .magnetic-text {
@@ -664,6 +831,8 @@ section {
 .magnetic-text-shake {
   display: inline-block;
   transform-origin: center center;
+  will-change: transform;
+  animation: scrivimi-heartbeat 1.5s ease-in-out infinite;
 }
 
 .magnetic-text-letter {
@@ -702,6 +871,12 @@ section {
   }
 
   .magnetic-wrap:hover .magnetic-text-letter {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magnetic-text-shake {
     animation: none;
   }
 }
@@ -820,6 +995,26 @@ section {
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes scrivimi-heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.05);
+  }
+  20% {
+    transform: scale(1);
+  }
+  32% {
+    transform: scale(1.04);
+  }
+  40%,
+  100% {
+    transform: scale(1);
   }
 }
 

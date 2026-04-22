@@ -6,6 +6,7 @@ import ConfettiRain from './components/ConfettiRain'
 import MoneyRain from './components/MoneyRain'
 import FireworksRain from './components/FireworksRain'
 import './App.css'
+import { initFlairConfetti } from './lib/flairConfetti'
 
 const FOOTER_SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/michel-branche-328501301/',
@@ -32,6 +33,7 @@ const DOC_TITLE_FRAMES = [
 const DOC_TITLE_AWAY = 'No dai ti prego torna qui...'
 const FAVICON_DEFAULT = '/favicon.png'
 const DOC_TITLE_INTERVAL_MS = 3200
+const PRELOADER_AMBIENT = '/sounds/preloader-ambient.mp3'
 
 function applyDocumentFavicon(href) {
   document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach((el) => {
@@ -70,6 +72,75 @@ function ProjectTitleWords({ text }) {
   )
 }
 
+const HERO_SUBTITLE_LINES = [
+  'Sviluppatore Web Indipendente.',
+  'Creo siti web veloci, dritti al punto e che convertono.',
+]
+
+const FLAIR_CDN = 'https://assets.codepen.io/16327/'
+
+const HERO_FLAIR_PRELOAD_3D = [
+  ['combo', '3D-combo.png'],
+  ['cone', '3D-cone.png'],
+  ['hoop', '3D-hoop.png'],
+  ['keyframe', '3D-keyframe.png'],
+  ['semi', '3D-semi.png'],
+  ['spiral', '3D-spiral.png'],
+  ['squish', '3D-squish.png'],
+  ['triangle', '3D-triangle.png'],
+  ['tunnel', '3D-tunnel.png'],
+  ['wat', '3D-poly.png'],
+]
+
+const HERO_FLAIR_PRELOAD_XP = [
+  ['blue-circle', '2D-circles.png'],
+  ['green-keyframe', '2D-keyframe.png'],
+  ['orange-lightning', '2D-lightning.png'],
+  ['orange-star', '2D-star.png'],
+  ['purple-flower', '2D-flower.png'],
+  ['cone', '3D-cone.png'],
+  ['keyframe', '3D-spiral.png'],
+  ['spiral', '3D-spiral.png'],
+  ['tunnel', '3D-tunnel.png'],
+  ['hoop', '3D-hoop.png'],
+  ['semi', '3D-semi.png'],
+]
+
+function HeroFlair() {
+  return (
+    <div className="hero-flair" aria-hidden>
+      <div className="image-preload">
+        {HERO_FLAIR_PRELOAD_3D.map(([key, f]) => (
+          <img key={key} data-key={key} src={`${FLAIR_CDN}${f}`} width={1} height={1} alt="" />
+        ))}
+      </div>
+      <div className="explosion-preload">
+        {HERO_FLAIR_PRELOAD_XP.map(([key, f], i) => (
+          <img key={`${i}-${key}`} data-key={key} src={`${FLAIR_CDN}${f}`} alt="" />
+        ))}
+      </div>
+      <svg className="pricing-hero__canvas" />
+      <div className="pricing-hero__proxy" />
+    </div>
+  )
+}
+
+function HeroSubtitle() {
+  return (
+    <div className="hero-subtitle gs-reveal">
+      {HERO_SUBTITLE_LINES.map((line, lineIdx) => (
+        <div className="hero-subtitle-line" key={lineIdx}>
+          {line.split(' ').map((word, i) => (
+            <span className="hero-subtitle-word" key={`${lineIdx}-${i}-${word}`}>
+              <span className="hero-subtitle-word-inner">{word}</span>
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function App() {
   const [modalData, setModalData] = useState(null)
   const lenisRef = useRef(null)
@@ -86,9 +157,43 @@ function App() {
   const [showConfetti, setShowConfetti] = useState(false)
   const [selfDestructed, setSelfDestructed] = useState(false)
   const selfDestructLockRef = useRef(false)
-  const [preloaderPhase, setPreloaderPhase] = useState('counting')
+  const [preloaderPhase, setPreloaderPhase] = useState('awaitEnter')
   const continueAfterPreloaderRef = useRef(() => {})
+  const startPreloaderLoadingRef = useRef(null)
   const preloaderPart2DoneRef = useRef(false)
+  const heroRef = useRef(null)
+  const preloaderAmbientRef = useRef(null)
+
+  useEffect(() => {
+    if (preloaderPhase !== 'counting') {
+      const a = preloaderAmbientRef.current
+      if (a) {
+        a.pause()
+        a.currentTime = 0
+      }
+      return
+    }
+    let a = preloaderAmbientRef.current
+    if (!a) {
+      a = new Audio(PRELOADER_AMBIENT)
+      a.loop = true
+      a.preload = 'auto'
+      a.volume = 0.38
+      preloaderAmbientRef.current = a
+    }
+    void a.play().catch(() => {})
+  }, [preloaderPhase])
+
+  useEffect(() => {
+    return () => {
+      const a = preloaderAmbientRef.current
+      if (a) {
+        a.pause()
+        a.src = ''
+        preloaderAmbientRef.current = null
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const players = {
@@ -105,6 +210,9 @@ function App() {
       a.preload = 'auto'
       a.volume = 0.45
     })
+    if (players.instagram) {
+      players.instagram.volume = 0.45 * 0.6
+    }
     if (players.rizz) {
       players.rizz.volume = 0.55
     }
@@ -136,12 +244,15 @@ function App() {
     audio.currentTime = 0
   }
 
-  const handlePreloaderContinue = () => {
-    if (preloaderPart2DoneRef.current) return
-    setPreloaderPhase('exiting')
-    playFooterSound('rizz')
-    continueAfterPreloaderRef.current()
-  }
+  const handlePreloaderEnter = useCallback(() => {
+    if (preloaderPhase !== 'awaitEnter') return
+    setPreloaderPhase('counting')
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        startPreloaderLoadingRef.current?.()
+      })
+    })
+  }, [preloaderPhase])
 
   const handleScrivimiLeave = () => {
     stopFooterSound('scrivimi')
@@ -233,7 +344,6 @@ function App() {
     const easterImg = document.querySelector('.easter-egg-img')
     const magWrap = document.querySelector('.magnetic-wrap')
     const magText = document.querySelector('.magnetic-text')
-    const counterElement = document.querySelector('.preloader-counter')
     const projectItems = document.querySelectorAll('.project-item')
     const projectFloats = document.querySelectorAll('.project-img-float')
     const interactables = document.querySelectorAll('.interactable')
@@ -251,6 +361,34 @@ function App() {
     }
 
     const isStickyTouch = isCoarsePointerDevice()
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const heroTopEl = document.querySelector('.hero-top')
+    const heroSubEl = document.querySelector('section.hero .hero-subtitle')
+    const heroSocialEl = document.querySelector('section.hero .hero-social')
+    const heroParallaxOn = !isStickyTouch && !prefersReducedMotion && heroTopEl && heroSubEl && heroSocialEl
+
+    const resetHeroTopParallax = () => {
+      if (!heroSubEl || !heroSocialEl) return
+      gsap.to([heroSubEl, heroSocialEl], {
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
+    }
+
+    if (heroParallaxOn) {
+      const heroSection = document.querySelector('section.hero')
+      const onLeaveHero = () => resetHeroTopParallax()
+      if (heroSection) {
+        heroSection.addEventListener('mouseleave', onLeaveHero)
+        cleanupFns.push(() => {
+          heroSection.removeEventListener('mouseleave', onLeaveHero)
+        })
+      }
+    }
+
     let activeTouchProjectItem = null
     let activeProjectLeave = null
     const clearActiveProjectTouch = () => {
@@ -267,10 +405,40 @@ function App() {
         y: e.clientY,
         duration: 0.1,
         ease: 'power2.out',
+        force3D: true,
         overwrite: 'auto',
       })
       if (isStickyTouch && activeTouchProjectItem) {
         return
+      }
+      if (heroParallaxOn) {
+        const r = heroTopEl.getBoundingClientRect()
+        if (r.width > 1 && r.height > 1) {
+          const cx = r.left + r.width * 0.5
+          const cy = r.top + r.height * 0.5
+          const tx = Math.max(
+            -1,
+            Math.min(1, (e.clientX - cx) / (window.innerWidth * 0.28)),
+          )
+          const ty = Math.max(
+            -1,
+            Math.min(1, (e.clientY - cy) / (window.innerHeight * 0.28)),
+          )
+          gsap.to(heroSubEl, {
+            x: tx * 26,
+            y: ty * 16,
+            duration: 0.4,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+          gsap.to(heroSocialEl, {
+            x: tx * 11,
+            y: ty * 7,
+            duration: 0.45,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
       }
       // Fallback when mouseleave is missed (e.g. fast scroll) or old tweens leave opacity>0.
       const top = document.elementFromPoint(e.clientX, e.clientY)
@@ -288,11 +456,13 @@ function App() {
     const onWindowBlur = () => {
       clearActiveProjectTouch()
       hideAllProjectFloats()
+      resetHeroTopParallax()
     }
     const onVisChange = () => {
       if (document.visibilityState === 'hidden') {
         clearActiveProjectTouch()
         hideAllProjectFloats()
+        resetHeroTopParallax()
       }
     }
     window.addEventListener('blur', onWindowBlur)
@@ -304,8 +474,22 @@ function App() {
 
     if (!isStickyTouch) {
       interactables.forEach((el) => {
-        const onEnter = () => gsap.to(cursor, { scale: 4, duration: 0.3, ease: 'back.out(2)' })
-        const onLeave = () => gsap.to(cursor, { scale: 1, duration: 0.3, ease: 'power2.out' })
+        const onEnter = () =>
+          gsap.to(cursor, {
+            scale: 4,
+            duration: 0.3,
+            ease: 'back.out(2)',
+            force3D: true,
+            transformOrigin: '50% 50%',
+          })
+        const onLeave = () =>
+          gsap.to(cursor, {
+            scale: 1,
+            duration: 0.3,
+            ease: 'power2.out',
+            force3D: true,
+            transformOrigin: '50% 50%',
+          })
         el.addEventListener('mouseenter', onEnter)
         el.addEventListener('mouseleave', onLeave)
         cleanupFns.push(() => {
@@ -652,25 +836,6 @@ function App() {
       })
     }
 
-    const counter = { val: 0 }
-    gsap
-      .timeline({
-        onComplete: () => {
-          setPreloaderPhase('ready')
-        },
-      })
-      .to(counter, {
-        val: 100,
-        roundProps: 'val',
-        duration: 1.5,
-        ease: 'power3.inOut',
-        onUpdate: () => {
-          if (counterElement) {
-            counterElement.innerText = `${counter.val}%`
-          }
-        },
-      })
-
     continueAfterPreloaderRef.current = () => {
       if (preloaderPart2DoneRef.current) {
         return
@@ -719,9 +884,22 @@ function App() {
           '-=0.3',
         )
         .fromTo(
-          '.hero-subtitle',
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 1, ease: 'power2.out' },
+          '.hero-subtitle-word-inner',
+          {
+            yPercent: 115,
+            opacity: 0,
+            rotate: () => gsap.utils.random(-6, 6),
+            skewX: () => gsap.utils.random(-5, 5),
+          },
+          {
+            yPercent: 0,
+            opacity: 1,
+            rotate: 0,
+            skewX: 0,
+            duration: 0.82,
+            stagger: { each: 0.032, from: 'start' },
+            ease: 'power3.out',
+          },
           '-=0.8',
         )
         .fromTo(
@@ -739,6 +917,35 @@ function App() {
           '-=0.7',
         )
     }
+
+    const startPreloaderCounting = () => {
+      const el = document.querySelector('.preloader-counter')
+      const counter = { val: 0 }
+      if (el) {
+        el.innerText = '0%'
+      }
+      gsap
+        .timeline({
+          onComplete: () => {
+            if (preloaderPart2DoneRef.current) return
+            setPreloaderPhase('exiting')
+            playFooterSound('rizz')
+            continueAfterPreloaderRef.current()
+          },
+        })
+        .to(counter, {
+          val: 100,
+          roundProps: 'val',
+          duration: 2.2,
+          ease: 'power3.inOut',
+          onUpdate: () => {
+            if (el) {
+              el.innerText = `${counter.val}%`
+            }
+          },
+        })
+    }
+    startPreloaderLoadingRef.current = startPreloaderCounting
 
     projectItems.forEach((item) => {
       const titleInners = item.querySelectorAll('.project-title-word-inner')
@@ -770,15 +977,17 @@ function App() {
         .to(tech, { y: 0, x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.12)
 
       const onEnter = () => {
-        gsap.killTweensOf(img)
-        gsap.to(img, {
-          opacity: 1,
-          scale: 1,
-          duration: 0.4,
-          ease: 'back.out(1.7)',
-          overwrite: 'auto',
-        })
-        gsap.to(cursor, { opacity: 0, duration: 0.2, overwrite: 'auto' })
+        if (!isStickyTouch) {
+          gsap.killTweensOf(img)
+          gsap.to(img, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.4,
+            ease: 'back.out(1.7)',
+            overwrite: 'auto',
+          })
+          gsap.to(cursor, { opacity: 0, duration: 0.2, overwrite: 'auto' })
+        }
         if (titleInners.length) {
           gsap.to(titleInners, {
             y: -5,
@@ -800,9 +1009,11 @@ function App() {
         }
       }
       const onLeave = () => {
-        gsap.killTweensOf(img)
-        gsap.to(img, { opacity: 0, scale: 0, duration: 0.3, overwrite: 'auto' })
-        gsap.to(cursor, { opacity: 1, duration: 0.2, overwrite: 'auto' })
+        if (!isStickyTouch) {
+          gsap.killTweensOf(img)
+          gsap.to(img, { opacity: 0, scale: 0, duration: 0.3, overwrite: 'auto' })
+          gsap.to(cursor, { opacity: 1, duration: 0.2, overwrite: 'auto' })
+        }
         if (titleInners.length) {
           gsap.to(titleInners, {
             y: 0,
@@ -850,10 +1061,8 @@ function App() {
           onEnter()
         }
         item.addEventListener('pointerdown', onItemPointerDown, true)
-        item.addEventListener('pointermove', onMove)
         cleanupFns.push(() => {
           item.removeEventListener('pointerdown', onItemPointerDown, true)
-          item.removeEventListener('pointermove', onMove)
         })
       } else {
         item.addEventListener('mouseenter', onEnter)
@@ -869,6 +1078,10 @@ function App() {
 
     return () => {
       clearActiveProjectTouch()
+      if (heroSubEl && heroSocialEl) {
+        gsap.killTweensOf([heroSubEl, heroSocialEl])
+        gsap.set([heroSubEl, heroSocialEl], { x: 0, y: 0 })
+      }
       cleanupFns.forEach((cleanup) => cleanup())
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
       cancelAnimationFrame(rafId)
@@ -955,7 +1168,7 @@ function App() {
     const selectors = [
       'section.hero .hero-title-letter',
       'section.hero .hero-tag',
-      'section.hero .hero-subtitle',
+      'section.hero .hero-subtitle-word-inner',
       'section.hero a.hero-social-link',
       'section.projects .projects-header',
       'section.projects .project-item',
@@ -1052,6 +1265,25 @@ function App() {
     return () => document.removeEventListener('pointerdown', onDocClearSounds, true)
   }, [])
 
+  useEffect(() => {
+    const el = heroRef.current
+    if (!el) {
+      return undefined
+    }
+    let release = () => {}
+    const run = async () => {
+      release = await initFlairConfetti(el)
+    }
+    void run()
+    return () => {
+      try {
+        release()
+      } catch {
+        // ignore
+      }
+    }
+  }, [])
+
   // publishedAt = data di creazione repo su GitHub (stessa base della “prima pubblicazione”)
   const projectEntries = [
     {
@@ -1115,23 +1347,50 @@ function App() {
 
   return (
     <>
-      <div className="cursor"></div>
+      <div className="cursor" aria-hidden>
+        <svg
+          className="cursor-svg"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden
+        >
+          <circle cx="50" cy="50" r="50" fill="currentColor" />
+        </svg>
+      </div>
       <div className="noise"></div>
       <div
-        className={
-          preloaderPhase === 'ready' ? 'preloader preloader--cta' : 'preloader'
-        }
+        className={[
+          'preloader',
+          (preloaderPhase === 'counting' || preloaderPhase === 'exiting') &&
+            'preloader--counting',
+          preloaderPhase === 'awaitEnter' && 'preloader--cta',
+        ]
+          .filter(Boolean)
+          .join(' ')}
         aria-hidden={preloaderPhase === 'done' ? true : undefined}
       >
-        {preloaderPhase === 'counting' && <div className="preloader-counter">0%</div>}
-        {preloaderPhase === 'ready' && (
+        {(preloaderPhase === 'counting' || preloaderPhase === 'exiting') && (
+          <div className="preloader-counting">
+            <div className="preloader-sprinkler-wrap">
+              <iframe
+                className="preloader-sprinkler-iframe"
+                title="Animazione di caricamento"
+                src="/water-sprinkler-loader/loader-embed.html"
+                loading="eager"
+                scrolling="no"
+              />
+            </div>
+            <div className="preloader-counter">0%</div>
+          </div>
+        )}
+        {preloaderPhase === 'awaitEnter' && (
           <button
             type="button"
             className="preloader-continue interactable"
-            onClick={handlePreloaderContinue}
+            onClick={handlePreloaderEnter}
             aria-label="Entra nel sito"
           >
-            Continua
+            ENTER
           </button>
         )}
       </div>
@@ -1153,13 +1412,11 @@ function App() {
       <ConfettiRain active={showConfetti} />
       <MoneyRain active={showConfetti} />
 
-      <section className="hero">
+      <section ref={heroRef} className="hero">
+        <HeroFlair />
+        <div className="hero-foreground">
         <div className="hero-top">
-          <div className="hero-subtitle gs-reveal">
-            Sviluppatore Web Indipendente.
-            <br />
-            Creo siti web veloci, dritti al punto e che convertono.
-          </div>
+          <HeroSubtitle />
           <div className="hero-social" aria-label="Contatti social">
             <a
               href={FOOTER_SOCIAL.linkedin}
@@ -1279,6 +1536,7 @@ function App() {
           >
             <HeroTitleLetters text="BRANCHE" />
           </h1>
+        </div>
         </div>
       </section>
 
