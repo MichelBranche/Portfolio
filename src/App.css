@@ -535,6 +535,203 @@ section {
   pointer-events: auto;
 }
 
+.hero-mini-player {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-left: clamp(0.5rem, 1.2vw, 1rem);
+  pointer-events: auto;
+}
+
+.hero-mini-player-disc-wrap {
+  width: clamp(2.3rem, 5vw, 2.9rem);
+  height: clamp(2.3rem, 5vw, 2.9rem);
+  border-radius: 999px;
+  border: 1.5px solid var(--fg);
+  background: transparent;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.16rem;
+  cursor: pointer;
+}
+
+.hero-mini-player-disc {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.16),
+    inset 0 0 0 5px rgba(0, 0, 0, 0.22),
+    0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.hero-mini-player-disc::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center, transparent 0 16%, rgba(0, 0, 0, 0.25) 16.2% 17.2%, transparent 17.4%),
+    repeating-radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.08) 0 0.75px,
+      rgba(0, 0, 0, 0.12) 0.75px 2.1px,
+      transparent 2.1px 4.4px
+    );
+  mix-blend-mode: soft-light;
+}
+
+.hero-mini-player-disc::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18%;
+  height: 18%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 32% 30%, #f8f8f8 0 26%, #9f9f9f 34%, #2a2a2a 100%);
+  box-shadow:
+    0 0 0 2px rgba(10, 10, 10, 0.35),
+    0 0 0 4px rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+}
+
+.hero-mini-player-disc-art {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: saturate(1.05) contrast(1.05);
+}
+
+.hero-mini-player-disc--spinning {
+  animation: hero-disc-spin 2.8s linear infinite;
+}
+
+.hero-mini-player-meta {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.05;
+  min-width: 0;
+  max-width: min(38vw, 16rem);
+}
+
+.hero-mini-player-label {
+  font-size: clamp(0.56rem, 0.95vw, 0.68rem);
+  letter-spacing: 0.12em;
+  max-width: none;
+  white-space: nowrap;
+}
+
+.hero-mini-player-label-wrap {
+  width: min(32vw, 13rem);
+  max-width: 100%;
+  overflow: hidden;
+  display: block;
+}
+
+.hero-mini-player-label--scroll {
+  display: inline-block;
+  padding-right: 1.8rem;
+  animation: hero-track-scroll 11s linear infinite;
+}
+
+.hero-mini-player-artist {
+  font-size: clamp(0.5rem, 0.8vw, 0.62rem);
+  opacity: 0.78;
+  letter-spacing: 0.1em;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-mini-player-state {
+  font-size: clamp(0.48rem, 0.75vw, 0.58rem);
+  opacity: 0.65;
+  letter-spacing: 0.12em;
+  margin-top: 0.06rem;
+}
+
+.hero-mini-player-controls-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.06rem;
+}
+
+.hero-mini-player-next {
+  border: 1px solid var(--fg);
+  background: transparent;
+  color: var(--fg);
+  border-radius: 999px;
+  font-size: clamp(0.45rem, 0.72vw, 0.56rem);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.45rem;
+  line-height: 1.2;
+}
+
+@keyframes hero-track-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  15% {
+    transform: translateX(0);
+  }
+  85% {
+    transform: translateX(calc(-100% + min(32vw, 13rem)));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-mini-player-label--scroll {
+    animation: none;
+  }
+}
+
+.hero-mini-player-iframe {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+}
+
+.hero-mini-player-pulse {
+  position: absolute;
+  width: clamp(2.3rem, 5vw, 2.9rem);
+  height: clamp(2.3rem, 5vw, 2.9rem);
+  border-radius: 50%;
+  pointer-events: none;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+@keyframes hero-disc-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .hero-social-link {
   display: flex;
   align-items: center;
@@ -619,6 +816,11 @@ section {
     row-gap: 0.4rem;
     /* Cuscinetto sotto l’ultima riga: la pill “ITALY” (top: -2.2em) non sale sulla riga icone */
     margin-bottom: clamp(0.5rem, 1.4svh, 0.9rem);
+  }
+
+  .hero-mini-player {
+    margin-left: 0;
+    margin-top: 0.25rem;
   }
 
   .hero-lang-corner {

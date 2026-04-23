@@ -31,6 +31,18 @@ const FOOTER_SOUNDS = {
 const FAVICON_DEFAULT = '/favicon.png'
 const DOC_TITLE_INTERVAL_MS = 3200
 const PRELOADER_AMBIENT = '/sounds/preloader-ambient.mp3'
+const HERO_MP3_TRACKS = [
+  {
+    url: 'https://soundcloud.com/deneroofficial/kesha-tik-tok-denero-remix-free-download-1',
+  },
+  {
+    url: 'https://soundcloud.com/e1oovdghddfw/crazy-in-love-ft-jay',
+  },
+  {
+    url: 'https://soundcloud.com/kemosaberecords/die-young-ke-ha',
+  },
+]
+const HERO_MP3_ART = '/favicon.png'
 
 function applyDocumentFavicon(href) {
   document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach((el) => {
@@ -194,6 +206,56 @@ function HeroSubtitle({ lines = [] }) {
   )
 }
 
+function HeroMiniPlayer({
+  isPlaying,
+  onToggle,
+  artwork,
+  title,
+  artist,
+  onNextTrack,
+  trackNumber,
+  totalTracks,
+}) {
+  return (
+    <div className="hero-mini-player interactable">
+      <button
+        type="button"
+        className="hero-mini-player-disc-wrap"
+        onClick={onToggle}
+        aria-label={isPlaying ? 'Pause hero track' : 'Play hero track'}
+        aria-pressed={isPlaying}
+      >
+        <span className={`hero-mini-player-disc${isPlaying ? ' hero-mini-player-disc--spinning' : ''}`}>
+          <img
+            src={artwork || HERO_MP3_ART}
+            alt={title ? `Cover ${title}` : 'Cover track'}
+            className="hero-mini-player-disc-art"
+          />
+        </span>
+      </button>
+      <div className="hero-mini-player-meta">
+        <span className="hero-mini-player-label-wrap" title={title || 'Hero mix'}>
+          <span className="hero-mini-player-label hero-mini-player-label--scroll">
+            {title || 'Hero mix'}
+          </span>
+        </span>
+        <span className="hero-mini-player-artist">{artist || 'SoundCloud'}</span>
+        <div className="hero-mini-player-controls-row">
+          <span className="hero-mini-player-state">{isPlaying ? 'Playing' : 'Paused'}</span>
+          <button
+            type="button"
+            className="hero-mini-player-next"
+            onClick={onNextTrack}
+            aria-label="Prossima canzone"
+          >
+            Next {trackNumber}/{totalTracks}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function App() {
   const { t, lang } = useLanguage()
   const [modalData, setModalData] = useState(null)
@@ -217,6 +279,19 @@ function App() {
   const preloaderPart2DoneRef = useRef(false)
   const heroRef = useRef(null)
   const preloaderAmbientRef = useRef(null)
+  const heroMiniPlayerIframeRef = useRef(null)
+  const heroSoundCloudWidgetRef = useRef(null)
+  const heroMiniPlayerPulseRef = useRef(null)
+  const heroMetaPollTimeoutRef = useRef(null)
+  const [heroTrackPlaying, setHeroTrackPlaying] = useState(false)
+  const [heroTrackIndex, setHeroTrackIndex] = useState(() =>
+    Math.floor(Math.random() * HERO_MP3_TRACKS.length),
+  )
+  const [heroTrackMeta, setHeroTrackMeta] = useState({
+    title: '',
+    artist: '',
+    artwork: '',
+  })
 
   const projects = useMemo(() => {
     return [...PROJECT_META]
@@ -262,6 +337,123 @@ function App() {
         a.pause()
         a.src = ''
         preloaderAmbientRef.current = null
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const widget = heroSoundCloudWidgetRef.current
+    if (!widget) return
+    const shouldAutoplay = heroTrackPlaying
+    setHeroTrackMeta({ title: '', artist: '', artwork: '' })
+    widget.load(HERO_MP3_TRACKS[heroTrackIndex].url, {
+      auto_play: shouldAutoplay,
+      show_comments: false,
+      show_user: false,
+      show_reposts: false,
+      hide_related: true,
+      visual: false,
+    })
+  }, [heroTrackIndex])
+
+  useEffect(() => {
+    let cancelled = false
+    const scriptId = 'soundcloud-widget-api'
+
+    const bindWidget = () => {
+      const iframe = heroMiniPlayerIframeRef.current
+      const SC = window.SC
+      if (!iframe || !SC?.Widget) return
+      const widget = SC.Widget(iframe)
+      heroSoundCloudWidgetRef.current = widget
+      const readSoundMeta = (attempt = 0) => {
+        if (heroMetaPollTimeoutRef.current) {
+          clearTimeout(heroMetaPollTimeoutRef.current)
+          heroMetaPollTimeoutRef.current = null
+        }
+        widget.getCurrentSound((sound) => {
+          if (cancelled || !sound) return
+          const title = typeof sound.title === 'string' ? sound.title : ''
+          const artist =
+            typeof sound.user?.username === 'string'
+              ? sound.user.username
+              : ''
+          const artworkRaw =
+            typeof sound.artwork_url === 'string' && sound.artwork_url
+              ? sound.artwork_url
+              : typeof sound.user?.avatar_url === 'string'
+                ? sound.user.avatar_url
+                : ''
+          const artwork = artworkRaw ? artworkRaw.replace('-large.', '-t500x500.') : ''
+          setHeroTrackMeta({ title, artist, artwork })
+          if ((!title || !artwork) && attempt < 8) {
+            heroMetaPollTimeoutRef.current = setTimeout(() => {
+              readSoundMeta(attempt + 1)
+            }, 200)
+          }
+        })
+      }
+      widget.bind(SC.Widget.Events.PLAY, () => {
+        if (!cancelled) setHeroTrackPlaying(true)
+      })
+      widget.bind(SC.Widget.Events.PAUSE, () => {
+        if (!cancelled) setHeroTrackPlaying(false)
+      })
+      widget.bind(SC.Widget.Events.FINISH, () => {
+        if (!cancelled) setHeroTrackPlaying(false)
+      })
+      widget.bind(SC.Widget.Events.READY, () => {
+        if (!cancelled) {
+          setHeroTrackPlaying(false)
+          readSoundMeta()
+        }
+      })
+    }
+
+    if (window.SC?.Widget) {
+      bindWidget()
+      return () => {
+        cancelled = true
+        if (heroMetaPollTimeoutRef.current) {
+          clearTimeout(heroMetaPollTimeoutRef.current)
+          heroMetaPollTimeoutRef.current = null
+        }
+        heroSoundCloudWidgetRef.current = null
+      }
+    }
+
+    let script = document.getElementById(scriptId)
+    const onLoad = () => bindWidget()
+    if (!script) {
+      script = document.createElement('script')
+      script.id = scriptId
+      script.src = 'https://w.soundcloud.com/player/api.js'
+      script.async = true
+      script.addEventListener('load', onLoad)
+      document.body.appendChild(script)
+    } else {
+      script.addEventListener('load', onLoad)
+    }
+
+    return () => {
+      cancelled = true
+      if (heroMetaPollTimeoutRef.current) {
+        clearTimeout(heroMetaPollTimeoutRef.current)
+        heroMetaPollTimeoutRef.current = null
+      }
+      script?.removeEventListener('load', onLoad)
+      heroSoundCloudWidgetRef.current = null
+    }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      const widget = heroSoundCloudWidgetRef.current
+      if (!widget) return
+      widget.pause()
+      if (heroMetaPollTimeoutRef.current) {
+        clearTimeout(heroMetaPollTimeoutRef.current)
+        heroMetaPollTimeoutRef.current = null
       }
     }
   }, [])
@@ -741,6 +933,120 @@ function App() {
       })
     })
 
+    const heroMiniPlayer = document.querySelector('.hero-mini-player')
+    if (heroMiniPlayer) {
+      const discWrap = heroMiniPlayer.querySelector('.hero-mini-player-disc-wrap')
+      const nextBtn = heroMiniPlayer.querySelector('.hero-mini-player-next')
+      const meta = heroMiniPlayer.querySelector('.hero-mini-player-meta')
+      let playerEnterTl = null
+
+      const onPlayerEnter = () => {
+        if (playerEnterTl) playerEnterTl.kill()
+        playerEnterTl = gsap.timeline()
+        playerEnterTl
+          .to(heroMiniPlayer, {
+            y: -6,
+            scale: 1.03,
+            duration: 0.3,
+            ease: 'power3.out',
+          })
+          .to(
+            discWrap,
+            {
+              borderColor: 'var(--accent)',
+              duration: 0.25,
+              ease: 'power2.out',
+            },
+            0,
+          )
+          .to(
+            discWrap,
+            {
+              rotate: '+=22',
+              duration: 0.45,
+              ease: 'back.out(2)',
+            },
+            0,
+          )
+          .to(
+            meta,
+            {
+              x: 3,
+              duration: 0.35,
+              ease: 'power2.out',
+            },
+            0,
+          )
+      }
+
+      const onPlayerLeave = () => {
+        if (playerEnterTl) playerEnterTl.kill()
+        gsap.to(heroMiniPlayer, {
+          y: 0,
+          scale: 1,
+          duration: 0.45,
+          ease: 'elastic.out(1, 0.5)',
+        })
+        gsap.to(discWrap, { borderColor: '', duration: 0.28, ease: 'power2.out' })
+        gsap.to(discWrap, { rotate: 0, duration: 0.45, ease: 'power3.out' })
+        gsap.to(meta, { x: 0, duration: 0.35, ease: 'power2.out' })
+      }
+
+      const onPlayerDown = () => {
+        gsap.to(heroMiniPlayer, { scale: 0.97, duration: 0.12, ease: 'power2.out' })
+      }
+      const onPlayerUp = () => {
+        gsap.to(heroMiniPlayer, { scale: 1.03, duration: 0.25, ease: 'back.out(2)' })
+      }
+
+      const onNextEnter = () => {
+        gsap.to(nextBtn, {
+          y: -2,
+          backgroundColor: 'var(--accent)',
+          color: 'var(--bg)',
+          borderColor: 'var(--accent)',
+          duration: 0.25,
+          ease: 'power2.out',
+        })
+      }
+      const onNextLeave = () => {
+        gsap.to(nextBtn, {
+          y: 0,
+          backgroundColor: 'transparent',
+          color: '',
+          borderColor: '',
+          duration: 0.3,
+          ease: 'power2.out',
+        })
+      }
+      const onNextDown = () => {
+        gsap.to(nextBtn, { scale: 0.93, duration: 0.1, ease: 'power2.out' })
+      }
+      const onNextUp = () => {
+        gsap.to(nextBtn, { scale: 1, duration: 0.2, ease: 'back.out(2)' })
+      }
+
+      heroMiniPlayer.addEventListener('mouseenter', onPlayerEnter)
+      heroMiniPlayer.addEventListener('mouseleave', onPlayerLeave)
+      heroMiniPlayer.addEventListener('mousedown', onPlayerDown)
+      heroMiniPlayer.addEventListener('mouseup', onPlayerUp)
+      nextBtn?.addEventListener('mouseenter', onNextEnter)
+      nextBtn?.addEventListener('mouseleave', onNextLeave)
+      nextBtn?.addEventListener('mousedown', onNextDown)
+      nextBtn?.addEventListener('mouseup', onNextUp)
+      cleanupFns.push(() => {
+        heroMiniPlayer.removeEventListener('mouseenter', onPlayerEnter)
+        heroMiniPlayer.removeEventListener('mouseleave', onPlayerLeave)
+        heroMiniPlayer.removeEventListener('mousedown', onPlayerDown)
+        heroMiniPlayer.removeEventListener('mouseup', onPlayerUp)
+        nextBtn?.removeEventListener('mouseenter', onNextEnter)
+        nextBtn?.removeEventListener('mouseleave', onNextLeave)
+        nextBtn?.removeEventListener('mousedown', onNextDown)
+        nextBtn?.removeEventListener('mouseup', onNextUp)
+        if (playerEnterTl) playerEnterTl.kill()
+      })
+    }
+
     if (magWrap && magText) {
       const onMagneticMove = (e) => {
         const rect = magWrap.getBoundingClientRect()
@@ -990,6 +1296,19 @@ function App() {
           },
           '-=0.7',
         )
+        .fromTo(
+          '.hero-mini-player',
+          { opacity: 0, y: 22, scale: 0.72, rotate: -8 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotate: 0,
+            duration: 0.72,
+            ease: 'back.out(1.9)',
+          },
+          '-=0.65',
+        )
     }
 
     const startPreloaderCounting = () => {
@@ -1212,6 +1531,54 @@ function App() {
       .to(modalImgRef.current, { opacity: 0, duration: 0.3 }, '-=0.2')
       .to(modalRef.current, { yPercent: 0, duration: 0.8, ease: 'expo.inOut' }, '-=0.1')
   }
+
+  const toggleHeroTrack = () => {
+    const widget = heroSoundCloudWidgetRef.current
+    if (!widget) return
+    if (!heroTrackPlaying) {
+      widget.play()
+      return
+    }
+    widget.pause()
+  }
+
+  const nextHeroTrack = () => {
+    const pulseEl = heroMiniPlayerPulseRef.current
+    if (pulseEl) {
+      gsap.killTweensOf(pulseEl)
+      gsap.fromTo(
+        pulseEl,
+        { scale: 1, boxShadow: '0 0 0 0 rgba(255, 51, 0, 0.45)' },
+        {
+          scale: 1.075,
+          boxShadow: '0 0 0 9px rgba(255, 51, 0, 0)',
+          duration: 0.34,
+          ease: 'power2.out',
+          yoyo: true,
+          repeat: 1,
+        },
+      )
+    }
+    setHeroTrackIndex((prev) => (prev + 1) % HERO_MP3_TRACKS.length)
+  }
+
+  useEffect(() => {
+    const pulseEl = heroMiniPlayerPulseRef.current
+    if (!pulseEl) return
+    gsap.killTweensOf(pulseEl)
+    gsap.fromTo(
+      pulseEl,
+      { scale: 1, boxShadow: '0 0 0 0 rgba(255, 51, 0, 0.38)' },
+      {
+        scale: 1.055,
+        boxShadow: '0 0 0 7px rgba(255, 51, 0, 0)',
+        duration: 0.28,
+        ease: 'power2.out',
+        yoyo: true,
+        repeat: 1,
+      },
+    )
+  }, [heroTrackIndex])
 
   const runSelfDestruct = useCallback(() => {
     if (selfDestructLockRef.current) {
@@ -1502,7 +1869,27 @@ function App() {
               </svg>
             </a>
             </div>
+            <HeroMiniPlayer
+              isPlaying={heroTrackPlaying}
+              onToggle={toggleHeroTrack}
+              artwork={heroTrackMeta.artwork}
+              title={heroTrackMeta.title}
+              artist={heroTrackMeta.artist}
+              onNextTrack={nextHeroTrack}
+              trackNumber={heroTrackIndex + 1}
+              totalTracks={HERO_MP3_TRACKS.length}
+            />
+            <iframe
+              ref={heroMiniPlayerIframeRef}
+              title="Hero SoundCloud player"
+              className="hero-mini-player-iframe"
+              src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(
+                HERO_MP3_TRACKS[heroTrackIndex].url,
+              )}&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`}
+              allow="autoplay"
+            />
           </div>
+          <span className="hero-mini-player-pulse" ref={heroMiniPlayerPulseRef} aria-hidden />
         </div>
         <div className="hero-name">
           <h1
