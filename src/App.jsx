@@ -56,6 +56,10 @@ function isCoarsePointerDevice() {
   return window.matchMedia('(hover: none) and (pointer: coarse)').matches
 }
 
+function asArray(value) {
+  return Array.isArray(value) ? value.map(String) : [String(value)]
+}
+
 function HeroTitleLetters({ text }) {
   return (
     <>
@@ -64,6 +68,20 @@ function HeroTitleLetters({ text }) {
           <span className="hero-title-letter-inner">{ch}</span>
         </span>
       ))}
+    </>
+  )
+}
+
+function ServicesHeaderLetters({ text }) {
+  return (
+    <>
+      {String(text)
+        .split('')
+        .map((ch, i) => (
+          <span key={`${ch}-${i}`} className="services-header-letter">
+            <span className="services-header-letter-inner">{ch === ' ' ? '\u00A0' : ch}</span>
+          </span>
+        ))}
     </>
   )
 }
@@ -325,6 +343,88 @@ function App() {
   }, [t])
 
   const marqueeLine = String(t('marquee.line'))
+  const services = useMemo(
+    () => [
+      {
+        title: String(t('services.website.title')),
+        desc: String(t('services.website.desc')),
+      },
+      {
+        title: String(t('services.ecommerce.title')),
+        desc: String(t('services.ecommerce.desc')),
+      },
+      {
+        title: String(t('services.uiux.title')),
+        desc: String(t('services.uiux.desc')),
+      },
+      {
+        title: String(t('services.performance.title')),
+        desc: String(t('services.performance.desc')),
+      },
+      {
+        title: String(t('services.maintenance.title')),
+        desc: String(t('services.maintenance.desc')),
+      },
+      {
+        title: String(t('services.seo.title')),
+        desc: String(t('services.seo.desc')),
+      },
+    ],
+    [t],
+  )
+  const packageCards = useMemo(
+    () =>
+      ['launch', 'growth', 'authority'].map((key) => ({
+        key,
+        name: String(t(`packages.${key}.name`)),
+        range: String(t(`packages.${key}.range`)),
+        ideal: asArray(t(`packages.${key}.ideal`)),
+        includes: asArray(t(`packages.${key}.includes`)),
+      })),
+    [t],
+  )
+  const packageExtras = useMemo(() => asArray(t('packages.extras.items')), [t])
+  const packagePositioning = useMemo(() => asArray(t('packages.positioning.lines')), [t])
+  const packageFlow = useMemo(() => asArray(t('packages.flow.steps')), [t])
+  const [activePackage, setActivePackage] = useState('growth')
+  const activePackageData = useMemo(
+    () => packageCards.find((pack) => pack.key === activePackage) ?? packageCards[1],
+    [activePackage, packageCards],
+  )
+  const packagesShowcaseRef = useRef(null)
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActivePackage((current) => {
+        const idx = packageCards.findIndex((pack) => pack.key === current)
+        return packageCards[(idx + 1) % packageCards.length]?.key ?? 'growth'
+      })
+    }, 9000)
+    return () => window.clearInterval(timer)
+  }, [packageCards])
+
+  useEffect(() => {
+    const root = packagesShowcaseRef.current
+    if (!root) return
+    const moving = root.querySelectorAll(
+      '.packages-showcase-title, .packages-showcase-price, .package-label, .package-list li, .package-badge, .package-kicker',
+    )
+    const tl = gsap.timeline()
+    tl.fromTo(
+      root,
+      { opacity: 0.72, y: 10 },
+      { opacity: 1, y: 0, duration: 0.38, ease: 'power2.out' },
+      0,
+    ).fromTo(
+      moving,
+      { y: 12, opacity: 0.2 },
+      { y: 0, opacity: 1, duration: 0.42, stagger: 0.02, ease: 'power2.out' },
+      0.04,
+    )
+    return () => {
+      tl.kill()
+    }
+  }, [activePackage])
 
   useEffect(() => {
     if (preloaderPhase !== 'counting') {
@@ -627,6 +727,8 @@ function App() {
     const magWrap = document.querySelector('.magnetic-wrap')
     const magText = document.querySelector('.magnetic-text')
     const projectItems = document.querySelectorAll('.project-item')
+    const serviceItems = document.querySelectorAll('.service-item')
+    const packageCardsEls = document.querySelectorAll('.package-card')
     const projectFloats = document.querySelectorAll('.project-img-float')
     const interactables = document.querySelectorAll('.interactable')
     const easterTriggers = document.querySelectorAll('.easter-trigger')
@@ -731,6 +833,17 @@ function App() {
             break
           }
         }
+      }
+      if (!isStickyTouch && cursor && !top?.closest?.('.interactable')) {
+        // Safety reset: if a leave event is missed, bring cursor back to normal size.
+        gsap.to(cursor, {
+          scale: 1,
+          duration: 0.2,
+          ease: 'power2.out',
+          force3D: true,
+          transformOrigin: '50% 50%',
+          overwrite: 'auto',
+        })
       }
     }
     window.addEventListener('mousemove', onMouseMove)
@@ -1479,6 +1592,294 @@ function App() {
       }
     })
 
+    const servicesHeader = document.querySelector('.services-header')
+    const servicesLead = document.querySelector('.services-lead')
+    const runServicesHeaderIntro = () => {
+      if (!servicesHeader || prefersReducedMotion) return
+      const headerLetters = servicesHeader.querySelectorAll('.services-header-letter-inner')
+      gsap.set(headerLetters, { yPercent: 110, rotate: 4, opacity: 0 })
+      gsap
+        .timeline()
+        .to(servicesHeader, { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' })
+        .to(
+          headerLetters,
+          {
+            yPercent: 0,
+            rotate: 0,
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.03,
+            ease: 'power3.out',
+          },
+          0,
+        )
+        .to(
+          servicesHeader,
+          {
+            color: 'var(--accent)',
+            duration: 0.18,
+            ease: 'power1.out',
+            yoyo: true,
+            repeat: 1,
+          },
+          0.18,
+        )
+    }
+
+    if (servicesHeader || servicesLead) {
+      gsap.set([servicesHeader, servicesLead].filter(Boolean), { opacity: 0, y: 24 })
+      const servicesRevealTl = gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: '.services',
+            start: 'top 84%',
+            once: true,
+          },
+        })
+        .to([servicesHeader, servicesLead].filter(Boolean), {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          stagger: 0.12,
+          ease: 'power2.out',
+        })
+      servicesRevealTl.eventCallback('onComplete', () => {
+        runServicesHeaderIntro()
+      })
+    }
+    if (servicesHeader) {
+      cleanupFns.push(() => {
+        gsap.killTweensOf(servicesHeader)
+      })
+    }
+
+    serviceItems.forEach((item) => {
+      const title = item.querySelector('.service-title')
+      const desc = item.querySelector('.service-desc')
+      const parts = [title, desc].filter(Boolean)
+
+      gsap.set(item, { opacity: 0, y: 36, rotateX: -10, transformOrigin: '50% 100%' })
+      if (parts.length) {
+        gsap.set(parts, { opacity: 0, y: 16 })
+      }
+
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 90%',
+            once: true,
+          },
+        })
+        .to(item, {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+        })
+        .to(
+          parts,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.45,
+            stagger: 0.06,
+            ease: 'power2.out',
+          },
+          0.1,
+        )
+
+      const onEnter = () => {
+        gsap.to(item, {
+          y: -7,
+          scale: 1.015,
+          borderColor: 'var(--accent)',
+          duration: 0.35,
+          ease: 'power3.out',
+          overwrite: 'auto',
+        })
+        if (title) {
+          gsap.to(title, {
+            x: 4,
+            color: 'var(--accent)',
+            duration: 0.32,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
+        if (desc) {
+          gsap.to(desc, {
+            x: 2,
+            opacity: 1,
+            duration: 0.32,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
+      }
+
+      const onLeave = () => {
+        gsap.to(item, {
+          y: 0,
+          scale: 1,
+          borderColor: '',
+          duration: 0.42,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        })
+        if (title) {
+          gsap.to(title, {
+            x: 0,
+            color: '',
+            duration: 0.35,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
+        if (desc) {
+          gsap.to(desc, {
+            x: 0,
+            duration: 0.35,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
+      }
+
+      if (isStickyTouch) {
+        const onTap = (e) => {
+          if (e.pointerType === 'mouse') return
+          onEnter()
+          window.setTimeout(() => onLeave(), 260)
+        }
+        item.addEventListener('pointerdown', onTap, true)
+        cleanupFns.push(() => {
+          item.removeEventListener('pointerdown', onTap, true)
+        })
+      } else {
+        item.addEventListener('mouseenter', onEnter)
+        item.addEventListener('mouseleave', onLeave)
+        cleanupFns.push(() => {
+          item.removeEventListener('mouseenter', onEnter)
+          item.removeEventListener('mouseleave', onLeave)
+        })
+      }
+    })
+
+    const packagesHeader = document.querySelector('.packages-header')
+    const packagesLead = document.querySelector('.packages-lead')
+    const packagesExtras = document.querySelector('.packages-extras')
+    const packagesPositioning = document.querySelector('.packages-positioning')
+    const packagesFlow = document.querySelector('.packages-flow')
+    const packagesShowcase = document.querySelector('.packages-showcase')
+
+    if (
+      packagesHeader ||
+      packagesLead ||
+      packageCardsEls.length ||
+      packagesExtras ||
+      packagesPositioning ||
+      packagesFlow ||
+      packagesShowcase
+    ) {
+      const introParts = [packagesHeader, packagesLead].filter(Boolean)
+      if (introParts.length) {
+        gsap.set(introParts, { opacity: 0, y: 24 })
+      }
+      if (packageCardsEls.length) {
+        gsap.set(packageCardsEls, { opacity: 0, y: 40, rotateX: -10, transformOrigin: '50% 100%' })
+      }
+      gsap.set([packagesShowcase, packagesExtras, packagesPositioning, packagesFlow].filter(Boolean), {
+        opacity: 0,
+        y: 20,
+      })
+
+      const packagesTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.packages',
+          start: 'top 84%',
+          once: true,
+        },
+      })
+      if (introParts.length) {
+        packagesTl.to(introParts, {
+          opacity: 1,
+          y: 0,
+          duration: 0.52,
+          stagger: 0.12,
+          ease: 'power2.out',
+        })
+      }
+      if (packageCardsEls.length) {
+        packagesTl.to(
+          packageCardsEls,
+          {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            duration: 0.56,
+            stagger: 0.1,
+            ease: 'power2.out',
+          },
+          introParts.length ? '-=0.25' : 0,
+        )
+      }
+      packagesTl.to(
+        [packagesShowcase, packagesExtras, packagesPositioning, packagesFlow].filter(Boolean),
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.48,
+          stagger: 0.08,
+          ease: 'power2.out',
+        },
+        '-=0.2',
+      )
+    }
+
+    packageCardsEls.forEach((card) => {
+      const packageColor = getComputedStyle(card).getPropertyValue('--package-color').trim() || 'var(--accent)'
+      const onEnter = () => {
+        gsap.to(card, {
+          y: -7,
+          scale: 1.012,
+          borderColor: packageColor,
+          duration: 0.32,
+          ease: 'power3.out',
+          overwrite: 'auto',
+        })
+      }
+      const onLeave = () => {
+        gsap.to(card, {
+          y: 0,
+          scale: 1,
+          borderColor: '',
+          duration: 0.38,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        })
+      }
+      if (isStickyTouch) {
+        const onTap = (e) => {
+          if (e.pointerType === 'mouse') return
+          onEnter()
+          window.setTimeout(() => onLeave(), 220)
+        }
+        card.addEventListener('pointerdown', onTap, true)
+        cleanupFns.push(() => {
+          card.removeEventListener('pointerdown', onTap, true)
+        })
+      } else {
+        card.addEventListener('mouseenter', onEnter)
+        card.addEventListener('mouseleave', onLeave)
+        cleanupFns.push(() => {
+          card.removeEventListener('mouseenter', onEnter)
+          card.removeEventListener('mouseleave', onLeave)
+        })
+      }
+    })
+
     return () => {
       clearActiveProjectTouch()
       if (heroSubEl && heroSocialEl) {
@@ -1966,6 +2367,100 @@ function App() {
               <img src={project.thumb} alt={project.title} className="project-img-float" />
             </a>
           ))}
+        </div>
+      </section>
+
+      <section className="services">
+        <h2 className="services-header gs-reveal">
+          <ServicesHeaderLetters text={String(t('services.header'))} />
+        </h2>
+        <p className="services-lead gs-reveal">{String(t('services.lead'))}</p>
+        <div className="services-grid">
+          {services.map((service) => (
+            <article className="service-item gs-reveal" key={service.title}>
+              <h3 className="service-title">{service.title}</h3>
+              <p className="service-desc">{service.desc}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="packages">
+        <h2 className="packages-header gs-reveal">{String(t('packages.header'))}</h2>
+        <p className="packages-lead gs-reveal">{String(t('packages.lead'))}</p>
+        <article
+          ref={packagesShowcaseRef}
+          className={`packages-showcase package-card--${activePackageData.key} gs-reveal`}
+        >
+          <span className="package-orb" aria-hidden />
+          <span className="package-index" aria-hidden>
+            0{packageCards.findIndex((pack) => pack.key === activePackageData.key) + 1}
+          </span>
+          <div className="packages-showcase-head">
+            <p className="package-kicker">{String(t('packages.selected'))}</p>
+            {activePackageData.key === 'growth' && (
+              <span className="package-badge">{String(t('packages.featured'))}</span>
+            )}
+            <h3 className="packages-showcase-title">{activePackageData.name}</h3>
+            <p className="packages-showcase-price">{activePackageData.range}</p>
+            <div className="packages-showcase-controls" aria-label={String(t('packages.header'))}>
+              {packageCards.map((pack, idx) => (
+                <button
+                  type="button"
+                  key={`package-control-${pack.key}`}
+                  className={`packages-showcase-dot${activePackage === pack.key ? ' packages-showcase-dot--active' : ''}`}
+                  onClick={() => setActivePackage(pack.key)}
+                  aria-label={pack.name}
+                >
+                  0{idx + 1}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="packages-showcase-body">
+            <div>
+              <p className="package-label">{String(t('packages.idealLabel'))}</p>
+              <ul className="package-list">
+                {activePackageData.ideal.map((item) => (
+                  <li key={`showcase-ideal-${item}`}>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="package-label">{String(t('packages.includesLabel'))}</p>
+              <ul className="package-list">
+                {activePackageData.includes.map((item) => (
+                  <li key={`showcase-includes-${item}`}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+        <div className="packages-meta-grid">
+          <article className="packages-extras gs-reveal">
+            <h3 className="packages-subtitle">{String(t('packages.extras.title'))}</h3>
+            <ul className="package-list">
+              {packageExtras.map((item) => (
+                <li key={`extra-${item}`}>{item}</li>
+              ))}
+            </ul>
+          </article>
+          <article className="packages-positioning gs-reveal">
+            <h3 className="packages-subtitle">{String(t('packages.positioning.title'))}</h3>
+            <ul className="package-list">
+              {packagePositioning.map((item) => (
+                <li key={`positioning-${item}`}>{item}</li>
+              ))}
+            </ul>
+          </article>
+          <article className="packages-flow gs-reveal">
+            <h3 className="packages-subtitle">{String(t('packages.flow.title'))}</h3>
+            <ol className="package-list package-list--ordered">
+              {packageFlow.map((item) => (
+                <li key={`flow-${item}`}>{item}</li>
+              ))}
+            </ol>
+          </article>
         </div>
       </section>
 

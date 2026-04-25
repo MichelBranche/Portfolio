@@ -74,6 +74,103 @@ const STRINGS = {
         desc: 'Sito statico per pizzeria al taglio: layout diner-style, mobile-first, CTA verso Deliveroo e WhatsApp, zero framework.',
       },
     },
+    services: {
+      header: 'Servizi',
+      lead: 'Ti aiuto a trasformare un’idea in un sito che funziona davvero.',
+      website: {
+        title: 'Siti Web Su Misura',
+        desc: 'Landing page e siti istituzionali veloci, responsive e orientati ai risultati.',
+      },
+      ecommerce: {
+        title: 'E-commerce',
+        desc: 'Store moderni con UX chiara, checkout efficace e attenzione alla conversione.',
+      },
+      uiux: {
+        title: 'UI/UX Design',
+        desc: 'Interfacce pulite e intuitive, progettate per essere belle e facili da usare.',
+      },
+      performance: {
+        title: 'Performance & Motion',
+        desc: 'Ottimizzazione caricamenti e micro-animazioni per un’esperienza premium.',
+      },
+      maintenance: {
+        title: 'Supporto & Aggiornamenti',
+        desc: 'Manutenzione continua, miglioramenti iterativi e assistenza post-lancio.',
+      },
+      seo: {
+        title: 'SEO Tecnica Base',
+        desc: 'Struttura corretta, metadati e basi solide per una migliore visibilita online.',
+      },
+    },
+    packages: {
+      header: 'Pacchetti',
+      lead: 'Offerte chiare, flessibili e pensate per obiettivi reali.',
+      featured: 'Core offer',
+      selected: 'Selezionato',
+      idealLabel: 'Ideale per',
+      includesLabel: 'Include',
+      launch: {
+        name: 'Launch',
+        range: '500€ - 900€',
+        ideal: ['Piccoli business locali', 'Landing page', 'Chi parte da zero'],
+        includes: [
+          '1 pagina landing',
+          'Design moderno su misura',
+          'Responsive',
+          'SEO base (meta + struttura)',
+          'Deploy (es. Vercel)',
+        ],
+      },
+      growth: {
+        name: 'Growth',
+        range: '1200€ - 2500€',
+        ideal: ['Business in espansione', 'Brand che vogliono alzare il livello', 'Core offer'],
+        includes: [
+          '3-5 pagine',
+          'UI premium',
+          'Motion base (micro animazioni)',
+          'SEO strutturato',
+          'Performance optimization',
+          'Setup analytics base',
+          'Mini strategia (target + contenuti)',
+        ],
+      },
+      authority: {
+        name: 'Authority',
+        range: '3000€ - 6000€+',
+        ideal: ['Ristoranti high-end', 'Brand personali forti', 'Progetti wow'],
+        includes: [
+          'Design completamente custom',
+          'Motion avanzata (GSAP)',
+          'UX strategica',
+          'Architettura completa',
+          'SEO avanzato',
+          'Performance top',
+          'CMS / integrazioni su richiesta',
+        ],
+      },
+      extras: {
+        title: 'Extra (upsell)',
+        items: [
+          'Manutenzione mensile: 50€ - 150€/mese',
+          'SEO avanzato: 300€ - 800€',
+          'Copywriting: su richiesta',
+          'Landing aggiuntive: 150€ - 400€',
+          'Analytics avanzato: 200€ - 500€',
+        ],
+      },
+      positioning: {
+        title: 'Posizionamento',
+        lines: [
+          'Non solo siti web: miglioro percezione e performance online del business.',
+          'Approccio orientato a risultato, non al semplice “fare il sito”.',
+        ],
+      },
+      flow: {
+        title: 'Come lavoro',
+        steps: ['Call gratuita', 'Analisi obiettivi e contesto', 'Proposta personalizzata basata sui pacchetti'],
+      },
+    },
     modal: {
       close: 'CHIUDI [X]',
       visit: 'VAI AL SITO WEB ↗',
@@ -156,6 +253,103 @@ const STRINGS = {
       ilgusto: {
         title: 'Gastronomy - Il Gusto',
         desc: 'Static slice-pizzeria site: diner-style layout, mobile-first, Deliveroo and WhatsApp CTAs, no heavy frameworks.',
+      },
+    },
+    services: {
+      header: 'Services',
+      lead: 'I help turn your idea into a website that delivers real results.',
+      website: {
+        title: 'Custom Websites',
+        desc: 'Fast, responsive landing pages and business websites built to perform.',
+      },
+      ecommerce: {
+        title: 'E-commerce',
+        desc: 'Modern online stores with clear UX, effective checkout, and conversion focus.',
+      },
+      uiux: {
+        title: 'UI/UX Design',
+        desc: 'Clean, intuitive interfaces designed to look sharp and feel effortless.',
+      },
+      performance: {
+        title: 'Performance & Motion',
+        desc: 'Load-time optimization and refined motion for a premium user experience.',
+      },
+      maintenance: {
+        title: 'Support & Updates',
+        desc: 'Ongoing maintenance, iterative improvements, and reliable post-launch support.',
+      },
+      seo: {
+        title: 'Technical SEO Basics',
+        desc: 'Solid site structure, metadata, and technical foundations for better visibility.',
+      },
+    },
+    packages: {
+      header: 'Packages',
+      lead: 'Clear, flexible offers built around real business goals.',
+      featured: 'Core offer',
+      selected: 'Selected',
+      idealLabel: 'Ideal for',
+      includesLabel: 'Includes',
+      launch: {
+        name: 'Launch',
+        range: '500€ - 900€',
+        ideal: ['Small local businesses', 'Landing pages', 'Starting from scratch'],
+        includes: [
+          '1 landing page',
+          'Modern custom design',
+          'Responsive layout',
+          'Basic SEO (meta + structure)',
+          'Deploy (e.g. Vercel)',
+        ],
+      },
+      growth: {
+        name: 'Growth',
+        range: '1200€ - 2500€',
+        ideal: ['Growing businesses', 'Brands ready to level up', 'Core offer'],
+        includes: [
+          '3-5 pages',
+          'Premium UI',
+          'Base motion (micro interactions)',
+          'Structured SEO',
+          'Performance optimization',
+          'Basic analytics setup',
+          'Mini strategy (target + content structure)',
+        ],
+      },
+      authority: {
+        name: 'Authority',
+        range: '3000€ - 6000€+',
+        ideal: ['High-end restaurants', 'Strong personal brands', 'Wow projects'],
+        includes: [
+          'Fully custom design',
+          'Advanced motion (GSAP)',
+          'Strategic UX',
+          'Complete architecture',
+          'Advanced SEO',
+          'Top-tier performance',
+          'CMS / integrations on request',
+        ],
+      },
+      extras: {
+        title: 'Extras (upsell)',
+        items: [
+          'Monthly maintenance: 50€ - 150€/month',
+          'Advanced SEO: 300€ - 800€',
+          'Copywriting: on request',
+          'Additional landing pages: 150€ - 400€',
+          'Advanced analytics: 200€ - 500€',
+        ],
+      },
+      positioning: {
+        title: 'Positioning',
+        lines: [
+          'Not just websites: I improve how a business is perceived and performs online.',
+          'Outcome-driven approach, not just “building a site”.',
+        ],
+      },
+      flow: {
+        title: 'How I work',
+        steps: ['Free discovery call', 'Understand goals and context', 'Tailored proposal based on packages'],
       },
     },
     modal: {
@@ -242,6 +436,34 @@ const STRINGS = {
         desc: 'Site statique pour pizzeria al taglio : style diner, mobile-first, CTA Deliveroo et WhatsApp, sans framework lourd.',
       },
     },
+    services: {
+      header: 'Services',
+      lead: 'Je vous aide a transformer une idee en site utile et efficace.',
+      website: {
+        title: 'Sites Web Sur Mesure',
+        desc: 'Landing pages et sites vitrine rapides, responsive et orientes resultats.',
+      },
+      ecommerce: {
+        title: 'E-commerce',
+        desc: 'Boutiques en ligne modernes avec UX claire et checkout efficace.',
+      },
+      uiux: {
+        title: 'UI/UX Design',
+        desc: 'Interfaces claires et intuitives, pensees pour etre belles et simples.',
+      },
+      performance: {
+        title: 'Performance & Motion',
+        desc: 'Optimisation des chargements et animations soignes pour une experience premium.',
+      },
+      maintenance: {
+        title: 'Support & Mises a Jour',
+        desc: 'Maintenance continue, ameliorations iteratives et support post-lancement.',
+      },
+      seo: {
+        title: 'Bases SEO Techniques',
+        desc: 'Structure propre, metadonnees et base technique solide pour etre visible.',
+      },
+    },
     modal: {
       close: 'FERMER [X]',
       visit: 'ALLER AU SITE ↗',
@@ -326,6 +548,34 @@ const STRINGS = {
         desc: 'Statische Pizza-al-Taglio-Website: Diner-Look, mobile-first, CTAs zu Deliveroo und WhatsApp, ohne schwere Frameworks.',
       },
     },
+    services: {
+      header: 'Services',
+      lead: 'Ich helfe dabei, aus einer Idee eine Website mit echtem Ergebnis zu machen.',
+      website: {
+        title: 'Individuelle Websites',
+        desc: 'Schnelle, responsive Landingpages und Firmenwebsites mit klarem Fokus.',
+      },
+      ecommerce: {
+        title: 'E-Commerce',
+        desc: 'Moderne Shops mit klarer UX, sauberem Checkout und Conversion-Fokus.',
+      },
+      uiux: {
+        title: 'UI/UX Design',
+        desc: 'Klare, intuitive Interfaces, die gut aussehen und leicht nutzbar sind.',
+      },
+      performance: {
+        title: 'Performance & Motion',
+        desc: 'Ladezeit-Optimierung und gezielte Motion fuer ein hochwertiges Erlebnis.',
+      },
+      maintenance: {
+        title: 'Support & Updates',
+        desc: 'Kontinuierliche Pflege, iterative Verbesserungen und Betreuung nach Launch.',
+      },
+      seo: {
+        title: 'Technische SEO-Basics',
+        desc: 'Saubere Struktur, Metadaten und solide technische Basis fuer Sichtbarkeit.',
+      },
+    },
     modal: {
       close: 'SCHLIESSEN [X]',
       visit: 'ZUR WEBSITE ↗',
@@ -408,6 +658,34 @@ const STRINGS = {
       ilgusto: {
         title: 'Gastronomía - Il Gusto',
         desc: 'Sitio estático para pizzería al corte: estilo diner, mobile-first, CTAs a Deliveroo y WhatsApp, sin frameworks pesados.',
+      },
+    },
+    services: {
+      header: 'Servicios',
+      lead: 'Te ayudo a convertir una idea en una web que funcione de verdad.',
+      website: {
+        title: 'Sitios Web a Medida',
+        desc: 'Landing pages y webs corporativas rapidas, responsive y orientadas a resultados.',
+      },
+      ecommerce: {
+        title: 'E-commerce',
+        desc: 'Tiendas modernas con UX clara, checkout eficiente y foco en conversion.',
+      },
+      uiux: {
+        title: 'Diseno UI/UX',
+        desc: 'Interfaces limpias e intuitivas, pensadas para verse bien y usarse facil.',
+      },
+      performance: {
+        title: 'Performance & Motion',
+        desc: 'Optimizacion de carga y animaciones cuidadas para una experiencia premium.',
+      },
+      maintenance: {
+        title: 'Soporte & Actualizaciones',
+        desc: 'Mantenimiento continuo, mejoras iterativas y soporte post-lanzamiento.',
+      },
+      seo: {
+        title: 'SEO Tecnico Base',
+        desc: 'Estructura correcta, metadatos y base tecnica solida para ganar visibilidad.',
       },
     },
     modal: {
