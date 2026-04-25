@@ -1198,9 +1198,9 @@ section {
 }
 
 .package-card--authority {
-  --package-color: #06aed5;
-  --package-tint: rgba(6, 174, 213, 0.2);
-  --package-glow: rgba(6, 174, 213, 0.28);
+  --package-color: var(--accent);
+  --package-tint: rgba(255, 51, 0, 0.2);
+  --package-glow: rgba(255, 51, 0, 0.28);
 }
 
 .package-orb {
