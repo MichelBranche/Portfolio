@@ -304,6 +304,59 @@ function ModalTitle({ text }) {
   )
 }
 
+function PreloaderCreepyButton({ label, ariaLabel, onClick }) {
+  const eyesRef = useRef(null)
+  const [eyeCoords, setEyeCoords] = useState({ x: 0, y: 0 })
+
+  const updateEyes = (e) => {
+    const userEvent = 'touches' in e ? e.touches[0] : e
+    const eyesRect = eyesRef.current?.getBoundingClientRect()
+    if (!eyesRect) return
+    const eyesCenter = {
+      x: eyesRect.left + eyesRect.width / 2,
+      y: eyesRect.top + eyesRect.height / 2,
+    }
+    const cursor = {
+      x: userEvent.clientX,
+      y: userEvent.clientY,
+    }
+    const dx = cursor.x - eyesCenter.x
+    const dy = cursor.y - eyesCenter.y
+    const angle = Math.atan2(-dy, dx) + Math.PI / 2
+    const distance = Math.hypot(dx, dy)
+    const visionRangeX = 180
+    const visionRangeY = 75
+    const x = Math.sin(angle) * (distance / visionRangeX)
+    const y = Math.cos(angle) * (distance / visionRangeY)
+    setEyeCoords({ x, y })
+  }
+
+  const eyeStyle = {
+    transform: `translate(${-50 + eyeCoords.x * 50}%, ${-50 + eyeCoords.y * 50}%)`,
+  }
+
+  return (
+    <button
+      type="button"
+      className="preloader-creepy-btn"
+      onClick={onClick}
+      onMouseMove={updateEyes}
+      onTouchMove={updateEyes}
+      aria-label={ariaLabel || label}
+    >
+      <span className="preloader-creepy-btn__eyes" ref={eyesRef} aria-hidden>
+        <span className="preloader-creepy-btn__eye">
+          <span className="preloader-creepy-btn__pupil" style={eyeStyle} />
+        </span>
+        <span className="preloader-creepy-btn__eye">
+          <span className="preloader-creepy-btn__pupil" style={eyeStyle} />
+        </span>
+      </span>
+      <span className="preloader-creepy-btn__cover">{label}</span>
+    </button>
+  )
+}
+
 function App() {
   const { t, lang } = useLanguage()
   const [modalData, setModalData] = useState(null)
@@ -401,6 +454,12 @@ function App() {
   const packagePositioning = useMemo(() => asArray(t('packages.positioning.lines')), [t])
   const packageFlow = useMemo(() => asArray(t('packages.flow.steps')), [t])
   const [activePackage, setActivePackage] = useState('growth')
+  const goToNextPackage = useCallback(() => {
+    setActivePackage((current) => {
+      const idx = packageCards.findIndex((pack) => pack.key === current)
+      return packageCards[(idx + 1) % packageCards.length]?.key ?? 'growth'
+    })
+  }, [packageCards])
   const activePackageData = useMemo(
     () => packageCards.find((pack) => pack.key === activePackage) ?? packageCards[1],
     [activePackage, packageCards],
@@ -408,37 +467,70 @@ function App() {
   const packagesShowcaseRef = useRef(null)
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActivePackage((current) => {
-        const idx = packageCards.findIndex((pack) => pack.key === current)
-        return packageCards[(idx + 1) % packageCards.length]?.key ?? 'growth'
-      })
-    }, 9000)
-    return () => window.clearInterval(timer)
-  }, [packageCards])
-
-  useEffect(() => {
     const root = packagesShowcaseRef.current
     if (!root) return
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const moving = root.querySelectorAll(
       '.packages-showcase-title, .packages-showcase-price, .package-label, .package-list li, .package-badge, .package-kicker',
     )
-    const tl = gsap.timeline()
+    const ornaments = root.querySelectorAll('.package-orb, .package-index')
+    const tl = gsap.timeline({ defaults: { overwrite: 'auto' } })
+
+    if (prefersReducedMotion) {
+      tl.fromTo(root, { opacity: 0.84 }, { opacity: 1, duration: 0.2, ease: 'none' }, 0)
+      return () => {
+        tl.kill()
+      }
+    }
+
     tl.fromTo(
       root,
-      { opacity: 0.72, y: 10 },
-      { opacity: 1, y: 0, duration: 0.38, ease: 'power2.out' },
+      { opacity: 0.66, scale: 0.992 },
+      { opacity: 1, scale: 1, duration: 0.34, ease: 'power2.out' },
       0,
-    ).fromTo(
-      moving,
-      { y: 12, opacity: 0.2 },
-      { y: 0, opacity: 1, duration: 0.42, stagger: 0.02, ease: 'power2.out' },
-      0.04,
     )
+      .fromTo(
+        moving,
+        { y: 18, opacity: 0, filter: 'blur(3px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 0.52,
+          stagger: 0.028,
+          ease: 'power3.out',
+        },
+        0.03,
+      )
+      .fromTo(
+        ornaments,
+        { scale: 0.88, opacity: 0.5 },
+        { scale: 1, opacity: 1, duration: 0.42, ease: 'power2.out', stagger: 0.03 },
+        0.05,
+      )
     return () => {
       tl.kill()
     }
   }, [activePackage])
+
+  useEffect(() => {
+    const root = packagesShowcaseRef.current
+    if (!root) return
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const nextArrow = root.querySelector('.packages-showcase-next .packages-showcase-next-icon svg')
+    if (!nextArrow || prefersReducedMotion) return
+
+    const nextTween = gsap.to(nextArrow, {
+      x: 4,
+      duration: 0.74,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+    })
+    return () => {
+      nextTween.kill()
+    }
+  }, [])
 
   useEffect(() => {
     if (preloaderPhase !== 'counting') {
@@ -2364,14 +2456,11 @@ function App() {
           </div>
         )}
         {preloaderPhase === 'awaitEnter' && (
-          <button
-            type="button"
-            className="preloader-continue interactable"
+          <PreloaderCreepyButton
+            label={String(t('preloader.enter'))}
+            ariaLabel={String(t('preloader.enterAria'))}
             onClick={handlePreloaderEnter}
-            aria-label={String(t('preloader.enterAria'))}
-          >
-            {String(t('preloader.enter'))}
-          </button>
+          />
         )}
       </div>
 
@@ -2604,17 +2693,20 @@ function App() {
             <h3 className="packages-showcase-title">{activePackageData.name}</h3>
             <p className="packages-showcase-price">{activePackageData.range}</p>
             <div className="packages-showcase-controls" aria-label={String(t('packages.header'))}>
-              {packageCards.map((pack, idx) => (
-                <button
-                  type="button"
-                  key={`package-control-${pack.key}`}
-                  className={`packages-showcase-dot${activePackage === pack.key ? ' packages-showcase-dot--active' : ''}`}
-                  onClick={() => setActivePackage(pack.key)}
-                  aria-label={pack.name}
-                >
-                  0{idx + 1}
-                </button>
-              ))}
+              <button
+                type="button"
+                className="packages-showcase-next"
+                onClick={goToNextPackage}
+                aria-label="Scorri al prossimo pacchetto"
+              >
+                <span className="packages-showcase-next-text">Next</span>
+                <span className="packages-showcase-next-icon" aria-hidden>
+                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden>
+                    <path d="M2 12h17" />
+                    <path d="m14 7 5 5-5 5" />
+                  </svg>
+                </span>
+              </button>
             </div>
           </div>
           <div className="packages-showcase-body">
