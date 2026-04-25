@@ -41,7 +41,7 @@ const STRINGS = {
     language: {
       switchLabel: 'Lingua / Language',
       chooseAria: 'Scegli la lingua',
-      hintNudge: 'Pssst: nel tondino trovi altre lingue',
+      hintNudge: 'Scegli la lingua che preferisci.',
     },
     projects: {
       header: 'Lavori Selezionati',
@@ -114,9 +114,9 @@ const STRINGS = {
     },
     hero: {
       lines: [
-        'Independent web developer.',
+        'Independent full-stack web developer.',
         'Designer & UI/UX specialist.',
-        'I build fast, no-nonsense sites that convert.',
+        'I build fast, effective websites that convert.',
       ],
       italy: 'ITALY',
       italyTagAria: 'Italy. Tap or hover to interact',
@@ -125,7 +125,7 @@ const STRINGS = {
     language: {
       switchLabel: 'Language',
       chooseAria: 'Choose language',
-      hintNudge: 'Psst — the dot hides extra dialects for your brain.',
+      hintNudge: 'Choose your preferred language.',
     },
     projects: {
       header: 'Selected work',
@@ -209,7 +209,7 @@ const STRINGS = {
     language: {
       switchLabel: 'Langue',
       chooseAria: 'Choisir la langue',
-      hintNudge: 'Psst : d’autres langues se cachent dans le rond — promis, elles ne mordent pas.',
+      hintNudge: 'Choisissez votre langue préférée.',
     },
     projects: {
       header: 'Projets choisis',
@@ -293,7 +293,7 @@ const STRINGS = {
     language: {
       switchLabel: 'Sprache',
       chooseAria: 'Sprache wählen',
-      hintNudge: 'Pssst — im Kreis warten frechere Wörter auf dich.',
+      hintNudge: 'Wählen Sie Ihre bevorzugte Sprache.',
     },
     projects: {
       header: 'Ausgewählte Arbeiten',
@@ -377,7 +377,7 @@ const STRINGS = {
     language: {
       switchLabel: 'Idioma',
       chooseAria: 'Elegir idioma',
-      hintNudge: 'Psst: en el círculo hay más idiomas con picardía.',
+      hintNudge: 'Elige tu idioma preferido.',
     },
     projects: {
       header: 'Trabajos seleccionados',

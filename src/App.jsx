@@ -1067,20 +1067,14 @@ function App() {
     }
 
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: isStickyTouch ? 0.95 : 1.2,
       easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
-      syncTouch: true,
-      touchMultiplier: 1.15,
+      syncTouch: !isStickyTouch,
+      touchMultiplier: isStickyTouch ? 1 : 1.15,
     })
     lenis.stop()
     lenisRef.current = lenis
 
-    let rafId
-    const raf = (time) => {
-      lenis.raf(time)
-      rafId = requestAnimationFrame(raf)
-    }
-    rafId = requestAnimationFrame(raf)
     lenis.on('scroll', ScrollTrigger.update)
     const tickerCallback = (time) => lenis.raf(time * 1000)
     gsap.ticker.add(tickerCallback)
@@ -1477,7 +1471,6 @@ function App() {
       }
       cleanupFns.forEach((cleanup) => cleanup())
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-      cancelAnimationFrame(rafId)
       gsap.ticker.remove(tickerCallback)
       lenis.destroy()
     }

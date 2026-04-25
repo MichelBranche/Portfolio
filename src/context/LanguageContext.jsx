@@ -2,17 +2,17 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { LANGUAGES, LANGUAGE_LIST, translate } from '../i18n/translations'
 
 const STORAGE = 'mb-lang'
+const STORAGE_EXPLICIT = 'mb-lang-explicit'
 const CODES = new Set(LANGUAGE_LIST.map((l) => l.code))
 
 const LanguageContext = createContext(null)
 
 function readInitialLang() {
-  if (typeof window === 'undefined') return 'it'
+  if (typeof window === 'undefined') return 'en'
+  const explicit = localStorage.getItem(STORAGE_EXPLICIT) === '1'
   const s = localStorage.getItem(STORAGE)
-  if (s && CODES.has(s)) return s
-  const nav = navigator.language?.slice(0, 2)
-  if (nav && CODES.has(nav)) return nav
-  return 'it'
+  if (explicit && s && CODES.has(s)) return s
+  return 'en'
 }
 
 export function LanguageProvider({ children }) {
@@ -23,6 +23,7 @@ export function LanguageProvider({ children }) {
     setLangState(code)
     if (typeof window !== 'undefined') {
       localStorage.setItem(STORAGE, code)
+      localStorage.setItem(STORAGE_EXPLICIT, '1')
     }
   }, [])
 
