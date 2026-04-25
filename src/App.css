@@ -987,24 +987,33 @@ section {
   padding: 5vw;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: clamp(1rem, 2.2vh, 1.8rem);
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .modal-close-wrap {
   display: flex;
   justify-content: flex-end;
-  overflow: hidden;
+  overflow: visible;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--fg);
+  padding-bottom: clamp(0.4rem, 1.2vh, 0.8rem);
 }
 
 .modal-close {
   font-size: clamp(2rem, 4vw, 4rem);
   font-weight: 700;
   transition: color 0.3s;
-  opacity: 0;
+  opacity: 1;
   background: transparent;
   border: 0;
   color: var(--bg);
   text-transform: uppercase;
+  pointer-events: auto;
 }
 
 .modal-close:hover {
@@ -1014,15 +1023,54 @@ section {
 .modal-body {
   display: flex;
   flex-direction: column;
-  gap: 3vh;
+  gap: clamp(0.9rem, 2vh, 1.6rem);
+  min-height: 0;
+  padding-bottom: clamp(3.2rem, 9vh, 6.2rem);
 }
 
 .modal-title {
   font-size: clamp(3rem, 6vw, 8rem);
   font-weight: 700;
-  line-height: 0.9;
+  line-height: 0.88;
   letter-spacing: -0.02em;
   opacity: 0;
+  text-wrap: balance;
+}
+
+.modal-title-ticker {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.modal-title-ticker-track {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2.4rem;
+  min-width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+  animation: modal-title-scroll 20s linear infinite;
+}
+
+@keyframes modal-title-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  18% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 1.2rem));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-title-ticker-track {
+    animation: none;
+  }
 }
 
 .modal-desc {
@@ -1039,9 +1087,16 @@ section {
   font-weight: 700;
   border-bottom: 2px solid var(--bg);
   width: max-content;
-  margin-top: 5vh;
+  margin-top: clamp(0.8rem, 2vh, 1.8rem);
   transition: color 0.3s, border-color 0.3s;
-  opacity: 0;
+  opacity: 1;
+  pointer-events: auto;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: var(--fg);
+  padding-top: 0.22em;
+  padding-bottom: 0.08em;
 }
 
 .modal-link:hover {

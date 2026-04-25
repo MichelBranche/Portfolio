@@ -256,6 +256,22 @@ function HeroMiniPlayer({
   )
 }
 
+function ModalTitle({ text }) {
+  const safeText = String(text || '')
+  const shouldScroll = safeText.length > 32
+  if (!shouldScroll) {
+    return <>{safeText}</>
+  }
+  return (
+    <span className="modal-title-ticker" aria-label={safeText}>
+      <span className="modal-title-ticker-track">
+        <span>{safeText}</span>
+        <span aria-hidden>{safeText}</span>
+      </span>
+    </span>
+  )
+}
+
 function App() {
   const { t, lang } = useLanguage()
   const [modalData, setModalData] = useState(null)
@@ -1479,22 +1495,23 @@ function App() {
   useEffect(() => {
     if (!modalData) return
     const lenis = lenisRef.current
-    const modalElements = [
-      modalTitleRef.current,
-      modalDescRef.current,
-      modalLinkRef.current,
-      modalCloseRef.current,
-    ]
+    const modalTextElements = [modalTitleRef.current, modalDescRef.current]
+    const modalControls = [modalLinkRef.current, modalCloseRef.current]
 
     gsap.set('.project-img-float', { opacity: 0, scale: 0 })
     gsap.to('.cursor', { opacity: 1, duration: 0.1 })
+    gsap.set(modalControls, { opacity: 1, y: 0, clearProps: 'transform' })
     lenis?.stop()
 
     const openTl = gsap.timeline()
     openTl
       .to(modalRef.current, { yPercent: 100, duration: 0.8, ease: 'expo.inOut' })
       .to(modalImgRef.current, { opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.2')
-      .to(modalElements, { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, '-=0.4')
+      .to(
+        modalTextElements,
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' },
+        '-=0.4',
+      )
   }, [modalData])
 
   const closeModal = () => {
@@ -1502,25 +1519,18 @@ function App() {
     const closeTl = gsap.timeline({
       onComplete: () => {
         lenis?.start()
-        gsap.set(
-          [
-            modalImgRef.current,
-            modalTitleRef.current,
-            modalDescRef.current,
-            modalLinkRef.current,
-            modalCloseRef.current,
-          ],
-          { opacity: 0 },
-        )
+        gsap.set([modalImgRef.current, modalTitleRef.current, modalDescRef.current], { opacity: 0 })
         setModalData(null)
       },
     })
 
     closeTl
-      .to(
-        [modalCloseRef.current, modalLinkRef.current, modalDescRef.current, modalTitleRef.current],
-        { opacity: 0, duration: 0.3, stagger: -0.05, ease: 'power2.in' },
-      )
+      .to([modalDescRef.current, modalTitleRef.current], {
+        opacity: 0,
+        duration: 0.3,
+        stagger: -0.05,
+        ease: 'power2.in',
+      })
       .to(modalImgRef.current, { opacity: 0, duration: 0.3 }, '-=0.2')
       .to(modalRef.current, { yPercent: 0, duration: 0.8, ease: 'expo.inOut' }, '-=0.1')
   }
@@ -1977,7 +1987,11 @@ function App() {
             </div>
             <div className="modal-body">
               <h2 className="modal-title" ref={modalTitleRef}>
-                {modalData ? String(t(`projects.${modalData.slug}.title`)) : String(t('modal.titlePlaceholder'))}
+                <ModalTitle
+                  text={
+                    modalData ? String(t(`projects.${modalData.slug}.title`)) : String(t('modal.titlePlaceholder'))
+                  }
+                />
               </h2>
               <p className="modal-desc" ref={modalDescRef}>
                 {modalData ? String(t(`projects.${modalData.slug}.desc`)) : String(t('modal.descPlaceholder'))}
