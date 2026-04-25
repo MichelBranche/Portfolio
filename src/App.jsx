@@ -6,6 +6,7 @@ import ConfettiRain from './components/ConfettiRain'
 import { LanguageSwitch } from './components/LanguageSwitch.jsx'
 import MoneyRain from './components/MoneyRain'
 import FireworksRain from './components/FireworksRain'
+import { VisualSection } from './components/VisualSection'
 import { useLanguage } from './context/LanguageContext.jsx'
 import './App.css'
 import { translate } from './i18n/translations'
@@ -453,15 +454,15 @@ function App() {
   const packageExtras = useMemo(() => asArray(t('packages.extras.items')), [t])
   const packagePositioning = useMemo(() => asArray(t('packages.positioning.lines')), [t])
   const packageFlow = useMemo(() => asArray(t('packages.flow.steps')), [t])
-  const [activePackage, setActivePackage] = useState('growth')
+  const [activePackage, setActivePackage] = useState('launch')
   const goToNextPackage = useCallback(() => {
     setActivePackage((current) => {
       const idx = packageCards.findIndex((pack) => pack.key === current)
-      return packageCards[(idx + 1) % packageCards.length]?.key ?? 'growth'
+      return packageCards[(idx + 1) % packageCards.length]?.key ?? 'launch'
     })
   }, [packageCards])
   const activePackageData = useMemo(
-    () => packageCards.find((pack) => pack.key === activePackage) ?? packageCards[1],
+    () => packageCards.find((pack) => pack.key === activePackage) ?? packageCards[0],
     [activePackage, packageCards],
   )
   const packagesShowcaseRef = useRef(null)
@@ -2755,7 +2756,7 @@ function App() {
           </article>
         </div>
       </section>
-
+      <VisualSection />
       <div className="project-modal" ref={modalRef}>
         <div className="modal-layout">
           <div className="modal-image-container">

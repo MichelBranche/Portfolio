@@ -171,6 +171,55 @@ const STRINGS = {
         steps: ['Call gratuita', 'Analisi obiettivi e contesto', 'Proposta personalizzata basata sui pacchetti'],
       },
     },
+    visualProduction: {
+      kicker: 'Visual production',
+      header: 'Contenuti che fanno la differenza.',
+      lead: 'Fotografia, video e riprese aeree progettate per valorizzare il tuo brand.',
+      heroCaption: 'Immagini che raccontano. Prospettive che valorizzano.',
+      heroImageAlt: 'Drone professionale per produzione foto e video',
+      services: {
+        food: {
+          title: 'Fotografia',
+          desc: 'Contenuti che fanno percepire qualità.',
+          items: ['Food & restaurant', 'E-commerce & product', 'Lifestyle & branding'],
+        },
+        fashion: {
+          title: 'Video',
+          desc: 'Video che catturano e convincono.',
+          items: ['Video aziendali', 'Promo e social ads', 'Cinematic & storytelling'],
+        },
+        drone: {
+          title: 'Drone',
+          desc: 'Prospettive che fanno la differenza.',
+          items: ['Riprese aeree', 'Immobili & hospitality', 'Ispezioni e monitoraggi'],
+        },
+      },
+      bundles: {
+        kicker: 'Bundle',
+        title: 'Sito + contenuti',
+        lead: 'Pacchetti pensati per offrirti un risultato completo e coerente.',
+        secondaryCta: 'Scopri tutti i pacchetti',
+        launchVisual: {
+          name: 'Launch + Visual Pack',
+          lead: 'A partire da',
+          items: ['Sito 3-5 pagine', 'Shooting foto base', '5-10 foto editate', '1 mini video'],
+          range: '1.500€',
+        },
+        premiumExperience: {
+          name: 'Premium Brand Experience',
+          lead: 'A partire da',
+          items: [
+            'Sito completo',
+            'Direzione artistica',
+            'Shooting avanzato',
+            'Drone e video cinematico',
+          ],
+          range: '4.000€',
+        },
+      },
+      cta: 'Richiedi consulenza gratuita',
+      values: ['Strategia visiva', 'Qualità premium', 'Impatto reale', 'Processo semplice'],
+    },
     modal: {
       close: 'CHIUDI [X]',
       visit: 'VAI AL SITO WEB ↗',
@@ -351,6 +400,50 @@ const STRINGS = {
         title: 'How I work',
         steps: ['Free discovery call', 'Understand goals and context', 'Tailored proposal based on packages'],
       },
+    },
+    visualProduction: {
+      kicker: 'Visual Production',
+      header: 'Content that makes the difference.',
+      lead: 'Photo, video and aerial production designed to elevate your brand.',
+      heroCaption: 'Images that tell stories. Perspectives that add value.',
+      heroImageAlt: 'Professional drone for photo and video production',
+      services: {
+        food: {
+          title: 'Photography',
+          desc: 'Visuals that communicate premium quality.',
+          items: ['Food & restaurant', 'E-commerce & product', 'Lifestyle & branding'],
+        },
+        fashion: {
+          title: 'Video',
+          desc: 'Motion content that captures and converts.',
+          items: ['Corporate videos', 'Promo & social ads', 'Cinematic storytelling'],
+        },
+        drone: {
+          title: 'Drone',
+          desc: 'Aerial perspectives that stand out.',
+          items: ['Aerial footage', 'Real estate & hospitality', 'Inspections & monitoring'],
+        },
+      },
+      bundles: {
+        kicker: 'Bundle',
+        title: 'Website + Content',
+        lead: 'Packages designed to deliver a full and consistent result.',
+        secondaryCta: 'Explore all packages',
+        launchVisual: {
+          name: 'Launch + Visual Pack',
+          lead: 'Starting from',
+          items: ['3-5 page website', 'Base photo shoot', '5-10 edited photos', '1 mini video'],
+          range: '1,500€',
+        },
+        premiumExperience: {
+          name: 'Premium Brand Experience',
+          lead: 'Starting from',
+          items: ['Full website', 'Art direction', 'Advanced shooting', 'Drone and cinematic video'],
+          range: '4,000€',
+        },
+      },
+      cta: 'Request a free consultation',
+      values: ['Visual strategy', 'Premium quality', 'Real impact', 'Simple process'],
     },
     modal: {
       close: 'CLOSE [X]',

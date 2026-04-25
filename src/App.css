@@ -1192,9 +1192,9 @@ section {
 }
 
 .package-card--growth {
-  --package-color: #3e885b;
-  --package-tint: rgba(62, 136, 91, 0.2);
-  --package-glow: rgba(62, 136, 91, 0.28);
+  --package-color: #8a84e2;
+  --package-tint: rgba(138, 132, 226, 0.2);
+  --package-glow: rgba(138, 132, 226, 0.28);
 }
 
 .package-card--authority {
@@ -1549,6 +1549,221 @@ section {
 .packages-showcase .package-list li {
   font-size: clamp(0.9rem, 1.02vw, 0.98rem);
   line-height: 1.4;
+}
+
+.visual-section {
+  background: var(--bg);
+  color: var(--fg);
+  padding: max(8vh, 4rem) max(5vw, 2rem);
+  border-bottom: 2px solid var(--fg);
+}
+
+.visual-section-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(2rem, 8vw, 8rem);
+  align-items: center;
+}
+
+.visual-section-copy {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.95rem, 2.4vh, 1.55rem);
+  transform: translateY(clamp(-0.5rem, -1.2vh, -0.1rem));
+}
+
+.visual-section-title {
+  font-size: clamp(2.8rem, 8.4vw, 7.5rem);
+  line-height: 0.91;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.visual-section-lead {
+  text-transform: none;
+  font-size: clamp(0.99rem, 1.24vw, 1.16rem);
+  line-height: 1.48;
+  color: color-mix(in srgb, var(--fg) 75%, transparent);
+  max-width: 38ch;
+}
+
+.visual-section-cta {
+  width: fit-content;
+  text-decoration: none;
+  border: 2px solid var(--fg);
+  color: var(--fg);
+  padding: 0.85rem 1.15rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: clamp(0.68rem, 0.82vw, 0.76rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.visual-section-cta:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .visual-section-cta:active {
+    background: var(--fg);
+    color: var(--bg);
+  }
+}
+
+.visual-section-drone-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: clamp(22rem, 44vw, 34rem);
+  overflow: visible;
+  transform: translateX(clamp(0.2rem, 0.8vw, 0.9rem));
+}
+
+.visual-section-drone {
+  width: clamp(30rem, 58vw, 56rem);
+  max-width: 100%;
+  filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.15));
+  will-change: transform, filter;
+}
+
+.visual-section-statement {
+  margin-top: clamp(3.2rem, 8.8vh, 5.6rem);
+  border-top: 2px solid var(--fg);
+  padding-top: clamp(2.2rem, 5.4vh, 3.3rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.visual-section-statement-title {
+  font-size: clamp(2.6rem, 6.6vw, 7rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  width: min(92vw, 56rem);
+  max-width: 56rem;
+  margin-inline: auto;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.visual-statement-line {
+  display: block;
+}
+
+.visual-statement-word {
+  display: inline-flex;
+  white-space: nowrap;
+  opacity: 1;
+}
+
+.visual-statement-letter {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.visual-statement-gap {
+  display: inline-block;
+}
+
+.visual-section-services {
+  margin-top: 0;
+  display: block;
+  max-width: min(100%, 76rem);
+  margin-inline: auto;
+  text-align: left;
+  padding-bottom: clamp(3rem, 8vh, 5rem);
+}
+
+.visual-section-services-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: stretch;
+}
+
+.visual-section-service {
+  border-top: 2px solid var(--fg);
+  padding: clamp(1.4rem, 3vh, 2.2rem) 0 clamp(1.6rem, 3.4vh, 2.4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(0.85rem, 1.8vh, 1.3rem);
+  align-items: flex-start;
+  outline: none;
+  position: relative;
+  height: 100%;
+}
+
+.visual-section-service-head {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.visual-section-service-title {
+  font-size: clamp(2rem, 5vw, 4.6rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+
+.visual-section-service-price {
+  font-size: clamp(0.78rem, 0.95vw, 0.92rem);
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--fg) 60%, transparent);
+  text-transform: uppercase;
+  white-space: nowrap;
+  border: 1.5px solid color-mix(in srgb, var(--fg) 35%, transparent);
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+}
+
+.visual-section-service-desc {
+  margin: 0;
+  text-transform: none;
+  color: color-mix(in srgb, var(--fg) 86%, transparent);
+  font-size: clamp(1rem, 1.2vw, 1.18rem);
+  line-height: 1.55;
+  max-width: 46ch;
+}
+
+.visual-section-service-details {
+  list-style: none;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.visual-section-service-details li {
+  text-transform: none;
+  font-size: clamp(0.88rem, 1.05vw, 1rem);
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--fg) 75%, transparent);
+  padding-left: 1.1rem;
+  position: relative;
+}
+
+.visual-section-service-details li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 0.55rem;
+  height: 2px;
+  background: var(--accent);
 }
 
 /* Touch / mobile: niente anteprima al tap (stessa euristica di isCoarsePointerDevice in App.jsx) */
@@ -2304,6 +2519,109 @@ body.self-destruct-mode .project-modal {
 
   .packages-showcase-next:active {
     transform: scale(0.95);
+  }
+
+  .visual-section {
+    padding: max(6vh, 2.5rem) max(4vw, 1.1rem);
+  }
+
+  .visual-section-hero {
+    grid-template-columns: 1fr;
+    gap: clamp(1.4rem, 5vw, 2.4rem);
+    align-items: stretch;
+  }
+
+  .visual-section-drone-wrap {
+    min-height: auto;
+    order: -1;
+    transform: none;
+  }
+
+  .visual-section-drone {
+    width: min(94vw, 42rem);
+  }
+
+  .visual-section-copy {
+    transform: none;
+    gap: clamp(0.85rem, 2.6vh, 1.3rem);
+  }
+
+  .visual-section-title {
+    font-size: clamp(2rem, 11.5vw, 3.4rem);
+    line-height: 0.95;
+  }
+
+  .visual-section-lead {
+    max-width: 100%;
+  }
+
+  .visual-section-cta {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 0.95rem 1rem;
+    font-size: clamp(0.72rem, 3.4vw, 0.82rem);
+  }
+
+  .visual-section-statement {
+    min-height: auto;
+    margin-top: clamp(2rem, 6vh, 3rem);
+    padding-top: clamp(1.6rem, 4vh, 2.4rem);
+    padding-bottom: clamp(1.6rem, 4vh, 2.4rem);
+  }
+
+  .visual-section-statement-title {
+    font-size: clamp(1.5rem, 8.5vw, 2.5rem);
+    width: 100%;
+  }
+
+  .visual-statement-line {
+    white-space: normal;
+  }
+
+  .visual-section-services {
+    max-width: 100%;
+    text-align: left;
+    margin-inline: 0;
+    padding-bottom: 0;
+  }
+
+  .visual-section-services-list {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .visual-section-service {
+    align-items: flex-start;
+    padding: clamp(1.2rem, 2.6vh, 1.7rem) 0 clamp(1.3rem, 2.8vh, 1.9rem);
+    gap: 0.7rem;
+    height: auto;
+  }
+
+  .visual-section-service-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.55rem;
+  }
+
+  .visual-section-service-title {
+    font-size: clamp(2.4rem, 11vw, 3.6rem);
+    letter-spacing: -0.04em;
+  }
+
+  .visual-section-service-price {
+    font-size: clamp(0.7rem, 3vw, 0.82rem);
+    padding: 0.32rem 0.6rem;
+    letter-spacing: 0.12em;
+  }
+
+  .visual-section-service-desc {
+    font-size: clamp(0.95rem, 3.6vw, 1.05rem);
+    max-width: 100%;
+  }
+
+  .visual-section-service-details li {
+    font-size: clamp(0.86rem, 3.4vw, 0.96rem);
   }
 
   .package-index {
