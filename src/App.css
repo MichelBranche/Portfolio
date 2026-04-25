@@ -1001,9 +1001,26 @@ section {
 
 .packages-header {
   font-size: clamp(3.6rem, 12vw, 13rem);
+  display: inline-block;
+  width: auto;
   margin-bottom: 0.65rem;
   letter-spacing: -0.075em;
-  line-height: 0.78;
+  line-height: 0.92;
+  padding-bottom: 0;
+}
+
+.packages-header-letter {
+  display: inline-block;
+  overflow: visible;
+  vertical-align: top;
+  line-height: 1;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.packages-header-letter-inner {
+  display: inline-block;
+  will-change: transform, opacity;
 }
 
 .packages-lead {

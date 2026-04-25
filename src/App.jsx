@@ -86,6 +86,20 @@ function ServicesHeaderLetters({ text }) {
   )
 }
 
+function PackagesHeaderLetters({ text }) {
+  return (
+    <>
+      {String(text)
+        .split('')
+        .map((ch, i) => (
+          <span key={`${ch}-${i}`} className="packages-header-letter">
+            <span className="packages-header-letter-inner">{ch === ' ' ? '\u00A0' : ch}</span>
+          </span>
+        ))}
+    </>
+  )
+}
+
 function ProjectTitleWords({ text }) {
   const words = text.split(' ')
   return (
@@ -1773,6 +1787,39 @@ function App() {
     const packagesPositioning = document.querySelector('.packages-positioning')
     const packagesFlow = document.querySelector('.packages-flow')
     const packagesShowcase = document.querySelector('.packages-showcase')
+    const packagesMetaItems = [packagesExtras, packagesPositioning, packagesFlow].filter(Boolean)
+
+    const runPackagesHeaderIntro = () => {
+      if (!packagesHeader || prefersReducedMotion) return
+      const letters = packagesHeader.querySelectorAll('.packages-header-letter-inner')
+      gsap.set(letters, { y: 26, rotate: 2, opacity: 0 })
+      gsap
+        .timeline()
+        .to(packagesHeader, { opacity: 1, y: 0, duration: 0.32, ease: 'power3.out' })
+        .to(
+          letters,
+          {
+            y: 0,
+            rotate: 0,
+            opacity: 1,
+            duration: 0.62,
+            stagger: 0.038,
+            ease: 'power4.out',
+          },
+          0,
+        )
+        .to(
+          packagesHeader,
+          {
+            color: 'var(--accent)',
+            duration: 0.18,
+            ease: 'power1.out',
+            yoyo: true,
+            repeat: 1,
+          },
+          0.18,
+        )
+    }
 
     if (
       packagesHeader ||
@@ -1784,6 +1831,16 @@ function App() {
       packagesShowcase
     ) {
       const introParts = [packagesHeader, packagesLead].filter(Boolean)
+      const showcaseTitle = packagesShowcase?.querySelector('.packages-showcase-title')
+      const showcasePrice = packagesShowcase?.querySelector('.packages-showcase-price')
+      const showcaseLabels = packagesShowcase?.querySelectorAll('.package-label') || []
+      const showcaseRows = packagesShowcase?.querySelectorAll('.package-list li') || []
+      const metaTitles = document.querySelectorAll(
+        '.packages-extras .packages-subtitle, .packages-positioning .packages-subtitle, .packages-flow .packages-subtitle',
+      )
+      const metaRows = document.querySelectorAll(
+        '.packages-extras .package-list li, .packages-positioning .package-list li, .packages-flow .package-list li',
+      )
       if (introParts.length) {
         gsap.set(introParts, { opacity: 0, y: 24 })
       }
@@ -1794,6 +1851,11 @@ function App() {
         opacity: 0,
         y: 20,
       })
+      gsap.set([showcaseTitle, showcasePrice].filter(Boolean), { opacity: 0, y: 16 })
+      gsap.set(showcaseLabels, { opacity: 0, y: 10 })
+      gsap.set(showcaseRows, { opacity: 0, y: 8 })
+      gsap.set(metaTitles, { opacity: 0, y: 14 })
+      gsap.set(metaRows, { opacity: 0, y: 10 })
 
       const packagesTl = gsap.timeline({
         scrollTrigger: {
@@ -1826,7 +1888,7 @@ function App() {
         )
       }
       packagesTl.to(
-        [packagesShowcase, packagesExtras, packagesPositioning, packagesFlow].filter(Boolean),
+        [packagesShowcase, ...packagesMetaItems].filter(Boolean),
         {
           opacity: 1,
           y: 0,
@@ -1836,7 +1898,143 @@ function App() {
         },
         '-=0.2',
       )
+      packagesTl
+        .to(
+          [showcaseTitle, showcasePrice].filter(Boolean),
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.44,
+            stagger: 0.07,
+            ease: 'power3.out',
+          },
+          '-=0.24',
+        )
+        .to(
+          showcaseLabels,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.34,
+            stagger: 0.04,
+            ease: 'power2.out',
+          },
+          '-=0.22',
+        )
+        .to(
+          showcaseRows,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.32,
+            stagger: 0.01,
+            ease: 'power2.out',
+          },
+          '-=0.18',
+        )
+        .to(
+          metaTitles,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.36,
+            stagger: 0.06,
+            ease: 'power2.out',
+          },
+          '-=0.18',
+        )
+        .to(
+          metaRows,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.32,
+            stagger: 0.01,
+            ease: 'power2.out',
+          },
+          '-=0.22',
+        )
+      packagesTl.eventCallback('onComplete', () => {
+        runPackagesHeaderIntro()
+      })
     }
+
+    packagesMetaItems.forEach((item) => {
+      const title = item.querySelector('.packages-subtitle')
+      const rows = item.querySelectorAll('.package-list li')
+      const onEnter = () => {
+        gsap.to(item, {
+          y: -7,
+          scale: 1.012,
+          borderColor: 'var(--accent)',
+          duration: 0.34,
+          ease: 'power3.out',
+          overwrite: 'auto',
+        })
+        if (title) {
+          gsap.to(title, {
+            x: 4,
+            color: 'var(--accent)',
+            duration: 0.28,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
+        if (rows.length) {
+          gsap.to(rows, {
+            x: 2,
+            duration: 0.28,
+            stagger: 0.02,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
+      }
+      const onLeave = () => {
+        gsap.to(item, {
+          y: 0,
+          scale: 1,
+          borderColor: '',
+          duration: 0.36,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        })
+        if (title) {
+          gsap.to(title, {
+            x: 0,
+            color: '',
+            duration: 0.3,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
+        if (rows.length) {
+          gsap.to(rows, {
+            x: 0,
+            duration: 0.3,
+            stagger: 0.015,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
+      }
+      if (isStickyTouch) {
+        const onTap = (e) => {
+          if (e.pointerType === 'mouse') return
+          onEnter()
+          window.setTimeout(() => onLeave(), 230)
+        }
+        item.addEventListener('pointerdown', onTap, true)
+        cleanupFns.push(() => item.removeEventListener('pointerdown', onTap, true))
+      } else {
+        item.addEventListener('mouseenter', onEnter)
+        item.addEventListener('mouseleave', onLeave)
+        cleanupFns.push(() => {
+          item.removeEventListener('mouseenter', onEnter)
+          item.removeEventListener('mouseleave', onLeave)
+        })
+      }
+    })
 
     packageCardsEls.forEach((card) => {
       const packageColor = getComputedStyle(card).getPropertyValue('--package-color').trim() || 'var(--accent)'
@@ -2386,7 +2584,9 @@ function App() {
       </section>
 
       <section className="packages">
-        <h2 className="packages-header gs-reveal">{String(t('packages.header'))}</h2>
+        <h2 className="packages-header gs-reveal">
+          <PackagesHeaderLetters text={String(t('packages.header'))} />
+        </h2>
         <p className="packages-lead gs-reveal">{String(t('packages.lead'))}</p>
         <article
           ref={packagesShowcaseRef}
