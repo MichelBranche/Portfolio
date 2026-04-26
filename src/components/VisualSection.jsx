@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLanguage } from '../context/LanguageContext.jsx'
+import { useIsDroneLayoutDesktop, useIsVisualStatementDesktop } from '../hooks/useResponsive.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -23,7 +24,11 @@ function asList(value) {
 
 export function VisualSection() {
   const { t, lang } = useLanguage()
+  const isDroneDesktop = useIsDroneLayoutDesktop()
+  const isStatementDesktop = useIsVisualStatementDesktop()
   const sectionRef = useRef(null)
+  /** Parallasse scroll (solo qui, mai sull'img) — evita conflitto con gsap.from sull'immagine */
+  const droneParallaxRef = useRef(null)
   const droneWrapRef = useRef(null)
   const droneRef = useRef(null)
   const statementRef = useRef(null)
@@ -62,22 +67,20 @@ export function VisualSection() {
       const section = sectionRef.current
       const debugMarkers = new URLSearchParams(window.location.search).has('stdebug')
 
-      if (drone && section && droneWrap) {
-        const isDesktop = window.innerWidth > 768
-        
+      const droneParallax = droneParallaxRef.current
+      if (drone && section && droneWrap && droneParallax) {
         gsap.set(drone, {
           transformOrigin: 'center center',
           force3D: true,
-          rotate: 0,
         })
 
-        // Dinamic Entry
+        // Entry solo sull'img: niente gsap.set scroll sullo stesso nodo
         gsap.from(drone, {
           opacity: 0,
           scale: 0.6,
           x: 180,
           y: -100,
-          rotate: -25,
+          rotation: -25,
           duration: 1.6,
           ease: 'back.out(1.2)',
           scrollTrigger: {
@@ -87,7 +90,7 @@ export function VisualSection() {
           },
         })
 
-        // Complex Hover Float on wrapper
+        // Float sul wrap: il parallax è sul parent (droneParallax), nessun conflitto con l’img
         gsap.to(droneWrap, {
           y: -20,
           duration: 2.2,
@@ -103,18 +106,19 @@ export function VisualSection() {
           ease: 'sine.inOut',
         })
         gsap.to(droneWrap, {
-          rotate: 4,
+          rotation: 4,
           duration: 4.5,
           yoyo: true,
           repeat: -1,
           ease: 'sine.inOut',
         })
 
-        // More pronounced scroll parallax
-        const yAmount = isDesktop ? -150 : -60
-        const xAmount = isDesktop ? 80 : 30
-        const rotateAmount = isDesktop ? 18 : 8
-        const scaleAmount = isDesktop ? 1.2 : 1.08
+        const yAmount = isDroneDesktop ? -150 : -60
+        const xAmount = isDroneDesktop ? 80 : 30
+        const rotateAmount = isDroneDesktop ? 18 : 8
+        const scaleAmount = isDroneDesktop ? 1.2 : 1.08
+
+        gsap.set(droneParallax, { force3D: true, transformOrigin: '50% 50%' })
 
         ScrollTrigger.create({
           trigger: section,
@@ -125,10 +129,10 @@ export function VisualSection() {
           markers: debugMarkers,
           onUpdate: (self) => {
             const p = self.progress
-            gsap.set(drone, {
+            gsap.set(droneParallax, {
               y: yAmount * p,
               x: xAmount * p,
-              rotate: rotateAmount * p,
+              rotation: rotateAmount * p,
               scale: 1 + (scaleAmount - 1) * p,
             })
           },
@@ -162,8 +166,7 @@ export function VisualSection() {
         const statementLineEls = statementTitleEl.querySelectorAll('.visual-statement-line')
         const statementWords = statementTitleEl.querySelectorAll('.visual-statement-word')
         const statementLetters = statementTitleEl.querySelectorAll('.visual-statement-letter')
-        const isDesktop = window.innerWidth > 900
-        if (isDesktop) {
+        if (isStatementDesktop) {
           gsap.set(servicesEl, { y: 120, opacity: 0, scale: 0.94 })
           gsap.set(serviceItemsRef.current, { y: 32, opacity: 0 })
           gsap.set(statementLineEls[0], { xPercent: -26, opacity: 0.6 })
@@ -253,7 +256,7 @@ export function VisualSection() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [lang])
+  }, [lang, isDroneDesktop, isStatementDesktop])
 
   return (
     <section ref={sectionRef} className="visual-section">
@@ -281,8 +284,12 @@ export function VisualSection() {
           </a>
         </div>
 
-        <div className="visual-section-drone-wrap" ref={droneWrapRef}>
-          <img ref={droneRef} src={DRONE_IMAGE_URL} alt={droneAlt} className="visual-section-drone" />
+        <div className="visual-section-drone-stage">
+          <div className="visual-section-drone-parallax" ref={droneParallaxRef}>
+            <div className="visual-section-drone-wrap" ref={droneWrapRef}>
+              <img ref={droneRef} src={DRONE_IMAGE_URL} alt={droneAlt} className="visual-section-drone" />
+            </div>
+          </div>
         </div>
       </div>
 

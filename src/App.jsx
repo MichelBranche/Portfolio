@@ -11,6 +11,7 @@ import { useLanguage } from './context/LanguageContext.jsx'
 import './App.css'
 import { translate } from './i18n/translations'
 import { initFlairConfetti } from './lib/flairConfetti'
+import { useIsCoarsePointerDevice, usePrefersReducedMotion } from './hooks/useResponsive.js'
 
 const FOOTER_SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/michel-branche-328501301/',
@@ -49,12 +50,6 @@ function applyDocumentFavicon(href) {
   document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach((el) => {
     el.setAttribute('href', href)
   })
-}
-
-/** Dito / stilo: niente “hover reale” → comandi a tocco persistente */
-function isCoarsePointerDevice() {
-  if (typeof window === 'undefined') return false
-  return window.matchMedia('(hover: none) and (pointer: coarse)').matches
 }
 
 function asArray(value) {
@@ -360,6 +355,8 @@ function PreloaderCreepyButton({ label, ariaLabel, onClick }) {
 
 function App() {
   const { t, lang } = useLanguage()
+  const isCoarsePointer = useIsCoarsePointerDevice()
+  const prefersReducedMotion = usePrefersReducedMotion()
   const [modalData, setModalData] = useState(null)
   const lenisRef = useRef(null)
   const modalRef = useRef(null)
@@ -470,7 +467,6 @@ function App() {
   useEffect(() => {
     const root = packagesShowcaseRef.current
     if (!root) return
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const moving = root.querySelectorAll(
       '.packages-showcase-title, .packages-showcase-price, .package-label, .package-list li, .package-badge, .package-kicker',
     )
@@ -512,12 +508,11 @@ function App() {
     return () => {
       tl.kill()
     }
-  }, [activePackage])
+  }, [activePackage, prefersReducedMotion])
 
   useEffect(() => {
     const root = packagesShowcaseRef.current
     if (!root) return
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const nextArrow = root.querySelector('.packages-showcase-next .packages-showcase-next-icon svg')
     if (!nextArrow || prefersReducedMotion) return
 
@@ -531,7 +526,7 @@ function App() {
     return () => {
       nextTween.kill()
     }
-  }, [])
+  }, [prefersReducedMotion])
 
   useEffect(() => {
     if (preloaderPhase !== 'counting') {
@@ -732,6 +727,31 @@ function App() {
 
   const handlePreloaderEnter = useCallback(() => {
     if (preloaderPhase !== 'awaitEnter') return
+    const players = footerSoundRef.current
+    if (players) {
+      Object.entries(players).forEach(([, audio]) => {
+        if (!audio) return
+        const originalVolume = audio.volume
+        audio.muted = true
+        const p = audio.play()
+        if (p && typeof p.then === 'function') {
+          p.then(() => {
+            audio.pause()
+            audio.currentTime = 0
+            audio.muted = false
+            audio.volume = originalVolume
+          }).catch(() => {
+            audio.muted = false
+            audio.volume = originalVolume
+          })
+        } else {
+          audio.pause()
+          audio.currentTime = 0
+          audio.muted = false
+          audio.volume = originalVolume
+        }
+      })
+    }
     setPreloaderPhase('counting')
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -768,18 +788,17 @@ function App() {
     const docCycleRaw = translate(lang, 'doc.cycle')
     const away = translate(lang, 'doc.away')
     const titleFrames = Array.isArray(docCycleRaw) ? docCycleRaw : [String(docCycleRaw)]
-    const preferReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let frame = 0
     let titleTimer = null
 
     const applyVisible = () => {
-      document.title = preferReduced
+      document.title = prefersReducedMotion
         ? titleFrames[0]
         : titleFrames[frame % titleFrames.length]
     }
 
     const startTitleCycle = () => {
-      if (preferReduced) {
+      if (prefersReducedMotion) {
         applyVisible()
         return
       }
@@ -824,7 +843,7 @@ function App() {
       document.title = titleFrames[0]
       applyDocumentFavicon(FAVICON_DEFAULT)
     }
-  }, [lang])
+  }, [lang, prefersReducedMotion])
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -851,8 +870,7 @@ function App() {
       }
     }
 
-    const isStickyTouch = isCoarsePointerDevice()
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isStickyTouch = isCoarsePointer
     const heroTopEl = document.querySelector('.hero-top')
     const heroSubEl = document.querySelector('section.hero .hero-subtitle')
     const heroSocialEl = document.querySelector('section.hero .hero-social')
@@ -1356,8 +1374,6 @@ function App() {
         heroTagFallTl = null
       }
 
-      const preferReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
       const measureDist = () => {
         const hr = hero.getBoundingClientRect()
         const tr = tag.getBoundingClientRect()
@@ -1375,7 +1391,7 @@ function App() {
 
         heroTagFallLocked = true
 
-        if (preferReduced) {
+        if (prefersReducedMotion) {
           gsap.set(tag, { y: dist, rotation: -6, zIndex: 3 })
           playAnvilLand()
           heroTagHasFallen = true
@@ -1454,11 +1470,13 @@ function App() {
       gsap
         .timeline({
           onComplete: () => {
-            lenis.start()
             setPreloaderPhase('done')
           },
         })
         .to('.preloader', { yPercent: -100, duration: 1, ease: 'power4.inOut' })
+        .add(() => {
+          lenis.start()
+        })
         .fromTo(
           '.hero-title-letter-inner',
           {
@@ -2307,7 +2325,7 @@ function App() {
       gsap.ticker.remove(tickerCallback)
       lenis.destroy()
     }
-  }, [])
+  }, [isCoarsePointer, prefersReducedMotion])
 
   useEffect(() => {
     if (!modalData) return
@@ -2423,7 +2441,6 @@ function App() {
       sideEyeTimeoutRef.current = null
     }
 
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const floorY = floorBtn.getBoundingClientRect().top
 
     const selectors = [
@@ -2489,9 +2506,9 @@ function App() {
           el.style.setProperty('overflow', 'hidden', 'important')
         }
 
-        const dur = prefersReduced ? 0.04 : Math.min(1.15, 0.38 + fall / 1100)
-        const delay = prefersReduced ? 0 : i * 0.02 + Math.random() * 0.22
-        const rot = prefersReduced ? 0 : gsap.utils.random(-9, 9)
+        const dur = prefersReducedMotion ? 0.04 : Math.min(1.15, 0.38 + fall / 1100)
+        const delay = prefersReducedMotion ? 0 : i * 0.02 + Math.random() * 0.22
+        const rot = prefersReducedMotion ? 0 : gsap.utils.random(-9, 9)
 
         gsap.fromTo(
           el,
@@ -2501,15 +2518,15 @@ function App() {
             rotation: rot,
             duration: dur,
             delay,
-            ease: prefersReduced ? 'none' : 'power2.in',
+            ease: prefersReducedMotion ? 'none' : 'power2.in',
           },
         )
       })
     })
-  }, [modalData])
+  }, [modalData, prefersReducedMotion])
 
   useEffect(() => {
-    if (!isCoarsePointerDevice()) return
+    if (!isCoarsePointer) return
     const onDocClearSounds = (e) => {
       if (e.pointerType === 'mouse') return
       if (e.target?.closest?.('.interactable, .self-destruct-keep, .self-destruct-btn')) {
@@ -2525,7 +2542,7 @@ function App() {
     }
     document.addEventListener('pointerdown', onDocClearSounds, true)
     return () => document.removeEventListener('pointerdown', onDocClearSounds, true)
-  }, [])
+  }, [isCoarsePointer])
 
   useEffect(() => {
     const el = heroRef.current
@@ -2625,7 +2642,7 @@ function App() {
                 playFooterSound('linkedin')
               }}
               onPointerDown={(e) => {
-                if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+                if (!isCoarsePointer || e.pointerType === 'mouse') return
                 playFooterSound('linkedin')
               }}
             >
@@ -2647,7 +2664,7 @@ function App() {
                 playFooterSound('instagram')
               }}
               onPointerDown={(e) => {
-                if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+                if (!isCoarsePointer || e.pointerType === 'mouse') return
                 playFooterSound('instagram')
               }}
             >
@@ -2667,7 +2684,7 @@ function App() {
                 playFooterSound('email')
               }}
               onPointerDown={(e) => {
-                if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+                if (!isCoarsePointer || e.pointerType === 'mouse') return
                 playFooterSound('email')
               }}
             >
@@ -2716,11 +2733,11 @@ function App() {
               playFooterSound('michel')
             }}
             onPointerDown={(e) => {
-              if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+              if (!isCoarsePointer || e.pointerType === 'mouse') return
               playFooterSound('michel')
             }}
             onPointerLeave={() => {
-              if (isCoarsePointerDevice()) return
+              if (isCoarsePointer) return
               stopFooterSound('michel')
             }}
           >
@@ -2743,11 +2760,11 @@ function App() {
               playFooterSound('branche')
             }}
             onPointerDown={(e) => {
-              if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+              if (!isCoarsePointer || e.pointerType === 'mouse') return
               playFooterSound('branche')
             }}
             onPointerLeave={() => {
-              if (isCoarsePointerDevice()) return
+              if (isCoarsePointer) return
               stopFooterSound('branche')
             }}
           >
@@ -2947,12 +2964,12 @@ function App() {
             setShowConfetti(true)
           }}
           onPointerDown={(e) => {
-            if (!isCoarsePointerDevice() || e.pointerType === 'mouse') return
+            if (!isCoarsePointer || e.pointerType === 'mouse') return
             playFooterSound('scrivimi')
             setShowConfetti(true)
           }}
           onPointerLeave={() => {
-            if (isCoarsePointerDevice()) return
+            if (isCoarsePointer) return
             setShowConfetti(false)
             handleScrivimiLeave()
           }}
