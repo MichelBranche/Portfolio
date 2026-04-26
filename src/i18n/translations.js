@@ -220,6 +220,35 @@ const STRINGS = {
       cta: 'Richiedi consulenza gratuita',
       values: ['Strategia visiva', 'Qualità premium', 'Impatto reale', 'Processo semplice'],
     },
+    visualSection: {
+      titleLines: ['FOTOGRAFIA', '& RIPRESE AEREE.'],
+      lead: 'Shooting fotografici e riprese drone per brand, location e attività. Dalla preparazione del set alla consegna dei file finali.',
+      cta: 'RICHIEDI UN PREVENTIVO →',
+      droneAlt: 'Drone',
+      statementLines: ['L’estetica attira.', 'La conversione decide il valore.'],
+      servicesKicker: '3 professionisti specializzati',
+      servicesIntro: 'Questi servizi sono offerti da 3 professionisti, ciascuno specializzato nel proprio settore di appartenenza, che collaborano stabilmente con me. Io coordino il progetto perché tutto resti coerente.',
+      services: {
+        photo: {
+          title: 'FOTOGRAFIA',
+          desc: 'Shooting professionali per prodotti, food ed e-commerce. Immagini curate dalla luce alla post-produzione, pensate per migliorare la percezione del brand e la conversione su ogni canale.',
+          price: 'da €150 / €300+',
+          details: ['Shooting prodotto', 'Food / e-commerce', 'Post produzione inclusa'],
+        },
+        copy: {
+          title: 'COPYWRITING',
+          desc: 'Testi che vendono e parlano la lingua del tuo brand. Naming, claim, microcopy e contenuti per landing, email e social, pensati per generare azione.',
+          price: 'da €100 / €400+',
+          details: ['Naming e claim', 'Testi sito / landing', 'Email & social copy'],
+        },
+        drone: {
+          title: 'DRONE',
+          desc: 'Riprese aeree cinematiche per location, hospitality e brand. Inquadrature stabili, traiettorie pulite e autorizzazioni gestite: file pronti al montaggio, in formato verticale o orizzontale.',
+          price: 'da €200 / €500+',
+          details: ['Riprese aeree cinematiche', 'Location / hospitality', 'Pilota certificato'],
+        },
+      },
+    },
     modal: {
       close: 'CHIUDI [X]',
       visit: 'VAI AL SITO WEB ↗',
@@ -445,6 +474,35 @@ const STRINGS = {
       cta: 'Request a free consultation',
       values: ['Visual strategy', 'Premium quality', 'Real impact', 'Simple process'],
     },
+    visualSection: {
+      titleLines: ['PHOTOGRAPHY', '& AERIAL VIDEO.'],
+      lead: 'Photo shoots and drone footage for brands, locations and businesses. From set prep to final file delivery.',
+      cta: 'REQUEST A QUOTE →',
+      droneAlt: 'Drone',
+      statementLines: ['Aesthetics attract.', 'Conversion decides the value.'],
+      servicesKicker: '3 specialists in their field',
+      servicesIntro: 'These services are delivered by 3 professionals, each one a specialist in their own field, who collaborate regularly with me. I coordinate the project to keep everything coherent.',
+      services: {
+        photo: {
+          title: 'PHOTOGRAPHY',
+          desc: 'Professional shoots for products, food and e-commerce. Imagery crafted from lighting to post-production, designed to elevate brand perception and conversion on every channel.',
+          price: 'from €150 / €300+',
+          details: ['Product shoots', 'Food / e-commerce', 'Post-production included'],
+        },
+        copy: {
+          title: 'COPYWRITING',
+          desc: 'Copy that sells and sounds like your brand. Naming, claims, microcopy and content for landing pages, email and social, designed to drive action.',
+          price: 'from €100 / €400+',
+          details: ['Naming and claims', 'Website / landing copy', 'Email & social copy'],
+        },
+        drone: {
+          title: 'DRONE',
+          desc: 'Cinematic aerial footage for locations, hospitality and brands. Stable framing, clean paths and permits handled: edit-ready files, vertical or horizontal.',
+          price: 'from €200 / €500+',
+          details: ['Cinematic aerial footage', 'Location / hospitality', 'Certified pilot'],
+        },
+      },
+    },
     modal: {
       close: 'CLOSE [X]',
       visit: 'GO TO THE SITE ↗',
@@ -555,6 +613,35 @@ const STRINGS = {
       seo: {
         title: 'Bases SEO Techniques',
         desc: 'Structure propre, metadonnees et base technique solide pour etre visible.',
+      },
+    },
+    visualSection: {
+      titleLines: ['PHOTOGRAPHIE', '& PRISES DE VUE AÉRIENNES.'],
+      lead: 'Shootings photo et prises de vue par drone pour marques, lieux et entreprises. De la préparation du set à la livraison des fichiers finaux.',
+      cta: 'DEMANDER UN DEVIS →',
+      droneAlt: 'Drone',
+      statementLines: ['L’esthétique attire.', 'La conversion décide de la valeur.'],
+      servicesKicker: '3 spécialistes de leur domaine',
+      servicesIntro: 'Ces services sont assurés par 3 professionnels, chacun spécialiste dans son propre domaine, qui collaborent régulièrement avec moi. Je coordonne le projet pour garder une cohérence d’ensemble.',
+      services: {
+        photo: {
+          title: 'PHOTOGRAPHIE',
+          desc: 'Shootings professionnels pour produits, food et e-commerce. Des images soignées, de la lumière à la post-production, pensées pour valoriser la marque et la conversion sur chaque canal.',
+          price: 'à partir de 150 € / 300 €+',
+          details: ['Shooting produit', 'Food / e-commerce', 'Post-production incluse'],
+        },
+        copy: {
+          title: 'COPYWRITING',
+          desc: 'Des textes qui vendent et qui parlent la langue de votre marque. Naming, claims, microcopy et contenus pour landing pages, emails et social, pensés pour générer de l’action.',
+          price: 'à partir de 100 € / 400 €+',
+          details: ['Naming et claims', 'Textes site / landing', 'Email & social copy'],
+        },
+        drone: {
+          title: 'DRONE',
+          desc: 'Prises de vue aériennes cinématographiques pour lieux, hôtellerie et marques. Cadres stables, trajectoires propres et autorisations gérées : fichiers prêts au montage, vertical ou horizontal.',
+          price: 'à partir de 200 € / 500 €+',
+          details: ['Prises de vue cinématographiques', 'Lieu / hôtellerie', 'Pilote certifié'],
+        },
       },
     },
     modal: {
@@ -669,6 +756,35 @@ const STRINGS = {
         desc: 'Saubere Struktur, Metadaten und solide technische Basis fuer Sichtbarkeit.',
       },
     },
+    visualSection: {
+      titleLines: ['FOTOGRAFIE', '& LUFTAUFNAHMEN.'],
+      lead: 'Foto-Shootings und Drohnenaufnahmen für Marken, Locations und Unternehmen. Vom Set-Aufbau bis zur Lieferung der finalen Dateien.',
+      cta: 'ANGEBOT ANFRAGEN →',
+      droneAlt: 'Drohne',
+      statementLines: ['Ästhetik zieht an.', 'Conversion entscheidet über den Wert.'],
+      servicesKicker: '3 Spezialist:innen im eigenen Fach',
+      servicesIntro: 'Diese Leistungen werden von 3 Profis erbracht, jede:r Spezialist:in im eigenen Fachgebiet, die regelmäßig mit mir zusammenarbeiten. Ich koordiniere das Projekt, damit alles stimmig bleibt.',
+      services: {
+        photo: {
+          title: 'FOTOGRAFIE',
+          desc: 'Professionelle Shootings für Produkte, Food und E-Commerce. Bilder, vom Licht bis zur Postproduktion gepflegt, um Markenwahrnehmung und Conversion auf jedem Kanal zu steigern.',
+          price: 'ab 150 € / 300 €+',
+          details: ['Produkt-Shootings', 'Food / E-Commerce', 'Postproduktion inklusive'],
+        },
+        copy: {
+          title: 'COPYWRITING',
+          desc: 'Texte, die verkaufen und nach Ihrer Marke klingen. Naming, Claims, Microcopy und Inhalte für Landingpages, E-Mail und Social – auf Wirkung ausgelegt.',
+          price: 'ab 100 € / 400 €+',
+          details: ['Naming und Claims', 'Website- / Landing-Texte', 'E-Mail & Social Copy'],
+        },
+        drone: {
+          title: 'DROHNE',
+          desc: 'Cinematische Luftaufnahmen für Locations, Hospitality und Marken. Stabile Bildausschnitte, saubere Flugbahnen und Genehmigungen geregelt: schnittfertige Dateien, vertikal oder horizontal.',
+          price: 'ab 200 € / 500 €+',
+          details: ['Cinematische Luftaufnahmen', 'Location / Hospitality', 'Zertifizierter Pilot'],
+        },
+      },
+    },
     modal: {
       close: 'SCHLIESSEN [X]',
       visit: 'ZUR WEBSITE ↗',
@@ -779,6 +895,35 @@ const STRINGS = {
       seo: {
         title: 'SEO Tecnico Base',
         desc: 'Estructura correcta, metadatos y base tecnica solida para ganar visibilidad.',
+      },
+    },
+    visualSection: {
+      titleLines: ['FOTOGRAFÍA', '& TOMAS AÉREAS.'],
+      lead: 'Sesiones de fotos y tomas con dron para marcas, ubicaciones y negocios. De la preparación del set a la entrega de los archivos finales.',
+      cta: 'SOLICITA PRESUPUESTO →',
+      droneAlt: 'Dron',
+      statementLines: ['La estética atrae.', 'La conversión decide el valor.'],
+      servicesKicker: '3 especialistas en su sector',
+      servicesIntro: 'Estos servicios los ofrecen 3 profesionales, cada uno especialista en su propio sector, que colaboran habitualmente conmigo. Yo coordino el proyecto para que todo mantenga coherencia.',
+      services: {
+        photo: {
+          title: 'FOTOGRAFÍA',
+          desc: 'Sesiones profesionales para productos, food y e-commerce. Imágenes cuidadas desde la luz hasta la postproducción, pensadas para elevar la percepción de marca y la conversión en cada canal.',
+          price: 'desde 150 € / 300 €+',
+          details: ['Sesiones de producto', 'Food / e-commerce', 'Postproducción incluida'],
+        },
+        copy: {
+          title: 'COPYWRITING',
+          desc: 'Textos que venden y suenan como tu marca. Naming, claims, microcopy y contenido para landings, email y redes sociales, pensados para activar acción.',
+          price: 'desde 100 € / 400 €+',
+          details: ['Naming y claims', 'Textos web / landing', 'Email & social copy'],
+        },
+        drone: {
+          title: 'DRON',
+          desc: 'Tomas aéreas cinematográficas para localizaciones, hospitality y marcas. Encuadres estables, trayectorias limpias y permisos gestionados: archivos listos para montaje, vertical u horizontal.',
+          price: 'desde 200 € / 500 €+',
+          details: ['Tomas aéreas cinematográficas', 'Localización / hospitality', 'Piloto certificado'],
+        },
       },
     },
     modal: {

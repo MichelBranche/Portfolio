@@ -1,32 +1,28 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useLanguage } from '../context/LanguageContext.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const DRONE_IMAGE_URL =
   'https://skycrabacademy.net/cdn/shop/files/DJIMini4pro-skycrabacademy_7.png?v=1762525902&width=2048'
-const STATEMENT_LINES = ['L’estetica attira.', 'La conversione decide il valore.']
-const SERVICE_ITEMS = [
-  {
-    key: 'photo',
-    title: 'FOTOGRAFIA',
-    desc:
-      'Shooting professionali per prodotti, food ed e-commerce. Immagini curate dalla luce alla post-produzione, pensate per migliorare la percezione del brand e la conversione su ogni canale.',
-    price: 'da €150 / €300+',
-    details: ['Shooting prodotto', 'Food / e-commerce', 'Post produzione inclusa'],
-  },
-  {
-    key: 'drone',
-    title: 'DRONE',
-    desc:
-      'Riprese aeree cinematiche per location, hospitality e brand. Inquadrature stabili, traiettorie pulite e autorizzazioni gestite: file pronti al montaggio, in formato verticale o orizzontale.',
-    price: 'da €200 / €500+',
-    details: ['Riprese aeree cinematiche', 'Location / hospitality', 'Pilota certificato'],
-  },
-]
+
+const SERVICE_KEYS = ['photo', 'copy', 'drone']
+
+function asLines(value, fallback) {
+  if (Array.isArray(value)) return value.map(String)
+  if (typeof value === 'string') return [value]
+  return fallback
+}
+
+function asList(value) {
+  if (Array.isArray(value)) return value.map(String)
+  return []
+}
 
 export function VisualSection() {
+  const { t, lang } = useLanguage()
   const sectionRef = useRef(null)
   const droneWrapRef = useRef(null)
   const droneRef = useRef(null)
@@ -35,6 +31,29 @@ export function VisualSection() {
   const servicesRef = useRef(null)
   const serviceItemsRef = useRef([])
   const textRef = useRef([])
+
+  const titleLines = asLines(t('visualSection.titleLines'), ['FOTOGRAFIA', '& RIPRESE AEREE.'])
+  const lead = String(t('visualSection.lead'))
+  const cta = String(t('visualSection.cta'))
+  const droneAlt = String(t('visualSection.droneAlt'))
+  const statementLines = asLines(t('visualSection.statementLines'), [
+    'L’estetica attira.',
+    'La conversione decide il valore.',
+  ])
+  const servicesKicker = String(t('visualSection.servicesKicker'))
+  const servicesIntro = String(t('visualSection.servicesIntro'))
+
+  const services = useMemo(
+    () =>
+      SERVICE_KEYS.map((key) => ({
+        key,
+        title: String(t(`visualSection.services.${key}.title`)),
+        desc: String(t(`visualSection.services.${key}.desc`)),
+        price: String(t(`visualSection.services.${key}.price`)),
+        details: asList(t(`visualSection.services.${key}.details`)),
+      })),
+    [t],
+  )
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -119,15 +138,15 @@ export function VisualSection() {
       const statementTitleEl = statementTitleRef.current
       const servicesEl = servicesRef.current
       if (statementEl && statementTitleEl && servicesEl) {
-        const statementLines = statementTitleEl.querySelectorAll('.visual-statement-line')
+        const statementLineEls = statementTitleEl.querySelectorAll('.visual-statement-line')
         const statementWords = statementTitleEl.querySelectorAll('.visual-statement-word')
         const statementLetters = statementTitleEl.querySelectorAll('.visual-statement-letter')
         const isDesktop = window.innerWidth > 900
         if (isDesktop) {
           gsap.set(servicesEl, { y: 120, opacity: 0, scale: 0.94 })
           gsap.set(serviceItemsRef.current, { y: 32, opacity: 0 })
-          gsap.set(statementLines[0], { xPercent: -26, opacity: 0.6 })
-          gsap.set(statementLines[1], { xPercent: 26, opacity: 0.6 })
+          gsap.set(statementLineEls[0], { xPercent: -26, opacity: 0.6 })
+          gsap.set(statementLineEls[1], { xPercent: 26, opacity: 0.6 })
           gsap.set(statementWords, { opacity: 0.2 })
           gsap.set(statementLetters, { yPercent: 120, rotate: 7, opacity: 0 })
           const fullTl = gsap.timeline({
@@ -143,7 +162,7 @@ export function VisualSection() {
             },
           })
           fullTl
-            .to(statementLines, { xPercent: 0, opacity: 1, duration: 0.28, ease: 'none' }, 0)
+            .to(statementLineEls, { xPercent: 0, opacity: 1, duration: 0.28, ease: 'none' }, 0)
             .to(statementWords, { opacity: 1, duration: 0.2, ease: 'none', stagger: 0.05 }, 0)
             .to(
               statementLetters,
@@ -213,21 +232,23 @@ export function VisualSection() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [lang])
 
   return (
     <section ref={sectionRef} className="visual-section">
       <div className="visual-section-hero">
         <div className="visual-section-copy">
           <h2 ref={(el) => (textRef.current[0] = el)} className="visual-section-title">
-            FOTOGRAFIA
-            <br />
-            & RIPRESE AEREE.
+            {titleLines.map((line, idx) => (
+              <span key={`${lang}-title-${idx}`}>
+                {line}
+                {idx < titleLines.length - 1 && <br />}
+              </span>
+            ))}
           </h2>
 
           <p ref={(el) => (textRef.current[1] = el)} className="visual-section-lead">
-            Shooting fotografici e riprese drone per brand, location e attività. Dalla
-            preparazione del set alla consegna dei file finali.
+            {lead}
           </p>
 
           <a
@@ -235,19 +256,19 @@ export function VisualSection() {
             ref={(el) => (textRef.current[2] = el)}
             className="visual-section-cta interactable"
           >
-            RICHIEDI UN PREVENTIVO →
+            {cta}
           </a>
         </div>
 
         <div className="visual-section-drone-wrap" ref={droneWrapRef}>
-          <img ref={droneRef} src={DRONE_IMAGE_URL} alt="Drone" className="visual-section-drone" />
+          <img ref={droneRef} src={DRONE_IMAGE_URL} alt={droneAlt} className="visual-section-drone" />
         </div>
       </div>
 
       <div className="visual-section-statement" ref={statementRef}>
         <h3 ref={statementTitleRef} className="visual-section-statement-title">
-          {STATEMENT_LINES.map((line, lineIdx) => (
-            <span className="visual-statement-line" key={`line-${lineIdx}`}>
+          {statementLines.map((line, lineIdx) => (
+            <span className="visual-statement-line" key={`${lang}-line-${lineIdx}`}>
               {line.split(' ').map((word, wordIdx) => (
                 <span className="visual-statement-word" key={`word-${lineIdx}-${wordIdx}`}>
                   {word.split('').map((ch, letterIdx) => (
@@ -266,8 +287,17 @@ export function VisualSection() {
       </div>
 
       <div className="visual-section-services" ref={servicesRef}>
+        <header className="visual-section-services-intro">
+          <span className="visual-section-services-kicker">
+            <span className="visual-section-services-kicker-num" aria-hidden>
+              03
+            </span>
+            <span className="visual-section-services-kicker-label">{servicesKicker}</span>
+          </span>
+          <p className="visual-section-services-intro-text">{servicesIntro}</p>
+        </header>
         <div className="visual-section-services-list">
-          {SERVICE_ITEMS.map((service, i) => (
+          {services.map((service, i) => (
             <article
               key={service.key}
               ref={(el) => {
