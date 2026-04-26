@@ -3,6 +3,7 @@ html {
   text-size-adjust: 100%;
   min-height: 100%;
   min-height: -webkit-fill-available;
+  overflow-x: hidden;
 }
 
 body {

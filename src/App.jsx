@@ -1462,21 +1462,28 @@ function App() {
         .fromTo(
           '.hero-title-letter-inner',
           {
-            yPercent: 120,
+            yPercent: 180,
             opacity: 0,
-            rotate: () => gsap.utils.random(-22, 22),
-            skewX: () => gsap.utils.random(-12, 12),
+            scale: () => gsap.utils.random(0.5, 0.8),
+            rotateX: () => gsap.utils.random(-45, 45),
+            rotateY: () => gsap.utils.random(-30, 30),
+            rotateZ: () => gsap.utils.random(-25, 25),
+            skewX: () => gsap.utils.random(-15, 15),
+            transformPerspective: 1000,
           },
           {
             yPercent: 0,
             opacity: 1,
-            rotate: 0,
+            scale: 1,
+            rotateX: 0,
+            rotateY: 0,
+            rotateZ: 0,
             skewX: 0,
-            duration: 1.1,
-            stagger: { each: 0.045, from: 'start' },
-            ease: 'power4.out',
+            duration: 1.5,
+            stagger: { each: 0.05, from: 'random' },
+            ease: 'elastic.out(1, 0.5)',
           },
-          '-=0.6',
+          '-=0.75',
         )
         .fromTo(
           '.hero-tag',
@@ -1496,21 +1503,23 @@ function App() {
         .fromTo(
           '.hero-subtitle-word-inner',
           {
-            yPercent: 115,
+            yPercent: 160,
             opacity: 0,
-            rotate: () => gsap.utils.random(-6, 6),
-            skewX: () => gsap.utils.random(-5, 5),
+            scale: 0.8,
+            rotateZ: () => gsap.utils.random(-15, 15),
+            skewX: () => gsap.utils.random(-10, 10),
           },
           {
             yPercent: 0,
             opacity: 1,
-            rotate: 0,
+            scale: 1,
+            rotateZ: 0,
             skewX: 0,
-            duration: 0.82,
-            stagger: { each: 0.032, from: 'start' },
-            ease: 'power3.out',
+            duration: 1.2,
+            stagger: { each: 0.04, from: 'start' },
+            ease: 'back.out(1.7)',
           },
-          '-=0.8',
+          '-=1.2',
         )
         .fromTo(
           '.hero-social-link',
@@ -1575,29 +1584,29 @@ function App() {
       const tech = item.querySelector('.project-tech')
       const img = item.querySelector('.project-img-float')
 
-      gsap.set(item, { opacity: 0, y: 52 })
+      gsap.set(item, { opacity: 0, y: 150, scale: 0.9 })
       if (titleInners.length) {
-        gsap.set(titleInners, { y: '100%', opacity: 0 })
+        gsap.set(titleInners, { y: '160%', rotateZ: 12, opacity: 0 })
       }
       if (tech) {
-        gsap.set(tech, { opacity: 0, y: 22, x: 24 })
+        gsap.set(tech, { opacity: 0, y: 30, x: 40, rotateX: 45 })
       }
 
       gsap
         .timeline({
           scrollTrigger: {
             trigger: item,
-            start: 'top 88%',
+            start: 'top 85%',
             once: true,
           },
         })
-        .to(item, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 0)
+        .to(item, { y: 0, scale: 1, opacity: 1, duration: 0.8, ease: 'expo.out' }, 0)
         .to(
           titleInners,
-          { y: '0%', opacity: 1, duration: 0.75, stagger: 0.04, ease: 'power3.out' },
-          0.05,
+          { y: '0%', rotateZ: 0, opacity: 1, duration: 1.1, stagger: 0.06, ease: 'back.out(1.5)' },
+          0.1,
         )
-        .to(tech, { y: 0, x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.12)
+        .to(tech, { y: 0, x: 0, rotateX: 0, opacity: 1, duration: 0.8, ease: 'expo.out' }, 0.2)
 
       const onEnter = () => {
         if (!isStickyTouch) {
@@ -1704,7 +1713,7 @@ function App() {
     const runServicesHeaderIntro = () => {
       if (!servicesHeader || prefersReducedMotion) return
       const headerLetters = servicesHeader.querySelectorAll('.services-header-letter-inner')
-      gsap.set(headerLetters, { yPercent: 110, rotate: 4, opacity: 0 })
+      gsap.set(headerLetters, { yPercent: 160, rotateZ: 25, scale: 0.6, opacity: 0 })
       gsap
         .timeline()
         .to(servicesHeader, { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' })
@@ -1712,11 +1721,12 @@ function App() {
           headerLetters,
           {
             yPercent: 0,
-            rotate: 0,
+            rotateZ: 0,
+            scale: 1,
             opacity: 1,
-            duration: 0.5,
-            stagger: 0.03,
-            ease: 'power3.out',
+            duration: 1.2,
+            stagger: 0.05,
+            ease: 'elastic.out(1, 0.4)',
           },
           0,
         )
@@ -1734,21 +1744,23 @@ function App() {
     }
 
     if (servicesHeader || servicesLead) {
-      gsap.set([servicesHeader, servicesLead].filter(Boolean), { opacity: 0, y: 24 })
+      gsap.set([servicesHeader, servicesLead].filter(Boolean), { opacity: 0, y: 80, rotateX: -20, scale: 0.9 })
       const servicesRevealTl = gsap
         .timeline({
           scrollTrigger: {
             trigger: '.services',
-            start: 'top 84%',
+            start: 'top 85%',
             once: true,
           },
         })
         .to([servicesHeader, servicesLead].filter(Boolean), {
           opacity: 1,
           y: 0,
-          duration: 0.55,
-          stagger: 0.12,
-          ease: 'power2.out',
+          rotateX: 0,
+          scale: 1,
+          duration: 1.2,
+          stagger: 0.18,
+          ease: 'expo.out',
         })
       servicesRevealTl.eventCallback('onComplete', () => {
         runServicesHeaderIntro()
@@ -1765,16 +1777,16 @@ function App() {
       const desc = item.querySelector('.service-desc')
       const parts = [title, desc].filter(Boolean)
 
-      gsap.set(item, { opacity: 0, y: 36, rotateX: -10, transformOrigin: '50% 100%' })
+      gsap.set(item, { opacity: 0, y: 100, rotateX: 30, rotateY: -10, scale: 0.85, transformOrigin: '50% 100%' })
       if (parts.length) {
-        gsap.set(parts, { opacity: 0, y: 16 })
+        gsap.set(parts, { opacity: 0, y: 40, rotateX: 15 })
       }
 
       gsap
         .timeline({
           scrollTrigger: {
             trigger: item,
-            start: 'top 90%',
+            start: 'top 85%',
             once: true,
           },
         })
@@ -1782,19 +1794,22 @@ function App() {
           opacity: 1,
           y: 0,
           rotateX: 0,
-          duration: 0.6,
-          ease: 'power2.out',
+          rotateY: 0,
+          scale: 1,
+          duration: 1.1,
+          ease: 'expo.out',
         })
         .to(
           parts,
           {
             opacity: 1,
             y: 0,
-            duration: 0.45,
-            stagger: 0.06,
-            ease: 'power2.out',
+            rotateX: 0,
+            duration: 0.9,
+            stagger: 0.1,
+            ease: 'expo.out',
           },
-          0.1,
+          0.15,
         )
 
       const onEnter = () => {
@@ -1885,7 +1900,7 @@ function App() {
     const runPackagesHeaderIntro = () => {
       if (!packagesHeader || prefersReducedMotion) return
       const letters = packagesHeader.querySelectorAll('.packages-header-letter-inner')
-      gsap.set(letters, { y: 26, rotate: 2, opacity: 0 })
+      gsap.set(letters, { y: 80, rotateZ: 30, scale: 0.4, opacity: 0 })
       gsap
         .timeline()
         .to(packagesHeader, { opacity: 1, y: 0, duration: 0.32, ease: 'power3.out' })
@@ -1893,11 +1908,12 @@ function App() {
           letters,
           {
             y: 0,
-            rotate: 0,
+            rotateZ: 0,
+            scale: 1,
             opacity: 1,
-            duration: 0.62,
-            stagger: 0.038,
-            ease: 'power4.out',
+            duration: 1.3,
+            stagger: 0.045,
+            ease: 'elastic.out(1, 0.3)',
           },
           0,
         )
@@ -1935,25 +1951,27 @@ function App() {
         '.packages-extras .package-list li, .packages-positioning .package-list li, .packages-flow .package-list li',
       )
       if (introParts.length) {
-        gsap.set(introParts, { opacity: 0, y: 24 })
+        gsap.set(introParts, { opacity: 0, y: 80, scale: 0.9, rotateX: 15 })
       }
       if (packageCardsEls.length) {
-        gsap.set(packageCardsEls, { opacity: 0, y: 40, rotateX: -10, transformOrigin: '50% 100%' })
+        gsap.set(packageCardsEls, { opacity: 0, y: 100, rotateX: -30, rotateY: 15, scale: 0.85, transformOrigin: '50% 100%' })
       }
       gsap.set([packagesShowcase, packagesExtras, packagesPositioning, packagesFlow].filter(Boolean), {
         opacity: 0,
-        y: 20,
+        y: 80,
+        rotateX: 15,
+        scale: 0.95
       })
-      gsap.set([showcaseTitle, showcasePrice].filter(Boolean), { opacity: 0, y: 16 })
-      gsap.set(showcaseLabels, { opacity: 0, y: 10 })
-      gsap.set(showcaseRows, { opacity: 0, y: 8 })
-      gsap.set(metaTitles, { opacity: 0, y: 14 })
-      gsap.set(metaRows, { opacity: 0, y: 10 })
+      gsap.set([showcaseTitle, showcasePrice].filter(Boolean), { opacity: 0, y: 40, rotateX: 20 })
+      gsap.set(showcaseLabels, { opacity: 0, y: 20 })
+      gsap.set(showcaseRows, { opacity: 0, y: 20, x: -10 })
+      gsap.set(metaTitles, { opacity: 0, y: 30, rotateX: 15 })
+      gsap.set(metaRows, { opacity: 0, y: 20, x: -10 })
 
       const packagesTl = gsap.timeline({
         scrollTrigger: {
           trigger: '.packages',
-          start: 'top 84%',
+          start: 'top 85%',
           once: true,
         },
       })
@@ -1961,9 +1979,11 @@ function App() {
         packagesTl.to(introParts, {
           opacity: 1,
           y: 0,
-          duration: 0.52,
-          stagger: 0.12,
-          ease: 'power2.out',
+          scale: 1,
+          rotateX: 0,
+          duration: 1.1,
+          stagger: 0.15,
+          ease: 'expo.out',
         })
       }
       if (packageCardsEls.length) {
@@ -1973,11 +1993,13 @@ function App() {
             opacity: 1,
             y: 0,
             rotateX: 0,
-            duration: 0.56,
-            stagger: 0.1,
-            ease: 'power2.out',
+            rotateY: 0,
+            scale: 1,
+            duration: 1.2,
+            stagger: 0.15,
+            ease: 'expo.out',
           },
-          introParts.length ? '-=0.25' : 0,
+          introParts.length ? '-=0.6' : 0,
         )
       }
       packagesTl.to(
@@ -1985,11 +2007,13 @@ function App() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.48,
-          stagger: 0.08,
-          ease: 'power2.out',
+          rotateX: 0,
+          scale: 1,
+          duration: 1,
+          stagger: 0.1,
+          ease: 'expo.out',
         },
-        '-=0.2',
+        '-=0.8',
       )
       packagesTl
         .to(
@@ -2164,12 +2188,113 @@ function App() {
       } else {
         card.addEventListener('mouseenter', onEnter)
         card.addEventListener('mouseleave', onLeave)
+        
+        // --- 3D TILT EFFECT ---
+        const onMoveTilt = (e) => {
+          const rect = card.getBoundingClientRect();
+          const ax = (e.clientX - (rect.left + rect.width / 2)) / 15;
+          const ay = (e.clientY - (rect.top + rect.height / 2)) / 15;
+          gsap.to(card, {
+            rotateY: ax,
+            rotateX: -ay,
+            transformPerspective: 1200,
+            duration: 0.3,
+            ease: 'power2.out',
+          });
+        };
+        const onLeaveTilt = () => {
+          gsap.to(card, {
+             rotateY: 0,
+             rotateX: 0,
+             duration: 0.7,
+             ease: 'elastic.out(1, 0.4)',
+          });
+        };
+        
+        card.addEventListener('mousemove', onMoveTilt)
+        card.addEventListener('mouseleave', onLeaveTilt)
         cleanupFns.push(() => {
           card.removeEventListener('mouseenter', onEnter)
           card.removeEventListener('mouseleave', onLeave)
+          card.removeEventListener('mousemove', onMoveTilt)
+          card.removeEventListener('mouseleave', onLeaveTilt)
         })
       }
     })
+
+    // --- EXTRA DYNAMIC GSAP EXPERIENCES FOR SECTIONS BELOW "SERVICES" ---
+
+    // 1. SERVICES PARALLAX - Removed to prevent overlap with the lead text
+
+    // 2. SHOWCASE ORB - Removed custom float/spin per user request
+
+    // 3. MARQUEE PARALLAX & VELOCITY
+    const marqueeInner = document.querySelector('.marquee-inner');
+    if (marqueeInner && !prefersReducedMotion) {
+       gsap.to(marqueeInner, {
+          xPercent: isStickyTouch ? -10 : -25,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.marquee',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          }
+       });
+       
+       const marqueeEl = document.querySelector('.marquee');
+       if (marqueeEl) {
+         gsap.from(marqueeEl, {
+            scale: 0.95,
+            opacity: 0,
+            duration: 1.2,
+            ease: 'expo.out',
+            scrollTrigger: {
+               trigger: '.marquee',
+               start: 'top 95%'
+            }
+         });
+       }
+    }
+
+    // 4. FOOTER DYNAMIC REVEAL & PARALLAX
+    const footerEl = document.querySelector('.footer');
+    if (footerEl && !prefersReducedMotion) {
+      const footerLines = footerEl.querySelectorAll('.footer-stack-lead p, .magnetic-wrap, .scrivimi-hint-text, .self-destruct-btn, .footer-meta');
+      if (footerLines.length) {
+        gsap.from(footerLines, {
+           opacity: 0,
+           y: 80,
+           rotateX: -15,
+           scale: 0.95,
+           duration: 1.5,
+           stagger: 0.1,
+           ease: 'expo.out',
+           scrollTrigger: {
+              trigger: '.footer',
+              start: 'top 85%',
+           }
+        })
+      }
+      
+      const footerStack = footerEl.querySelector('.footer-stack');
+      if (footerStack) {
+         gsap.fromTo(footerStack, 
+          { y: 80 },
+          {
+            y: -20,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.footer',
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          }
+         );
+      }
+    }
+    // --- END EXTRA ---
 
     return () => {
       clearActiveProjectTouch()

@@ -64,42 +64,63 @@ export function VisualSection() {
 
       if (drone && section && droneWrap) {
         const isDesktop = window.innerWidth > 768
-        const yAmount = isDesktop ? -80 : -34
-        const xAmount = isDesktop ? 36 : 14
-        const rotateAmount = isDesktop ? 10 : 5
-        const scaleAmount = isDesktop ? 1.08 : 1.03
+        
         gsap.set(drone, {
-          x: 0,
-          y: 0,
-          rotate: 3,
-          scale: 1,
-          transformOrigin: '50% 50%',
+          transformOrigin: 'center center',
           force3D: true,
+          rotate: 0,
         })
+
+        // Dinamic Entry
         gsap.from(drone, {
           opacity: 0,
-          scale: 0.95,
-          duration: 1.2,
-          ease: 'power3.out',
+          scale: 0.6,
+          x: 180,
+          y: -100,
+          rotate: -25,
+          duration: 1.6,
+          ease: 'back.out(1.2)',
           scrollTrigger: {
             trigger: section,
-            start: 'top 82%',
+            start: 'top 80%',
             once: true,
           },
         })
+
+        // Complex Hover Float on wrapper
         gsap.to(droneWrap, {
-          y: -10,
-          duration: 1.8,
+          y: -20,
+          duration: 2.2,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+        })
+        gsap.to(droneWrap, {
+          x: -10,
+          duration: 3.1,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+        })
+        gsap.to(droneWrap, {
+          rotate: 4,
+          duration: 4.5,
           yoyo: true,
           repeat: -1,
           ease: 'sine.inOut',
         })
 
+        // More pronounced scroll parallax
+        const yAmount = isDesktop ? -150 : -60
+        const xAmount = isDesktop ? 80 : 30
+        const rotateAmount = isDesktop ? 18 : 8
+        const scaleAmount = isDesktop ? 1.2 : 1.08
+
         ScrollTrigger.create({
           trigger: section,
           start: 'top bottom',
           end: 'bottom top',
-          scrub: 0.6,
+          scrub: 1,
           invalidateOnRefresh: true,
           markers: debugMarkers,
           onUpdate: (self) => {
@@ -107,7 +128,7 @@ export function VisualSection() {
             gsap.set(drone, {
               y: yAmount * p,
               x: xAmount * p,
-              rotate: 3 + rotateAmount * p,
+              rotate: rotateAmount * p,
               scale: 1 + (scaleAmount - 1) * p,
             })
           },
