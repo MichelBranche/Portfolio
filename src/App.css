@@ -2621,6 +2621,7 @@ section {
   gap: 0;
   background-color: var(--fg);
   color: var(--bg);
+  position: relative;
 }
 
 .footer-stack {
@@ -2634,6 +2635,8 @@ section {
   /* Ripristina respiro sotto il marquee: il meta in basso non deve “tirare su” tutto il blocco */
   padding-block: clamp(1.75rem, 5.5vh, 4rem) clamp(0.75rem, 2vh, 1.5rem);
   box-sizing: border-box;
+  position: relative;
+  z-index: 2;
 }
 
 .footer-stack-lead {
@@ -2665,6 +2668,9 @@ section {
   /* Una sola linea sotto il blocco “pavimento”: niente secondo bordo qui (c’è già .self-destruct-floor) */
   border-top: none;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .footer-copyright,
@@ -2998,13 +3004,16 @@ body.self-destruct-mode .project-modal {
 
 .self-destruct-floor {
   position: relative;
-  z-index: 2;
+  z-index: 20;
   margin-top: 1.25rem;
   padding-top: 1.25rem;
   border-top: 1px solid rgba(236, 236, 236, 0.35);
+  pointer-events: auto;
 }
 
 .self-destruct-btn {
+  position: relative;
+  z-index: 21;
   font-family: inherit;
   text-transform: uppercase;
   font-weight: 700;
@@ -3020,6 +3029,7 @@ body.self-destruct-mode .project-modal {
   text-align: center;
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
+  pointer-events: auto;
 }
 
 .self-destruct-btn:hover:not(:disabled) {

@@ -2406,17 +2406,32 @@ function App() {
     const floorY = floorBtn.getBoundingClientRect().top
 
     const selectors = [
+      // Hero
       'section.hero .hero-title-letter',
       'section.hero .hero-tag',
       'section.hero .hero-subtitle-word-inner',
       'section.hero a.hero-social-link',
+      // Services / projects / packages (newer blocks included)
+      'section.services .services-header',
+      'section.services .service-item',
+      'section.services .gs-reveal',
       'section.projects .projects-header',
       'section.projects .project-item',
+      'section.projects .gs-reveal',
+      'section.packages .packages-header',
+      'section.packages .package-card',
+      'section.packages .package-list li',
+      'section.packages .packages-meta-grid article',
+      'section.packages .gs-reveal',
+      // Shared marquee/footer
       '.marquee .marquee-inner span',
       'section.footer p.gs-reveal',
       'section.footer a.magnetic-wrap',
       'section.footer .scrivimi-hint',
       'section.footer .footer-meta',
+      // Generic text/media leaves for future additions
+      '#root section h1, #root section h2, #root section h3, #root section p, #root section li',
+      '#root section img, #root section video',
     ]
 
     const seen = new Set()
@@ -2440,6 +2455,11 @@ function App() {
       } catch (_) {}
     })
 
+    if (!rows.length) {
+      selfDestructLockRef.current = false
+      return
+    }
+
     setSelfDestructed(true)
     document.body.classList.add('self-destruct-mode')
 
@@ -2448,10 +2468,9 @@ function App() {
     requestAnimationFrame(() => {
       shuffled.forEach(({ el, r }, i) => {
         const maxFall = Math.max(0, floorY - 10 - r.bottom)
-        if (maxFall < 2) {
-          return
-        }
-        const fall = maxFall
+        // If an element is already at/under the floor line, still animate a short tumble
+        // so newly added footer blocks (e.g. footer-meta) also participate.
+        const fall = maxFall < 2 ? gsap.utils.random(18, 42) : maxFall
         const z = 40010 + i
 
         el.style.setProperty('box-sizing', 'border-box', 'important')
@@ -2474,10 +2493,11 @@ function App() {
 
         gsap.fromTo(
           el,
-          { y: 0, rotation: 0, transformOrigin: '50% 50%' },
+          { y: 0, rotation: 0, opacity: 1, transformOrigin: '50% 50%' },
           {
             y: fall,
             rotation: rot,
+            opacity: maxFall < 2 ? 0.82 : 1,
             duration: dur,
             delay,
             ease: prefersReducedMotion ? 'none' : 'power2.in',
