@@ -105,7 +105,7 @@ const STRINGS = {
     packages: {
       header: 'Pacchetti',
       lead: 'Offerte chiare, flessibili e pensate per obiettivi reali.',
-      featured: 'Core offer',
+      featured: 'Best Value',
       selected: 'Selezionato',
       idealLabel: 'Ideale per',
       includesLabel: 'Include',
@@ -124,7 +124,7 @@ const STRINGS = {
       growth: {
         name: 'Growth',
         range: '1200€ - 2500€',
-        ideal: ['Business in espansione', 'Brand che vogliono alzare il livello', 'Core offer'],
+        ideal: ['Business in espansione', 'Brand che vogliono alzare il livello', 'Best Value'],
         includes: [
           '3-5 pagine',
           'UI premium',
@@ -364,7 +364,7 @@ const STRINGS = {
     packages: {
       header: 'Packages',
       lead: 'Clear, flexible offers built around real business goals.',
-      featured: 'Core offer',
+      featured: 'Best Value',
       selected: 'Selected',
       idealLabel: 'Ideal for',
       includesLabel: 'Includes',
@@ -383,7 +383,7 @@ const STRINGS = {
       growth: {
         name: 'Growth',
         range: '1200€ - 2500€',
-        ideal: ['Growing businesses', 'Brands ready to level up', 'Core offer'],
+        ideal: ['Growing businesses', 'Brands ready to level up', 'Best Value'],
         includes: [
           '3-5 pages',
           'Premium UI',

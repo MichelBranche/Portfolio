@@ -96,6 +96,45 @@ function PackagesHeaderLetters({ text }) {
   )
 }
 
+function cx(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
+function Wave() {
+  return (
+    <svg
+      width="129"
+      height="1387"
+      viewBox="0 0 129 1387"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M11.2131 11L106.283 106.07M106.283 106.07L117.279 117.066M106.283 106.07L22.2962 190.003M106.283 106.07L116.688 95.6708M11.2962 200.997L22.2962 190.003M22.2962 190.003L11.2529 178.96M22.2962 190.003L106.323 274.03M106.323 274.03L117.319 285.026M106.323 274.03L22.4537 357.846M106.323 274.03L116.728 263.631M11.3361 368.957L22.4537 357.846M22.4537 357.846L11.5493 346.901M22.4537 357.846L106.44 442.149M106.44 442.149L117.416 453.166M106.44 442.149L22.2962 525.925M106.44 442.149L116.865 431.769M11.2756 536.897L22.2962 525.925M22.2962 525.925L11.2737 514.861M22.2962 525.925L106.165 610.109M106.165 610.109L117.14 621.126M106.165 610.109L11 704.857M106.165 610.109L116.59 599.729M11.2131 683L106.283 778.07M106.283 778.07L117.279 789.066M106.283 778.07L22.2962 862.003M106.283 778.07L116.688 767.671M11.2962 872.997L22.2962 862.003M22.2962 862.003L11.2529 850.96M22.2962 862.003L106.323 946.03M106.323 946.03L117.319 957.026M106.323 946.03L22.4537 1029.85M106.323 946.03L116.728 935.631M11.3361 1040.96L22.4537 1029.85M22.4537 1029.85L11.5493 1018.9M22.4537 1029.85L106.44 1114.15M106.44 1114.15L117.416 1125.17M106.44 1114.15L22.2962 1197.92M106.44 1114.15L116.865 1103.77M11.2756 1208.9L22.2962 1197.92M22.2962 1197.92L11.2737 1186.86M22.2962 1197.92L106.165 1282.11M106.165 1282.11L117.14 1293.13M106.165 1282.11L11 1376.86M106.165 1282.11L116.59 1271.73"
+        stroke="#282828"
+        strokeWidth="31"
+      />
+    </svg>
+  )
+}
+
+function Cross() {
+  return (
+    <svg
+      width="130"
+      height="130"
+      viewBox="0 0 130 130"
+      fill="none"
+      className="pricing-cross-icon"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path d="M11 11L118.899 119M11.101 119L119 11" stroke="#282828" strokeWidth="31" />
+    </svg>
+  )
+}
+
 function ProjectTitleWords({ text }) {
   const words = text.split(' ')
   return (
@@ -451,83 +490,6 @@ function App() {
   const packageExtras = useMemo(() => asArray(t('packages.extras.items')), [t])
   const packagePositioning = useMemo(() => asArray(t('packages.positioning.lines')), [t])
   const packageFlow = useMemo(() => asArray(t('packages.flow.steps')), [t])
-  const [activePackage, setActivePackage] = useState('launch')
-  const goToNextPackage = useCallback(() => {
-    setActivePackage((current) => {
-      const idx = packageCards.findIndex((pack) => pack.key === current)
-      return packageCards[(idx + 1) % packageCards.length]?.key ?? 'launch'
-    })
-  }, [packageCards])
-  const activePackageData = useMemo(
-    () => packageCards.find((pack) => pack.key === activePackage) ?? packageCards[0],
-    [activePackage, packageCards],
-  )
-  const packagesShowcaseRef = useRef(null)
-
-  useEffect(() => {
-    const root = packagesShowcaseRef.current
-    if (!root) return
-    const moving = root.querySelectorAll(
-      '.packages-showcase-title, .packages-showcase-price, .package-label, .package-list li, .package-badge, .package-kicker',
-    )
-    const ornaments = root.querySelectorAll('.package-orb, .package-index')
-    const tl = gsap.timeline({ defaults: { overwrite: 'auto' } })
-
-    if (prefersReducedMotion) {
-      tl.fromTo(root, { opacity: 0.84 }, { opacity: 1, duration: 0.2, ease: 'none' }, 0)
-      return () => {
-        tl.kill()
-      }
-    }
-
-    tl.fromTo(
-      root,
-      { opacity: 0.66, scale: 0.992 },
-      { opacity: 1, scale: 1, duration: 0.34, ease: 'power2.out' },
-      0,
-    )
-      .fromTo(
-        moving,
-        { y: 18, opacity: 0, filter: 'blur(3px)' },
-        {
-          y: 0,
-          opacity: 1,
-          filter: 'blur(0px)',
-          duration: 0.52,
-          stagger: 0.028,
-          ease: 'power3.out',
-        },
-        0.03,
-      )
-      .fromTo(
-        ornaments,
-        { scale: 0.88, opacity: 0.5 },
-        { scale: 1, opacity: 1, duration: 0.42, ease: 'power2.out', stagger: 0.03 },
-        0.05,
-      )
-    return () => {
-      tl.kill()
-    }
-  }, [activePackage, prefersReducedMotion])
-
-  useEffect(() => {
-    const root = packagesShowcaseRef.current
-    if (!root) return
-    const nextArrow = root.querySelector('.packages-showcase-next .packages-showcase-next-icon svg')
-    if (!nextArrow || prefersReducedMotion) return
-
-    const nextTween = gsap.to(nextArrow, {
-      x: 4,
-      duration: 0.74,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-    })
-    return () => {
-      nextTween.kill()
-    }
-  }, [prefersReducedMotion])
-
   useEffect(() => {
     if (preloaderPhase !== 'counting') {
       const a = preloaderAmbientRef.current
@@ -2277,7 +2239,7 @@ function App() {
 
     // 4. FOOTER DYNAMIC REVEAL & PARALLAX
     const footerEl = document.querySelector('.footer');
-    if (footerEl && !prefersReducedMotion) {
+    if (footerEl && !prefersReducedMotion && !isStickyTouch) {
       const footerLines = footerEl.querySelectorAll('.footer-stack-lead p, .magnetic-wrap, .scrivimi-hint-text, .self-destruct-btn, .footer-meta');
       if (footerLines.length) {
         gsap.from(footerLines, {
@@ -2820,57 +2782,82 @@ function App() {
           <PackagesHeaderLetters text={String(t('packages.header'))} />
         </h2>
         <p className="packages-lead gs-reveal">{String(t('packages.lead'))}</p>
-        <article
-          ref={packagesShowcaseRef}
-          className={`packages-showcase package-card--${activePackageData.key} gs-reveal`}
-        >
-          <span className="package-orb" aria-hidden />
-          <span className="package-index" aria-hidden>
-            0{packageCards.findIndex((pack) => pack.key === activePackageData.key) + 1}
-          </span>
-          <div className="packages-showcase-head">
-            <p className="package-kicker">{String(t('packages.selected'))}</p>
-            {activePackageData.key === 'growth' && (
-              <span className="package-badge">{String(t('packages.featured'))}</span>
-            )}
-            <h3 className="packages-showcase-title">{activePackageData.name}</h3>
-            <p className="packages-showcase-price">{activePackageData.range}</p>
-            <div className="packages-showcase-controls" aria-label={String(t('packages.header'))}>
-              <button
-                type="button"
-                className="packages-showcase-next"
-                onClick={goToNextPackage}
-                aria-label="Scorri al prossimo pacchetto"
+        <div className="packages-pricing-grid">
+          {packageCards.map((pack, idx) => {
+            const isFeatured = pack.key === 'growth'
+            const isWaveTemplateCard = pack.key === 'launch' || pack.key === 'authority'
+            return (
+              <article
+                key={pack.key}
+                className={cx(
+                  'package-card pricing-wrapper gs-reveal',
+                  `package-card--${pack.key}`,
+                  isWaveTemplateCard && 'pricing-wrapper--wave-template',
+                  idx % 2 === 0 ? 'pricing-wrapper--waves' : 'pricing-wrapper--crosses',
+                )}
               >
-                <span className="packages-showcase-next-text">Next</span>
-                <span className="packages-showcase-next-icon" aria-hidden>
-                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden>
-                    <path d="M2 12h17" />
-                    <path d="m14 7 5 5-5 5" />
-                  </svg>
-                </span>
-              </button>
-            </div>
-          </div>
-          <div className="packages-showcase-body">
-            <div>
-              <p className="package-label">{String(t('packages.idealLabel'))}</p>
-              <ul className="package-list">
-                {activePackageData.ideal.map((item) => (
-                  <li key={`showcase-ideal-${item}`}>{item}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="package-label">{String(t('packages.includesLabel'))}</p>
-              <ul className="package-list">
-                {activePackageData.includes.map((item) => (
-                  <li key={`showcase-includes-${item}`}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </article>
+                <div className="pricing-content">
+                  <p className="pricing-kicker">
+                    {String(t('packages.selected'))} 0{idx + 1}
+                  </p>
+                  {isFeatured && <span className="package-badge">{String(t('packages.featured'))}</span>}
+                  <h3 className="pricing-title">{pack.name}</h3>
+                  <p className="pricing-price">{pack.range}</p>
+                  <div className="pricing-details">
+                    <div className="pricing-details-grid">
+                      <div className="pricing-details-col">
+                        <p className={cx('package-label', isWaveTemplateCard && 'pricing-paragraph')}>
+                          {String(t('packages.idealLabel'))}
+                        </p>
+                        <ul className="package-list">
+                          {pack.ideal.map((item) => (
+                            <li key={`ideal-${pack.key}-${item}`}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="pricing-details-col">
+                        <p className={cx('package-label', isWaveTemplateCard && 'pricing-paragraph')}>
+                          {String(t('packages.includesLabel'))}
+                        </p>
+                        <ul className="package-list">
+                          {pack.includes.map((item) => (
+                            <li key={`includes-${pack.key}-${item}`}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <a href={FOOTER_SOCIAL.email} className="pricing-contact-btn interactable">
+                    Contact
+                  </a>
+                </div>
+
+                {idx % 2 === 0 ? (
+                  <>
+                    <div className="pricing-wave pricing-wave--left">
+                      <Wave />
+                    </div>
+                    <div className="pricing-wave pricing-wave--right">
+                      <Wave />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="pricing-cross pricing-cross--one">
+                      <Cross />
+                    </div>
+                    <div className="pricing-cross pricing-cross--two">
+                      <Cross />
+                    </div>
+                    <div className="pricing-cross pricing-cross--three">
+                      <Cross />
+                    </div>
+                  </>
+                )}
+              </article>
+            )
+          })}
+        </div>
         <div className="packages-meta-grid">
           <article className="packages-extras gs-reveal">
             <h3 className="packages-subtitle">{String(t('packages.extras.title'))}</h3>

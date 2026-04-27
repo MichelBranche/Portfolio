@@ -1,13 +1,19 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLanguage } from '../context/LanguageContext.jsx'
-import { useIsDroneLayoutDesktop, useIsVisualStatementDesktop } from '../hooks/useResponsive.js'
+import { useIsDroneLayoutDesktop, useIsMobileLayout, useIsVisualStatementDesktop } from '../hooks/useResponsive.js'
+import { VideoPlayer } from './VideoPlayer.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const DRONE_IMAGE_URL =
   'https://skycrabacademy.net/cdn/shop/files/DJIMini4pro-skycrabacademy_7.png?v=1762525902&width=2048'
+const VISUAL_VIDEO_URLS = [
+  'https://www.youtube.com/watch?v=S7MJkGaSc5s',
+  'https://www.youtube.com/watch?v=8jT9ygmMvMg',
+  'https://www.youtube.com/watch?v=278IRQ6HSi4',
+]
 
 const SERVICE_KEYS = ['photo', 'copy', 'drone']
 
@@ -24,6 +30,7 @@ function asList(value) {
 
 export function VisualSection() {
   const { t, lang } = useLanguage()
+  const isMobileLayout = useIsMobileLayout()
   const isDroneDesktop = useIsDroneLayoutDesktop()
   const isStatementDesktop = useIsVisualStatementDesktop()
   const sectionRef = useRef(null)
@@ -36,6 +43,9 @@ export function VisualSection() {
   const servicesRef = useRef(null)
   const serviceItemsRef = useRef([])
   const textRef = useRef([])
+  const videoStackRef = useRef(null)
+  const videoItemsRef = useRef([])
+  const [activeVideo, setActiveVideo] = useState(1)
 
   const titleLines = asLines(t('visualSection.titleLines'), ['FOTOGRAFIA', '& RIPRESE AEREE.'])
   const lead = String(t('visualSection.lead'))
@@ -258,6 +268,79 @@ export function VisualSection() {
     return () => ctx.revert()
   }, [lang, isDroneDesktop, isStatementDesktop])
 
+  useEffect(() => {
+    const items = videoItemsRef.current.filter(Boolean)
+    if (!items.length) return
+
+    if (isMobileLayout) {
+      items.forEach((item, idx) => {
+        const isActive = idx === activeVideo
+        gsap.set(item, {
+          clearProps: 'all',
+          display: isActive ? 'block' : 'none',
+          opacity: 1,
+          xPercent: 0,
+          scale: 1,
+          zIndex: isActive ? 2 : 1,
+          filter: 'none',
+        })
+      })
+      return
+    }
+
+    const targets = items.map((_, idx) => {
+      const rel = (idx - activeVideo + 3) % 3
+      if (rel === 0) {
+        return {
+          xPercent: 0,
+          scale: 1,
+          opacity: 1,
+          zIndex: 3,
+          filter: 'saturate(1)',
+        }
+      }
+      if (rel === 1) {
+        return {
+          xPercent: 34,
+          scale: 0.9,
+          opacity: 0.86,
+          zIndex: 1,
+          filter: 'saturate(0.86)',
+        }
+      }
+      return {
+        xPercent: -34,
+        scale: 0.9,
+        opacity: 0.86,
+        zIndex: 1,
+        filter: 'saturate(0.86)',
+      }
+    })
+
+    items.forEach((item, idx) => {
+      const t = targets[idx]
+      gsap.to(item, {
+        display: 'block',
+        xPercent: t.xPercent,
+        scale: t.scale,
+        opacity: t.opacity,
+        zIndex: t.zIndex,
+        filter: t.filter,
+        duration: 0.45,
+        ease: 'power3.out',
+        overwrite: 'auto',
+      })
+    })
+  }, [activeVideo, isMobileLayout])
+
+  const goNextVideo = () => {
+    setActiveVideo((prev) => (prev + 1) % VISUAL_VIDEO_URLS.length)
+  }
+
+  const goPrevVideo = () => {
+    setActiveVideo((prev) => (prev - 1 + VISUAL_VIDEO_URLS.length) % VISUAL_VIDEO_URLS.length)
+  }
+
   return (
     <section ref={sectionRef} className="visual-section">
       <div className="visual-section-hero">
@@ -289,6 +372,43 @@ export function VisualSection() {
             <div className="visual-section-drone-wrap" ref={droneWrapRef}>
               <img ref={droneRef} src={DRONE_IMAGE_URL} alt={droneAlt} className="visual-section-drone" />
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="visual-section-video-wrap">
+        <div className="visual-video-stack" aria-label="Video showcase" ref={videoStackRef}>
+          {VISUAL_VIDEO_URLS.map((url, idx) => (
+            <article
+              key={url}
+              ref={(el) => {
+                videoItemsRef.current[idx] = el
+              }}
+              className={`visual-video-stack-item${idx === activeVideo ? ' is-active' : ' is-side'}`}
+              onClick={() => setActiveVideo(idx)}
+            >
+              <VideoPlayer src={url} />
+              {idx !== activeVideo && (
+                <button
+                  type="button"
+                  className="visual-video-side-hit"
+                  onClick={() => setActiveVideo(idx)}
+                  aria-label="Porta questo video al centro"
+                />
+              )}
+            </article>
+          ))}
+          <div className="visual-video-stack-controls" aria-hidden>
+            <button type="button" className="visual-video-stack-nav" onClick={goPrevVideo} aria-label="Video precedente">
+              <svg viewBox="0 0 24 24" className="visual-video-stack-nav-icon" aria-hidden>
+                <path d="M14.5 5 8 12l6.5 7" />
+              </svg>
+            </button>
+            <button type="button" className="visual-video-stack-nav" onClick={goNextVideo} aria-label="Video successivo">
+              <svg viewBox="0 0 24 24" className="visual-video-stack-nav-icon" aria-hidden>
+                <path d="M9.5 5 16 12l-6.5 7" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
