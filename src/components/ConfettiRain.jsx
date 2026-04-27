@@ -303,7 +303,8 @@ export default function ConfettiRain({ active }) {
     const canvas = canvasRef.current
     if (!canvas) return
     const retina = window.devicePixelRatio || 1
-    const ctx = canvas.getContext('2d')
+    const ctx =
+      canvas.getContext('2d', { alpha: true, desynchronized: true }) || canvas.getContext('2d')
 
     let canvasWidth = window.innerWidth
     let canvasHeight = window.innerHeight

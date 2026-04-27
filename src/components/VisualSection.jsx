@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { useIsDroneLayoutDesktop, useIsMobileLayout, useIsVisualStatementDesktop } from '../hooks/useResponsive.js'
+import { youtubePosterUrl } from '../lib/youtube.js'
 import { VideoPlayer } from './VideoPlayer.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -370,7 +371,15 @@ export function VisualSection() {
         <div className="visual-section-drone-stage">
           <div className="visual-section-drone-parallax" ref={droneParallaxRef}>
             <div className="visual-section-drone-wrap" ref={droneWrapRef}>
-              <img ref={droneRef} src={DRONE_IMAGE_URL} alt={droneAlt} className="visual-section-drone" />
+              <img
+                ref={droneRef}
+                src={DRONE_IMAGE_URL}
+                alt={droneAlt}
+                className="visual-section-drone"
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+              />
             </div>
           </div>
         </div>
@@ -387,7 +396,13 @@ export function VisualSection() {
               className={`visual-video-stack-item${idx === activeVideo ? ' is-active' : ' is-side'}`}
               onClick={() => setActiveVideo(idx)}
             >
-              <VideoPlayer src={url} />
+              {idx === activeVideo ? (
+                <VideoPlayer src={url} />
+              ) : (
+                <div className="visual-video-poster">
+                  <img src={youtubePosterUrl(url)} alt="" loading="lazy" decoding="async" />
+                </div>
+              )}
               {idx !== activeVideo && (
                 <button
                   type="button"

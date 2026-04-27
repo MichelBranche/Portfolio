@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Pause, Play, Volume1, Volume2, VolumeX } from 'lucide-react'
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+import { getYoutubeIdFromUrl } from '../lib/youtube.js'
+import { cx } from '../utils/cx.js'
 
 function formatTime(seconds) {
   const safeSeconds = Number.isFinite(seconds) && seconds >= 0 ? seconds : 0
@@ -33,25 +31,6 @@ function CustomSlider({ value, onChange, className }) {
       />
     </motion.div>
   )
-}
-
-function getYoutubeVideoId(input) {
-  if (!input) return ''
-  try {
-    const url = new URL(input)
-    if (url.hostname.includes('youtu.be')) {
-      return url.pathname.replace('/', '').trim()
-    }
-    if (url.hostname.includes('youtube.com')) {
-      if (url.pathname.startsWith('/embed/')) {
-        return url.pathname.replace('/embed/', '').trim()
-      }
-      return url.searchParams.get('v') || ''
-    }
-  } catch {
-    return ''
-  }
-  return ''
 }
 
 function ensureYoutubeApi() {
@@ -88,7 +67,7 @@ export function VideoPlayer({ src }) {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const speedValues = useMemo(() => [0.5, 1, 1.5, 2], [])
-  const youtubeVideoId = useMemo(() => getYoutubeVideoId(src), [src])
+  const youtubeVideoId = useMemo(() => getYoutubeIdFromUrl(src), [src])
   const isYoutube = Boolean(youtubeVideoId)
 
   useEffect(() => {
@@ -313,7 +292,7 @@ export function VideoPlayer({ src }) {
             initial={{ y: 20, opacity: 0, filter: 'blur(10px)' }}
             animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
             exit={{ y: 20, opacity: 0, filter: 'blur(10px)' }}
-            transition={{ duration: 0.6, ease: 'circInOut', type: 'spring' }}
+            transition={{ duration: 0.6, ease: 'circInOut' }}
           >
             <div className="visual-video-time-row">
               <span>{formatTime(currentTime)}</span>

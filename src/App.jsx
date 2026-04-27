@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
@@ -6,391 +6,34 @@ import ConfettiRain from './components/ConfettiRain'
 import { LanguageSwitch } from './components/LanguageSwitch.jsx'
 import MoneyRain from './components/MoneyRain'
 import FireworksRain from './components/FireworksRain'
-import { VisualSection } from './components/VisualSection'
+import { VisualSectionLazy } from './components/VisualSectionLazy.jsx'
 import { useLanguage } from './context/LanguageContext.jsx'
 import './App.css'
 import { translate } from './i18n/translations'
 import { initFlairConfetti } from './lib/flairConfetti'
 import { useIsCoarsePointerDevice, usePrefersReducedMotion } from './hooks/useResponsive.js'
-
-const FOOTER_SOCIAL = {
-  linkedin: 'https://www.linkedin.com/in/michel-branche-328501301/',
-  instagram: 'https://www.instagram.com/80_sete_/',
-  email: 'mailto:michel.lavoro@gmail.com',
-}
-
-const FOOTER_SOUNDS = {
-  linkedin: '/sounds/linkedin.mp3',
-  instagram: '/sounds/instagram.mp3',
-  email: '/sounds/vine-boom.mp3',
-  scrivimi: '/sounds/scrivimi.mp3',
-  anvilDrop: '/sounds/anvil-drop.mp3',
-  michel: '/sounds/michelexd.mp3',
-  branche: '/sounds/mariah-carey-vive-la-france.mp3',
-  rizz: '/sounds/rizz-sound-effect.mp3',
-}
-
-const FAVICON_DEFAULT = '/favicon.png'
-const DOC_TITLE_INTERVAL_MS = 3200
-const PRELOADER_AMBIENT = '/sounds/preloader-ambient.mp3'
-const HERO_MP3_TRACKS = [
-  {
-    url: 'https://soundcloud.com/deneroofficial/kesha-tik-tok-denero-remix-free-download-1',
-  },
-  {
-    url: 'https://soundcloud.com/e1oovdghddfw/crazy-in-love-ft-jay',
-  },
-  {
-    url: 'https://soundcloud.com/kemosaberecords/die-young-ke-ha',
-  },
-]
-const HERO_MP3_ART = '/favicon.png'
-
-function applyDocumentFavicon(href) {
-  document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach((el) => {
-    el.setAttribute('href', href)
-  })
-}
-
-function asArray(value) {
-  return Array.isArray(value) ? value.map(String) : [String(value)]
-}
-
-function HeroTitleLetters({ text }) {
-  return (
-    <>
-      {text.split('').map((ch, i) => (
-        <span key={`${ch}-${i}`} className="hero-title-letter">
-          <span className="hero-title-letter-inner">{ch}</span>
-        </span>
-      ))}
-    </>
-  )
-}
-
-function ServicesHeaderLetters({ text }) {
-  return (
-    <>
-      {String(text)
-        .split('')
-        .map((ch, i) => (
-          <span key={`${ch}-${i}`} className="services-header-letter">
-            <span className="services-header-letter-inner">{ch === ' ' ? '\u00A0' : ch}</span>
-          </span>
-        ))}
-    </>
-  )
-}
-
-function PackagesHeaderLetters({ text }) {
-  return (
-    <>
-      {String(text)
-        .split('')
-        .map((ch, i) => (
-          <span key={`${ch}-${i}`} className="packages-header-letter">
-            <span className="packages-header-letter-inner">{ch === ' ' ? '\u00A0' : ch}</span>
-          </span>
-        ))}
-    </>
-  )
-}
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-function Wave() {
-  return (
-    <svg
-      width="129"
-      height="1387"
-      viewBox="0 0 129 1387"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
-      <path
-        d="M11.2131 11L106.283 106.07M106.283 106.07L117.279 117.066M106.283 106.07L22.2962 190.003M106.283 106.07L116.688 95.6708M11.2962 200.997L22.2962 190.003M22.2962 190.003L11.2529 178.96M22.2962 190.003L106.323 274.03M106.323 274.03L117.319 285.026M106.323 274.03L22.4537 357.846M106.323 274.03L116.728 263.631M11.3361 368.957L22.4537 357.846M22.4537 357.846L11.5493 346.901M22.4537 357.846L106.44 442.149M106.44 442.149L117.416 453.166M106.44 442.149L22.2962 525.925M106.44 442.149L116.865 431.769M11.2756 536.897L22.2962 525.925M22.2962 525.925L11.2737 514.861M22.2962 525.925L106.165 610.109M106.165 610.109L117.14 621.126M106.165 610.109L11 704.857M106.165 610.109L116.59 599.729M11.2131 683L106.283 778.07M106.283 778.07L117.279 789.066M106.283 778.07L22.2962 862.003M106.283 778.07L116.688 767.671M11.2962 872.997L22.2962 862.003M22.2962 862.003L11.2529 850.96M22.2962 862.003L106.323 946.03M106.323 946.03L117.319 957.026M106.323 946.03L22.4537 1029.85M106.323 946.03L116.728 935.631M11.3361 1040.96L22.4537 1029.85M22.4537 1029.85L11.5493 1018.9M22.4537 1029.85L106.44 1114.15M106.44 1114.15L117.416 1125.17M106.44 1114.15L22.2962 1197.92M106.44 1114.15L116.865 1103.77M11.2756 1208.9L22.2962 1197.92M22.2962 1197.92L11.2737 1186.86M22.2962 1197.92L106.165 1282.11M106.165 1282.11L117.14 1293.13M106.165 1282.11L11 1376.86M106.165 1282.11L116.59 1271.73"
-        stroke="#282828"
-        strokeWidth="31"
-      />
-    </svg>
-  )
-}
-
-function Cross() {
-  return (
-    <svg
-      width="130"
-      height="130"
-      viewBox="0 0 130 130"
-      fill="none"
-      className="pricing-cross-icon"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
-      <path d="M11 11L118.899 119M11.101 119L119 11" stroke="#282828" strokeWidth="31" />
-    </svg>
-  )
-}
-
-function ProjectTitleWords({ text }) {
-  const words = text.split(' ')
-  return (
-    <div className="project-title-anim" aria-label={text}>
-      {words.map((word, i) => (
-        <span className="project-title-word" key={`${i}-${word}`}>
-          <span className="project-title-word-inner">{word}</span>
-        </span>
-      ))}
-    </div>
-  )
-}
-
-const FLAIR_CDN = 'https://assets.codepen.io/16327/'
-
-const HERO_FLAIR_PRELOAD_3D = [
-  ['combo', '3D-combo.png'],
-  ['cone', '3D-cone.png'],
-  ['hoop', '3D-hoop.png'],
-  ['keyframe', '3D-keyframe.png'],
-  ['semi', '3D-semi.png'],
-  ['spiral', '3D-spiral.png'],
-  ['squish', '3D-squish.png'],
-  ['triangle', '3D-triangle.png'],
-  ['tunnel', '3D-tunnel.png'],
-  ['wat', '3D-poly.png'],
-]
-
-const HERO_FLAIR_PRELOAD_XP = [
-  ['blue-circle', '2D-circles.png'],
-  ['green-keyframe', '2D-keyframe.png'],
-  ['orange-lightning', '2D-lightning.png'],
-  ['orange-star', '2D-star.png'],
-  ['purple-flower', '2D-flower.png'],
-  ['cone', '3D-cone.png'],
-  ['keyframe', '3D-spiral.png'],
-  ['spiral', '3D-spiral.png'],
-  ['tunnel', '3D-tunnel.png'],
-  ['hoop', '3D-hoop.png'],
-  ['semi', '3D-semi.png'],
-]
-
-const GH = (repo, file) => `https://raw.githubusercontent.com/MichelBranche/${repo}/main/${file}`
-
-const PROJECT_META = [
-  {
-    slug: 'rubina',
-    tech: 'JavaScript / GSAP / CSS',
-    link: 'https://rubinastradella.vercel.app/',
-    img: GH('photo-portfolio-demo', 'preview.jpg'),
-    thumb: GH('photo-portfolio-demo', 'preview.jpg'),
-    publishedAt: '2026-03-21',
-  },
-  {
-    slug: 'streetwear',
-    tech: 'React / Router / GSAP / Lenis',
-    link: 'https://sys-0ff.vercel.app/',
-    img: GH('ecommerce-demo1', 'public/assets/mockup.png'),
-    thumb: GH('ecommerce-demo1', 'public/assets/mockup.png'),
-    publishedAt: '2026-03-29',
-  },
-  {
-    slug: 'museo',
-    tech: 'React / Vite / GSAP / Lenis',
-    link: 'https://museoegiziotorino.vercel.app/',
-    img: GH('Museo-Egizio-Torino-Demo', 'preview.png'),
-    thumb: GH('Museo-Egizio-Torino-Demo', 'preview.png'),
-    publishedAt: '2026-04-06',
-  },
-  {
-    slug: 'spotify',
-    tech: 'HTML / CSS / JavaScript',
-    link: 'https://spotify-clone-mbdev-umber.vercel.app/',
-    img: GH('Spotify-Clone', 'preview.png'),
-    thumb: GH('Spotify-Clone', 'preview.png'),
-    publishedAt: '2026-04-13',
-  },
-  {
-    slug: 'levele',
-    tech: 'React / Vite / API / Redis',
-    link: 'https://demoleveleresidence.vercel.app/',
-    img: GH('Demo-LeVeleResidence', 'preview.png'),
-    thumb: GH('Demo-LeVeleResidence', 'preview.png'),
-    publishedAt: '2026-04-18',
-  },
-  {
-    slug: 'caffestella',
-    tech: 'React Router / GSAP / Framer Motion',
-    link: 'https://demo-paologriffa.vercel.app/',
-    img: GH('demo-paologriffa', 'preview.png'),
-    thumb: GH('demo-paologriffa', 'preview.png'),
-    publishedAt: '2026-04-20',
-  },
-  {
-    slug: 'ilgusto',
-    tech: 'HTML / CSS / JavaScript',
-    link: 'https://demo-il-gusto.vercel.app/',
-    img: GH('Demo-IlGusto', 'preview-hero.png'),
-    thumb: GH('Demo-IlGusto', 'preview-hero.png'),
-    publishedAt: '2026-04-22',
-  },
-]
-
-function HeroFlair() {
-  return (
-    <div className="hero-flair" aria-hidden>
-      <div className="image-preload">
-        {HERO_FLAIR_PRELOAD_3D.map(([key, f]) => (
-          <img key={key} data-key={key} src={`${FLAIR_CDN}${f}`} width={1} height={1} alt="" />
-        ))}
-      </div>
-      <div className="explosion-preload">
-        {HERO_FLAIR_PRELOAD_XP.map(([key, f], i) => (
-          <img key={`${i}-${key}`} data-key={key} src={`${FLAIR_CDN}${f}`} alt="" />
-        ))}
-      </div>
-      <svg className="pricing-hero__canvas" />
-      <div className="pricing-hero__proxy" />
-    </div>
-  )
-}
-
-function HeroSubtitle({ lines = [] }) {
-  return (
-    <div className="hero-subtitle gs-reveal">
-      {lines.map((line, lineIdx) => (
-        <div className="hero-subtitle-line" key={lineIdx}>
-          {line.split(' ').map((word, i) => (
-            <span className="hero-subtitle-word" key={`${lineIdx}-${i}-${word}`}>
-              <span className="hero-subtitle-word-inner">{word}</span>
-            </span>
-          ))}
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function HeroMiniPlayer({
-  isPlaying,
-  onToggle,
-  artwork,
-  title,
-  artist,
-  onNextTrack,
-  trackNumber,
-  totalTracks,
-}) {
-  return (
-    <div className="hero-mini-player interactable">
-      <button
-        type="button"
-        className="hero-mini-player-disc-wrap"
-        onClick={onToggle}
-        aria-label={isPlaying ? 'Pause hero track' : 'Play hero track'}
-        aria-pressed={isPlaying}
-      >
-        <span className={`hero-mini-player-disc${isPlaying ? ' hero-mini-player-disc--spinning' : ''}`}>
-          <img
-            src={artwork || HERO_MP3_ART}
-            alt={title ? `Cover ${title}` : 'Cover track'}
-            className="hero-mini-player-disc-art"
-          />
-        </span>
-      </button>
-      <div className="hero-mini-player-meta">
-        <span className="hero-mini-player-label-wrap" title={title || 'Hero mix'}>
-          <span className="hero-mini-player-label hero-mini-player-label--scroll">
-            {title || 'Hero mix'}
-          </span>
-        </span>
-        <span className="hero-mini-player-artist">{artist || 'SoundCloud'}</span>
-        <div className="hero-mini-player-controls-row">
-          <span className="hero-mini-player-state">{isPlaying ? 'Playing' : 'Paused'}</span>
-          <button
-            type="button"
-            className="hero-mini-player-next"
-            onClick={onNextTrack}
-            aria-label="Prossima canzone"
-          >
-            Next {trackNumber}/{totalTracks}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ModalTitle({ text }) {
-  const safeText = String(text || '')
-  const shouldScroll = safeText.length > 32
-  if (!shouldScroll) {
-    return <>{safeText}</>
-  }
-  return (
-    <span className="modal-title-ticker" aria-label={safeText}>
-      <span className="modal-title-ticker-track">
-        <span>{safeText}</span>
-        <span aria-hidden>{safeText}</span>
-      </span>
-    </span>
-  )
-}
-
-function PreloaderCreepyButton({ label, ariaLabel, onClick }) {
-  const eyesRef = useRef(null)
-  const [eyeCoords, setEyeCoords] = useState({ x: 0, y: 0 })
-
-  const updateEyes = (e) => {
-    const userEvent = 'touches' in e ? e.touches[0] : e
-    const eyesRect = eyesRef.current?.getBoundingClientRect()
-    if (!eyesRect) return
-    const eyesCenter = {
-      x: eyesRect.left + eyesRect.width / 2,
-      y: eyesRect.top + eyesRect.height / 2,
-    }
-    const cursor = {
-      x: userEvent.clientX,
-      y: userEvent.clientY,
-    }
-    const dx = cursor.x - eyesCenter.x
-    const dy = cursor.y - eyesCenter.y
-    const angle = Math.atan2(-dy, dx) + Math.PI / 2
-    const distance = Math.hypot(dx, dy)
-    const visionRangeX = 180
-    const visionRangeY = 75
-    const x = Math.sin(angle) * (distance / visionRangeX)
-    const y = Math.cos(angle) * (distance / visionRangeY)
-    setEyeCoords({ x, y })
-  }
-
-  const eyeStyle = {
-    transform: `translate(${-50 + eyeCoords.x * 50}%, ${-50 + eyeCoords.y * 50}%)`,
-  }
-
-  return (
-    <button
-      type="button"
-      className="preloader-creepy-btn"
-      onClick={onClick}
-      onMouseMove={updateEyes}
-      onTouchMove={updateEyes}
-      aria-label={ariaLabel || label}
-    >
-      <span className="preloader-creepy-btn__eyes" ref={eyesRef} aria-hidden>
-        <span className="preloader-creepy-btn__eye">
-          <span className="preloader-creepy-btn__pupil" style={eyeStyle} />
-        </span>
-        <span className="preloader-creepy-btn__eye">
-          <span className="preloader-creepy-btn__pupil" style={eyeStyle} />
-        </span>
-      </span>
-      <span className="preloader-creepy-btn__cover">{label}</span>
-    </button>
-  )
-}
+import { useAppPageGsap } from './hooks/useAppPageGsap.js'
+import {
+  DOC_TITLE_INTERVAL_MS,
+  FAVICON_DEFAULT,
+  FOOTER_SOUNDS,
+  FOOTER_SOCIAL,
+  HERO_MP3_TRACKS,
+  PRELOADER_AMBIENT,
+  PROJECT_META,
+} from './config/site.js'
+import { asArray, applyDocumentFavicon } from './utils/document.js'
+import { cx } from './utils/cx.js'
+import { Cross, Wave } from './components/home/WaveCross.jsx'
+import { HeroFlair, HeroMiniPlayer, HeroSubtitle } from './components/home/HeroPartials.jsx'
+import {
+  HeroTitleLetters,
+  PackagesHeaderLetters,
+  ProjectTitleWords,
+  ServicesHeaderLetters,
+} from './components/home/LetterText.jsx'
+import { ModalTitle } from './components/home/ModalTitle.jsx'
+import { PreloaderCreepyButton } from './components/home/PreloaderCreepyButton.jsx'
 
 function App() {
   const { t, lang } = useLanguage()
@@ -421,15 +64,20 @@ function App() {
   const heroSoundCloudWidgetRef = useRef(null)
   const heroMiniPlayerPulseRef = useRef(null)
   const heroMetaPollTimeoutRef = useRef(null)
+  const heroTrackPlayingRef = useRef(false)
+  const pendingScPlayRef = useRef(false)
   const [heroTrackPlaying, setHeroTrackPlaying] = useState(false)
   const [heroTrackIndex, setHeroTrackIndex] = useState(() =>
     Math.floor(Math.random() * HERO_MP3_TRACKS.length),
   )
+  const heroTrackIndexRef = useRef(heroTrackIndex)
   const [heroTrackMeta, setHeroTrackMeta] = useState({
     title: '',
     artist: '',
     artwork: '',
   })
+  /** Carica iframe + API SoundCloud solo al primo uso del mini player. */
+  const [soundCloudArmed, setSoundCloudArmed] = useState(false)
 
   const projects = useMemo(() => {
     return [...PROJECT_META]
@@ -490,6 +138,14 @@ function App() {
   const packageExtras = useMemo(() => asArray(t('packages.extras.items')), [t])
   const packagePositioning = useMemo(() => asArray(t('packages.positioning.lines')), [t])
   const packageFlow = useMemo(() => asArray(t('packages.flow.steps')), [t])
+
+  useEffect(() => {
+    heroTrackIndexRef.current = heroTrackIndex
+  }, [heroTrackIndex])
+  useEffect(() => {
+    heroTrackPlayingRef.current = heroTrackPlaying
+  }, [heroTrackPlaying])
+
   useEffect(() => {
     if (preloaderPhase !== 'counting') {
       const a = preloaderAmbientRef.current
@@ -522,21 +178,24 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if (!soundCloudArmed) return
     const widget = heroSoundCloudWidgetRef.current
     if (!widget) return
-    const shouldAutoplay = heroTrackPlaying
     setHeroTrackMeta({ title: '', artist: '', artwork: '' })
     widget.load(HERO_MP3_TRACKS[heroTrackIndex].url, {
-      auto_play: shouldAutoplay,
+      auto_play: heroTrackPlayingRef.current,
       show_comments: false,
       show_user: false,
       show_reposts: false,
       hide_related: true,
       visual: false,
     })
-  }, [heroTrackIndex])
+  }, [heroTrackIndex, soundCloudArmed])
 
   useEffect(() => {
+    if (!soundCloudArmed) {
+      return undefined
+    }
     let cancelled = false
     const scriptId = 'soundcloud-widget-api'
 
@@ -583,10 +242,20 @@ function App() {
         if (!cancelled) setHeroTrackPlaying(false)
       })
       widget.bind(SC.Widget.Events.READY, () => {
-        if (!cancelled) {
-          setHeroTrackPlaying(false)
-          readSoundMeta()
-        }
+        if (cancelled) return
+        readSoundMeta()
+      })
+      const idx = heroTrackIndexRef.current
+      const ap = pendingScPlayRef.current
+      pendingScPlayRef.current = false
+      setHeroTrackMeta({ title: '', artist: '', artwork: '' })
+      widget.load(HERO_MP3_TRACKS[idx].url, {
+        auto_play: ap,
+        show_comments: false,
+        show_user: false,
+        show_reposts: false,
+        hide_related: true,
+        visual: false,
       })
     }
 
@@ -624,7 +293,7 @@ function App() {
       script?.removeEventListener('load', onLoad)
       heroSoundCloudWidgetRef.current = null
     }
-  }, [])
+  }, [soundCloudArmed])
 
   useEffect(() => {
     return () => {
@@ -650,7 +319,7 @@ function App() {
       rizz: new Audio(FOOTER_SOUNDS.rizz),
     }
     Object.values(players).forEach((a) => {
-      a.preload = 'auto'
+      a.preload = 'metadata'
       a.volume = 0.45
     })
     if (players.instagram) {
@@ -807,1487 +476,17 @@ function App() {
     }
   }, [lang, prefersReducedMotion])
 
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
-    const cursor = document.querySelector('.cursor')
-    const easterImg = document.querySelector('.easter-egg-img')
-    const magWrap = document.querySelector('.magnetic-wrap')
-    const magText = document.querySelector('.magnetic-text')
-    const projectItems = document.querySelectorAll('.project-item')
-    const serviceItems = document.querySelectorAll('.service-item')
-    const packageCardsEls = document.querySelectorAll('.package-card')
-    const projectFloats = document.querySelectorAll('.project-img-float')
-    const interactables = document.querySelectorAll('.interactable')
-    const easterTriggers = document.querySelectorAll('.easter-trigger')
-
-    const cleanupFns = []
-
-    const hideAllProjectFloats = () => {
-      if (!projectFloats.length) return
-      gsap.killTweensOf([...projectFloats])
-      gsap.set([...projectFloats], { opacity: 0, scale: 0, x: 0, y: 0 })
-      if (cursor) {
-        gsap.to(cursor, { opacity: 1, duration: 0.15, overwrite: 'auto' })
-      }
-    }
-
-    const isStickyTouch = isCoarsePointer
-    const heroTopEl = document.querySelector('.hero-top')
-    const heroSubEl = document.querySelector('section.hero .hero-subtitle')
-    const heroSocialEl = document.querySelector('section.hero .hero-social')
-    const heroParallaxOn = !isStickyTouch && !prefersReducedMotion && heroTopEl && heroSubEl && heroSocialEl
-
-    const resetHeroTopParallax = () => {
-      if (!heroSubEl || !heroSocialEl) return
-      gsap.to([heroSubEl, heroSocialEl], {
-        x: 0,
-        y: 0,
-        duration: 0.5,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      })
-    }
-
-    if (heroParallaxOn) {
-      const heroSection = document.querySelector('section.hero')
-      const onLeaveHero = () => resetHeroTopParallax()
-      if (heroSection) {
-        heroSection.addEventListener('mouseleave', onLeaveHero)
-        cleanupFns.push(() => {
-          heroSection.removeEventListener('mouseleave', onLeaveHero)
-        })
-      }
-    }
-
-    let activeTouchProjectItem = null
-    let activeProjectLeave = null
-    const clearActiveProjectTouch = () => {
-      if (activeProjectLeave) {
-        activeProjectLeave()
-        activeProjectLeave = null
-        activeTouchProjectItem = null
-      }
-    }
-
-    const onMouseMove = (e) => {
-      gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.1,
-        ease: 'power2.out',
-        force3D: true,
-        overwrite: 'auto',
-      })
-      if (isStickyTouch && activeTouchProjectItem) {
-        return
-      }
-      if (heroParallaxOn) {
-        const r = heroTopEl.getBoundingClientRect()
-        if (r.width > 1 && r.height > 1) {
-          const cx = r.left + r.width * 0.5
-          const cy = r.top + r.height * 0.5
-          const tx = Math.max(
-            -1,
-            Math.min(1, (e.clientX - cx) / (window.innerWidth * 0.28)),
-          )
-          const ty = Math.max(
-            -1,
-            Math.min(1, (e.clientY - cy) / (window.innerHeight * 0.28)),
-          )
-          gsap.to(heroSubEl, {
-            x: tx * 26,
-            y: ty * 16,
-            duration: 0.4,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-          gsap.to(heroSocialEl, {
-            x: tx * 11,
-            y: ty * 7,
-            duration: 0.45,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-      }
-      // Fallback when mouseleave is missed (e.g. fast scroll) or old tweens leave opacity>0.
-      const top = document.elementFromPoint(e.clientX, e.clientY)
-      if (!top?.closest?.('.project-item')) {
-        for (const img of projectFloats) {
-          if (Number(gsap.getProperty(img, 'opacity')) > 0.01) {
-            hideAllProjectFloats()
-            break
-          }
-        }
-      }
-      if (!isStickyTouch && cursor && !top?.closest?.('.interactable')) {
-        // Safety reset: if a leave event is missed, bring cursor back to normal size.
-        gsap.to(cursor, {
-          scale: 1,
-          duration: 0.2,
-          ease: 'power2.out',
-          force3D: true,
-          transformOrigin: '50% 50%',
-          overwrite: 'auto',
-        })
-      }
-    }
-    window.addEventListener('mousemove', onMouseMove)
-    cleanupFns.push(() => window.removeEventListener('mousemove', onMouseMove))
-    const onWindowBlur = () => {
-      clearActiveProjectTouch()
-      hideAllProjectFloats()
-      resetHeroTopParallax()
-    }
-    const onVisChange = () => {
-      if (document.visibilityState === 'hidden') {
-        clearActiveProjectTouch()
-        hideAllProjectFloats()
-        resetHeroTopParallax()
-      }
-    }
-    window.addEventListener('blur', onWindowBlur)
-    document.addEventListener('visibilitychange', onVisChange)
-    cleanupFns.push(() => {
-      window.removeEventListener('blur', onWindowBlur)
-      document.removeEventListener('visibilitychange', onVisChange)
-    })
-
-    if (!isStickyTouch) {
-      interactables.forEach((el) => {
-        const onEnter = () =>
-          gsap.to(cursor, {
-            scale: 4,
-            duration: 0.3,
-            ease: 'back.out(2)',
-            force3D: true,
-            transformOrigin: '50% 50%',
-          })
-        const onLeave = () =>
-          gsap.to(cursor, {
-            scale: 1,
-            duration: 0.3,
-            ease: 'power2.out',
-            force3D: true,
-            transformOrigin: '50% 50%',
-          })
-        el.addEventListener('mouseenter', onEnter)
-        el.addEventListener('mouseleave', onLeave)
-        cleanupFns.push(() => {
-          el.removeEventListener('mouseenter', onEnter)
-          el.removeEventListener('mouseleave', onLeave)
-        })
-      })
-    }
-
-    if (isStickyTouch) {
-      const onDocProjectTouch = (e) => {
-        if (e.pointerType === 'mouse') return
-        if (!activeTouchProjectItem) return
-        if (activeTouchProjectItem.contains(e.target)) return
-        clearActiveProjectTouch()
-      }
-      document.addEventListener('pointerdown', onDocProjectTouch, true)
-      cleanupFns.push(() => {
-        document.removeEventListener('pointerdown', onDocProjectTouch, true)
-      })
-    }
-
-    easterTriggers.forEach((trigger) => {
-      const showImg = () => gsap.to(easterImg, { opacity: 1, scale: 1, duration: 0.3 })
-      const hideImg = () => gsap.to(easterImg, { opacity: 0, scale: 1.1, duration: 0.4 })
-      trigger.addEventListener('mousedown', showImg)
-      trigger.addEventListener('touchstart', showImg)
-      trigger.addEventListener('mouseup', hideImg)
-      trigger.addEventListener('mouseleave', hideImg)
-      trigger.addEventListener('touchend', hideImg)
-      cleanupFns.push(() => {
-        trigger.removeEventListener('mousedown', showImg)
-        trigger.removeEventListener('touchstart', showImg)
-        trigger.removeEventListener('mouseup', hideImg)
-        trigger.removeEventListener('mouseleave', hideImg)
-        trigger.removeEventListener('touchend', hideImg)
-      })
-    })
-
-    const heroTitles = document.querySelectorAll('.hero-title')
-    heroTitles.forEach((title) => {
-      const outers = title.querySelectorAll('.hero-title-letter')
-      const inners = title.querySelectorAll('.hero-title-letter-inner')
-      let hoverTl = null
-      const colorTl = { current: null }
-
-      const onEnter = () => {
-        if (hoverTl) hoverTl.kill()
-        if (colorTl.current) colorTl.current.kill()
-        gsap.set(outers, { transformOrigin: '50% 100%' })
-        hoverTl = gsap.timeline({ repeat: -1, repeatDelay: 0, repeatRefresh: true })
-        hoverTl
-          .to(outers, {
-            y: () => gsap.utils.random(-36, -14),
-            rotate: () => gsap.utils.random(-14, 14),
-            skewX: () => gsap.utils.random(-9, 9),
-            duration: 0.4,
-            ease: 'power2.out',
-            overwrite: 'auto',
-            stagger: { each: 0.034, from: 'start' },
-          })
-          .to(outers, {
-            y: 0,
-            rotate: 0,
-            skewX: 0,
-            duration: 0.48,
-            ease: 'power1.inOut',
-            overwrite: 'auto',
-            stagger: { each: 0.03, from: 'end' },
-          })
-        colorTl.current = gsap.to(inners, {
-          color: 'var(--accent)',
-          duration: 0.2,
-          stagger: { each: 0.03, from: 'start' },
-        })
-      }
-
-      const onLeave = () => {
-        if (hoverTl) {
-          hoverTl.kill()
-          hoverTl = null
-        }
-        if (colorTl.current) {
-          colorTl.current.kill()
-          colorTl.current = null
-        }
-        gsap.to(outers, {
-          y: 0,
-          rotate: 0,
-          skewX: 0,
-          duration: 0.45,
-          ease: 'power2.out',
-          overwrite: 'auto',
-          stagger: { each: 0.018, from: 'center' },
-        })
-        gsap.to(inners, { color: '', duration: 0.3 })
-      }
-
-      title.addEventListener('mouseenter', onEnter)
-      title.addEventListener('mouseleave', onLeave)
-      cleanupFns.push(() => {
-        title.removeEventListener('mouseenter', onEnter)
-        title.removeEventListener('mouseleave', onLeave)
-        if (hoverTl) hoverTl.kill()
-        if (colorTl.current) colorTl.current.kill()
-      })
-    })
-
-    const socialLinks = document.querySelectorAll('.hero-social-link')
-    socialLinks.forEach((link, idx) => {
-      const icon = link.querySelector('.social-icon')
-      let enterTl = null
-
-      const onEnter = () => {
-        if (enterTl) enterTl.kill()
-        enterTl = gsap.timeline()
-        enterTl
-          .to(link, {
-            y: -8,
-            scale: 1.25,
-            color: 'var(--accent)',
-            duration: 0.35,
-            ease: 'power3.out',
-          })
-          .to(
-            icon,
-            {
-              rotate: idx === 1 ? 360 : gsap.utils.random(-18, 18),
-              duration: idx === 1 ? 0.9 : 0.45,
-              ease: idx === 1 ? 'power2.inOut' : 'back.out(2)',
-            },
-            0,
-          )
-          .to(
-            link,
-            {
-              y: -4,
-              scale: 1.15,
-              duration: 0.6,
-              ease: 'elastic.out(1, 0.4)',
-            },
-            '>-0.1',
-          )
-      }
-
-      const onLeave = () => {
-        if (enterTl) enterTl.kill()
-        gsap.to(link, {
-          y: 0,
-          scale: 1,
-          color: '',
-          duration: 0.55,
-          ease: 'elastic.out(1, 0.5)',
-        })
-        gsap.to(icon, { rotate: 0, duration: 0.5, ease: 'power3.out' })
-      }
-
-      const onDown = () => {
-        gsap.to(link, { scale: 0.9, duration: 0.1, ease: 'power2.out' })
-      }
-      const onUp = () => {
-        gsap.to(link, { scale: 1.25, duration: 0.25, ease: 'back.out(2)' })
-      }
-
-      link.addEventListener('mouseenter', onEnter)
-      link.addEventListener('mouseleave', onLeave)
-      link.addEventListener('mousedown', onDown)
-      link.addEventListener('mouseup', onUp)
-      cleanupFns.push(() => {
-        link.removeEventListener('mouseenter', onEnter)
-        link.removeEventListener('mouseleave', onLeave)
-        link.removeEventListener('mousedown', onDown)
-        link.removeEventListener('mouseup', onUp)
-        if (enterTl) enterTl.kill()
-      })
-    })
-
-    const heroMiniPlayer = document.querySelector('.hero-mini-player')
-    if (heroMiniPlayer) {
-      const discWrap = heroMiniPlayer.querySelector('.hero-mini-player-disc-wrap')
-      const nextBtn = heroMiniPlayer.querySelector('.hero-mini-player-next')
-      const meta = heroMiniPlayer.querySelector('.hero-mini-player-meta')
-      let playerEnterTl = null
-
-      const onPlayerEnter = () => {
-        if (playerEnterTl) playerEnterTl.kill()
-        playerEnterTl = gsap.timeline()
-        playerEnterTl
-          .to(heroMiniPlayer, {
-            y: -6,
-            scale: 1.03,
-            duration: 0.3,
-            ease: 'power3.out',
-          })
-          .to(
-            discWrap,
-            {
-              borderColor: 'var(--accent)',
-              duration: 0.25,
-              ease: 'power2.out',
-            },
-            0,
-          )
-          .to(
-            discWrap,
-            {
-              rotate: '+=22',
-              duration: 0.45,
-              ease: 'back.out(2)',
-            },
-            0,
-          )
-          .to(
-            meta,
-            {
-              x: 3,
-              duration: 0.35,
-              ease: 'power2.out',
-            },
-            0,
-          )
-      }
-
-      const onPlayerLeave = () => {
-        if (playerEnterTl) playerEnterTl.kill()
-        gsap.to(heroMiniPlayer, {
-          y: 0,
-          scale: 1,
-          duration: 0.45,
-          ease: 'elastic.out(1, 0.5)',
-        })
-        gsap.to(discWrap, { borderColor: '', duration: 0.28, ease: 'power2.out' })
-        gsap.to(discWrap, { rotate: 0, duration: 0.45, ease: 'power3.out' })
-        gsap.to(meta, { x: 0, duration: 0.35, ease: 'power2.out' })
-      }
-
-      const onPlayerDown = () => {
-        gsap.to(heroMiniPlayer, { scale: 0.97, duration: 0.12, ease: 'power2.out' })
-      }
-      const onPlayerUp = () => {
-        gsap.to(heroMiniPlayer, { scale: 1.03, duration: 0.25, ease: 'back.out(2)' })
-      }
-
-      const onNextEnter = () => {
-        gsap.to(nextBtn, {
-          y: -2,
-          backgroundColor: 'var(--accent)',
-          color: 'var(--bg)',
-          borderColor: 'var(--accent)',
-          duration: 0.25,
-          ease: 'power2.out',
-        })
-      }
-      const onNextLeave = () => {
-        gsap.to(nextBtn, {
-          y: 0,
-          backgroundColor: 'transparent',
-          color: '',
-          borderColor: '',
-          duration: 0.3,
-          ease: 'power2.out',
-        })
-      }
-      const onNextDown = () => {
-        gsap.to(nextBtn, { scale: 0.93, duration: 0.1, ease: 'power2.out' })
-      }
-      const onNextUp = () => {
-        gsap.to(nextBtn, { scale: 1, duration: 0.2, ease: 'back.out(2)' })
-      }
-
-      heroMiniPlayer.addEventListener('mouseenter', onPlayerEnter)
-      heroMiniPlayer.addEventListener('mouseleave', onPlayerLeave)
-      heroMiniPlayer.addEventListener('mousedown', onPlayerDown)
-      heroMiniPlayer.addEventListener('mouseup', onPlayerUp)
-      nextBtn?.addEventListener('mouseenter', onNextEnter)
-      nextBtn?.addEventListener('mouseleave', onNextLeave)
-      nextBtn?.addEventListener('mousedown', onNextDown)
-      nextBtn?.addEventListener('mouseup', onNextUp)
-      cleanupFns.push(() => {
-        heroMiniPlayer.removeEventListener('mouseenter', onPlayerEnter)
-        heroMiniPlayer.removeEventListener('mouseleave', onPlayerLeave)
-        heroMiniPlayer.removeEventListener('mousedown', onPlayerDown)
-        heroMiniPlayer.removeEventListener('mouseup', onPlayerUp)
-        nextBtn?.removeEventListener('mouseenter', onNextEnter)
-        nextBtn?.removeEventListener('mouseleave', onNextLeave)
-        nextBtn?.removeEventListener('mousedown', onNextDown)
-        nextBtn?.removeEventListener('mouseup', onNextUp)
-        if (playerEnterTl) playerEnterTl.kill()
-      })
-    }
-
-    if (magWrap && magText) {
-      const onMagneticMove = (e) => {
-        const rect = magWrap.getBoundingClientRect()
-        gsap.to(magText, {
-          x: (e.clientX - (rect.left + rect.width / 2)) * 0.4,
-          y: (e.clientY - (rect.top + rect.height / 2)) * 0.4,
-          duration: 0.5,
-        })
-      }
-      const onMagneticLeave = () =>
-        gsap.to(magText, { x: 0, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.3)' })
-      magWrap.addEventListener('mousemove', onMagneticMove)
-      magWrap.addEventListener('mouseleave', onMagneticLeave)
-      cleanupFns.push(() => {
-        magWrap.removeEventListener('mousemove', onMagneticMove)
-        magWrap.removeEventListener('mouseleave', onMagneticLeave)
-      })
-    }
-
-    const lenis = new Lenis({
-      duration: isStickyTouch ? 0.95 : 1.2,
-      easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
-      syncTouch: !isStickyTouch,
-      touchMultiplier: isStickyTouch ? 1 : 1.15,
-    })
-    lenis.stop()
-    lenisRef.current = lenis
-
-    lenis.on('scroll', ScrollTrigger.update)
-    const tickerCallback = (time) => lenis.raf(time * 1000)
-    gsap.ticker.add(tickerCallback)
-    gsap.ticker.lagSmoothing(0)
-
-    let heroTagFallTl = null
-    let heroTagFallLocked = false
-    let heroTagHasFallen = false
-
-    const playAnvilLand = () => {
-      const players = footerSoundRef.current
-      const audio = players?.anvilDrop
-      if (!audio) return
-      audio.loop = false
-      audio.currentTime = 0
-      audio.volume = 0.55
-      void audio.play().catch(() => {})
-    }
-
-    const resetHeroTagFall = () => {
-      const tag = document.querySelector('.hero-tag')
-      if (heroTagFallTl) {
-        heroTagFallTl.kill()
-        heroTagFallTl = null
-      }
-      heroTagFallLocked = false
-      heroTagHasFallen = false
-      if (tag) {
-        gsap.set(tag, { y: 0, x: 0, rotation: -6, zIndex: 2 })
-      }
-    }
-
-    const runHeroTagFall = () => {
-      const tag = document.querySelector('.hero-tag')
-      const hero = document.querySelector('.hero')
-      if (!tag || !hero) return
-      if (heroTagFallLocked || heroTagHasFallen) {
-        return
-      }
-
-      if (heroTagFallTl) {
-        heroTagFallTl.kill()
-        heroTagFallTl = null
-      }
-
-      const measureDist = () => {
-        const hr = hero.getBoundingClientRect()
-        const tr = tag.getBoundingClientRect()
-        const floorPad = 22
-        return Math.max(0, hr.bottom - floorPad - tr.bottom)
-      }
-
-      const run = () => {
-        const dist = measureDist()
-        gsap.set(tag, { transformOrigin: '50% 50%' })
-
-        if (dist < 4) {
-          return
-        }
-
-        heroTagFallLocked = true
-
-        if (prefersReducedMotion) {
-          gsap.set(tag, { y: dist, rotation: -6, zIndex: 3 })
-          playAnvilLand()
-          heroTagHasFallen = true
-          heroTagFallLocked = false
-          return
-        }
-
-        const dur = Math.min(1.2, Math.max(0.45, 0.36 + dist / 1200))
-
-        heroTagFallTl = gsap
-          .timeline({
-            onComplete: () => {
-              heroTagHasFallen = true
-              heroTagFallLocked = false
-            },
-          })
-          .set(tag, { zIndex: 5 })
-          .to(tag, {
-            y: dist,
-            rotation: 5,
-            ease: 'power2.in',
-            duration: dur,
-            onComplete: () => {
-              playAnvilLand()
-            },
-          })
-          .to(tag, {
-            y: dist - 15,
-            rotation: -2,
-            duration: 0.12,
-            ease: 'power2.out',
-          })
-          .to(tag, {
-            y: dist,
-            rotation: -6,
-            duration: 0.5,
-            ease: 'bounce.out',
-          })
-      }
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(run)
-      })
-    }
-
-    const tagEl = document.querySelector('.hero-tag')
-    const heroSection = document.querySelector('.hero')
-    if (tagEl && heroSection) {
-      const onTagPointerEnter = () => {
-        runHeroTagFall()
-      }
-      const onHeroMouseLeave = () => {
-        resetHeroTagFall()
-      }
-      tagEl.addEventListener('pointerenter', onTagPointerEnter)
-      heroSection.addEventListener('mouseleave', onHeroMouseLeave)
-      cleanupFns.push(() => {
-        tagEl.removeEventListener('pointerenter', onTagPointerEnter)
-        heroSection.removeEventListener('mouseleave', onHeroMouseLeave)
-        resetHeroTagFall()
-      })
-    } else {
-      cleanupFns.push(() => {
-        if (heroTagFallTl) {
-          heroTagFallTl.kill()
-          heroTagFallTl = null
-        }
-      })
-    }
-
-    continueAfterPreloaderRef.current = () => {
-      if (preloaderPart2DoneRef.current) {
-        return
-      }
-      preloaderPart2DoneRef.current = true
-      gsap
-        .timeline({
-          onComplete: () => {
-            setPreloaderPhase('done')
-          },
-        })
-        .to('.preloader', { yPercent: -100, duration: 1, ease: 'power4.inOut' })
-        .add(() => {
-          lenis.start()
-        })
-        .fromTo(
-          '.hero-title-letter-inner',
-          {
-            yPercent: 180,
-            opacity: 0,
-            scale: () => gsap.utils.random(0.5, 0.8),
-            rotateX: () => gsap.utils.random(-45, 45),
-            rotateY: () => gsap.utils.random(-30, 30),
-            rotateZ: () => gsap.utils.random(-25, 25),
-            skewX: () => gsap.utils.random(-15, 15),
-            transformPerspective: 1000,
-          },
-          {
-            yPercent: 0,
-            opacity: 1,
-            scale: 1,
-            rotateX: 0,
-            rotateY: 0,
-            rotateZ: 0,
-            skewX: 0,
-            duration: 1.5,
-            stagger: { each: 0.05, from: 'random' },
-            ease: 'elastic.out(1, 0.5)',
-          },
-          '-=0.75',
-        )
-        .fromTo(
-          '.hero-tag',
-          { opacity: 0, scale: 2.2, rotate: 18, y: -30 },
-          {
-            opacity: 1,
-            scale: 1,
-            rotate: -6,
-            y: 0,
-            duration: 0.55,
-            ease: 'power4.out',
-            transformOrigin: '0% 50%',
-            clearProps: 'scale,y',
-          },
-          '-=0.3',
-        )
-        .fromTo(
-          '.hero-subtitle-word-inner',
-          {
-            yPercent: 160,
-            opacity: 0,
-            scale: 0.8,
-            rotateZ: () => gsap.utils.random(-15, 15),
-            skewX: () => gsap.utils.random(-10, 10),
-          },
-          {
-            yPercent: 0,
-            opacity: 1,
-            scale: 1,
-            rotateZ: 0,
-            skewX: 0,
-            duration: 1.2,
-            stagger: { each: 0.04, from: 'start' },
-            ease: 'back.out(1.7)',
-          },
-          '-=1.2',
-        )
-        .fromTo(
-          '.hero-social-link',
-          { opacity: 0, y: 30, scale: 0.6, rotate: -45 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotate: 0,
-            duration: 0.9,
-            stagger: 0.1,
-            ease: 'back.out(2.2)',
-          },
-          '-=0.7',
-        )
-        .fromTo(
-          '.hero-mini-player',
-          { opacity: 0, y: 22, scale: 0.72, rotate: -8 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotate: 0,
-            duration: 0.72,
-            ease: 'back.out(1.9)',
-          },
-          '-=0.65',
-        )
-    }
-
-    const startPreloaderCounting = () => {
-      const el = document.querySelector('.preloader-counter')
-      const counter = { val: 0 }
-      if (el) {
-        el.innerText = '0%'
-      }
-      gsap
-        .timeline({
-          onComplete: () => {
-            if (preloaderPart2DoneRef.current) return
-            setPreloaderPhase('exiting')
-            playFooterSound('rizz')
-            continueAfterPreloaderRef.current()
-          },
-        })
-        .to(counter, {
-          val: 100,
-          roundProps: 'val',
-          duration: 2.2,
-          ease: 'power3.inOut',
-          onUpdate: () => {
-            if (el) {
-              el.innerText = `${counter.val}%`
-            }
-          },
-        })
-    }
-    startPreloaderLoadingRef.current = startPreloaderCounting
-
-    projectItems.forEach((item) => {
-      const titleInners = item.querySelectorAll('.project-title-word-inner')
-      const tech = item.querySelector('.project-tech')
-      const img = item.querySelector('.project-img-float')
-
-      gsap.set(item, { opacity: 0, y: 150, scale: 0.9 })
-      if (titleInners.length) {
-        gsap.set(titleInners, { y: '160%', rotateZ: 12, opacity: 0 })
-      }
-      if (tech) {
-        gsap.set(tech, { opacity: 0, y: 30, x: 40, rotateX: 45 })
-      }
-
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: item,
-            start: 'top 85%',
-            once: true,
-          },
-        })
-        .to(item, { y: 0, scale: 1, opacity: 1, duration: 0.8, ease: 'expo.out' }, 0)
-        .to(
-          titleInners,
-          { y: '0%', rotateZ: 0, opacity: 1, duration: 1.1, stagger: 0.06, ease: 'back.out(1.5)' },
-          0.1,
-        )
-        .to(tech, { y: 0, x: 0, rotateX: 0, opacity: 1, duration: 0.8, ease: 'expo.out' }, 0.2)
-
-      const onEnter = () => {
-        if (!isStickyTouch) {
-          gsap.killTweensOf(img)
-          gsap.to(img, {
-            opacity: 1,
-            scale: 1,
-            duration: 0.4,
-            ease: 'back.out(1.7)',
-            overwrite: 'auto',
-          })
-          gsap.to(cursor, { opacity: 0, duration: 0.2, overwrite: 'auto' })
-        }
-        if (titleInners.length) {
-          gsap.to(titleInners, {
-            y: -5,
-            duration: 0.45,
-            stagger: { each: 0.026, from: 'start' },
-            ease: 'back.out(1.5)',
-            overwrite: 'auto',
-          })
-        }
-        if (tech) {
-          gsap.to(tech, {
-            x: 8,
-            y: -3,
-            letterSpacing: '0.07em',
-            duration: 0.45,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-      }
-      const onLeave = () => {
-        if (!isStickyTouch) {
-          gsap.killTweensOf(img)
-          gsap.to(img, { opacity: 0, scale: 0, duration: 0.3, overwrite: 'auto' })
-          gsap.to(cursor, { opacity: 1, duration: 0.2, overwrite: 'auto' })
-        }
-        if (titleInners.length) {
-          gsap.to(titleInners, {
-            y: 0,
-            duration: 0.38,
-            stagger: { each: 0.016, from: 'end' },
-            ease: 'power3.inOut',
-            overwrite: 'auto',
-          })
-        }
-        if (tech) {
-          gsap.to(tech, {
-            x: 0,
-            y: 0,
-            letterSpacing: '0em',
-            duration: 0.38,
-            ease: 'power2.inOut',
-            overwrite: 'auto',
-          })
-        }
-      }
-      const onMove = (e) => {
-        gsap.to(img, {
-          x: e.clientX - window.innerWidth / 2,
-          y: e.clientY - window.innerHeight / 2,
-          duration: 0.5,
-          overwrite: 'auto',
-        })
-      }
-
-      if (isStickyTouch) {
-        const onItemPointerDown = (e) => {
-          if (e.pointerType === 'mouse') return
-          if (activeTouchProjectItem && activeTouchProjectItem !== item) {
-            if (activeProjectLeave) {
-              activeProjectLeave()
-            }
-            activeProjectLeave = null
-            activeTouchProjectItem = null
-          }
-          if (activeTouchProjectItem === item) {
-            return
-          }
-          activeTouchProjectItem = item
-          activeProjectLeave = onLeave
-          onEnter()
-        }
-        item.addEventListener('pointerdown', onItemPointerDown, true)
-        cleanupFns.push(() => {
-          item.removeEventListener('pointerdown', onItemPointerDown, true)
-        })
-      } else {
-        item.addEventListener('mouseenter', onEnter)
-        item.addEventListener('mouseleave', onLeave)
-        item.addEventListener('mousemove', onMove)
-        cleanupFns.push(() => {
-          item.removeEventListener('mouseenter', onEnter)
-          item.removeEventListener('mouseleave', onLeave)
-          item.removeEventListener('mousemove', onMove)
-        })
-      }
-    })
-
-    const servicesHeader = document.querySelector('.services-header')
-    const servicesLead = document.querySelector('.services-lead')
-    const runServicesHeaderIntro = () => {
-      if (!servicesHeader || prefersReducedMotion) return
-      const headerLetters = servicesHeader.querySelectorAll('.services-header-letter-inner')
-      gsap.set(headerLetters, { yPercent: 160, rotateZ: 25, scale: 0.6, opacity: 0 })
-      gsap
-        .timeline()
-        .to(servicesHeader, { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' })
-        .to(
-          headerLetters,
-          {
-            yPercent: 0,
-            rotateZ: 0,
-            scale: 1,
-            opacity: 1,
-            duration: 1.2,
-            stagger: 0.05,
-            ease: 'elastic.out(1, 0.4)',
-          },
-          0,
-        )
-        .to(
-          servicesHeader,
-          {
-            color: 'var(--accent)',
-            duration: 0.18,
-            ease: 'power1.out',
-            yoyo: true,
-            repeat: 1,
-          },
-          0.18,
-        )
-    }
-
-    if (servicesHeader || servicesLead) {
-      gsap.set([servicesHeader, servicesLead].filter(Boolean), { opacity: 0, y: 80, rotateX: -20, scale: 0.9 })
-      const servicesRevealTl = gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: '.services',
-            start: 'top 85%',
-            once: true,
-          },
-        })
-        .to([servicesHeader, servicesLead].filter(Boolean), {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          scale: 1,
-          duration: 1.2,
-          stagger: 0.18,
-          ease: 'expo.out',
-        })
-      servicesRevealTl.eventCallback('onComplete', () => {
-        runServicesHeaderIntro()
-      })
-    }
-    if (servicesHeader) {
-      cleanupFns.push(() => {
-        gsap.killTweensOf(servicesHeader)
-      })
-    }
-
-    serviceItems.forEach((item) => {
-      const title = item.querySelector('.service-title')
-      const desc = item.querySelector('.service-desc')
-      const parts = [title, desc].filter(Boolean)
-
-      gsap.set(item, { opacity: 0, y: 100, rotateX: 30, rotateY: -10, scale: 0.85, transformOrigin: '50% 100%' })
-      if (parts.length) {
-        gsap.set(parts, { opacity: 0, y: 40, rotateX: 15 })
-      }
-
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: item,
-            start: 'top 85%',
-            once: true,
-          },
-        })
-        .to(item, {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          rotateY: 0,
-          scale: 1,
-          duration: 1.1,
-          ease: 'expo.out',
-        })
-        .to(
-          parts,
-          {
-            opacity: 1,
-            y: 0,
-            rotateX: 0,
-            duration: 0.9,
-            stagger: 0.1,
-            ease: 'expo.out',
-          },
-          0.15,
-        )
-
-      const onEnter = () => {
-        gsap.to(item, {
-          y: -7,
-          scale: 1.015,
-          borderColor: 'var(--accent)',
-          duration: 0.35,
-          ease: 'power3.out',
-          overwrite: 'auto',
-        })
-        if (title) {
-          gsap.to(title, {
-            x: 4,
-            color: 'var(--accent)',
-            duration: 0.32,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-        if (desc) {
-          gsap.to(desc, {
-            x: 2,
-            opacity: 1,
-            duration: 0.32,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-      }
-
-      const onLeave = () => {
-        gsap.to(item, {
-          y: 0,
-          scale: 1,
-          borderColor: '',
-          duration: 0.42,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        })
-        if (title) {
-          gsap.to(title, {
-            x: 0,
-            color: '',
-            duration: 0.35,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-        if (desc) {
-          gsap.to(desc, {
-            x: 0,
-            duration: 0.35,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-      }
-
-      if (isStickyTouch) {
-        const onTap = (e) => {
-          if (e.pointerType === 'mouse') return
-          onEnter()
-          window.setTimeout(() => onLeave(), 260)
-        }
-        item.addEventListener('pointerdown', onTap, true)
-        cleanupFns.push(() => {
-          item.removeEventListener('pointerdown', onTap, true)
-        })
-      } else {
-        item.addEventListener('mouseenter', onEnter)
-        item.addEventListener('mouseleave', onLeave)
-        cleanupFns.push(() => {
-          item.removeEventListener('mouseenter', onEnter)
-          item.removeEventListener('mouseleave', onLeave)
-        })
-      }
-    })
-
-    const packagesHeader = document.querySelector('.packages-header')
-    const packagesLead = document.querySelector('.packages-lead')
-    const packagesExtras = document.querySelector('.packages-extras')
-    const packagesPositioning = document.querySelector('.packages-positioning')
-    const packagesFlow = document.querySelector('.packages-flow')
-    const packagesShowcase = document.querySelector('.packages-showcase')
-    const packagesMetaItems = [packagesExtras, packagesPositioning, packagesFlow].filter(Boolean)
-
-    const runPackagesHeaderIntro = () => {
-      if (!packagesHeader || prefersReducedMotion) return
-      const letters = packagesHeader.querySelectorAll('.packages-header-letter-inner')
-      gsap.set(letters, { y: 80, rotateZ: 30, scale: 0.4, opacity: 0 })
-      gsap
-        .timeline()
-        .to(packagesHeader, { opacity: 1, y: 0, duration: 0.32, ease: 'power3.out' })
-        .to(
-          letters,
-          {
-            y: 0,
-            rotateZ: 0,
-            scale: 1,
-            opacity: 1,
-            duration: 1.3,
-            stagger: 0.045,
-            ease: 'elastic.out(1, 0.3)',
-          },
-          0,
-        )
-        .to(
-          packagesHeader,
-          {
-            color: 'var(--accent)',
-            duration: 0.18,
-            ease: 'power1.out',
-            yoyo: true,
-            repeat: 1,
-          },
-          0.18,
-        )
-    }
-
-    if (
-      packagesHeader ||
-      packagesLead ||
-      packageCardsEls.length ||
-      packagesExtras ||
-      packagesPositioning ||
-      packagesFlow ||
-      packagesShowcase
-    ) {
-      const introParts = [packagesHeader, packagesLead].filter(Boolean)
-      const showcaseTitle = packagesShowcase?.querySelector('.packages-showcase-title')
-      const showcasePrice = packagesShowcase?.querySelector('.packages-showcase-price')
-      const showcaseLabels = packagesShowcase?.querySelectorAll('.package-label') || []
-      const showcaseRows = packagesShowcase?.querySelectorAll('.package-list li') || []
-      const metaTitles = document.querySelectorAll(
-        '.packages-extras .packages-subtitle, .packages-positioning .packages-subtitle, .packages-flow .packages-subtitle',
-      )
-      const metaRows = document.querySelectorAll(
-        '.packages-extras .package-list li, .packages-positioning .package-list li, .packages-flow .package-list li',
-      )
-      if (introParts.length) {
-        gsap.set(introParts, { opacity: 0, y: 80, scale: 0.9, rotateX: 15 })
-      }
-      if (packageCardsEls.length) {
-        gsap.set(packageCardsEls, { opacity: 0, y: 100, rotateX: -30, rotateY: 15, scale: 0.85, transformOrigin: '50% 100%' })
-      }
-      gsap.set([packagesShowcase, packagesExtras, packagesPositioning, packagesFlow].filter(Boolean), {
-        opacity: 0,
-        y: 80,
-        rotateX: 15,
-        scale: 0.95
-      })
-      gsap.set([showcaseTitle, showcasePrice].filter(Boolean), { opacity: 0, y: 40, rotateX: 20 })
-      gsap.set(showcaseLabels, { opacity: 0, y: 20 })
-      gsap.set(showcaseRows, { opacity: 0, y: 20, x: -10 })
-      gsap.set(metaTitles, { opacity: 0, y: 30, rotateX: 15 })
-      gsap.set(metaRows, { opacity: 0, y: 20, x: -10 })
-
-      const packagesTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '.packages',
-          start: 'top 85%',
-          once: true,
-        },
-      })
-      if (introParts.length) {
-        packagesTl.to(introParts, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          rotateX: 0,
-          duration: 1.1,
-          stagger: 0.15,
-          ease: 'expo.out',
-        })
-      }
-      if (packageCardsEls.length) {
-        packagesTl.to(
-          packageCardsEls,
-          {
-            opacity: 1,
-            y: 0,
-            rotateX: 0,
-            rotateY: 0,
-            scale: 1,
-            duration: 1.2,
-            stagger: 0.15,
-            ease: 'expo.out',
-          },
-          introParts.length ? '-=0.6' : 0,
-        )
-      }
-      packagesTl.to(
-        [packagesShowcase, ...packagesMetaItems].filter(Boolean),
-        {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          scale: 1,
-          duration: 1,
-          stagger: 0.1,
-          ease: 'expo.out',
-        },
-        '-=0.8',
-      )
-      packagesTl
-        .to(
-          [showcaseTitle, showcasePrice].filter(Boolean),
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.44,
-            stagger: 0.07,
-            ease: 'power3.out',
-          },
-          '-=0.24',
-        )
-        .to(
-          showcaseLabels,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.34,
-            stagger: 0.04,
-            ease: 'power2.out',
-          },
-          '-=0.22',
-        )
-        .to(
-          showcaseRows,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.32,
-            stagger: 0.01,
-            ease: 'power2.out',
-          },
-          '-=0.18',
-        )
-        .to(
-          metaTitles,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.36,
-            stagger: 0.06,
-            ease: 'power2.out',
-          },
-          '-=0.18',
-        )
-        .to(
-          metaRows,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.32,
-            stagger: 0.01,
-            ease: 'power2.out',
-          },
-          '-=0.22',
-        )
-      packagesTl.eventCallback('onComplete', () => {
-        runPackagesHeaderIntro()
-      })
-    }
-
-    packagesMetaItems.forEach((item) => {
-      const title = item.querySelector('.packages-subtitle')
-      const rows = item.querySelectorAll('.package-list li')
-      const onEnter = () => {
-        gsap.to(item, {
-          y: -7,
-          scale: 1.012,
-          borderColor: 'var(--accent)',
-          duration: 0.34,
-          ease: 'power3.out',
-          overwrite: 'auto',
-        })
-        if (title) {
-          gsap.to(title, {
-            x: 4,
-            color: 'var(--accent)',
-            duration: 0.28,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-        if (rows.length) {
-          gsap.to(rows, {
-            x: 2,
-            duration: 0.28,
-            stagger: 0.02,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-      }
-      const onLeave = () => {
-        gsap.to(item, {
-          y: 0,
-          scale: 1,
-          borderColor: '',
-          duration: 0.36,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        })
-        if (title) {
-          gsap.to(title, {
-            x: 0,
-            color: '',
-            duration: 0.3,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-        if (rows.length) {
-          gsap.to(rows, {
-            x: 0,
-            duration: 0.3,
-            stagger: 0.015,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        }
-      }
-      if (isStickyTouch) {
-        const onTap = (e) => {
-          if (e.pointerType === 'mouse') return
-          onEnter()
-          window.setTimeout(() => onLeave(), 230)
-        }
-        item.addEventListener('pointerdown', onTap, true)
-        cleanupFns.push(() => item.removeEventListener('pointerdown', onTap, true))
-      } else {
-        item.addEventListener('mouseenter', onEnter)
-        item.addEventListener('mouseleave', onLeave)
-        cleanupFns.push(() => {
-          item.removeEventListener('mouseenter', onEnter)
-          item.removeEventListener('mouseleave', onLeave)
-        })
-      }
-    })
-
-    packageCardsEls.forEach((card) => {
-      const packageColor = getComputedStyle(card).getPropertyValue('--package-color').trim() || 'var(--accent)'
-      const onEnter = () => {
-        gsap.to(card, {
-          y: -7,
-          scale: 1.012,
-          borderColor: packageColor,
-          duration: 0.32,
-          ease: 'power3.out',
-          overwrite: 'auto',
-        })
-      }
-      const onLeave = () => {
-        gsap.to(card, {
-          y: 0,
-          scale: 1,
-          borderColor: '',
-          duration: 0.38,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        })
-      }
-      if (isStickyTouch) {
-        const onTap = (e) => {
-          if (e.pointerType === 'mouse') return
-          onEnter()
-          window.setTimeout(() => onLeave(), 220)
-        }
-        card.addEventListener('pointerdown', onTap, true)
-        cleanupFns.push(() => {
-          card.removeEventListener('pointerdown', onTap, true)
-        })
-      } else {
-        card.addEventListener('mouseenter', onEnter)
-        card.addEventListener('mouseleave', onLeave)
-        
-        // --- 3D TILT EFFECT ---
-        const onMoveTilt = (e) => {
-          const rect = card.getBoundingClientRect();
-          const ax = (e.clientX - (rect.left + rect.width / 2)) / 15;
-          const ay = (e.clientY - (rect.top + rect.height / 2)) / 15;
-          gsap.to(card, {
-            rotateY: ax,
-            rotateX: -ay,
-            transformPerspective: 1200,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
-        };
-        const onLeaveTilt = () => {
-          gsap.to(card, {
-             rotateY: 0,
-             rotateX: 0,
-             duration: 0.7,
-             ease: 'elastic.out(1, 0.4)',
-          });
-        };
-        
-        card.addEventListener('mousemove', onMoveTilt)
-        card.addEventListener('mouseleave', onLeaveTilt)
-        cleanupFns.push(() => {
-          card.removeEventListener('mouseenter', onEnter)
-          card.removeEventListener('mouseleave', onLeave)
-          card.removeEventListener('mousemove', onMoveTilt)
-          card.removeEventListener('mouseleave', onLeaveTilt)
-        })
-      }
-    })
-
-    // --- EXTRA DYNAMIC GSAP EXPERIENCES FOR SECTIONS BELOW "SERVICES" ---
-
-    // 1. SERVICES PARALLAX - Removed to prevent overlap with the lead text
-
-    // 2. SHOWCASE ORB - Removed custom float/spin per user request
-
-    // 3. MARQUEE PARALLAX & VELOCITY
-    const marqueeInner = document.querySelector('.marquee-inner');
-    if (marqueeInner && !prefersReducedMotion) {
-       gsap.to(marqueeInner, {
-          xPercent: isStickyTouch ? -10 : -25,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.marquee',
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true,
-          }
-       });
-       
-       const marqueeEl = document.querySelector('.marquee');
-       if (marqueeEl) {
-         gsap.from(marqueeEl, {
-            scale: 0.95,
-            opacity: 0,
-            duration: 1.2,
-            ease: 'expo.out',
-            scrollTrigger: {
-               trigger: '.marquee',
-               start: 'top 95%'
-            }
-         });
-       }
-    }
-
-    // 4. FOOTER DYNAMIC REVEAL & PARALLAX
-    const footerEl = document.querySelector('.footer');
-    if (footerEl && !prefersReducedMotion && !isStickyTouch) {
-      const footerLines = footerEl.querySelectorAll('.footer-stack-lead p, .magnetic-wrap, .scrivimi-hint-text, .self-destruct-btn, .footer-meta');
-      if (footerLines.length) {
-        gsap.from(footerLines, {
-           opacity: 0,
-           y: 80,
-           rotateX: -15,
-           scale: 0.95,
-           duration: 1.5,
-           stagger: 0.1,
-           ease: 'expo.out',
-           scrollTrigger: {
-              trigger: '.footer',
-              start: 'top 85%',
-           }
-        })
-      }
-      
-      const footerStack = footerEl.querySelector('.footer-stack');
-      if (footerStack) {
-         gsap.fromTo(footerStack, 
-          { y: 80 },
-          {
-            y: -20,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: '.footer',
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: true
-            }
-          }
-         );
-      }
-    }
-    // --- END EXTRA ---
-
-    return () => {
-      clearActiveProjectTouch()
-      if (heroSubEl && heroSocialEl) {
-        gsap.killTweensOf([heroSubEl, heroSocialEl])
-        gsap.set([heroSubEl, heroSocialEl], { x: 0, y: 0 })
-      }
-      cleanupFns.forEach((cleanup) => cleanup())
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-      gsap.ticker.remove(tickerCallback)
-      lenis.destroy()
-    }
-  }, [isCoarsePointer, prefersReducedMotion])
+  useAppPageGsap({
+    isCoarsePointer,
+    prefersReducedMotion,
+    playFooterSound,
+    setPreloaderPhase,
+    continueAfterPreloaderRef,
+    startPreloaderLoadingRef,
+    preloaderPart2DoneRef,
+    lenisRef,
+    footerSoundRef,
+  })
 
   useEffect(() => {
     if (!modalData) return
@@ -2333,6 +532,11 @@ function App() {
   }
 
   const toggleHeroTrack = () => {
+    if (!soundCloudArmed) {
+      setSoundCloudArmed(true)
+      pendingScPlayRef.current = true
+      return
+    }
     const widget = heroSoundCloudWidgetRef.current
     if (!widget) return
     if (!heroTrackPlaying) {
@@ -2343,6 +547,9 @@ function App() {
   }
 
   const nextHeroTrack = () => {
+    if (!soundCloudArmed) {
+      setSoundCloudArmed(true)
+    }
     const pulseEl = heroMiniPlayerPulseRef.current
     if (pulseEl) {
       gsap.killTweensOf(pulseEl)
@@ -2452,7 +659,9 @@ function App() {
           seen.add(el)
           rows.push({ el, r })
         })
-      } catch (_) {}
+      } catch {
+        // ignore
+      }
     })
 
     if (!rows.length) {
@@ -2541,7 +750,7 @@ function App() {
     }
   }, [])
 
-  // publishedAt = data di creazione repo su GitHub (stessa base della “prima pubblicazione”)
+  // publishedAt = data di creazione repo su GitHub (stessa base della â€œprima pubblicazioneâ€)
   return (
     <>
       <div className="cursor" aria-hidden>
@@ -2695,6 +904,7 @@ function App() {
               trackNumber={heroTrackIndex + 1}
               totalTracks={HERO_MP3_TRACKS.length}
             />
+            {soundCloudArmed && (
             <iframe
               ref={heroMiniPlayerIframeRef}
               title="Hero SoundCloud player"
@@ -2704,6 +914,7 @@ function App() {
               )}&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`}
               allow="autoplay"
             />
+            )}
           </div>
           <span className="hero-mini-player-pulse" ref={heroMiniPlayerPulseRef} aria-hidden />
         </div>
@@ -2776,7 +987,13 @@ function App() {
                 <ProjectTitleWords text={project.title} />
               </div>
               <div className="project-tech">{project.tech}</div>
-              <img src={project.thumb} alt={project.title} className="project-img-float" />
+              <img
+                src={project.thumb}
+                alt={project.title}
+                className="project-img-float"
+                loading="lazy"
+                decoding="async"
+              />
             </a>
           ))}
         </div>
@@ -2905,14 +1122,14 @@ function App() {
           </article>
         </div>
       </section>
-      <VisualSection />
+      <VisualSectionLazy />
       <div className="project-modal" ref={modalRef}>
         <div className="modal-layout">
           <div className="modal-image-container">
             <img
               className="modal-img"
               ref={modalImgRef}
-              src={modalData?.img ?? ''}
+              src={modalData?.img || undefined}
               alt={String(t('modal.imgAlt'))}
             />
           </div>
@@ -2999,7 +1216,7 @@ function App() {
         </a>
         </div>
         <span className="scrivimi-hint" aria-hidden="true">
-          <span className="scrivimi-hint-arrow">↑</span>
+          <span className="scrivimi-hint-arrow">{'\u2191'}</span>
           <span className="scrivimi-hint-text scrivimi-hint-text--coarse">
             {String(t('footer.hintCoarse'))}
           </span>
@@ -3022,7 +1239,7 @@ function App() {
         </div>
         </div>
         <div className="footer-meta">
-          <p className="footer-copyright">© {new Date().getFullYear()} Michel Branche</p>
+          <p className="footer-copyright">{'\u00A9'} {new Date().getFullYear()} Michel Branche</p>
           <p className="footer-motto">{String(t('footer.motto'))}</p>
         </div>
       </section>

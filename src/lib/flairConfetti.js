@@ -243,7 +243,7 @@ export function initFlairConfetti(heroElement) {
   return () => {
     try {
       cannon.destroy()
-    } catch (_) {
+    } catch {
       // ignore
     }
   }
