@@ -116,4 +116,12 @@ export const PROJECT_META = [
     thumb: GH('Demo-IlGusto', 'preview-hero.png'),
     publishedAt: '2026-04-22',
   },
+  {
+    slug: 'bijou',
+    tech: 'React / Tailwind / Framer Motion / GSAP / Lenis',
+    link: 'https://demo-hotelbijou.vercel.app/',
+    img: GH('demo-bijou', 'preview.png'),
+    thumb: GH('demo-bijou', 'preview.png'),
+    publishedAt: '2026-05-05',
+  },
 ]
