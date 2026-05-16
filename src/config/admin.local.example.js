@@ -1,6 +1,9 @@
 /**
- * 1. Copia in `admin.local.js` e imposta la password.
- * 2. Crea `.env.local` con la stessa password: ADMIN_PASSWORD=...
- * 3. Su Vercel: ADMIN_PASSWORD + Upstash Redis (vedi .env.example).
+ * Non usato in build/deploy. Imposta la password in `.env.local`:
+ *
+ *   VITE_ADMIN_PASSWORD=la-tua-password
+ *   ADMIN_PASSWORD=la-tua-password
+ *
+ * Su Vercel aggiungi le stesse variabili in Environment Variables.
  */
 export const ADMIN_PASSWORD = 'la-tua-password'
