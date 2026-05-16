@@ -86,8 +86,8 @@ function LoginView({ onLogin, error, loading }) {
         <p className="admin-login__desc">Inserisci la password per vedere le statistiche delle visite.</p>
         {!configured ? (
           <p className="admin-login__hint">
-            Crea <code>src/config/admin.local.js</code> e <code>.env.local</code> con la stessa{' '}
-            <code>ADMIN_PASSWORD</code> (vedi <code>.env.example</code>).
+            Imposta la password in <code>src/config/admin.local.js</code> (copia da{' '}
+            <code>admin.local.example.js</code>) e riavvia <code>npm run dev</code>.
           </p>
         ) : (
           <p className="admin-login__hint admin-login__hint--muted">
