@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { devApiPlugin } from './vite.dev-api.js'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), devApiPlugin()],
   build: {
     target: 'es2022',
     cssMinify: true,
@@ -22,6 +23,9 @@ export default defineConfig({
             }
             if (id.includes('react-responsive')) {
               return 'media'
+            }
+            if (id.includes('recharts') || id.includes('react-router')) {
+              return 'admin-charts'
             }
           }
         },

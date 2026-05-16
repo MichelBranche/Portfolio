@@ -35,6 +35,16 @@ export default defineConfig([
     rules: { 'react-refresh/only-export-components': 'off' },
   },
   {
+    files: ['src/main.jsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+  {
+    files: ['api/**/*.js', 'vite.dev-api.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+  {
     files: ['src/components/VideoPlayer.jsx'],
     rules: { 'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]|^motion$' }] },
   },
