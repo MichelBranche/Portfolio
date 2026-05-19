@@ -20,6 +20,9 @@ export function useAppPageGsap({
   useEffect(() => {    gsap.registerPlugin(ScrollTrigger)
 
     const cursor = document.querySelector('.cursor')
+    if (cursor) {
+      gsap.set(cursor, { opacity: 1, x: window.innerWidth / 2, y: window.innerHeight / 2 })
+    }
     const easterImg = document.querySelector('.easter-egg-img')
     const magWrap = document.querySelector('.magnetic-wrap')
     const magText = document.querySelector('.magnetic-text')
@@ -131,7 +134,7 @@ export function useAppPageGsap({
       }
       // Fallback when mouseleave is missed (e.g. fast scroll) or old tweens leave opacity>0.
       const top = document.elementFromPoint(e.clientX, e.clientY)
-      if (!top?.closest?.('.project-item')) {
+      if (!top?.closest?.('.project-item, .works-row')) {
         for (const img of projectFloats) {
           if (Number(gsap.getProperty(img, 'opacity')) > 0.01) {
             hideAllProjectFloats()
@@ -780,9 +783,11 @@ export function useAppPageGsap({
     startPreloaderLoadingRef.current = startPreloaderCounting
 
     projectItems.forEach((item) => {
+      const img = item.querySelector('.project-img-float')
+      if (!img) return
+
       const titleInners = item.querySelectorAll('.project-title-word-inner')
       const tech = item.querySelector('.project-tech')
-      const img = item.querySelector('.project-img-float')
 
       gsap.set(item, { opacity: 0, y: 150, scale: 0.9 })
       if (titleInners.length) {
@@ -1457,33 +1462,7 @@ export function useAppPageGsap({
     // 2. SHOWCASE ORB - Removed custom float/spin per user request
 
     // 3. MARQUEE PARALLAX & VELOCITY
-    const marqueeInner = document.querySelector('.marquee-inner');
-    if (marqueeInner && !prefersReducedMotion) {
-       gsap.to(marqueeInner, {
-          xPercent: isStickyTouch ? -10 : -25,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.marquee',
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true,
-          }
-       });
-       
-       const marqueeEl = document.querySelector('.marquee');
-       if (marqueeEl) {
-         gsap.from(marqueeEl, {
-            scale: 0.95,
-            opacity: 0,
-            duration: 1.2,
-            ease: 'expo.out',
-            scrollTrigger: {
-               trigger: '.marquee',
-               start: 'top 95%'
-            }
-         });
-       }
-    }
+    // Marquee GSAP: animazione gestita in GsapMarquee.jsx
 
     // 4. FOOTER DYNAMIC REVEAL & PARALLAX
     const footerEl = document.querySelector('.footer');

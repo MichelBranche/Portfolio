@@ -1,0 +1,488 @@
+/* Pattern UI ispirati ad awwwards-portfolio, adattati al design system esistente */
+
+.aw-header-wrap {
+  margin-bottom: clamp(2rem, 5vh, 4rem);
+}
+
+.aw-header-clip {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.aw-header-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2rem, 4vh, 3rem);
+  padding-top: clamp(1rem, 3vh, 2rem);
+}
+
+.aw-kicker {
+  font-size: clamp(0.65rem, 1.1vw, 0.8rem);
+  font-weight: 400;
+  letter-spacing: 0.5rem;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.aw-banner-title {
+  font-size: clamp(2.8rem, 12vw, 9.5rem);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.aw-banner-title span {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .aw-banner-title span {
+    display: inline;
+  }
+
+  .aw-banner-title span + span {
+    margin-left: 0.12em;
+  }
+}
+
+.aw-header-rule {
+  position: relative;
+  border-top: 2px solid var(--fg);
+  margin-top: clamp(1.5rem, 3vh, 2.5rem);
+}
+
+.aw-header-lead {
+  padding: clamp(2rem, 4vh, 3.5rem) 0;
+  text-align: end;
+  font-size: clamp(1.25rem, 2.8vw, 2rem);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.aw-text-line {
+  display: block;
+  line-height: 1.4;
+}
+
+/* —— Works / progetti —— */
+section.projects {
+  padding-top: clamp(3rem, 8vh, 6rem);
+}
+
+.works-list {
+  position: relative;
+  font-weight: 400;
+}
+
+.works-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: clamp(1rem, 2.5vh, 1.4rem) 0;
+  border-top: 2px solid color-mix(in srgb, var(--fg) 85%, transparent);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.works-row:last-child {
+  border-bottom: 2px solid color-mix(in srgb, var(--fg) 85%, transparent);
+}
+
+.works-row-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--fg);
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+.works-row-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: color 0.45s ease, padding 0.45s ease;
+}
+
+.works-row-title {
+  font-size: clamp(1.5rem, 4.5vw, 2rem);
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
+  max-width: min(88%, 52rem);
+}
+
+.works-row-arrow {
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: 0.15em;
+  transition: transform 0.35s ease, color 0.35s ease;
+}
+
+.works-row-tags {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  font-size: clamp(0.65rem, 1.2vw, 0.8rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.45s ease, padding 0.45s ease;
+}
+
+.works-row-tag {
+  transition: color 0.45s ease;
+}
+
+.works-row-mobile-preview {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.works-row-mobile-preview img.works-row-mobile-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.45) grayscale(30%);
+}
+
+.works-row-mobile-preview img.works-row-mobile-shot {
+  position: relative;
+  z-index: 1;
+  width: min(88%, 420px);
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.works-preview-float {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 500;
+  width: min(58vw, 960px);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.95);
+  border: 6px solid var(--fg);
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.works-preview-float img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .works-row-mobile-preview {
+    display: none;
+  }
+
+  .works-row:hover .works-row-head,
+  .works-row:hover .works-row-tags {
+    color: var(--bg);
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .works-row:hover .works-row-arrow {
+    color: var(--bg);
+    transform: translate(2px, -2px);
+  }
+}
+
+@media (max-width: 767px) {
+  .works-preview-float {
+    display: none !important;
+  }
+}
+
+/* —— Service summary strip —— */
+.service-summary-strip {
+  margin: clamp(3rem, 10vh, 6rem) 0;
+  overflow: hidden;
+  text-align: center;
+  font-weight: 400;
+  line-height: 1.15;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.service-summary-line {
+  will-change: transform;
+}
+
+.service-summary-mid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.service-summary-bar {
+  display: inline-block;
+  width: clamp(2rem, 8vw, 8rem);
+  height: 3px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.service-summary-italic {
+  font-style: italic;
+}
+
+/* Navbar: vedi SiteNavbar.css (importato dal componente) */
+
+/* —— Servizi sticky —— */
+section.services.services--sticky {
+  background: var(--fg);
+  color: var(--bg);
+  border-bottom: none;
+  padding-bottom: clamp(4rem, 12vh, 8rem);
+}
+
+section.services.services--sticky .aw-kicker,
+section.services.services--sticky .aw-banner-title,
+section.services.services--sticky .aw-header-lead,
+section.services.services--sticky .aw-text-line {
+  color: var(--bg);
+}
+
+section.services.services--sticky .aw-header-rule {
+  border-color: color-mix(in srgb, var(--bg) 35%, transparent);
+}
+
+.services-sticky-stack {
+  position: relative;
+}
+
+.services-sticky-card {
+  position: sticky;
+  z-index: calc(10 + var(--sticky-i, 0));
+  padding: clamp(0.85rem, 2vh, 1.35rem) 0 clamp(1.1rem, 2.5vh, 1.75rem);
+  border-top: 2px solid color-mix(in srgb, var(--bg) 28%, transparent);
+  background: var(--fg);
+}
+
+.services-sticky-index {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  opacity: 0.45;
+  margin-bottom: 0.5rem;
+}
+
+.services-sticky-title {
+  font-size: clamp(1.75rem, 4.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.services-sticky-desc {
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  line-height: 1.45;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  opacity: 0.72;
+  max-width: 62ch;
+  margin-bottom: 0.65rem;
+}
+
+.services-sticky-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.88;
+}
+
+.services-sticky-bullets li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.services-sticky-bullets li::before {
+  content: '—';
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+/* —— About (stesso tema scuro dei Servizi) —— */
+.about-section {
+  background: var(--fg);
+  color: var(--bg);
+  border-bottom: none;
+  padding-bottom: clamp(4rem, 12vh, 8rem);
+}
+
+.about-section .aw-kicker,
+.about-section .aw-banner-title,
+.about-section .aw-header-lead,
+.about-section .aw-text-line,
+.about-section-copy {
+  color: var(--bg);
+}
+
+.about-section .aw-header-rule {
+  border-color: color-mix(in srgb, var(--bg) 35%, transparent);
+}
+
+.about-section-stage {
+  display: grid;
+  gap: clamp(1.75rem, 4vh, 2.75rem);
+  padding-top: clamp(0.5rem, 2vh, 1.25rem);
+}
+
+@media (min-width: 900px) {
+  .about-section-stage {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: end;
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+  }
+}
+
+.about-section-visual {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: transparent;
+}
+
+.about-section-visual-frame {
+  position: relative;
+  width: min(100%, 36rem);
+  background: transparent;
+  overflow: visible;
+  will-change: clip-path;
+}
+
+@media (min-width: 900px) {
+  .about-section-visual-frame {
+    width: min(100%, 44rem);
+  }
+}
+
+.about-section-photo-mirror {
+  width: 100%;
+  transform: scaleX(-1);
+  line-height: 0;
+}
+
+.about-section-photo {
+  width: 100%;
+  height: auto;
+  max-height: min(72vh, 40rem);
+  object-fit: contain;
+  object-position: center bottom;
+  display: block;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+.about-section-copy-wrap {
+  position: relative;
+  z-index: 2;
+  padding-bottom: clamp(0.5rem, 2vh, 1.5rem);
+}
+
+@media (min-width: 900px) {
+  .about-section-copy-wrap {
+    padding-bottom: clamp(1.5rem, 4vh, 3rem);
+    max-width: 36rem;
+  }
+}
+
+.about-section-copy {
+  font-size: clamp(1.05rem, 2.1vw, 1.4rem);
+  font-weight: 400;
+  line-height: 1.55;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  opacity: 0.78;
+  text-align: start;
+}
+
+.about-section-copy .aw-text-line {
+  margin-bottom: 0.6em;
+}
+
+/* —— Marquee GSAP —— */
+.gsap-marquee {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  background: var(--accent);
+  color: var(--bg);
+  border-bottom: 2px solid var(--fg);
+  overflow: hidden;
+  min-height: clamp(4rem, 10vh, 6.25rem);
+  display: flex;
+  align-items: center;
+}
+
+.gsap-marquee-track {
+  display: flex;
+  align-items: center;
+  will-change: transform;
+}
+
+.gsap-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  padding: 0 clamp(2rem, 5vw, 4rem);
+  font-size: clamp(1.35rem, 3.2vw, 2.65rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.gsap-marquee-icon {
+  width: clamp(1rem, 2vw, 1.35rem);
+  height: clamp(1rem, 2vw, 1.35rem);
+  flex-shrink: 0;
+}
+
+.gsap-marquee--static {
+  justify-content: center;
+  padding: 1rem 5vw;
+}
+
+.gsap-marquee-static-text {
+  font-size: clamp(1.1rem, 2.5vw, 2rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
+}

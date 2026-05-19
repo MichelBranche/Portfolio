@@ -53,6 +53,21 @@ section {
   transform-origin: 50% 50%;
   will-change: transform, opacity;
   backface-visibility: hidden;
+  opacity: 1;
+}
+
+/* Sfondo scuro (preloader, menu nav): cursore chiaro senza difference */
+.cursor.cursor--light,
+body.cursor-on-dark-ui .cursor,
+body.site-nav-open .cursor {
+  z-index: 10090;
+  mix-blend-mode: normal;
+  color: var(--bg);
+  opacity: 1;
+}
+
+body.preloader-active .cursor {
+  opacity: 1;
 }
 
 .cursor-svg {
@@ -84,7 +99,7 @@ section {
 .preloader {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  z-index: 10050;
   width: 100%;
   min-height: 100%;
   min-height: 100vh;

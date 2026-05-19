@@ -43,8 +43,32 @@ const STRINGS = {
       chooseAria: 'Scegli la lingua',
       hintNudge: 'Scegli la lingua che preferisci.',
     },
+    nav: {
+      home: 'Home',
+      work: 'Lavori',
+      services: 'Servizi',
+      about: 'Chi sono',
+      packages: 'Pacchetti',
+      contact: 'Contatto',
+      emailLabel: 'E-mail',
+      socialLabel: 'Social',
+      menuOpen: 'Apri menu',
+      menuClose: 'Chiudi menu',
+    },
+    servicesSummary: {
+      line1: 'Architettura',
+      line2Left: 'Sviluppo',
+      line2Right: 'Deploy',
+      line3a: 'API',
+      line3b: 'Frontend',
+      line3c: 'Performance',
+      line4: 'Motion',
+    },
     projects: {
       header: 'Lavori Selezionati',
+      subTitle: 'Logica e estetica, insieme',
+      lead:
+        'Progetti selezionati, curati con attenzione\nper risultati concreti e impatto reale.',
       rubina: {
         title: 'Fotografia - Rubina',
         desc: 'Portfolio fotografico brutal/editoriale con layout dinamici, animazioni GSAP e approccio performance-first senza framework.',
@@ -80,31 +104,47 @@ const STRINGS = {
     },
     services: {
       header: 'Servizi',
+      subTitle: 'Dietro le quinte, oltre lo schermo',
       lead: 'Ti aiuto a trasformare un’idea in un sito che funziona davvero.',
       website: {
         title: 'Siti Web Su Misura',
         desc: 'Landing page e siti istituzionali veloci, responsive e orientati ai risultati.',
+        bullets: ['Landing e siti vetrina', 'Design responsive su misura', 'Deploy e messa online'],
       },
       ecommerce: {
         title: 'E-commerce',
         desc: 'Store moderni con UX chiara, checkout efficace e attenzione alla conversione.',
+        bullets: ['Catalogo e navigazione chiara', 'Checkout ottimizzato', 'Integrazioni pagamento'],
       },
       uiux: {
         title: 'UI/UX Design',
         desc: 'Interfacce pulite e intuitive, progettate per essere belle e facili da usare.',
+        bullets: ['Wireframe e gerarchie visive', 'Design system coerente', 'Prototipi interattivi'],
       },
       performance: {
         title: 'Performance & Motion',
         desc: 'Ottimizzazione caricamenti e micro-animazioni per un’esperienza premium.',
+        bullets: ['GSAP e scroll curato', 'Core Web Vitals', 'Motion rispettosa del device'],
       },
       maintenance: {
         title: 'Supporto & Aggiornamenti',
         desc: 'Manutenzione continua, miglioramenti iterativi e assistenza post-lancio.',
+        bullets: ['Fix e piccoli miglioramenti', 'Aggiornamenti contenuti', 'Monitoraggio base'],
       },
       seo: {
         title: 'SEO Tecnica Base',
         desc: 'Struttura corretta, metadati e basi solide per una migliore visibilita online.',
+        bullets: ['Meta e Open Graph', 'Struttura semantica', 'Sitemap e indicizzazione'],
       },
+    },
+    about: {
+      subTitle: 'Codice con intento, costruito per crescere',
+      title: 'Chi sono',
+      lead:
+        'Sviluppatore web indipendente in Italia.\nProgetto interfacce chiare e performanti\ndalla prima bozza al deploy.',
+      body:
+        'Mi occupo di siti ed esperienze digitali dove estetica e tecnica vanno insieme: React, animazioni GSAP, scroll fluido con Lenis e attenzione alla conversione.\nOgni progetto è pensato per essere veloce, comprensibile e coerente con il brand.\n\nQuando non sono in deploy:\n— Sperimentazione con UI, motion e layout editoriali\n— Demo e side project per hospitality, food e brand locali\n— Caffè, buona musica e debug con calma',
+      imageAlt: 'Michel Branche — ritratto',
     },
     packages: {
       header: 'Pacchetti',
@@ -262,6 +302,12 @@ const STRINGS = {
     },
     marquee: {
       line: 'DISPONIBILE PER NUOVI PROGETTI -',
+      items: [
+        'DISPONIBILE PER NUOVI PROGETTI',
+        'MICHEL BRANCHE — WEB DEVELOPER',
+        'UI/UX · GSAP · LENIS',
+        'DISPONIBILE PER NUOVI PROGETTI',
+      ],
     },
     footer: {
       scrivimi: 'SCRIVIMI',
@@ -306,8 +352,32 @@ const STRINGS = {
       chooseAria: 'Choose language',
       hintNudge: 'Choose your preferred language.',
     },
+    nav: {
+      home: 'Home',
+      work: 'Work',
+      services: 'Services',
+      about: 'About',
+      packages: 'Packages',
+      contact: 'Contact',
+      emailLabel: 'E-mail',
+      socialLabel: 'Social',
+      menuOpen: 'Open menu',
+      menuClose: 'Close menu',
+    },
+    servicesSummary: {
+      line1: 'Architecture',
+      line2Left: 'Development',
+      line2Right: 'Deploy',
+      line3a: 'APIs',
+      line3b: 'Frontends',
+      line3c: 'Performance',
+      line4: 'Motion',
+    },
     projects: {
       header: 'Selected work',
+      subTitle: 'Logic meets aesthetics',
+      lead:
+        'Featured projects crafted with care\nto drive real results and impact.',
       rubina: {
         title: 'Photography - Rubina',
         desc: 'Brutal/editorial photo portfolio with dynamic layouts, GSAP motion and a performance-first, framework-free approach.',
@@ -343,31 +413,47 @@ const STRINGS = {
     },
     services: {
       header: 'Services',
+      subTitle: 'Behind the scene, beyond the screen',
       lead: 'I help turn your idea into a website that delivers real results.',
       website: {
         title: 'Custom Websites',
         desc: 'Fast, responsive landing pages and business websites built to perform.',
+        bullets: ['Landing & showcase sites', 'Tailored responsive design', 'Deploy & go-live'],
       },
       ecommerce: {
         title: 'E-commerce',
         desc: 'Modern online stores with clear UX, effective checkout, and conversion focus.',
+        bullets: ['Clear catalog UX', 'Optimized checkout', 'Payment integrations'],
       },
       uiux: {
         title: 'UI/UX Design',
         desc: 'Clean, intuitive interfaces designed to look sharp and feel effortless.',
+        bullets: ['Wireframes & visual hierarchy', 'Coherent design system', 'Interactive prototypes'],
       },
       performance: {
         title: 'Performance & Motion',
         desc: 'Load-time optimization and refined motion for a premium user experience.',
+        bullets: ['GSAP & scroll craft', 'Core Web Vitals', 'Motion that respects the device'],
       },
       maintenance: {
         title: 'Support & Updates',
         desc: 'Ongoing maintenance, iterative improvements, and reliable post-launch support.',
+        bullets: ['Fixes & small improvements', 'Content updates', 'Basic monitoring'],
       },
       seo: {
         title: 'Technical SEO Basics',
         desc: 'Solid site structure, metadata, and technical foundations for better visibility.',
+        bullets: ['Meta & Open Graph', 'Semantic structure', 'Sitemap & indexing'],
       },
+    },
+    about: {
+      subTitle: 'Code with purpose, built to scale',
+      title: 'About',
+      lead:
+        'Independent web developer based in Italy.\nI craft clear, high-performance interfaces\nfrom first sketch to deploy.',
+      body:
+        'I build digital experiences where aesthetics and engineering meet: React, GSAP motion, Lenis smooth scroll, and a sharp eye on conversion.\nEvery project aims to be fast, readable, and true to the brand.\n\nWhen I’m not shipping:\n— UI, motion, and editorial layout experiments\n— Demos and side projects for hospitality, food, and local brands\n— Coffee, good music, and calm debugging',
+      imageAlt: 'Michel Branche — portrait',
     },
     packages: {
       header: 'Packages',
@@ -520,6 +606,12 @@ const STRINGS = {
     },
     marquee: {
       line: 'AVAILABLE FOR NEW PROJECTS -',
+      items: [
+        'AVAILABLE FOR NEW PROJECTS',
+        'MICHEL BRANCHE — WEB DEVELOPER',
+        'UI/UX · GSAP · LENIS',
+        'AVAILABLE FOR NEW PROJECTS',
+      ],
     },
     footer: {
       scrivimi: 'MESSAGE ME',
@@ -564,8 +656,32 @@ const STRINGS = {
       chooseAria: 'Choisir la langue',
       hintNudge: 'Choisissez votre langue préférée.',
     },
+    nav: {
+      home: 'Accueil',
+      work: 'Projets',
+      services: 'Services',
+      about: 'À propos',
+      packages: 'Offres',
+      contact: 'Contact',
+      emailLabel: 'E-mail',
+      socialLabel: 'Réseaux',
+      menuOpen: 'Ouvrir le menu',
+      menuClose: 'Fermer le menu',
+    },
+    servicesSummary: {
+      line1: 'Architecture',
+      line2Left: 'Développement',
+      line2Right: 'Déploiement',
+      line3a: 'API',
+      line3b: 'Frontends',
+      line3c: 'Performance',
+      line4: 'Motion',
+    },
     projects: {
       header: 'Projets choisis',
+      subTitle: 'Logique et esthétique, réunies',
+      lead:
+        'Projets sélectionnés, travaillés avec soin\npour des résultats concrets et un vrai impact.',
       rubina: {
         title: 'Photo - Rubina',
         desc: 'Portfolio photo brutal/éditorial, layouts dynamiques, animations GSAP et approche performante sans framework.',
@@ -601,31 +717,47 @@ const STRINGS = {
     },
     services: {
       header: 'Services',
+      subTitle: 'En coulisses, au-dela de l’ecran',
       lead: 'Je vous aide a transformer une idee en site utile et efficace.',
       website: {
         title: 'Sites Web Sur Mesure',
         desc: 'Landing pages et sites vitrine rapides, responsive et orientes resultats.',
+        bullets: ['Landing et sites vitrine', 'Design responsive sur mesure', 'Deploy et mise en ligne'],
       },
       ecommerce: {
         title: 'E-commerce',
         desc: 'Boutiques en ligne modernes avec UX claire et checkout efficace.',
+        bullets: ['Catalogue et navigation claire', 'Checkout optimise', 'Integrations paiement'],
       },
       uiux: {
         title: 'UI/UX Design',
         desc: 'Interfaces claires et intuitives, pensees pour etre belles et simples.',
+        bullets: ['Wireframes et hierarchie visuelle', 'Design system coherent', 'Prototypes interactifs'],
       },
       performance: {
         title: 'Performance & Motion',
         desc: 'Optimisation des chargements et animations soignes pour une experience premium.',
+        bullets: ['GSAP et scroll soigne', 'Core Web Vitals', 'Motion adaptee au device'],
       },
       maintenance: {
         title: 'Support & Mises a Jour',
         desc: 'Maintenance continue, ameliorations iteratives et support post-lancement.',
+        bullets: ['Corrections et petites evolutions', 'Mises a jour contenu', 'Suivi de base'],
       },
       seo: {
         title: 'Bases SEO Techniques',
         desc: 'Structure propre, metadonnees et base technique solide pour etre visible.',
+        bullets: ['Meta et Open Graph', 'Structure semantique', 'Sitemap et indexation'],
       },
+    },
+    about: {
+      subTitle: 'Du code avec intention, pense pour evoluer',
+      title: 'A propos',
+      lead:
+        'Developpeur web independant en Italie.\nJe concois des interfaces claires et performantes\nde la premiere maquette au deploy.',
+      body:
+        'Je cree des experiences digitales ou esthetique et technique se rejoignent : React, motion GSAP, scroll Lenis et attention a la conversion.\nChaque projet vise la vitesse, la clarte et la coherence de marque.\n\nQuand je ne ship pas :\n— Experiences UI, motion et layouts editoriaux\n— Demos et side projects hospitality, food et marques locales\n— Cafe, bonne musique et debug tranquille',
+      imageAlt: 'Michel Branche — portrait',
     },
     visualSection: {
       titleLines: ['PHOTOGRAPHIE', '& PRISES DE VUE AÉRIENNES.'],
@@ -665,6 +797,12 @@ const STRINGS = {
     },
     marquee: {
       line: 'DISPONIBLE POUR NOUVEAUX PROJETS -',
+      items: [
+        'DISPONIBLE POUR NOUVEAUX PROJETS',
+        'MICHEL BRANCHE — WEB DEVELOPER',
+        'UI/UX · GSAP · LENIS',
+        'DISPONIBLE POUR NOUVEAUX PROJETS',
+      ],
     },
     footer: {
       scrivimi: 'ÉCRIVEZ-MOI',
@@ -709,8 +847,32 @@ const STRINGS = {
       chooseAria: 'Sprache wählen',
       hintNudge: 'Wählen Sie Ihre bevorzugte Sprache.',
     },
+    nav: {
+      home: 'Start',
+      work: 'Arbeiten',
+      services: 'Services',
+      about: 'Über mich',
+      packages: 'Pakete',
+      contact: 'Kontakt',
+      emailLabel: 'E-Mail',
+      socialLabel: 'Social',
+      menuOpen: 'Menü öffnen',
+      menuClose: 'Menü schließen',
+    },
+    servicesSummary: {
+      line1: 'Architektur',
+      line2Left: 'Entwicklung',
+      line2Right: 'Deploy',
+      line3a: 'APIs',
+      line3b: 'Frontends',
+      line3c: 'Performance',
+      line4: 'Motion',
+    },
     projects: {
       header: 'Ausgewählte Arbeiten',
+      subTitle: 'Logik trifft Ästhetik',
+      lead:
+        'Ausgewählte Projekte mit Sorgfalt umgesetzt\nfür messbare Ergebnisse und Wirkung.',
       rubina: {
         title: 'Fotografie - Rubina',
         desc: 'Brutales/Editorial-Fotoportfolio, dynamische Layouts, GSAP, performance-orientiert, ohne großes Framework.',
@@ -746,31 +908,47 @@ const STRINGS = {
     },
     services: {
       header: 'Services',
+      subTitle: 'Hinter der Kulisse, jenseits des Screens',
       lead: 'Ich helfe dabei, aus einer Idee eine Website mit echtem Ergebnis zu machen.',
       website: {
         title: 'Individuelle Websites',
         desc: 'Schnelle, responsive Landingpages und Firmenwebsites mit klarem Fokus.',
+        bullets: ['Landing & Showcase-Sites', 'Responsive Design nach Mass', 'Deploy & Go-live'],
       },
       ecommerce: {
         title: 'E-Commerce',
         desc: 'Moderne Shops mit klarer UX, sauberem Checkout und Conversion-Fokus.',
+        bullets: ['Klarer Katalog & UX', 'Optimierter Checkout', 'Payment-Integrationen'],
       },
       uiux: {
         title: 'UI/UX Design',
         desc: 'Klare, intuitive Interfaces, die gut aussehen und leicht nutzbar sind.',
+        bullets: ['Wireframes & visuelle Hierarchie', 'Kohärentes Design System', 'Interaktive Prototypen'],
       },
       performance: {
         title: 'Performance & Motion',
         desc: 'Ladezeit-Optimierung und gezielte Motion fuer ein hochwertiges Erlebnis.',
+        bullets: ['GSAP & Scroll-Craft', 'Core Web Vitals', 'Motion mit Device-Respekt'],
       },
       maintenance: {
         title: 'Support & Updates',
         desc: 'Kontinuierliche Pflege, iterative Verbesserungen und Betreuung nach Launch.',
+        bullets: ['Fixes & kleine Verbesserungen', 'Content-Updates', 'Basis-Monitoring'],
       },
       seo: {
         title: 'Technische SEO-Basics',
         desc: 'Saubere Struktur, Metadaten und solide technische Basis fuer Sichtbarkeit.',
+        bullets: ['Meta & Open Graph', 'Semantische Struktur', 'Sitemap & Indexierung'],
       },
+    },
+    about: {
+      subTitle: 'Code mit Absicht, gebaut zum Skalieren',
+      title: 'Über mich',
+      lead:
+        'Selbständiger Webentwickler in Italien.\nIch gestalte klare, performante Interfaces\nvom ersten Entwurf bis zum Deploy.',
+      body:
+        'Ich baue digitale Erlebnisse, in denen Ästhetik und Technik zusammenpassen: React, GSAP Motion, Lenis Smooth Scroll und Fokus auf Conversion.\nJedes Projekt soll schnell, verständlich und markentreu sein.\n\nWenn ich nicht deploye:\n— UI-, Motion- und Editorial-Experimente\n— Demos und Side Projects für Hospitality, Food und lokale Brands\n— Kaffee, gute Musik und ruhiges Debugging',
+      imageAlt: 'Michel Branche — Porträt',
     },
     visualSection: {
       titleLines: ['FOTOGRAFIE', '& LUFTAUFNAHMEN.'],
@@ -810,6 +988,12 @@ const STRINGS = {
     },
     marquee: {
       line: 'VERFÜGBAR FÜR NEUE PROJEKTE -',
+      items: [
+        'VERFÜGBAR FÜR NEUE PROJEKTE',
+        'MICHEL BRANCHE — WEBENTWICKLER',
+        'UI/UX · GSAP · LENIS',
+        'VERFÜGBAR FÜR NEUE PROJEKTE',
+      ],
     },
     footer: {
       scrivimi: 'SCHREIB MIR',
@@ -854,8 +1038,32 @@ const STRINGS = {
       chooseAria: 'Elegir idioma',
       hintNudge: 'Elige tu idioma preferido.',
     },
+    nav: {
+      home: 'Inicio',
+      work: 'Trabajos',
+      services: 'Servicios',
+      about: 'Sobre mí',
+      packages: 'Paquetes',
+      contact: 'Contacto',
+      emailLabel: 'E-mail',
+      socialLabel: 'Social',
+      menuOpen: 'Abrir menú',
+      menuClose: 'Cerrar menú',
+    },
+    servicesSummary: {
+      line1: 'Arquitectura',
+      line2Left: 'Desarrollo',
+      line2Right: 'Deploy',
+      line3a: 'APIs',
+      line3b: 'Frontends',
+      line3c: 'Rendimiento',
+      line4: 'Motion',
+    },
     projects: {
       header: 'Trabajos seleccionados',
+      subTitle: 'Lógica y estética, juntas',
+      lead:
+        'Proyectos seleccionados, cuidados al detalle\npara resultados reales e impacto.',
       rubina: {
         title: 'Fotografía - Rubina',
         desc: 'Portafolio brutal/editorial con maquetas dinámicas, animaciones GSAP y enfoque performance sin framework.',
@@ -891,31 +1099,47 @@ const STRINGS = {
     },
     services: {
       header: 'Servicios',
+      subTitle: 'Detras de escena, mas alla de la pantalla',
       lead: 'Te ayudo a convertir una idea en una web que funcione de verdad.',
       website: {
         title: 'Sitios Web a Medida',
         desc: 'Landing pages y webs corporativas rapidas, responsive y orientadas a resultados.',
+        bullets: ['Landing y webs escaparate', 'Diseno responsive a medida', 'Deploy y puesta online'],
       },
       ecommerce: {
         title: 'E-commerce',
         desc: 'Tiendas modernas con UX clara, checkout eficiente y foco en conversion.',
+        bullets: ['Catalogo y navegacion clara', 'Checkout optimizado', 'Integraciones de pago'],
       },
       uiux: {
         title: 'Diseno UI/UX',
         desc: 'Interfaces limpias e intuitivas, pensadas para verse bien y usarse facil.',
+        bullets: ['Wireframes y jerarquia visual', 'Design system coherente', 'Prototipos interactivos'],
       },
       performance: {
         title: 'Performance & Motion',
         desc: 'Optimizacion de carga y animaciones cuidadas para una experiencia premium.',
+        bullets: ['GSAP y scroll cuidado', 'Core Web Vitals', 'Motion respetuosa del device'],
       },
       maintenance: {
         title: 'Soporte & Actualizaciones',
         desc: 'Mantenimiento continuo, mejoras iterativas y soporte post-lanzamiento.',
+        bullets: ['Fixes y mejoras pequenas', 'Actualizacion de contenidos', 'Monitorizacion basica'],
       },
       seo: {
         title: 'SEO Tecnico Base',
         desc: 'Estructura correcta, metadatos y base tecnica solida para ganar visibilidad.',
+        bullets: ['Meta y Open Graph', 'Estructura semantica', 'Sitemap e indexacion'],
       },
+    },
+    about: {
+      subTitle: 'Codigo con proposito, hecho para crecer',
+      title: 'Sobre mi',
+      lead:
+        'Desarrollador web independiente en Italia.\nDiseno interfaces claras y rapidas\ndel primer boceto al deploy.',
+      body:
+        'Creo experiencias digitales donde estetica y tecnica van juntas: React, motion con GSAP, scroll Lenis y foco en conversion.\nCada proyecto busca velocidad, claridad y coherencia de marca.\n\nCuando no estoy en deploy:\n— Experimentos de UI, motion y layout editorial\n— Demos y side projects para hospitality, food y marcas locales\n— Cafe, buena musica y debug con calma',
+      imageAlt: 'Michel Branche — retrato',
     },
     visualSection: {
       titleLines: ['FOTOGRAFÍA', '& TOMAS AÉREAS.'],
@@ -955,6 +1179,12 @@ const STRINGS = {
     },
     marquee: {
       line: 'DISPONIBLE PARA NUEVOS PROYECTOS -',
+      items: [
+        'DISPONIBLE PARA NUEVOS PROYECTOS',
+        'MICHEL BRANCHE — DESARROLLADOR WEB',
+        'UI/UX · GSAP · LENIS',
+        'DISPONIBLE PARA NUEVOS PROYECTOS',
+      ],
     },
     footer: {
       scrivimi: 'ESCRÍBEME',

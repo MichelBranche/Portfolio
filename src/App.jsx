@@ -9,6 +9,13 @@ import FireworksRain from './components/FireworksRain'
 import { VisualSectionLazy } from './components/VisualSectionLazy.jsx'
 import { useLanguage } from './context/LanguageContext.jsx'
 import './App.css'
+import './components/awwwards/awwwards.css'
+import { AboutSection } from './components/awwwards/AboutSection.jsx'
+import { GsapMarquee } from './components/awwwards/GsapMarquee.jsx'
+import { ProjectsList } from './components/awwwards/ProjectsList.jsx'
+import { ServiceSummaryStrip } from './components/awwwards/ServiceSummaryStrip.jsx'
+import { SiteNavbar } from './components/awwwards/SiteNavbar.jsx'
+import { StickyServices } from './components/awwwards/StickyServices.jsx'
 import { translate } from './i18n/translations'
 import { initFlairConfetti } from './lib/flairConfetti'
 import { useIsCoarsePointerDevice, usePrefersReducedMotion } from './hooks/useResponsive.js'
@@ -29,8 +36,6 @@ import { HeroFlair, HeroMiniPlayer, HeroSubtitle } from './components/home/HeroP
 import {
   HeroTitleLetters,
   PackagesHeaderLetters,
-  ProjectTitleWords,
-  ServicesHeaderLetters,
 } from './components/home/LetterText.jsx'
 import { ModalTitle } from './components/home/ModalTitle.jsx'
 import { PreloaderCreepyButton } from './components/home/PreloaderCreepyButton.jsx'
@@ -94,34 +99,15 @@ function App() {
     return Array.isArray(raw) ? raw : [String(raw)]
   }, [t])
 
-  const marqueeLine = String(t('marquee.line'))
+  const marqueeItems = useMemo(() => asArray(t('marquee.items')), [t])
+  const serviceKeys = ['website', 'ecommerce', 'uiux', 'performance', 'maintenance', 'seo']
   const services = useMemo(
-    () => [
-      {
-        title: String(t('services.website.title')),
-        desc: String(t('services.website.desc')),
-      },
-      {
-        title: String(t('services.ecommerce.title')),
-        desc: String(t('services.ecommerce.desc')),
-      },
-      {
-        title: String(t('services.uiux.title')),
-        desc: String(t('services.uiux.desc')),
-      },
-      {
-        title: String(t('services.performance.title')),
-        desc: String(t('services.performance.desc')),
-      },
-      {
-        title: String(t('services.maintenance.title')),
-        desc: String(t('services.maintenance.desc')),
-      },
-      {
-        title: String(t('services.seo.title')),
-        desc: String(t('services.seo.desc')),
-      },
-    ],
+    () =>
+      serviceKeys.map((key) => ({
+        title: String(t(`services.${key}.title`)),
+        desc: String(t(`services.${key}.desc`)),
+        bullets: asArray(t(`services.${key}.bullets`)),
+      })),
     [t],
   )
   const packageCards = useMemo(
@@ -138,6 +124,44 @@ function App() {
   const packageExtras = useMemo(() => asArray(t('packages.extras.items')), [t])
   const packagePositioning = useMemo(() => asArray(t('packages.positioning.lines')), [t])
   const packageFlow = useMemo(() => asArray(t('packages.flow.steps')), [t])
+  const navLabels = useMemo(
+    () => ({
+      home: String(t('nav.home')),
+      work: String(t('nav.work')),
+      services: String(t('nav.services')),
+      about: String(t('nav.about')),
+      packages: String(t('nav.packages')),
+      contact: String(t('nav.contact')),
+      emailLabel: String(t('nav.emailLabel')),
+      socialLabel: String(t('nav.socialLabel')),
+      menuOpen: String(t('nav.menuOpen')),
+      menuClose: String(t('nav.menuClose')),
+    }),
+    [t],
+  )
+  const servicesSummaryCopy = useMemo(
+    () => ({
+      line1: String(t('servicesSummary.line1')),
+      line2Left: String(t('servicesSummary.line2Left')),
+      line2Right: String(t('servicesSummary.line2Right')),
+      line3a: String(t('servicesSummary.line3a')),
+      line3b: String(t('servicesSummary.line3b')),
+      line3c: String(t('servicesSummary.line3c')),
+      line4: String(t('servicesSummary.line4')),
+    }),
+    [t],
+  )
+
+  const scrollToSection = useCallback((id) => {
+    const el = document.getElementById(id)
+    if (!el) return
+    const lenis = lenisRef.current
+    if (lenis?.scrollTo) {
+      lenis.scrollTo(el, { offset: 0, duration: 1.6 })
+    } else {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [])
 
   useEffect(() => {
     heroTrackIndexRef.current = heroTrackIndex
@@ -145,6 +169,12 @@ function App() {
   useEffect(() => {
     heroTrackPlayingRef.current = heroTrackPlaying
   }, [heroTrackPlaying])
+
+  useEffect(() => {
+    const active = preloaderPhase !== 'done'
+    document.body.classList.toggle('preloader-active', active)
+    return () => document.body.classList.remove('preloader-active')
+  }, [preloaderPhase])
 
   useEffect(() => {
     if (preloaderPhase !== 'counting') {
@@ -619,19 +649,22 @@ function App() {
       'section.hero .hero-subtitle-word-inner',
       'section.hero a.hero-social-link',
       // Services / projects / packages (newer blocks included)
-      'section.services .services-header',
-      'section.services .service-item',
-      'section.services .gs-reveal',
-      'section.projects .projects-header',
-      'section.projects .project-item',
-      'section.projects .gs-reveal',
+      'section.services .aw-header-wrap',
+      'section.services .services-sticky-card',
+      'section.about-section .aw-header-wrap',
+      'section.about-section .about-section-copy',
+      'section.about-section .about-section-photo',
+      'section.projects .aw-header-wrap',
+      'section.projects .works-row',
+      'section.projects .works-row-title',
+      'section.projects .works-row-tag',
       'section.packages .packages-header',
       'section.packages .package-card',
       'section.packages .package-list li',
       'section.packages .packages-meta-grid article',
       'section.packages .gs-reveal',
       // Shared marquee/footer
-      '.marquee .marquee-inner span',
+      '.gsap-marquee .gsap-marquee-item',
       'section.footer p.gs-reveal',
       'section.footer a.magnetic-wrap',
       'section.footer .scrivimi-hint',
@@ -646,7 +679,10 @@ function App() {
     selectors.forEach((sel) => {
       try {
         document.querySelectorAll(sel).forEach((el) => {
-          if (seen.has(el) || (el.closest && el.closest('.self-destruct-keep'))) {
+          if (
+            seen.has(el) ||
+            (el.closest && el.closest('.self-destruct-keep, .site-nav-root'))
+          ) {
             return
           }
           if (!el.isConnected) {
@@ -720,7 +756,9 @@ function App() {
     if (!isCoarsePointer) return
     const onDocClearSounds = (e) => {
       if (e.pointerType === 'mouse') return
-      if (e.target?.closest?.('.interactable, .self-destruct-keep, .self-destruct-btn')) {
+      if (
+        e.target?.closest?.('.interactable, .self-destruct-keep, .self-destruct-btn, .site-nav-root')
+      ) {
         return
       }
       stopFooterSound('michel')
@@ -753,7 +791,10 @@ function App() {
   // publishedAt = data di creazione repo su GitHub (stessa base della â€œprima pubblicazioneâ€)
   return (
     <>
-      <div className="cursor" aria-hidden>
+      <div
+        className={['cursor', preloaderPhase !== 'done' && 'cursor--light'].filter(Boolean).join(' ')}
+        aria-hidden
+      >
         <svg
           className="cursor-svg"
           viewBox="0 0 100 100"
@@ -811,11 +852,15 @@ function App() {
         <img src="/images/side-eye.png" alt="" className="side-eye-overlay-img" />
       </div>
 
+      {preloaderPhase === 'done' && (
+        <SiteNavbar labels={navLabels} onNavigate={scrollToSection} />
+      )}
+
       <FireworksRain active={showConfetti} />
       <ConfettiRain active={showConfetti} />
       <MoneyRain active={showConfetti} />
 
-      <section ref={heroRef} className="hero">
+      <section ref={heroRef} id="home" className="hero">
         <HeroFlair />
         <div className="hero-foreground">
         <div className="hero-top">
@@ -970,51 +1015,33 @@ function App() {
         </div>
       </section>
 
-      <section className="projects">
-        <h2 className="projects-header gs-reveal">{String(t('projects.header'))}</h2>
-        <div className="project-list">
-          {projects.map((project) => (
-            <a
-              href="#"
-              key={project.slug}
-              className="project-item interactable project-trigger"
-              onClick={(e) => {
-                e.preventDefault()
-                setModalData(project)
-              }}
-            >
-              <div className="project-title">
-                <ProjectTitleWords text={project.title} />
-              </div>
-              <div className="project-tech">{project.tech}</div>
-              <img
-                src={project.thumb}
-                alt={project.title}
-                className="project-img-float"
-                loading="lazy"
-                decoding="async"
-              />
-            </a>
-          ))}
-        </div>
-      </section>
+      <ProjectsList
+        projects={projects}
+        subTitle={String(t('projects.subTitle'))}
+        title={String(t('projects.header'))}
+        lead={String(t('projects.lead'))}
+        onOpenProject={setModalData}
+      />
 
-      <section className="services">
-        <h2 className="services-header gs-reveal">
-          <ServicesHeaderLetters text={String(t('services.header'))} />
-        </h2>
-        <p className="services-lead gs-reveal">{String(t('services.lead'))}</p>
-        <div className="services-grid">
-          {services.map((service) => (
-            <article className="service-item gs-reveal" key={service.title}>
-              <h3 className="service-title">{service.title}</h3>
-              <p className="service-desc">{service.desc}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <ServiceSummaryStrip copy={servicesSummaryCopy} />
 
-      <section className="packages">
+
+      <StickyServices
+        subTitle={String(t('services.subTitle'))}
+        title={String(t('services.header'))}
+        lead={String(t('services.lead'))}
+        services={services}
+      />
+
+      <AboutSection
+        subTitle={String(t('about.subTitle'))}
+        title={String(t('about.title'))}
+        lead={String(t('about.lead'))}
+        body={String(t('about.body'))}
+        imageAlt={String(t('about.imageAlt'))}
+      />
+
+      <section id="packages" className="packages">
         <h2 className="packages-header gs-reveal">
           <PackagesHeaderLetters text={String(t('packages.header'))} />
         </h2>
@@ -1164,18 +1191,9 @@ function App() {
         </div>
       </div>
 
-      <div className="marquee">
-        <div className="marquee-inner">
-          <span>{marqueeLine}</span>
-          <span>{marqueeLine}</span>
-          <span>{marqueeLine}</span>
-          <span>{marqueeLine}</span>
-          <span>{marqueeLine}</span>
-          <span>{marqueeLine}</span>
-        </div>
-      </div>
+      <GsapMarquee items={marqueeItems} />
 
-      <section className="footer">
+      <section id="contact" className="footer">
         <div className="footer-stack">
         <div className="footer-stack-lead">
         <p className="gs-reveal">{String(t('footer.cta'))}</p>
