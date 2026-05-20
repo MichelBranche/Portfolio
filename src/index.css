@@ -3,7 +3,12 @@ html {
   text-size-adjust: 100%;
   min-height: 100%;
   min-height: -webkit-fill-available;
-  overflow-x: hidden;
+  /* Non usare overflow su html: overflow-x:hidden qui forza overflow-y:auto e rompe position:sticky */
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
 }
 
 body {
@@ -11,6 +16,7 @@ body {
   min-height: 100%;
   min-height: 100dvh;
   min-height: -webkit-fill-available;
+  overflow-x: clip;
 }
 
 #root {

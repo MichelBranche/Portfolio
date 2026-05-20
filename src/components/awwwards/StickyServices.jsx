@@ -7,61 +7,63 @@ import { AnimatedSectionHeader } from './AnimatedSectionHeader.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
 
-/** Offset tra card sticky su desktop (era 4.5 — troppo aria in scroll) */
-const STICKY_CARD_GAP_EM = 2.75
-const STICKY_CARD_GAP_REM = 2.75
-const STICKY_TOP_BASE = '6vh'
+/** Sticky stack — offset tra card (più stretti del demo 5em/5rem) */
+const STICKY_TOP_BASE_VH = 10
+const STICKY_CARD_GAP_EM = 3
+const STICKY_CARD_GAP_REM = 3
 
 export function StickyServices({ subTitle, title, lead, services }) {
-  const stackRef = useRef(null)
-  const cardRefs = useRef([])
+  const sectionRef = useRef(null)
+  const innerRefs = useRef([])
   const isDesktop = useMediaQuery({ minWidth: '48rem' })
   const count = services.length
 
   useGSAP(
     () => {
-      cardRefs.current.forEach((el) => {
+      innerRefs.current.forEach((el) => {
         if (!el) return
         gsap.from(el, {
-          y: 120,
-          opacity: 0,
-          duration: 0.9,
+          y: 200,
+          duration: 1,
           ease: 'circ.out',
           scrollTrigger: {
-            trigger: el,
-            start: 'top 88%',
-            once: true,
+            trigger: el.closest('.services-sticky-card'),
+            start: 'top 80%',
           },
         })
       })
+      ScrollTrigger.refresh()
     },
-    { dependencies: [count], scope: stackRef },
+    { dependencies: [count], scope: sectionRef },
   )
 
   return (
-    <section id="services" className="services services--sticky">
+    <section id="services" ref={sectionRef} className="services services--sticky">
       <AnimatedSectionHeader
         subTitle={subTitle}
         title={title}
         lead={lead}
         withScrollTrigger
       />
-      <div className="services-sticky-stack">
-        {services.map((service, index) => (
-          <article
-            key={service.title}
+      {services.map((service, index) => (
+        <article
+          key={service.title}
+          className="services-sticky-card"
+          style={
+            isDesktop
+              ? {
+                  top: `calc(${STICKY_TOP_BASE_VH}vh + ${index * STICKY_CARD_GAP_EM}em)`,
+                  marginBottom: `${(count - index - 1) * STICKY_CARD_GAP_REM}rem`,
+                  zIndex: 10 + index,
+                }
+              : { top: 0, zIndex: 10 + index }
+          }
+        >
+          <div
+            className="services-sticky-card-inner"
             ref={(el) => {
-              cardRefs.current[index] = el
+              innerRefs.current[index] = el
             }}
-            className="services-sticky-card"
-            style={
-              isDesktop
-                ? {
-                    top: `calc(${STICKY_TOP_BASE} + ${index * STICKY_CARD_GAP_EM}em)`,
-                    marginBottom: `${(count - index - 1) * STICKY_CARD_GAP_REM}rem`,
-                  }
-                : { top: 0 }
-            }
           >
             <p className="services-sticky-index">0{index + 1}</p>
             <h3 className="services-sticky-title">{service.title}</h3>
@@ -73,9 +75,9 @@ export function StickyServices({ subTitle, title, lead, services }) {
                 ))}
               </ul>
             )}
-          </article>
-        ))}
-      </div>
+          </div>
+        </article>
+      ))}
     </section>
   )
 }

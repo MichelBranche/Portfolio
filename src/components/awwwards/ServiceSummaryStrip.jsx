@@ -12,10 +12,10 @@ export function ServiceSummaryStrip({ copy }) {
     () => {
       const q = gsap.utils.selector(rootRef)
       const pairs = [
-        ['#svc-line-1', 18],
-        ['#svc-line-2', -26],
-        ['#svc-line-3', 42],
-        ['#svc-line-4', -36],
+        ['#svc-line-1', 20],
+        ['#svc-line-2', -30],
+        ['#svc-line-3', 100],
+        ['#svc-line-4', -100],
       ]
       pairs.forEach(([sel, xPercent]) => {
         const el = q(sel)[0]
@@ -24,9 +24,7 @@ export function ServiceSummaryStrip({ copy }) {
           xPercent,
           ease: 'none',
           scrollTrigger: {
-            trigger: rootRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
+            trigger: el,
             scrub: true,
           },
         })

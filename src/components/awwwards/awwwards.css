@@ -70,6 +70,7 @@
 /* —— Works / progetti —— */
 section.projects {
   padding-top: clamp(3rem, 8vh, 6rem);
+  border-bottom: 2px solid var(--fg);
 }
 
 .works-list {
@@ -89,8 +90,47 @@ section.projects {
   color: inherit;
 }
 
-.works-row:last-child {
-  border-bottom: 2px solid color-mix(in srgb, var(--fg) 85%, transparent);
+.works-group + .works-group {
+  margin-top: clamp(2rem, 5vh, 3.5rem);
+}
+
+.works-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1.1rem, 2.2vh, 1.6rem) 0 clamp(0.35rem, 0.8vh, 0.5rem);
+  border-top: 2px solid color-mix(in srgb, var(--fg) 85%, transparent);
+}
+
+.works-group-title {
+  font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.works-group-count {
+  font-size: clamp(0.65rem, 1.1vw, 0.75rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+.works-row-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.works-row-date {
+  font-size: clamp(0.65rem, 1.1vw, 0.78rem);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.5;
 }
 
 .works-row-overlay {
@@ -258,10 +298,19 @@ section.projects {
 
 /* —— Servizi sticky —— */
 section.services.services--sticky {
+  --services-radius-top: clamp(1.5rem, 4vw, 2.5rem);
+  min-height: 100vh;
   background: var(--fg);
   color: var(--bg);
-  border-bottom: none;
   padding-bottom: clamp(4rem, 12vh, 8rem);
+  border-top-left-radius: var(--services-radius-top);
+  border-top-right-radius: var(--services-radius-top);
+  /* overflow: hidden rompe lo sticky stack */
+}
+
+section.services.services--sticky > .aw-header-wrap {
+  border-top-left-radius: var(--services-radius-top);
+  border-top-right-radius: var(--services-radius-top);
 }
 
 section.services.services--sticky .aw-kicker,
@@ -275,16 +324,20 @@ section.services.services--sticky .aw-header-rule {
   border-color: color-mix(in srgb, var(--bg) 35%, transparent);
 }
 
-.services-sticky-stack {
-  position: relative;
-}
-
 .services-sticky-card {
   position: sticky;
-  z-index: calc(10 + var(--sticky-i, 0));
-  padding: clamp(0.85rem, 2vh, 1.35rem) 0 clamp(1.1rem, 2.5vh, 1.75rem);
-  border-top: 2px solid color-mix(in srgb, var(--bg) 28%, transparent);
+  top: 0;
+  padding: clamp(1rem, 1.75vh, 1.35rem) clamp(1.5rem, 2.5vw, 2.5rem)
+    clamp(1.1rem, 2vh, 2rem);
+  border-top: 2px solid color-mix(in srgb, var(--bg) 30%, transparent);
   background: var(--fg);
+}
+
+.services-sticky-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.5vh, 1rem);
+  font-weight: 300;
 }
 
 .services-sticky-index {
@@ -339,7 +392,6 @@ section.services.services--sticky .aw-header-rule {
 .about-section {
   background: var(--fg);
   color: var(--bg);
-  border-bottom: none;
   padding-bottom: clamp(4rem, 12vh, 8rem);
 }
 
@@ -442,7 +494,6 @@ section.services.services--sticky .aw-header-rule {
   margin-left: calc(50% - 50vw);
   background: var(--accent);
   color: var(--bg);
-  border-bottom: 2px solid var(--fg);
   overflow: hidden;
   min-height: clamp(4rem, 10vh, 6.25rem);
   display: flex;

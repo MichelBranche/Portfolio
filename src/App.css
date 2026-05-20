@@ -36,7 +36,6 @@ body {
 section {
   padding: max(5vh, env(safe-area-inset-top, 0px)) max(5vw, env(safe-area-inset-right, 0px))
     max(5vh, env(safe-area-inset-bottom, 0px)) max(5vw, env(safe-area-inset-left, 0px));
-  border-bottom: 2px solid var(--fg);
 }
 
 .cursor {
@@ -1858,7 +1857,6 @@ body.preloader-active .cursor {
   background: var(--bg);
   color: var(--fg);
   padding: max(8vh, 4rem) max(5vw, 2rem);
-  border-bottom: 2px solid var(--fg);
 }
 
 .visual-section-hero {

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import 'lenis/dist/lenis.css'
 import './index.css'
 import './pages/AdminPage.css'
 import App from './App.jsx'

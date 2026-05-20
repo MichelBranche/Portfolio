@@ -59,9 +59,20 @@ export const HERO_FLAIR_PRELOAD_XP = [
   ['semi', '3D-semi.png'],
 ]
 
+/** Ordine di visualizzazione dei gruppi in #work */
+export const PROJECT_CATEGORY_ORDER = [
+  'ecommerce',
+  'hospitality',
+  'food',
+  'institutional',
+  'portfolio',
+  'ui',
+]
+
 export const PROJECT_META = [
   {
     slug: 'rubina',
+    category: 'portfolio',
     tech: 'JavaScript / GSAP / CSS',
     link: 'https://rubinastradella.vercel.app/',
     img: GH('photo-portfolio-demo', 'preview.jpg'),
@@ -70,6 +81,7 @@ export const PROJECT_META = [
   },
   {
     slug: 'streetwear',
+    category: 'ecommerce',
     tech: 'React / Router / GSAP / Lenis',
     link: 'https://sys-0ff.vercel.app/',
     img: GH('ecommerce-demo1', 'public/assets/mockup.png'),
@@ -78,6 +90,7 @@ export const PROJECT_META = [
   },
   {
     slug: 'museo',
+    category: 'institutional',
     tech: 'React / Vite / GSAP / Lenis',
     link: 'https://museoegiziotorino.vercel.app/',
     img: GH('Museo-Egizio-Torino-Demo', 'preview.png'),
@@ -86,6 +99,7 @@ export const PROJECT_META = [
   },
   {
     slug: 'spotify',
+    category: 'ui',
     tech: 'HTML / CSS / JavaScript',
     link: 'https://spotify-clone-mbdev-umber.vercel.app/',
     img: GH('Spotify-Clone', 'preview.png'),
@@ -94,6 +108,7 @@ export const PROJECT_META = [
   },
   {
     slug: 'levele',
+    category: 'hospitality',
     tech: 'React / Vite / API / Redis',
     link: 'https://demoleveleresidence.vercel.app/',
     img: GH('Demo-LeVeleResidence', 'preview.png'),
@@ -102,6 +117,7 @@ export const PROJECT_META = [
   },
   {
     slug: 'caffestella',
+    category: 'food',
     tech: 'React Router / GSAP / Framer Motion',
     link: 'https://demo-paologriffa.vercel.app/',
     img: GH('demo-paologriffa', 'preview.png'),
@@ -110,6 +126,7 @@ export const PROJECT_META = [
   },
   {
     slug: 'ilgusto',
+    category: 'food',
     tech: 'HTML / CSS / JavaScript',
     link: 'https://demo-il-gusto.vercel.app/',
     img: GH('Demo-IlGusto', 'preview-hero.png'),
@@ -118,6 +135,7 @@ export const PROJECT_META = [
   },
   {
     slug: 'bijou',
+    category: 'hospitality',
     tech: 'React / Tailwind / Framer Motion / GSAP / Lenis',
     link: 'https://demo-hotelbijou.vercel.app/',
     img: GH('demo-bijou', 'preview.png'),

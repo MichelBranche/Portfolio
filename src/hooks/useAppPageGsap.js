@@ -661,6 +661,7 @@ export function useAppPageGsap({
         .to('.preloader', { yPercent: -100, duration: 1, ease: 'power4.inOut' })
         .add(() => {
           lenis.start()
+          ScrollTrigger.refresh()
         })
         .fromTo(
           '.hero-title-letter-inner',

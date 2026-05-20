@@ -22,25 +22,29 @@ export function AnimatedSectionHeader({
         scrollTrigger: withScrollTrigger
           ? {
               trigger: contextRef.current,
-              start: 'top 90%',
-              once: true,
             }
           : undefined,
       })
       tl.from(contextRef.current, {
-        y: '18vh',
+        y: '50vh',
         duration: 1,
         ease: 'circ.out',
+        onComplete: () => {
+          gsap.set(contextRef.current, { clearProps: 'transform' })
+        },
       })
       tl.from(
         headerRef.current,
         {
           opacity: 0,
-          y: 120,
+          y: 200,
           duration: 1,
           ease: 'circ.out',
+          onComplete: () => {
+            gsap.set(headerRef.current, { clearProps: 'transform' })
+          },
         },
-        '<+0.15',
+        '<+0.2',
       )
     },
     { dependencies: [title, withScrollTrigger], scope: contextRef },

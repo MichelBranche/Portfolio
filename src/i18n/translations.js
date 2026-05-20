@@ -69,6 +69,16 @@ const STRINGS = {
       subTitle: 'Logica e estetica, insieme',
       lead:
         'Progetti selezionati, curati con attenzione\nper risultati concreti e impatto reale.',
+      countOne: '1 progetto',
+      countMany: '{{n}} progetti',
+      categories: {
+        ecommerce: 'E-commerce',
+        hospitality: 'Hospitality',
+        food: 'Gastronomia',
+        institutional: 'Istituzionale',
+        portfolio: 'Siti portfolio personali',
+        ui: 'UI & prototipi',
+      },
       rubina: {
         title: 'Fotografia - Rubina',
         desc: 'Portfolio fotografico brutal/editoriale con layout dinamici, animazioni GSAP e approccio performance-first senza framework.',
@@ -378,6 +388,16 @@ const STRINGS = {
       subTitle: 'Logic meets aesthetics',
       lead:
         'Featured projects crafted with care\nto drive real results and impact.',
+      countOne: '1 project',
+      countMany: '{{n}} projects',
+      categories: {
+        ecommerce: 'E-commerce',
+        hospitality: 'Hospitality',
+        food: 'Food & beverage',
+        institutional: 'Institutional',
+        portfolio: 'Personal portfolio sites',
+        ui: 'UI & prototypes',
+      },
       rubina: {
         title: 'Photography - Rubina',
         desc: 'Brutal/editorial photo portfolio with dynamic layouts, GSAP motion and a performance-first, framework-free approach.',
@@ -682,6 +702,16 @@ const STRINGS = {
       subTitle: 'Logique et esthétique, réunies',
       lead:
         'Projets sélectionnés, travaillés avec soin\npour des résultats concrets et un vrai impact.',
+      countOne: '1 projet',
+      countMany: '{{n}} projets',
+      categories: {
+        ecommerce: 'E-commerce',
+        hospitality: 'Hospitality',
+        food: 'Gastronomie',
+        institutional: 'Institutionnel',
+        portfolio: 'Sites portfolio personnels',
+        ui: 'UI & prototypes',
+      },
       rubina: {
         title: 'Photo - Rubina',
         desc: 'Portfolio photo brutal/éditorial, layouts dynamiques, animations GSAP et approche performante sans framework.',
@@ -873,6 +903,16 @@ const STRINGS = {
       subTitle: 'Logik trifft Ästhetik',
       lead:
         'Ausgewählte Projekte mit Sorgfalt umgesetzt\nfür messbare Ergebnisse und Wirkung.',
+      countOne: '1 Projekt',
+      countMany: '{{n}} Projekte',
+      categories: {
+        ecommerce: 'E-Commerce',
+        hospitality: 'Hospitality',
+        food: 'Gastronomie',
+        institutional: 'Institutionell',
+        portfolio: 'Persönliche Portfolio-Websites',
+        ui: 'UI & Prototypen',
+      },
       rubina: {
         title: 'Fotografie - Rubina',
         desc: 'Brutales/Editorial-Fotoportfolio, dynamische Layouts, GSAP, performance-orientiert, ohne großes Framework.',
@@ -1064,6 +1104,16 @@ const STRINGS = {
       subTitle: 'Lógica y estética, juntas',
       lead:
         'Proyectos seleccionados, cuidados al detalle\npara resultados reales e impacto.',
+      countOne: '1 proyecto',
+      countMany: '{{n}} proyectos',
+      categories: {
+        ecommerce: 'E-commerce',
+        hospitality: 'Hospitality',
+        food: 'Gastronomía',
+        institutional: 'Institucional',
+        portfolio: 'Sitios portfolio personales',
+        ui: 'UI y prototipos',
+      },
       rubina: {
         title: 'Fotografía - Rubina',
         desc: 'Portafolio brutal/editorial con maquetas dinámicas, animaciones GSAP y enfoque performance sin framework.',

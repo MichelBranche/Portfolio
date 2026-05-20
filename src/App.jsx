@@ -85,14 +85,13 @@ function App() {
   const [soundCloudArmed, setSoundCloudArmed] = useState(false)
 
   const projects = useMemo(() => {
-    return [...PROJECT_META]
-      .map((p) => ({
-        ...p,
-        title: t(`projects.${p.slug}.title`),
-        desc: t(`projects.${p.slug}.desc`),
-      }))
-      .sort((a, b) => a.publishedAt.localeCompare(b.publishedAt, lang, { sensitivity: 'base' }))
-  }, [t, lang])
+    return PROJECT_META.map((p) => ({
+      ...p,
+      title: String(t(`projects.${p.slug}.title`)),
+      desc: String(t(`projects.${p.slug}.desc`)),
+      categoryLabel: String(t(`projects.categories.${p.category}`)),
+    }))
+  }, [t])
 
   const heroSubtitleLines = useMemo(() => {
     const raw = t('hero.lines')

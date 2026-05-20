@@ -1,8 +1,10 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
+import { useLanguage } from '../../context/LanguageContext.jsx'
+import { PROJECT_CATEGORY_ORDER } from '../../config/site.js'
 import { AnimatedSectionHeader } from './AnimatedSectionHeader.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -14,7 +16,32 @@ function parseTechTags(tech) {
     .filter(Boolean)
 }
 
+function formatProjectDate(iso, locale) {
+  if (!iso) return ''
+  try {
+    return new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(new Date(iso))
+  } catch {
+    return iso
+  }
+}
+
+function groupProjectsByCategory(projects, order) {
+  const buckets = Object.fromEntries(order.map((key) => [key, []]))
+  for (const project of projects) {
+    const key = project.category
+    if (buckets[key]) buckets[key].push(project)
+  }
+  return order
+    .filter((key) => buckets[key].length > 0)
+    .map((key) => ({
+      key,
+      label: buckets[key][0].categoryLabel,
+      projects: [...buckets[key]].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
+    }))
+}
+
 export function ProjectsList({ projects, subTitle, title, lead, onOpenProject }) {
+  const { lang, t } = useLanguage()
   const overlayRefs = useRef([])
   const previewRef = useRef(null)
   const listRef = useRef(null)
@@ -22,6 +49,30 @@ export function ProjectsList({ projects, subTitle, title, lead, onOpenProject })
   const mouse = useRef({ x: 0, y: 0 })
   const moveX = useRef(null)
   const moveY = useRef(null)
+
+  const groups = useMemo(
+    () => groupProjectsByCategory(projects, PROJECT_CATEGORY_ORDER),
+    [projects],
+  )
+
+  const flatProjects = useMemo(() => groups.flatMap((g) => g.projects), [groups])
+
+  const rowIndexBySlug = useMemo(() => {
+    const map = new Map()
+    let i = 0
+    for (const group of groups) {
+      for (const project of group.projects) {
+        map.set(project.slug, i)
+        i += 1
+      }
+    }
+    return map
+  }, [groups])
+
+  const projectCountLabel = (n) =>
+    n === 1
+      ? String(t('projects.countOne'))
+      : String(t('projects.countMany')).replace('{{n}}', String(n))
 
   useGSAP(
     () => {
@@ -51,7 +102,7 @@ export function ProjectsList({ projects, subTitle, title, lead, onOpenProject })
         })
       }
     },
-    { dependencies: [projects.length], scope: listRef },
+    { dependencies: [flatProjects.length], scope: listRef },
   )
 
   const handleMouseEnter = (index) => {
@@ -113,60 +164,78 @@ export function ProjectsList({ projects, subTitle, title, lead, onOpenProject })
         withScrollTrigger
       />
       <div className="works-list" ref={listRef} onMouseMove={handleMouseMove}>
-        {projects.map((project, index) => {
-          const tags = parseTechTags(project.tech)
-          return (
-            <a
-              key={project.slug}
-              href="#"
-              className="works-row interactable project-trigger"
-              onClick={(e) => {
-                e.preventDefault()
-                onOpenProject(project)
-              }}
-              onMouseEnter={() => handleMouseEnter(index)}
-              onMouseLeave={() => handleMouseLeave(index)}
-            >
-              <div
-                ref={(el) => {
-                  overlayRefs.current[index] = el
-                }}
-                className="works-row-overlay"
-                aria-hidden
-              />
-              <div className="works-row-head">
-                <h3 className="works-row-title">{project.title}</h3>
-                <ArrowUpRight className="works-row-arrow" aria-hidden />
-              </div>
-              <div className="works-row-tags">
-                {tags.map((tag) => (
-                  <span key={`${project.slug}-${tag}`} className="works-row-tag">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <div className="works-row-mobile-preview" aria-hidden>
-                <img
-                  src={project.thumb}
-                  alt=""
-                  className="works-row-mobile-bg"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <img
-                  src={project.thumb}
-                  alt=""
-                  className="works-row-mobile-shot"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            </a>
-          )
-        })}
+        {groups.map((group) => (
+          <div key={group.key} className="works-group">
+            <div className="works-group-head">
+              <p className="works-group-title">{group.label}</p>
+              <p className="works-group-count">{projectCountLabel(group.projects.length)}</p>
+            </div>
+            {group.projects.map((project) => {
+              const index = rowIndexBySlug.get(project.slug) ?? 0
+              const tags = parseTechTags(project.tech)
+              const dateLabel = formatProjectDate(project.publishedAt, lang)
+
+              return (
+                <a
+                  key={project.slug}
+                  href="#"
+                  className="works-row interactable project-trigger"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    onOpenProject(project)
+                  }}
+                  onMouseEnter={() => handleMouseEnter(index)}
+                  onMouseLeave={() => handleMouseLeave(index)}
+                >
+                  <div
+                    ref={(el) => {
+                      overlayRefs.current[index] = el
+                    }}
+                    className="works-row-overlay"
+                    aria-hidden
+                  />
+                  <div className="works-row-head">
+                    <div className="works-row-head-text">
+                      <h3 className="works-row-title">{project.title}</h3>
+                      {dateLabel ? (
+                        <time className="works-row-date" dateTime={project.publishedAt}>
+                          {dateLabel}
+                        </time>
+                      ) : null}
+                    </div>
+                    <ArrowUpRight className="works-row-arrow" aria-hidden />
+                  </div>
+                  <div className="works-row-tags">
+                    {tags.map((tag) => (
+                      <span key={`${project.slug}-${tag}`} className="works-row-tag">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="works-row-mobile-preview" aria-hidden>
+                    <img
+                      src={project.thumb}
+                      alt=""
+                      className="works-row-mobile-bg"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      src={project.thumb}
+                      alt=""
+                      className="works-row-mobile-shot"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </a>
+              )
+            })}
+          </div>
+        ))}
         <div ref={previewRef} className="works-preview-float" aria-hidden>
-          {currentIndex !== null && projects[currentIndex] ? (
-            <img src={projects[currentIndex].thumb} alt="" />
+          {currentIndex !== null && flatProjects[currentIndex] ? (
+            <img src={flatProjects[currentIndex].thumb} alt="" />
           ) : null}
         </div>
       </div>
