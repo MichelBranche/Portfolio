@@ -111,6 +111,10 @@ const STRINGS = {
         title: 'Hospitality - Hotel Bijou (Saint-Vincent)',
         desc: 'Demo front-end per hotel in Valle d’Aosta: home multi-sezione, routing SPA, intro loader, Tailwind 4, Framer Motion e GSAP con Lenis per lo scroll fluido.',
       },
+      kiosk: {
+        title: 'Gastronomia - Kiosk self-order',
+        desc: 'Mockup interattivo touch-first di kiosk self-order: attract loop, menu bento, wizard composizione menu, personalizzazione, carrello, checkout simulato e conferma ordine. React 19, Framer Motion, Lenis, i18n 5 lingue.',
+      },
     },
     services: {
       header: 'Servizi',
@@ -430,6 +434,10 @@ const STRINGS = {
         title: 'Hospitality - Hotel Bijou (Saint-Vincent)',
         desc: 'Front-end demo for an Aosta Valley hotel: multi-section home, SPA routing, intro loader, Tailwind 4, Framer Motion and GSAP with Lenis smooth scrolling.',
       },
+      kiosk: {
+        title: 'Food tech - Self-order kiosk',
+        desc: 'Touch-first self-order kiosk mockup: attract loop, bento menu, meal compose wizard, customization, cart, simulated checkout and order confirmation. React 19, Framer Motion, Lenis, 5-language i18n.',
+      },
     },
     services: {
       header: 'Services',
@@ -744,6 +752,10 @@ const STRINGS = {
         title: 'Hospitality - Hotel Bijou (Saint-Vincent)',
         desc: "Démo front-end pour un hôtel en Vallée d'Aoste : accueil multi-sections, routing SPA, loader d'intro, Tailwind 4, Framer Motion et GSAP avec Lenis pour le scroll fluide.",
       },
+      kiosk: {
+        title: 'Gastronomie - Kiosk self-order',
+        desc: "Maquette interactive touch-first de kiosk self-order : boucle d'accueil, menu bento, assistant menu, personnalisation, panier, paiement simulé et confirmation. React 19, Framer Motion, Lenis, i18n 5 langues.",
+      },
     },
     services: {
       header: 'Services',
@@ -945,6 +957,10 @@ const STRINGS = {
         title: 'Gastgewerbe - Hotel Bijou (Saint-Vincent)',
         desc: 'Front-end-Demo für ein Hotel im Aostatal: mehrteilige Startseite, SPA-Routing, Intro-Loader, Tailwind 4, Framer Motion und GSAP mit Lenis für flüssiges Scrollen.',
       },
+      kiosk: {
+        title: 'Gastronomie - Self-Order-Kiosk',
+        desc: 'Touch-first Mockup eines Self-Order-Kiosks: Attract Loop, Bento-Menü, Menü-Assistent, Personalisierung, Warenkorb, simulierter Checkout und Bestätigung. React 19, Framer Motion, Lenis, i18n in 5 Sprachen.',
+      },
     },
     services: {
       header: 'Services',
@@ -1145,6 +1161,10 @@ const STRINGS = {
       bijou: {
         title: 'Hostelería - Hotel Bijou (Saint-Vincent)',
         desc: 'Demo front-end para un hotel en el Valle de Aosta: home multipágina, routing SPA, loader de entrada, Tailwind 4, Framer Motion y GSAP con Lenis para scroll suave.',
+      },
+      kiosk: {
+        title: 'Gastronomía - Kiosk self-order',
+        desc: 'Mockup interactivo touch-first de kiosk self-order: loop de bienvenida, menú bento, asistente de menú, personalización, carrito, checkout simulado y confirmación. React 19, Framer Motion, Lenis, i18n en 5 idiomas.',
       },
     },
     services: {

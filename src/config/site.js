@@ -142,4 +142,13 @@ export const PROJECT_META = [
     thumb: GH('demo-bijou', 'preview.png'),
     publishedAt: '2026-05-05',
   },
+  {
+    slug: 'kiosk',
+    category: 'food',
+    tech: 'React 19 / Router / Framer Motion / Lenis',
+    link: 'https://demo-kiosk-two.vercel.app/',
+    img: GH('demo-kiosk', 'docs/preview.png'),
+    thumb: GH('demo-kiosk', 'docs/preview.png'),
+    publishedAt: '2026-05-18',
+  },
 ]
