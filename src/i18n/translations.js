@@ -96,7 +96,7 @@ const STRINGS = {
         desc: 'Clone UI di Spotify realizzato con stack web classico, focalizzato su struttura frontend e resa visuale.',
       },
       levele: {
-        title: 'Hospitality - Le Vele',
+        title: 'Hospitality - Le Vele (Stintino, Sardegna)',
         desc: 'Web app full stack per residence con landing animata, flusso prenotazioni, area admin e API serverless.',
       },
       caffestella: {
@@ -108,7 +108,7 @@ const STRINGS = {
         desc: 'Sito statico per pizzeria al taglio: layout diner-style, mobile-first, CTA verso Deliveroo e WhatsApp, zero framework.',
       },
       bijou: {
-        title: 'Hospitality - Hotel Bijou (Saint-Vincent)',
+        title: 'Hospitality - Hotel Bijou (Saint-Vincent, Valle d’Aosta)',
         desc: 'Demo front-end per hotel in Valle d’Aosta: home multi-sezione, routing SPA, intro loader, Tailwind 4, Framer Motion e GSAP con Lenis per lo scroll fluido.',
       },
       kiosk: {
@@ -419,7 +419,7 @@ const STRINGS = {
         desc: 'Spotify-style UI built with a classic web stack, focused on front-end structure and visual polish.',
       },
       levele: {
-        title: 'Hospitality - Le Vele',
+        title: 'Hospitality - Le Vele (Stintino, Sardinia)',
         desc: 'Full-stack web app for a residence: animated landing, booking flow, admin area and serverless API.',
       },
       caffestella: {
@@ -431,7 +431,7 @@ const STRINGS = {
         desc: 'Static slice-pizzeria site: diner-style layout, mobile-first, Deliveroo and WhatsApp CTAs, no heavy frameworks.',
       },
       bijou: {
-        title: 'Hospitality - Hotel Bijou (Saint-Vincent)',
+        title: 'Hospitality - Hotel Bijou (Saint-Vincent, Aosta Valley)',
         desc: 'Front-end demo for an Aosta Valley hotel: multi-section home, SPA routing, intro loader, Tailwind 4, Framer Motion and GSAP with Lenis smooth scrolling.',
       },
       kiosk: {
@@ -737,7 +737,7 @@ const STRINGS = {
         desc: "Clone d'UI Spotify avec stack web classique, structuration front et rendu visuel.",
       },
       levele: {
-        title: 'Hospitality - Le Vele',
+        title: 'Hospitality - Le Vele (Stintino, Sardaigne)',
         desc: "App web full stack pour une résidence : landing animée, réservations, admin et API serverless.",
       },
       caffestella: {
@@ -749,7 +749,7 @@ const STRINGS = {
         desc: 'Site statique pour pizzeria al taglio : style diner, mobile-first, CTA Deliveroo et WhatsApp, sans framework lourd.',
       },
       bijou: {
-        title: 'Hospitality - Hotel Bijou (Saint-Vincent)',
+        title: 'Hospitality - Hotel Bijou (Saint-Vincent, Vallée d’Aoste)',
         desc: "Démo front-end pour un hôtel en Vallée d'Aoste : accueil multi-sections, routing SPA, loader d'intro, Tailwind 4, Framer Motion et GSAP avec Lenis pour le scroll fluide.",
       },
       kiosk: {
@@ -942,7 +942,7 @@ const STRINGS = {
         desc: 'Spotify-ähnliches UI mit klassischem Web-Stack, Fokus auf Struktur und Look.',
       },
       levele: {
-        title: 'Gastgewerbe - Le Vele',
+        title: 'Gastgewerbe - Le Vele (Stintino, Sardinien)',
         desc: 'Full-Stack-Web-App mit animiertem Auftritt, Buchung, Admin und Serverless-API.',
       },
       caffestella: {
@@ -954,7 +954,7 @@ const STRINGS = {
         desc: 'Statische Pizza-al-Taglio-Website: Diner-Look, mobile-first, CTAs zu Deliveroo und WhatsApp, ohne schwere Frameworks.',
       },
       bijou: {
-        title: 'Gastgewerbe - Hotel Bijou (Saint-Vincent)',
+        title: 'Gastgewerbe - Hotel Bijou (Saint-Vincent, Aostatal)',
         desc: 'Front-end-Demo für ein Hotel im Aostatal: mehrteilige Startseite, SPA-Routing, Intro-Loader, Tailwind 4, Framer Motion und GSAP mit Lenis für flüssiges Scrollen.',
       },
       kiosk: {
@@ -1147,7 +1147,7 @@ const STRINGS = {
         desc: 'Clon de la UI de Spotify con stack clásico, estructura front y look.',
       },
       levele: {
-        title: 'Hostelería - Le Vele',
+        title: 'Hostelería - Le Vele (Stintino, Cerdeña)',
         desc: 'App full stack con landing animada, reservas, admin y API serverless.',
       },
       caffestella: {
@@ -1159,7 +1159,7 @@ const STRINGS = {
         desc: 'Sitio estático para pizzería al corte: estilo diner, mobile-first, CTAs a Deliveroo y WhatsApp, sin frameworks pesados.',
       },
       bijou: {
-        title: 'Hostelería - Hotel Bijou (Saint-Vincent)',
+        title: 'Hostelería - Hotel Bijou (Saint-Vincent, Valle de Aosta)',
         desc: 'Demo front-end para un hotel en el Valle de Aosta: home multipágina, routing SPA, loader de entrada, Tailwind 4, Framer Motion y GSAP con Lenis para scroll suave.',
       },
       kiosk: {
