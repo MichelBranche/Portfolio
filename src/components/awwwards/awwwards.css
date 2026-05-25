@@ -299,6 +299,9 @@ section.projects {
 /* —— Servizi sticky —— */
 section.services.services--sticky {
   --services-radius-top: clamp(1.5rem, 4vw, 2.5rem);
+  --sticky-top-base: 10vh;
+  --sticky-gap-em: 3em;
+  --sticky-gap-rem: 3rem;
   min-height: 100vh;
   background: var(--fg);
   color: var(--bg);
@@ -327,10 +330,18 @@ section.services.services--sticky .aw-header-rule {
 .services-sticky-card {
   position: sticky;
   top: 0;
+  z-index: calc(10 + var(--i, 0));
   padding: clamp(1rem, 1.75vh, 1.35rem) clamp(1.5rem, 2.5vw, 2.5rem)
     clamp(1.1rem, 2vh, 2rem);
   border-top: 2px solid color-mix(in srgb, var(--bg) 30%, transparent);
   background: var(--fg);
+}
+
+@media (min-width: 48rem) {
+  .services-sticky-card {
+    top: calc(var(--sticky-top-base) + var(--i) * var(--sticky-gap-em));
+    margin-bottom: calc((var(--sticky-count) - var(--i) - 1) * var(--sticky-gap-rem));
+  }
 }
 
 .services-sticky-card-inner {
@@ -490,14 +501,23 @@ section.services.services--sticky .aw-header-rule {
 
 /* —— Marquee GSAP —— */
 .gsap-marquee {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
   background: var(--accent);
   color: var(--bg);
   overflow: hidden;
   min-height: clamp(4rem, 10vh, 6.25rem);
   display: flex;
   align-items: center;
+}
+
+@media (min-width: 901px) {
+  .gsap-marquee {
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+  }
 }
 
 .gsap-marquee-track {

@@ -85,10 +85,10 @@ body.preloader-active .cursor {
 
 .noise {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
   pointer-events: none;
   z-index: 9999;
   opacity: 0.05;
@@ -314,8 +314,9 @@ body.preloader-active .cursor {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(1.1);
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
   object-fit: cover;
   z-index: 9000;
   pointer-events: none;
@@ -375,8 +376,8 @@ body.preloader-active .cursor {
 .confetti-canvas {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 9000;
   pointer-events: none;
   opacity: 0;
@@ -390,8 +391,8 @@ body.preloader-active .cursor {
 .money-canvas {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 9100;
   pointer-events: none;
   opacity: 0;
@@ -405,8 +406,8 @@ body.preloader-active .cursor {
 .fireworks-canvas {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 8900;
   pointer-events: none;
   opacity: 0;
@@ -2448,10 +2449,9 @@ body.preloader-active .cursor {
 
 .project-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   background-color: var(--fg);
   color: var(--bg);
   z-index: 10001;
@@ -2609,7 +2609,8 @@ body.preloader-active .cursor {
 }
 
 .marquee {
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   background-color: var(--accent);
   color: var(--bg);
   padding: 1.5vh 0;
@@ -3092,6 +3093,15 @@ body.self-destruct-mode .project-modal {
 }
 
 @media (max-width: 900px) {
+  .hero-title {
+    font-size: clamp(2rem, 10.5vw, 3.75rem);
+    max-width: 100%;
+  }
+
+  .aw-banner-title {
+    font-size: clamp(2.25rem, 11vw, 4.25rem);
+  }
+
   .project-item {
     flex-direction: column;
     align-items: center;

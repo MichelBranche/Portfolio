@@ -131,7 +131,7 @@ export const PROJECT_META = [
     link: 'https://demo-il-gusto.vercel.app/',
     img: GH('Demo-IlGusto', 'preview-hero.png'),
     thumb: GH('Demo-IlGusto', 'preview-hero.png'),
-    publishedAt: '2026-04-22',
+    publishedAt: '2025-12-01',
   },
   {
     slug: 'bijou',
