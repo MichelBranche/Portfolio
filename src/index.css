@@ -5,8 +5,7 @@ html {
   max-width: 100%;
   min-height: 100%;
   min-height: -webkit-fill-available;
-  overflow-x: clip;
-  /* Non usare overflow-x: hidden su html (rompe sticky); clip evita scroll orizzontale */
+  /* Nessun overflow su html: clip/hidden rompe position:sticky sulle card servizi */
 }
 
 html.lenis,
@@ -30,5 +29,4 @@ body {
   min-height: 100%;
   min-height: 100dvh;
   min-height: -webkit-fill-available;
-  overflow-x: clip;
 }

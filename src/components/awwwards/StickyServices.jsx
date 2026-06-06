@@ -8,26 +8,37 @@ gsap.registerPlugin(ScrollTrigger)
 
 export function StickyServices({ subTitle, title, lead, services }) {
   const sectionRef = useRef(null)
-  const innerRefs = useRef([])
   const count = services.length
 
   useGSAP(
     () => {
-      innerRefs.current.forEach((el) => {
-        if (!el) return
-        gsap.from(el, {
+      const section = sectionRef.current
+      if (!section) return
+
+      const cards = section.querySelectorAll('.services-sticky-card')
+      cards.forEach((card) => {
+        const inner = card.querySelector('.services-sticky-card-inner')
+        if (!inner) return
+
+        gsap.from(inner, {
           y: 200,
           duration: 1,
           ease: 'circ.out',
+          immediateRender: false,
           scrollTrigger: {
-            trigger: el.closest('.services-sticky-card'),
+            trigger: card,
             start: 'top 80%',
+            once: true,
+            invalidateOnRefresh: true,
           },
         })
       })
-      ScrollTrigger.refresh()
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => ScrollTrigger.refresh())
+      })
     },
-    { dependencies: [count], scope: sectionRef },
+    { dependencies: [count], scope: sectionRef, revertOnUpdate: true },
   )
 
   return (
@@ -47,14 +58,9 @@ export function StickyServices({ subTitle, title, lead, services }) {
         <article
           key={service.title}
           className="services-sticky-card"
-          style={{ '--i': index, zIndex: 10 + index }}
+          style={{ '--i': index }}
         >
-          <div
-            className="services-sticky-card-inner"
-            ref={(el) => {
-              innerRefs.current[index] = el
-            }}
-          >
+          <div className="services-sticky-card-inner">
             <p className="services-sticky-index">0{index + 1}</p>
             <h3 className="services-sticky-title">{service.title}</h3>
             <p className="services-sticky-desc">{service.desc}</p>
@@ -68,6 +74,7 @@ export function StickyServices({ subTitle, title, lead, services }) {
           </div>
         </article>
       ))}
+      <div className="services-sticky-runway" aria-hidden="true" />
     </section>
   )
 }

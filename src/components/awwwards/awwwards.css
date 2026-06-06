@@ -300,15 +300,29 @@ section.projects {
 section.services.services--sticky {
   --services-radius-top: clamp(1.5rem, 4vw, 2.5rem);
   --sticky-top-base: 10vh;
-  --sticky-gap-em: 3em;
-  --sticky-gap-rem: 3rem;
+  /* Offset visivo tra card impilate (demo awwwards: 5em — ridotto per 6 card) */
+  --sticky-offset: 2.25em;
+  /* Scroll tra una card e la successiva (demo: 5rem; ridotto per 6 card) */
+  --sticky-scroll: 3rem;
   min-height: 100vh;
   background: var(--fg);
   color: var(--bg);
-  padding-bottom: clamp(4rem, 12vh, 8rem);
+  padding-bottom: clamp(3rem, 8vh, 5rem);
   border-top-left-radius: var(--services-radius-top);
   border-top-right-radius: var(--services-radius-top);
   /* overflow: hidden rompe lo sticky stack */
+}
+
+@media (min-width: 48rem) {
+  section.services.services--sticky {
+    padding-bottom: clamp(4rem, 8vh, 5rem);
+  }
+
+  /* Runway dopo l’ultima card: senza questo spazio la card 06 non aggancia sticky */
+  .services-sticky-runway {
+    height: calc(var(--sticky-count) * var(--sticky-scroll));
+    pointer-events: none;
+  }
 }
 
 section.services.services--sticky > .aw-header-wrap {
@@ -339,8 +353,8 @@ section.services.services--sticky .aw-header-rule {
 
 @media (min-width: 48rem) {
   .services-sticky-card {
-    top: calc(var(--sticky-top-base) + var(--i) * var(--sticky-gap-em));
-    margin-bottom: calc((var(--sticky-count) - var(--i) - 1) * var(--sticky-gap-rem));
+    top: calc(var(--sticky-top-base) + var(--i) * var(--sticky-offset));
+    margin-bottom: calc((var(--sticky-count) - var(--i) - 1) * var(--sticky-scroll));
   }
 }
 
