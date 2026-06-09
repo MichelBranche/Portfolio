@@ -852,7 +852,7 @@ function App() {
       </div>
 
       {preloaderPhase === 'done' && (
-        <SiteNavbar labels={navLabels} onNavigate={scrollToSection} />
+        <SiteNavbar labels={navLabels} onNavigate={scrollToSection} hidden={!!modalData} />
       )}
 
       <FireworksRain active={showConfetti} />

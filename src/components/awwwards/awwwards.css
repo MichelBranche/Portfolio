@@ -125,6 +125,40 @@ section.projects {
   min-width: 0;
 }
 
+.works-row-title-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.55rem 0.75rem;
+  min-width: 0;
+}
+
+.works-row-featured {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  margin-top: 0.28em;
+  padding: 0.22rem 0.45rem;
+  border: 1.5px solid color-mix(in srgb, var(--fg) 55%, transparent);
+  font-size: clamp(0.58rem, 1vw, 0.68rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: color 0.45s ease, border-color 0.45s ease;
+}
+
+.works-row-featured-icon {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex-shrink: 0;
+}
+
+.works-row-featured-label {
+  white-space: nowrap;
+}
+
 .works-row-date {
   font-size: clamp(0.65rem, 1.1vw, 0.78rem);
   font-weight: 400;
@@ -249,6 +283,11 @@ section.projects {
   .works-row:hover .works-row-arrow {
     color: var(--bg);
     transform: translate(2px, -2px);
+  }
+
+  .works-row:hover .works-row-featured {
+    color: var(--bg);
+    border-color: color-mix(in srgb, var(--bg) 65%, transparent);
   }
 }
 

@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Star } from 'lucide-react'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { PROJECT_CATEGORY_ORDER } from '../../config/site.js'
 import { AnimatedSectionHeader } from './AnimatedSectionHeader.jsx'
@@ -179,7 +179,7 @@ export function ProjectsList({ projects, subTitle, title, lead, onOpenProject })
                 <a
                   key={project.slug}
                   href="#"
-                  className="works-row interactable project-trigger"
+                  className={`works-row interactable project-trigger${project.featured ? ' works-row--featured' : ''}`}
                   onClick={(e) => {
                     e.preventDefault()
                     onOpenProject(project)
@@ -196,7 +196,26 @@ export function ProjectsList({ projects, subTitle, title, lead, onOpenProject })
                   />
                   <div className="works-row-head">
                     <div className="works-row-head-text">
-                      <h3 className="works-row-title">{project.title}</h3>
+                      <div className="works-row-title-line">
+                        {project.featured ? (
+                          <span
+                            className="works-row-featured"
+                            title={String(t('projects.featuredBadge'))}
+                            aria-label={String(t('projects.featuredBadge'))}
+                          >
+                            <Star
+                              className="works-row-featured-icon"
+                              aria-hidden
+                              fill="currentColor"
+                              strokeWidth={1.5}
+                            />
+                            <span className="works-row-featured-label">
+                              {String(t('projects.featuredBadge'))}
+                            </span>
+                          </span>
+                        ) : null}
+                        <h3 className="works-row-title">{project.title}</h3>
+                      </div>
                       {dateLabel ? (
                         <time className="works-row-date" dateTime={project.publishedAt}>
                           {dateLabel}

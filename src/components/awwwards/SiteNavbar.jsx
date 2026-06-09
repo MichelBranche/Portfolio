@@ -4,7 +4,7 @@ import './SiteNavbar.css'
 
 const SECTION_IDS = ['home', 'work', 'services', 'about', 'packages', 'contact']
 
-export function SiteNavbar({ labels, onNavigate }) {
+export function SiteNavbar({ labels, onNavigate, hidden = false }) {
   const rootRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [navHover, setNavHover] = useState(false)
@@ -41,6 +41,10 @@ export function SiteNavbar({ labels, onNavigate }) {
     document.body.classList.toggle('cursor-on-dark-ui', isOpen || navHover)
     return () => document.body.classList.remove('cursor-on-dark-ui')
   }, [isOpen, navHover])
+
+  useEffect(() => {
+    if (hidden) setIsOpen(false)
+  }, [hidden])
 
   const setMenuOpen = useCallback((open) => {
     setIsOpen(open)
@@ -114,10 +118,17 @@ export function SiteNavbar({ labels, onNavigate }) {
       </nav>
       <button
         type="button"
-        className={['site-nav-burger', 'interactable', isOpen && 'site-nav-burger--open']
+        className={[
+          'site-nav-burger',
+          'interactable',
+          isOpen && 'site-nav-burger--open',
+          hidden && 'site-nav-burger--hidden',
+        ]
           .filter(Boolean)
           .join(' ')}
         onClick={toggleMenu}
+        tabIndex={hidden ? -1 : undefined}
+        aria-hidden={hidden || undefined}
         onPointerEnter={(e) => {
           if (e.pointerType === 'mouse') setNavHover(true)
         }}

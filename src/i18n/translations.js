@@ -71,6 +71,7 @@ const STRINGS = {
         'Progetti selezionati, curati con attenzione\nper risultati concreti e impatto reale.',
       countOne: '1 progetto',
       countMany: '{{n}} progetti',
+      featuredBadge: 'Top pick',
       categories: {
         ecommerce: 'E-commerce',
         hospitality: 'Hospitality',
@@ -394,6 +395,7 @@ const STRINGS = {
         'Featured projects crafted with care\nto drive real results and impact.',
       countOne: '1 project',
       countMany: '{{n}} projects',
+      featuredBadge: 'Top pick',
       categories: {
         ecommerce: 'E-commerce',
         hospitality: 'Hospitality',
@@ -712,6 +714,7 @@ const STRINGS = {
         'Projets sélectionnés, travaillés avec soin\npour des résultats concrets et un vrai impact.',
       countOne: '1 projet',
       countMany: '{{n}} projets',
+      featuredBadge: 'Coup de cœur',
       categories: {
         ecommerce: 'E-commerce',
         hospitality: 'Hospitality',
@@ -917,6 +920,7 @@ const STRINGS = {
         'Ausgewählte Projekte mit Sorgfalt umgesetzt\nfür messbare Ergebnisse und Wirkung.',
       countOne: '1 Projekt',
       countMany: '{{n}} Projekte',
+      featuredBadge: 'Top-Auswahl',
       categories: {
         ecommerce: 'E-Commerce',
         hospitality: 'Hospitality',
@@ -1122,6 +1126,7 @@ const STRINGS = {
         'Proyectos seleccionados, cuidados al detalle\npara resultados reales e impacto.',
       countOne: '1 proyecto',
       countMany: '{{n}} proyectos',
+      featuredBadge: 'Destacado',
       categories: {
         ecommerce: 'E-commerce',
         hospitality: 'Hospitality',
