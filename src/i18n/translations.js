@@ -116,6 +116,10 @@ const STRINGS = {
         title: 'Gastronomia - Kiosk self-order',
         desc: 'Mockup interattivo touch-first di kiosk self-order: attract loop, menu bento, wizard composizione menu, personalizzazione, carrello, checkout simulato e conferma ordine. React 19, Framer Motion, Lenis, i18n 5 lingue.',
       },
+      villamatilde: {
+        title: 'Hospitality - Sina Villa Matilde (Canavese)',
+        desc: 'Demo immersiva per villa d’epoca del XVIII secolo convertita a struttura ricettiva: tipografia editoriale, scroll fluido con Lenis, animazioni GSAP, routing SPA delle sale e i18n multi-lingua.',
+      },
     },
     services: {
       header: 'Servizi',
@@ -440,6 +444,10 @@ const STRINGS = {
         title: 'Food tech - Self-order kiosk',
         desc: 'Touch-first self-order kiosk mockup: attract loop, bento menu, meal compose wizard, customization, cart, simulated checkout and order confirmation. React 19, Framer Motion, Lenis, 5-language i18n.',
       },
+      villamatilde: {
+        title: 'Hospitality - Sina Villa Matilde (Canavese)',
+        desc: 'Immersive demo for an 18th-century historic villa turned hospitality venue: editorial typography, Lenis smooth scroll, GSAP motion, SPA room pages and multi-language i18n.',
+      },
     },
     services: {
       header: 'Services',
@@ -759,6 +767,10 @@ const STRINGS = {
         title: 'Gastronomie - Kiosk self-order',
         desc: "Maquette interactive touch-first de kiosk self-order : boucle d'accueil, menu bento, assistant menu, personnalisation, panier, paiement simulé et confirmation. React 19, Framer Motion, Lenis, i18n 5 langues.",
       },
+      villamatilde: {
+        title: 'Hospitality - Sina Villa Matilde (Canavese)',
+        desc: "Démo immersive pour une villa d'époque du XVIIIe siècle convertie en structure d'accueil : typographie éditoriale, scroll Lenis, motion GSAP, pages SPA des espaces et i18n multi-langues.",
+      },
     },
     services: {
       header: 'Services',
@@ -965,6 +977,10 @@ const STRINGS = {
         title: 'Gastronomie - Self-Order-Kiosk',
         desc: 'Touch-first Mockup eines Self-Order-Kiosks: Attract Loop, Bento-Menü, Menü-Assistent, Personalisierung, Warenkorb, simulierter Checkout und Bestätigung. React 19, Framer Motion, Lenis, i18n in 5 Sprachen.',
       },
+      villamatilde: {
+        title: 'Gastgewerbe - Sina Villa Matilde (Canavese)',
+        desc: 'Immersive Demo für eine historische Villa aus dem 18. Jahrhundert, umgebaut zur Beherbergung: editoriale Typografie, Lenis-Scroll, GSAP-Animationen, SPA-Raumseiten und mehrsprachiges i18n.',
+      },
     },
     services: {
       header: 'Services',
@@ -1170,6 +1186,10 @@ const STRINGS = {
       kiosk: {
         title: 'Gastronomía - Kiosk self-order',
         desc: 'Mockup interactivo touch-first de kiosk self-order: loop de bienvenida, menú bento, asistente de menú, personalización, carrito, checkout simulado y confirmación. React 19, Framer Motion, Lenis, i18n en 5 idiomas.',
+      },
+      villamatilde: {
+        title: 'Hostelería - Sina Villa Matilde (Canavese)',
+        desc: 'Demo inmersiva para una villa de época del siglo XVIII convertida en estructura hotelera: tipografía editorial, scroll Lenis, motion GSAP, páginas SPA de los espacios e i18n multiidioma.',
       },
     },
     services: {

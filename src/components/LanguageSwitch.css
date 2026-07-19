@@ -111,25 +111,56 @@
   outline-offset: 2px;
 }
 
-.hero-lang-list {
+/* Vignetta a fumetto — popup lingue */
+.hero-lang-list,
+.hero-lang-bubble {
   list-style: none;
   margin: 0;
-  padding: 0.4rem 0.45rem;
+  padding: 0.55rem 0.6rem;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.28rem;
+  gap: 0.32rem;
   position: absolute;
-  top: calc(100% + 0.28rem);
+  top: calc(100% + 0.55rem);
   left: 0;
   z-index: 30;
   min-width: max-content;
   max-width: min(92vw, 15rem);
   background: var(--bg);
-  border: 1.5px solid var(--fg);
-  border-radius: 999px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  border: 2px solid var(--fg);
+  border-radius: 1.05rem;
+  box-shadow: 3px 3px 0 var(--fg);
+  transform-origin: top left;
+  will-change: transform, opacity;
+}
+
+/* Coda vignetta (bordo esterno) */
+.hero-lang-bubble::before,
+.hero-lang-bubble::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Desktop default: apre sotto → coda in alto a sinistra */
+.hero-lang-bubble::before {
+  top: -11px;
+  left: 1.05rem;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 11px solid var(--fg);
+}
+
+.hero-lang-bubble::after {
+  top: -8px;
+  left: calc(1.05rem + 2px);
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 9px solid var(--bg);
 }
 
 .hero-lang-option {
@@ -198,5 +229,15 @@
   .hero-lang-option .flag-icon-svg {
     width: clamp(1.35rem, 3.8vw, 1.62rem);
     height: clamp(1.35rem, 3.8vw, 1.62rem);
+  }
+
+  .hero-lang-bubble {
+    transform-origin: top left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-lang-bubble {
+    will-change: auto;
   }
 }

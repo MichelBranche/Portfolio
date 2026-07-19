@@ -907,11 +907,36 @@ body.preloader-active .cursor {
   pointer-events: auto;
 }
 
-.hero-lang-corner .hero-lang-list {
+.hero-lang-corner .hero-lang-list,
+.hero-lang-corner .hero-lang-bubble {
   top: auto;
-  bottom: calc(100% + 0.35rem);
+  bottom: calc(100% + 0.55rem);
   left: auto;
   right: 0;
+  transform-origin: bottom right;
+}
+
+/* Desktop: vignetta sopra il bottone → coda in basso a destra */
+.hero-lang-corner .hero-lang-bubble::before {
+  top: auto;
+  bottom: -11px;
+  left: auto;
+  right: 1.05rem;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: none;
+  border-top: 11px solid var(--fg);
+}
+
+.hero-lang-corner .hero-lang-bubble::after {
+  top: auto;
+  bottom: -8px;
+  left: auto;
+  right: calc(1.05rem + 2px);
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: none;
+  border-top: 9px solid var(--bg);
 }
 
 @media (max-width: 720px) {
@@ -969,11 +994,32 @@ body.preloader-active .cursor {
     pointer-events: none;
   }
 
-  .hero-lang-corner .hero-lang-list {
-    top: calc(100% + 0.35rem);
+  .hero-lang-corner .hero-lang-list,
+  .hero-lang-corner .hero-lang-bubble {
+    top: calc(100% + 0.55rem);
     bottom: auto;
     left: 0;
     right: auto;
+    transform-origin: top left;
+  }
+
+  /* Mobile: vignetta sotto il bottone → coda in alto a sinistra */
+  .hero-lang-corner .hero-lang-bubble::before {
+    top: -11px;
+    bottom: auto;
+    left: 1.05rem;
+    right: auto;
+    border-top: none;
+    border-bottom: 11px solid var(--fg);
+  }
+
+  .hero-lang-corner .hero-lang-bubble::after {
+    top: -8px;
+    bottom: auto;
+    left: calc(1.05rem + 2px);
+    right: auto;
+    border-top: none;
+    border-bottom: 9px solid var(--bg);
   }
 
   .hero-lang-corner .hero-lang {

@@ -155,4 +155,14 @@ export const PROJECT_META = [
     thumb: GH('demo-kiosk', 'docs/preview.png'),
     publishedAt: '2026-05-18',
   },
+  {
+    slug: 'villamatilde',
+    category: 'hospitality',
+    featured: true,
+    tech: 'React / Vite / GSAP / Lenis / Tailwind',
+    link: 'https://demo-sina-villa-matilde.vercel.app/',
+    img: GH('demo-sina-villa-matilde', 'docs/preview.png'),
+    thumb: GH('demo-sina-villa-matilde', 'docs/preview.png'),
+    publishedAt: '2026-07-19',
+  },
 ]

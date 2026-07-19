@@ -1,13 +1,18 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { FlagIcon } from './FlagIcon.jsx'
 
 import './LanguageSwitch.css'
 
+gsap.registerPlugin(useGSAP)
+
 export function LanguageSwitch() {
   const { lang, setLang, languages, t } = useLanguage()
   const [open, setOpen] = useState(false)
   const rootRef = useRef(null)
+  const listRef = useRef(null)
   const listId = useId()
 
   const current = languages.find((l) => l.code === lang) || languages[0]
@@ -30,11 +35,48 @@ export function LanguageSwitch() {
     }
   }, [open])
 
+  useGSAP(
+    () => {
+      const list = listRef.current
+      if (!open || !list) return
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const options = list.querySelectorAll('.hero-lang-option')
+
+      if (reduced) {
+        gsap.set(list, { opacity: 1, scale: 1, clearProps: 'transform' })
+        gsap.set(options, { opacity: 1, scale: 1, clearProps: 'transform' })
+        return
+      }
+
+      gsap.fromTo(
+        list,
+        { opacity: 0, scale: 0.28 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: 'back.out(2.2)',
+        },
+      )
+      gsap.fromTo(
+        options,
+        { opacity: 0, scale: 0.2 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.32,
+          stagger: 0.045,
+          delay: 0.1,
+          ease: 'back.out(2.4)',
+        },
+      )
+    },
+    { dependencies: [open], scope: rootRef },
+  )
+
   return (
-    <div
-      className="hero-lang self-destruct-keep"
-      ref={rootRef}
-    >
+    <div className="hero-lang self-destruct-keep" ref={rootRef}>
       <div className="hero-lang-row">
         {!open ? (
           <p className="hero-lang-hint" aria-hidden="true">
@@ -72,7 +114,8 @@ export function LanguageSwitch() {
       </div>
       {open ? (
         <ul
-          className="hero-lang-list"
+          ref={listRef}
+          className="hero-lang-list hero-lang-bubble"
           id={listId}
           role="listbox"
           aria-label={String(t('language.chooseAria'))}
