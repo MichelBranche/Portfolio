@@ -172,8 +172,8 @@ export const PROJECT_META = [
     featured: true,
     tech: 'React / Vite / GSAP / Lenis / Tailwind',
     link: 'https://demo-grosjean-vini.vercel.app/',
-    img: GH('demo-grosjean-vini', 'preview.png', 'master'),
-    thumb: GH('demo-grosjean-vini', 'preview.png', 'master'),
+    img: '/projects/grosjean-preview.png',
+    thumb: '/projects/grosjean-preview.png',
     publishedAt: '2026-07-29',
   },
 ]
