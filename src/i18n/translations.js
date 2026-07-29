@@ -120,6 +120,10 @@ const STRINGS = {
         title: 'Hospitality - Sina Villa Matilde (Canavese)',
         desc: 'Demo immersiva per villa d’epoca del XVIII secolo convertita a struttura ricettiva: tipografia editoriale, scroll fluido con Lenis, animazioni GSAP, routing SPA delle sale e i18n multi-lingua.',
       },
+      grosjean: {
+        title: 'Gastronomia - Grosjean Vins (Quart, Valle d’Aosta)',
+        desc: 'Landing marketing premium per Società Agricola Grosjean Vins: hero brand-first, storytelling editoriale, cru e vini, scroll fluido Lenis e motion GSAP ScrollTrigger.',
+      },
     },
     services: {
       header: 'Servizi',
@@ -448,6 +452,10 @@ const STRINGS = {
         title: 'Hospitality - Sina Villa Matilde (Canavese)',
         desc: 'Immersive demo for an 18th-century historic villa turned hospitality venue: editorial typography, Lenis smooth scroll, GSAP motion, SPA room pages and multi-language i18n.',
       },
+      grosjean: {
+        title: 'Gastronomy - Grosjean Vins (Quart, Aosta Valley)',
+        desc: 'Premium marketing landing for Società Agricola Grosjean Vins: brand-first hero, editorial storytelling, crus and wines, Lenis smooth scroll and GSAP ScrollTrigger motion.',
+      },
     },
     services: {
       header: 'Services',
@@ -771,6 +779,10 @@ const STRINGS = {
         title: 'Hospitality - Sina Villa Matilde (Canavese)',
         desc: "Démo immersive pour une villa d'époque du XVIIIe siècle convertie en structure d'accueil : typographie éditoriale, scroll Lenis, motion GSAP, pages SPA des espaces et i18n multi-langues.",
       },
+      grosjean: {
+        title: 'Gastronomie - Grosjean Vins (Quart, Vallée d’Aoste)',
+        desc: "Landing marketing premium pour Società Agricola Grosjean Vins : hero brand-first, storytelling éditorial, crus et vins, scroll Lenis et motion GSAP ScrollTrigger.",
+      },
     },
     services: {
       header: 'Services',
@@ -981,6 +993,10 @@ const STRINGS = {
         title: 'Gastgewerbe - Sina Villa Matilde (Canavese)',
         desc: 'Immersive Demo für eine historische Villa aus dem 18. Jahrhundert, umgebaut zur Beherbergung: editoriale Typografie, Lenis-Scroll, GSAP-Animationen, SPA-Raumseiten und mehrsprachiges i18n.',
       },
+      grosjean: {
+        title: 'Gastronomie - Grosjean Vins (Quart, Aostatal)',
+        desc: 'Premium-Marketing-Landing für Società Agricola Grosjean Vins: brand-first Hero, editoriales Storytelling, Crus und Weine, Lenis-Scroll und GSAP ScrollTrigger.',
+      },
     },
     services: {
       header: 'Services',
@@ -1190,6 +1206,10 @@ const STRINGS = {
       villamatilde: {
         title: 'Hostelería - Sina Villa Matilde (Canavese)',
         desc: 'Demo inmersiva para una villa de época del siglo XVIII convertida en estructura hotelera: tipografía editorial, scroll Lenis, motion GSAP, páginas SPA de los espacios e i18n multiidioma.',
+      },
+      grosjean: {
+        title: 'Gastronomía - Grosjean Vins (Quart, Valle de Aosta)',
+        desc: 'Landing marketing premium para Società Agricola Grosjean Vins: hero brand-first, storytelling editorial, crus y vinos, scroll Lenis y motion GSAP ScrollTrigger.',
       },
     },
     services: {

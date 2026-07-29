@@ -28,7 +28,8 @@ export const HERO_MP3_TRACKS = [
 
 export const HERO_MP3_ART = '/favicon.png'
 
-const GH = (repo, file) => `https://raw.githubusercontent.com/MichelBranche/${repo}/main/${file}`
+const GH = (repo, file, branch = 'main') =>
+  `https://raw.githubusercontent.com/MichelBranche/${repo}/${branch}/${file}`
 
 export const FLAIR_CDN = 'https://assets.codepen.io/16327/'
 
@@ -164,5 +165,15 @@ export const PROJECT_META = [
     img: GH('demo-sina-villa-matilde', 'docs/preview.png'),
     thumb: GH('demo-sina-villa-matilde', 'docs/preview.png'),
     publishedAt: '2026-07-19',
+  },
+  {
+    slug: 'grosjean',
+    category: 'food',
+    featured: true,
+    tech: 'React / Vite / GSAP / Lenis / Tailwind',
+    link: 'https://demo-grosjean-vini.vercel.app/',
+    img: GH('demo-grosjean-vini', 'preview.png', 'master'),
+    thumb: GH('demo-grosjean-vini', 'preview.png', 'master'),
+    publishedAt: '2026-07-29',
   },
 ]
