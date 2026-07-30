@@ -277,13 +277,12 @@ export function VisualSection() {
       items.forEach((item, idx) => {
         const isActive = idx === activeVideo
         gsap.set(item, {
-          clearProps: 'all',
+          clearProps: 'transform,filter',
           display: isActive ? 'block' : 'none',
           opacity: 1,
           xPercent: 0,
           scale: 1,
           zIndex: isActive ? 2 : 1,
-          filter: 'none',
         })
       })
       return

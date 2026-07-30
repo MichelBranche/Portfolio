@@ -511,7 +511,14 @@ export function useAppPageGsap({
       syncTouch: !isStickyTouch,
       touchMultiplier: isStickyTouch ? 1 : 1.15,
     })
-    lenis.stop()
+    const skipIntro =
+      typeof sessionStorage !== 'undefined' &&
+      sessionStorage.getItem('portfolio:skipIntro') === '1'
+    if (skipIntro) {
+      lenis.start()
+    } else {
+      lenis.stop()
+    }
     lenisRef.current = lenis
 
     lenis.on('scroll', ScrollTrigger.update)

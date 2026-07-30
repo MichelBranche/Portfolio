@@ -33,29 +33,58 @@ function CustomSlider({ value, onChange, className }) {
   )
 }
 
+let youtubeApiPromise = null
+
 function ensureYoutubeApi() {
   if (window.YT?.Player) {
     return Promise.resolve(window.YT)
   }
-  return new Promise((resolve) => {
+
+  if (youtubeApiPromise) return youtubeApiPromise
+
+  youtubeApiPromise = new Promise((resolve, reject) => {
+    const finish = () => {
+      if (window.YT?.Player) {
+        resolve(window.YT)
+        return
+      }
+      reject(new Error('YouTube IFrame API unavailable'))
+    }
+
     const prev = window.onYouTubeIframeAPIReady
     window.onYouTubeIframeAPIReady = () => {
-      if (typeof prev === 'function') prev()
-      resolve(window.YT)
+      try {
+        if (typeof prev === 'function') prev()
+      } finally {
+        finish()
+      }
     }
-    if (!document.getElementById('yt-iframe-api')) {
-      const script = document.createElement('script')
+
+    let script = document.getElementById('yt-iframe-api')
+    if (!script) {
+      script = document.createElement('script')
       script.id = 'yt-iframe-api'
       script.src = 'https://www.youtube.com/iframe_api'
       script.async = true
+      script.onerror = () => {
+        youtubeApiPromise = null
+        reject(new Error('Failed to load YouTube IFrame API'))
+      }
       document.body.appendChild(script)
+    } else if (window.YT?.Player) {
+      finish()
     }
+  }).catch((err) => {
+    youtubeApiPromise = null
+    throw err
   })
+
+  return youtubeApiPromise
 }
 
 export function VideoPlayer({ src }) {
   const videoRef = useRef(null)
-  const ytMountRef = useRef(null)
+  const ytHostRef = useRef(null)
   const ytPlayerRef = useRef(null)
   const ytTickRef = useRef(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -77,61 +106,77 @@ export function VideoPlayer({ src }) {
         ytTickRef.current = null
       }
       if (ytPlayerRef.current?.destroy) {
-        ytPlayerRef.current.destroy()
+        try {
+          ytPlayerRef.current.destroy()
+        } catch {
+          /* ignore */
+        }
       }
       ytPlayerRef.current = null
-      return
+      if (ytHostRef.current) ytHostRef.current.innerHTML = ''
+      return undefined
     }
 
     let cancelled = false
-    ensureYoutubeApi().then((YT) => {
-      if (cancelled || !ytMountRef.current || !YT?.Player) return
+    const host = ytHostRef.current
+    if (!host) return undefined
 
-      if (ytPlayerRef.current?.destroy) {
-        ytPlayerRef.current.destroy()
-      }
+    host.innerHTML = ''
+    const mount = document.createElement('div')
+    mount.style.width = '100%'
+    mount.style.height = '100%'
+    host.appendChild(mount)
 
-      ytPlayerRef.current = new YT.Player(ytMountRef.current, {
-        width: '100%',
-        height: '100%',
-        videoId: youtubeVideoId,
-        playerVars: {
-          rel: 0,
-          modestbranding: 1,
-          playsinline: 1,
-          controls: 0,
-        },
-        events: {
-          onReady: (event) => {
-            const d = event.target.getDuration?.() || 0
-            setDuration(d)
-            const vol = (event.target.getVolume?.() ?? 100) / 100
-            setVolume(vol)
-            setIsMuted(Boolean(event.target.isMuted?.()))
+    ensureYoutubeApi()
+      .then((YT) => {
+        if (cancelled || !mount.isConnected || !YT?.Player) return
+
+        ytPlayerRef.current = new YT.Player(mount, {
+          width: '100%',
+          height: '100%',
+          videoId: youtubeVideoId,
+          playerVars: {
+            rel: 0,
+            modestbranding: 1,
+            playsinline: 1,
+            controls: 0,
           },
-          onStateChange: (event) => {
-            const state = event.data
-            const playing = state === YT.PlayerState.PLAYING
-            setIsPlaying(playing)
-            if (playing && !ytTickRef.current) {
-              ytTickRef.current = setInterval(() => {
-                const player = ytPlayerRef.current
-                if (!player?.getCurrentTime) return
-                const ct = player.getCurrentTime() || 0
-                const d = player.getDuration?.() || 0
-                setCurrentTime(ct)
-                setDuration(d)
-                setProgress(d > 0 ? (ct / d) * 100 : 0)
-              }, 200)
-            }
-            if (!playing && ytTickRef.current) {
-              clearInterval(ytTickRef.current)
-              ytTickRef.current = null
-            }
+          events: {
+            onReady: (event) => {
+              if (cancelled) return
+              const d = event.target.getDuration?.() || 0
+              setDuration(d)
+              const vol = (event.target.getVolume?.() ?? 100) / 100
+              setVolume(vol)
+              setIsMuted(Boolean(event.target.isMuted?.()))
+            },
+            onStateChange: (event) => {
+              if (cancelled) return
+              const state = event.data
+              const playing = state === YT.PlayerState.PLAYING
+              setIsPlaying(playing)
+              if (playing && !ytTickRef.current) {
+                ytTickRef.current = setInterval(() => {
+                  const player = ytPlayerRef.current
+                  if (!player?.getCurrentTime) return
+                  const ct = player.getCurrentTime() || 0
+                  const d = player.getDuration?.() || 0
+                  setCurrentTime(ct)
+                  setDuration(d)
+                  setProgress(d > 0 ? (ct / d) * 100 : 0)
+                }, 200)
+              }
+              if (!playing && ytTickRef.current) {
+                clearInterval(ytTickRef.current)
+                ytTickRef.current = null
+              }
+            },
           },
-        },
+        })
       })
-    })
+      .catch(() => {
+        /* leave empty host; poster/stack still usable */
+      })
 
     return () => {
       cancelled = true
@@ -140,9 +185,14 @@ export function VideoPlayer({ src }) {
         ytTickRef.current = null
       }
       if (ytPlayerRef.current?.destroy) {
-        ytPlayerRef.current.destroy()
+        try {
+          ytPlayerRef.current.destroy()
+        } catch {
+          /* ignore */
+        }
       }
       ytPlayerRef.current = null
+      if (host) host.innerHTML = ''
     }
   }, [isYoutube, youtubeVideoId])
 
@@ -272,7 +322,7 @@ export function VideoPlayer({ src }) {
       onMouseLeave={() => setShowControls(false)}
     >
       {isYoutube ? (
-        <div ref={ytMountRef} className="visual-video-element" />
+        <div ref={ytHostRef} className="visual-video-element" />
       ) : (
         <video
           ref={videoRef}
@@ -345,4 +395,3 @@ export function VideoPlayer({ src }) {
     </motion.div>
   )
 }
-

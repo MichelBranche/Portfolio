@@ -10,10 +10,12 @@ import { VisitTracker } from './components/VisitTracker.jsx'
 import { LanguageProvider } from './context/LanguageContext.jsx'
 
 const AdminPage = lazy(() => import('./pages/AdminPage.jsx'))
+const LeveleCasePage = lazy(() => import('./pages/case/LeveleCasePage.jsx'))
 
 createRoot(document.getElementById('root')).render(
   <LanguageProvider>
     <BrowserRouter>
+      <div id="page-transition" className="page-transition" aria-hidden="true" />
       <VisitTracker />
       <Routes>
         <Route
@@ -21,6 +23,14 @@ createRoot(document.getElementById('root')).render(
           element={
             <Suspense fallback={<div className="admin-page admin-page--loading">Caricamento…</div>}>
               <AdminPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/work/levele"
+          element={
+            <Suspense fallback={<div className="case-page case-page--loading">Caricamento…</div>}>
+              <LeveleCasePage />
             </Suspense>
           }
         />
