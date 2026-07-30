@@ -115,6 +115,7 @@ export const PROJECT_META = [
     featured: true,
     tech: 'React / Vite / API / Redis',
     link: 'https://demoleveleresidence.vercel.app/',
+    caseHref: '/work/levele',
     img: GH('Demo-LeVeleResidence', 'preview.png'),
     thumb: GH('Demo-LeVeleResidence', 'preview.png'),
     publishedAt: '2026-04-18',
@@ -137,15 +138,6 @@ export const PROJECT_META = [
     img: GH('Demo-IlGusto', 'preview-hero.png'),
     thumb: GH('Demo-IlGusto', 'preview-hero.png'),
     publishedAt: '2025-12-01',
-  },
-  {
-    slug: 'bijou',
-    category: 'hospitality',
-    tech: 'React / Tailwind / Framer Motion / GSAP / Lenis',
-    link: 'https://demo-hotelbijou.vercel.app/',
-    img: GH('demo-bijou', 'preview.png'),
-    thumb: GH('demo-bijou', 'preview.png'),
-    publishedAt: '2026-05-05',
   },
   {
     slug: 'kiosk',

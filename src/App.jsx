@@ -1,4 +1,5 @@
 ﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
@@ -18,6 +19,7 @@ import { SiteNavbar } from './components/awwwards/SiteNavbar.jsx'
 import { StickyServices } from './components/awwwards/StickyServices.jsx'
 import { translate } from './i18n/translations'
 import { initFlairConfetti } from './lib/flairConfetti'
+import { landHomeUnderCover, peekSkipIntro, readSkipIntro } from './lib/pageTransition.js'
 import { useIsCoarsePointerDevice, usePrefersReducedMotion } from './hooks/useResponsive.js'
 import { useAppPageGsap } from './hooks/useAppPageGsap.js'
 import {
@@ -42,8 +44,10 @@ import { PreloaderCreepyButton } from './components/home/PreloaderCreepyButton.j
 
 function App() {
   const { t, lang } = useLanguage()
+  const navigate = useNavigate()
   const isCoarsePointer = useIsCoarsePointerDevice()
   const prefersReducedMotion = usePrefersReducedMotion()
+  const skipIntroOnMount = peekSkipIntro()
   const [modalData, setModalData] = useState(null)
   const lenisRef = useRef(null)
   const modalRef = useRef(null)
@@ -59,10 +63,10 @@ function App() {
   const [showConfetti, setShowConfetti] = useState(false)
   const [selfDestructed, setSelfDestructed] = useState(false)
   const selfDestructLockRef = useRef(false)
-  const [preloaderPhase, setPreloaderPhase] = useState('awaitEnter')
+  const [preloaderPhase, setPreloaderPhase] = useState(skipIntroOnMount ? 'done' : 'awaitEnter')
   const continueAfterPreloaderRef = useRef(() => {})
   const startPreloaderLoadingRef = useRef(null)
-  const preloaderPart2DoneRef = useRef(false)
+  const preloaderPart2DoneRef = useRef(Boolean(skipIntroOnMount))
   const heroRef = useRef(null)
   const preloaderAmbientRef = useRef(null)
   const heroMiniPlayerIframeRef = useRef(null)
@@ -516,6 +520,36 @@ function App() {
     lenisRef,
     footerSoundRef,
   })
+
+  useEffect(() => {
+    if (!skipIntroOnMount) return
+
+    let cancelled = false
+    const { scrollTo } = readSkipIntro()
+    let attempts = 0
+
+    const tryLand = () => {
+      if (cancelled) return
+      const work = document.getElementById(scrollTo || 'work')
+      const lenis = lenisRef.current
+      if ((!work || !lenis) && attempts < 40) {
+        attempts += 1
+        window.requestAnimationFrame(tryLand)
+        return
+      }
+
+      preloaderPart2DoneRef.current = true
+      landHomeUnderCover({ scrollTo: scrollTo || 'work', lenis })
+    }
+
+    // Un frame dopo Lenis/useAppPageGsap, poi aspetta #work se serve
+    const kick = window.requestAnimationFrame(tryLand)
+
+    return () => {
+      cancelled = true
+      window.cancelAnimationFrame(kick)
+    }
+  }, [skipIntroOnMount])
 
   useEffect(() => {
     if (!modalData) return
@@ -1019,7 +1053,13 @@ function App() {
         subTitle={String(t('projects.subTitle'))}
         title={String(t('projects.header'))}
         lead={String(t('projects.lead'))}
-        onOpenProject={setModalData}
+        onOpenProject={(project) => {
+          if (project.caseHref) {
+            navigate(project.caseHref)
+            return
+          }
+          setModalData(project)
+        }}
       />
 
       <ServiceSummaryStrip copy={servicesSummaryCopy} />

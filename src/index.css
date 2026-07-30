@@ -30,3 +30,15 @@ body {
   min-height: 100dvh;
   min-height: -webkit-fill-available;
 }
+
+/* Transizione route a tutto schermo (case study ↔ home) */
+.page-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: #0a0a0a;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  will-change: transform, opacity;
+}
