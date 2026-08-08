@@ -116,9 +116,9 @@ const STRINGS = {
         title: 'Hospitality - Sina Villa Matilde (Canavese)',
         desc: 'Demo immersiva per villa d’epoca del XVIII secolo convertita a struttura ricettiva: tipografia editoriale, scroll fluido con Lenis, animazioni GSAP, routing SPA delle sale e i18n multi-lingua.',
       },
-      grosjean: {
-        title: 'Gastronomia - Grosjean Vins (Quart, Valle d’Aosta)',
-        desc: 'Landing marketing premium per Società Agricola Grosjean Vins: hero brand-first, storytelling editoriale, cru e vini, scroll fluido Lenis e motion GSAP ScrollTrigger.',
+      altura: {
+        title: 'Gastronomia - Maison Altura (demo cantina alpina)',
+        desc: 'Demo neutra di cantina di montagna: brand-first splash, catalogo vini, storytelling familiare, abbinamenti a tavola, esperienze in vigna e visita in cantina. Scroll Lenis, motion GSAP e i18n IT/FR/EN/DE.',
       },
     },
     services: {
@@ -444,9 +444,9 @@ const STRINGS = {
         title: 'Hospitality - Sina Villa Matilde (Canavese)',
         desc: 'Immersive demo for an 18th-century historic villa turned hospitality venue: editorial typography, Lenis smooth scroll, GSAP motion, SPA room pages and multi-language i18n.',
       },
-      grosjean: {
-        title: 'Gastronomy - Grosjean Vins (Quart, Aosta Valley)',
-        desc: 'Premium marketing landing for Società Agricola Grosjean Vins: brand-first hero, editorial storytelling, crus and wines, Lenis smooth scroll and GSAP ScrollTrigger motion.',
+      altura: {
+        title: 'Gastronomy - Maison Altura (alpine winery demo)',
+        desc: 'Neutral alpine winery demo: brand-first splash, wine catalogue, family storytelling, food pairings, vineyard experiences and cellar visits. Lenis scroll, GSAP motion and IT/FR/EN/DE i18n.',
       },
     },
     services: {
@@ -767,9 +767,9 @@ const STRINGS = {
         title: 'Hospitality - Sina Villa Matilde (Canavese)',
         desc: "Démo immersive pour une villa d'époque du XVIIIe siècle convertie en structure d'accueil : typographie éditoriale, scroll Lenis, motion GSAP, pages SPA des espaces et i18n multi-langues.",
       },
-      grosjean: {
-        title: 'Gastronomie - Grosjean Vins (Quart, Vallée d’Aoste)',
-        desc: "Landing marketing premium pour Società Agricola Grosjean Vins : hero brand-first, storytelling éditorial, crus et vins, scroll Lenis et motion GSAP ScrollTrigger.",
+      altura: {
+        title: 'Gastronomie - Maison Altura (démo cave alpine)',
+        desc: 'Démo neutre de cave de montagne : splash brand-first, catalogue de vins, storytelling familial, accords mets-vins, expériences au vignoble et visite de cave. Scroll Lenis, motion GSAP et i18n IT/FR/EN/DE.',
       },
     },
     services: {
@@ -977,9 +977,9 @@ const STRINGS = {
         title: 'Gastgewerbe - Sina Villa Matilde (Canavese)',
         desc: 'Immersive Demo für eine historische Villa aus dem 18. Jahrhundert, umgebaut zur Beherbergung: editoriale Typografie, Lenis-Scroll, GSAP-Animationen, SPA-Raumseiten und mehrsprachiges i18n.',
       },
-      grosjean: {
-        title: 'Gastronomie - Grosjean Vins (Quart, Aostatal)',
-        desc: 'Premium-Marketing-Landing für Società Agricola Grosjean Vins: brand-first Hero, editoriales Storytelling, Crus und Weine, Lenis-Scroll und GSAP ScrollTrigger.',
+      altura: {
+        title: 'Gastronomie - Maison Altura (Demo Alpen-Weingut)',
+        desc: 'Neutrale Demo eines Bergweinguts: brand-first Splash, Weinkatalog, Familiengeschichte, Speisenbegleitung, Weinberg-Erlebnisse und Kellerbesuch. Lenis-Scroll, GSAP-Motion und i18n IT/FR/EN/DE.',
       },
     },
     services: {
@@ -1187,9 +1187,9 @@ const STRINGS = {
         title: 'Hostelería - Sina Villa Matilde (Canavese)',
         desc: 'Demo inmersiva para una villa de época del siglo XVIII convertida en estructura hotelera: tipografía editorial, scroll Lenis, motion GSAP, páginas SPA de los espacios e i18n multiidioma.',
       },
-      grosjean: {
-        title: 'Gastronomía - Grosjean Vins (Quart, Valle de Aosta)',
-        desc: 'Landing marketing premium para Società Agricola Grosjean Vins: hero brand-first, storytelling editorial, crus y vinos, scroll Lenis y motion GSAP ScrollTrigger.',
+      altura: {
+        title: 'Gastronomía - Maison Altura (demo bodega alpina)',
+        desc: 'Demo neutra de bodega de montaña: splash brand-first, catálogo de vinos, storytelling familiar, maridajes, experiencias en viña y visita a bodega. Scroll Lenis, motion GSAP e i18n IT/FR/EN/DE.',
       },
     },
     services: {

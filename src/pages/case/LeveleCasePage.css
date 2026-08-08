@@ -269,6 +269,15 @@
   color: var(--case-muted);
 }
 
+.case-kpi__context {
+  margin: 1.25rem 0 0;
+  max-width: 52rem;
+  font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+  line-height: 1.45;
+  color: var(--case-muted);
+  text-transform: none;
+}
+
 /* —— Problem —— */
 .case-problem {
   background: #fff;
@@ -611,6 +620,16 @@
   font-weight: 650;
   color: var(--case-accent);
   text-transform: none;
+}
+
+.case-results__context {
+  margin: 1rem 0 0;
+  max-width: 36rem;
+  font-size: clamp(0.92rem, 1.7vw, 1.05rem);
+  line-height: 1.45;
+  color: color-mix(in srgb, #fff 72%, transparent);
+  text-transform: none;
+  font-weight: 500;
 }
 
 /* —— Slope / deliverables —— */
