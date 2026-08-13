@@ -26,10 +26,13 @@ export const LEVELE_CASE = {
   },
   kpis: [
     { value: 11947, prefix: '', suffix: ' €', label: 'Ricavi nel 1° mese', format: 'currency' },
-    { value: 14, prefix: '', suffix: '', label: 'Prenotazioni dirette', format: 'int' },
+    { value: 14, prefix: '', suffix: '', label: 'Prenotazioni (3–30 lug)', format: 'int' },
     { value: 77, prefix: '', suffix: '', label: 'Notti vendute', format: 'int' },
     { value: 0, prefix: '', suffix: ' €', label: 'Google Ads', format: 'currency' },
   ],
+  /** Contesto temporale sul canale “sito”. */
+  bookingContext:
+    'Dal 01/01/2026 a oggi le prenotazioni dirette totali dal canale “sito” sono 17: 14 di queste sono state ottenute tra il 3 e il 30 luglio, nel primo mese di messa online.',
   problem: {
     title: 'Il problema',
     lead: 'Il vecchio sito presentava diversi limiti:',
@@ -76,14 +79,16 @@ export const LEVELE_CASE = {
   },
   results: {
     title: 'Risultati economici',
-    lead: 'Nel primo mese di messa online il sito ha generato:',
+    lead: 'Nel primo mese di messa online (3–30 luglio) il sito ha generato:',
     lines: ['14 prenotazioni dirette', '77 notti', '11.947 €'],
     note: 'Senza alcuna campagna Google Ads.',
+    context:
+      'Dal 01/01/2026 a oggi: 17 prenotazioni dirette totali dal canale “sito”. Di queste, 14 sono state ottenute tra il 3 e il 30 luglio.',
   },
   slope: {
     title: 'Report del gestionale',
     caption:
-      'Estratto del gestionale Slope (primo mese online) — canale “sito”: 14 prenotazioni, 77 notti, 11.947 € di ricavo, 0% commissioni e 0% cancellazioni.',
+      'Estratto Slope (3–30 luglio) — canale “sito”: 14 prenotazioni, 77 notti, 11.947 €, 0% commissioni e 0% cancellazioni. YTD 2026: 17 prenotazioni dirette totali dal sito.',
   },
   deliverables: {
     title: 'Cosa ho realizzato',

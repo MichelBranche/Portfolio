@@ -239,6 +239,9 @@ export default function LeveleCasePage() {
             </article>
           ))}
         </div>
+        {D.bookingContext ? (
+          <p className="case-kpi__context case-reveal">{D.bookingContext}</p>
+        ) : null}
       </section>
 
       {/* 3. Problema */}
@@ -373,6 +376,7 @@ export default function LeveleCasePage() {
             ))}
           </ul>
           <p className="case-results__note">{D.results.note}</p>
+          {D.results.context ? <p className="case-results__context">{D.results.context}</p> : null}
         </div>
       </section>
 

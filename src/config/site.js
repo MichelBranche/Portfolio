@@ -159,13 +159,13 @@ export const PROJECT_META = [
     publishedAt: '2026-07-19',
   },
   {
-    slug: 'grosjean',
+    slug: 'altura',
     category: 'food',
     featured: true,
     tech: 'React / Vite / GSAP / Lenis / Tailwind',
-    link: 'https://demo-grosjean-vini.vercel.app/',
-    img: '/projects/grosjean-preview.png',
-    thumb: '/projects/grosjean-preview.png',
-    publishedAt: '2026-07-29',
+    link: 'https://demo-vini.vercel.app/',
+    img: '/projects/altura-preview.png',
+    thumb: '/projects/altura-preview.png',
+    publishedAt: '2026-08-08',
   },
 ]
