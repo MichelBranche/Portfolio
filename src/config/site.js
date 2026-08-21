@@ -168,4 +168,14 @@ export const PROJECT_META = [
     thumb: '/projects/altura-preview.png',
     publishedAt: '2026-08-08',
   },
+  {
+    slug: 'omama',
+    category: 'hospitality',
+    featured: true,
+    tech: 'Next.js / GSAP / Lenis / Tailwind',
+    link: 'https://demo-omama.vercel.app/',
+    img: GH('demo-omama', 'preview.png'),
+    thumb: GH('demo-omama', 'preview.png'),
+    publishedAt: '2026-08-21',
+  },
 ]

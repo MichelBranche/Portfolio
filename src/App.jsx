@@ -1054,10 +1054,6 @@ function App() {
         title={String(t('projects.header'))}
         lead={String(t('projects.lead'))}
         onOpenProject={(project) => {
-          if (project.caseHref) {
-            navigate(project.caseHref)
-            return
-          }
           setModalData(project)
         }}
       />
@@ -1216,15 +1212,25 @@ function App() {
               <p className="modal-desc" ref={modalDescRef}>
                 {modalData ? String(t(`projects.${modalData.slug}.desc`)) : String(t('modal.descPlaceholder'))}
               </p>
-              <a
-                href={modalData?.link ?? '#'}
-                target="_blank"
-                rel="noreferrer"
-                className="modal-link interactable"
-                ref={modalLinkRef}
-              >
-                {String(t('modal.visit'))}
-              </a>
+              <div className="modal-actions" ref={modalLinkRef}>
+                <a
+                  href={modalData?.link ?? '#'}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="modal-link interactable"
+                >
+                  {String(t('modal.visit'))}
+                </a>
+                {modalData?.caseHref ? (
+                  <button
+                    type="button"
+                    className="modal-link modal-link--case interactable"
+                    onClick={() => navigate(modalData.caseHref)}
+                  >
+                    {String(t('modal.caseStudy'))}
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>

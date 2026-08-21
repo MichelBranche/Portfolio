@@ -120,6 +120,10 @@ const STRINGS = {
         title: 'Gastronomia - Maison Altura (demo cantina alpina)',
         desc: 'Demo neutra di cantina di montagna: brand-first splash, catalogo vini, storytelling familiare, abbinamenti a tavola, esperienze in vigna e visita in cantina. Scroll Lenis, motion GSAP e i18n IT/FR/EN/DE.',
       },
+      omama: {
+        title: 'Hospitality - OMAMA Social Hotel (Aosta)',
+        desc: 'Demo hospitality multilingua per OMAMA Social Hotel: SEO statico su 4 lingue, sezione Instagram curata, mappa interattiva, motion GSAP e scroll Lenis su Next.js.',
+      },
     },
     services: {
       header: 'Servizi',
@@ -315,6 +319,7 @@ const STRINGS = {
     modal: {
       close: 'CHIUDI [X]',
       visit: 'VAI AL SITO WEB ↗',
+      caseStudy: 'LEGGI IL CASE STUDY ↗',
       imgAlt: 'Anteprima progetto',
       titlePlaceholder: 'TITOLO',
       descPlaceholder: 'Descrizione.',
@@ -447,6 +452,10 @@ const STRINGS = {
       altura: {
         title: 'Gastronomy - Maison Altura (alpine winery demo)',
         desc: 'Neutral alpine winery demo: brand-first splash, wine catalogue, family storytelling, food pairings, vineyard experiences and cellar visits. Lenis scroll, GSAP motion and IT/FR/EN/DE i18n.',
+      },
+      omama: {
+        title: 'Hospitality - OMAMA Social Hotel (Aosta)',
+        desc: 'Multilingual hospitality demo for OMAMA Social Hotel: static SEO across 4 languages, curated Instagram section, interactive map, GSAP motion and Lenis scroll on Next.js.',
       },
     },
     services: {
@@ -638,6 +647,7 @@ const STRINGS = {
     modal: {
       close: 'CLOSE [X]',
       visit: 'GO TO THE SITE ↗',
+      caseStudy: 'READ THE CASE STUDY ↗',
       imgAlt: 'Project preview',
       titlePlaceholder: 'TITLE',
       descPlaceholder: 'Description.',
@@ -771,6 +781,10 @@ const STRINGS = {
         title: 'Gastronomie - Maison Altura (démo cave alpine)',
         desc: 'Démo neutre de cave de montagne : splash brand-first, catalogue de vins, storytelling familial, accords mets-vins, expériences au vignoble et visite de cave. Scroll Lenis, motion GSAP et i18n IT/FR/EN/DE.',
       },
+      omama: {
+        title: 'Hospitality - OMAMA Social Hotel (Aoste)',
+        desc: 'Démo hospitality multilingue pour OMAMA Social Hotel : SEO statique en 4 langues, section Instagram soignée, carte interactive, motion GSAP et scroll Lenis sur Next.js.',
+      },
     },
     services: {
       header: 'Services',
@@ -848,6 +862,7 @@ const STRINGS = {
     modal: {
       close: 'FERMER [X]',
       visit: 'ALLER AU SITE ↗',
+      caseStudy: 'LIRE LE CASE STUDY ↗',
       imgAlt: 'Aperçu du projet',
       titlePlaceholder: 'TITRE',
       descPlaceholder: 'Description.',
@@ -981,6 +996,10 @@ const STRINGS = {
         title: 'Gastronomie - Maison Altura (Demo Alpen-Weingut)',
         desc: 'Neutrale Demo eines Bergweinguts: brand-first Splash, Weinkatalog, Familiengeschichte, Speisenbegleitung, Weinberg-Erlebnisse und Kellerbesuch. Lenis-Scroll, GSAP-Motion und i18n IT/FR/EN/DE.',
       },
+      omama: {
+        title: 'Gastgewerbe - OMAMA Social Hotel (Aosta)',
+        desc: 'Mehrsprachige Hospitality-Demo für OMAMA Social Hotel: statisches SEO in 4 Sprachen, kuratierte Instagram-Sektion, interaktive Karte, GSAP-Motion und Lenis-Scroll auf Next.js.',
+      },
     },
     services: {
       header: 'Services',
@@ -1058,6 +1077,7 @@ const STRINGS = {
     modal: {
       close: 'SCHLIESSEN [X]',
       visit: 'ZUR WEBSITE ↗',
+      caseStudy: 'CASE STUDY LESEN ↗',
       imgAlt: 'Projektvorschau',
       titlePlaceholder: 'TITEL',
       descPlaceholder: 'Beschreibung.',
@@ -1191,6 +1211,10 @@ const STRINGS = {
         title: 'Gastronomía - Maison Altura (demo bodega alpina)',
         desc: 'Demo neutra de bodega de montaña: splash brand-first, catálogo de vinos, storytelling familiar, maridajes, experiencias en viña y visita a bodega. Scroll Lenis, motion GSAP e i18n IT/FR/EN/DE.',
       },
+      omama: {
+        title: 'Hostelería - OMAMA Social Hotel (Aosta)',
+        desc: 'Demo hospitality multilingüe para OMAMA Social Hotel: SEO estático en 4 idiomas, sección Instagram curada, mapa interactivo, motion GSAP y scroll Lenis sobre Next.js.',
+      },
     },
     services: {
       header: 'Servicios',
@@ -1268,6 +1292,7 @@ const STRINGS = {
     modal: {
       close: 'CERRAR [X]',
       visit: 'IR AL SITIO ↗',
+      caseStudy: 'VER EL CASE STUDY ↗',
       imgAlt: 'Vista del proyecto',
       titlePlaceholder: 'TÍTULO',
       descPlaceholder: 'Descripción.',
