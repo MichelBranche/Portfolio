@@ -62,8 +62,8 @@ export const HERO_FLAIR_PRELOAD_XP = [
 
 /** Ordine di visualizzazione dei gruppi in #work */
 export const PROJECT_CATEGORY_ORDER = [
-  'ecommerce',
   'hospitality',
+  'ecommerce',
   'food',
   'institutional',
   'portfolio',
@@ -184,8 +184,8 @@ export const PROJECT_META = [
     featured: true,
     tech: 'Next.js / GSAP / Lenis / Tailwind',
     link: 'https://hotel-grauson.vercel.app/',
-    img: '/projects/grauson-preview.png',
-    thumb: '/projects/grauson-preview.png',
+    img: '/projects/grauson-preview.jpg',
+    thumb: '/projects/grauson-preview.jpg',
     publishedAt: '2026-09-21',
   },
 ]
