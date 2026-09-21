@@ -124,6 +124,10 @@ const STRINGS = {
         title: 'Hospitality - OMAMA Social Hotel (Aosta)',
         desc: 'Demo hospitality multilingua per OMAMA Social Hotel: SEO statico su 4 lingue, sezione Instagram curata, mappa interattiva, motion GSAP e scroll Lenis su Next.js.',
       },
+      grauson: {
+        title: 'Hospitality - Locanda Grauson (Gimillan di Cogne)',
+        desc: 'Sito pubblico e PMS nello stesso applicativo Next.js: camere, ristorante, booking, planning reception, stagioni e motion GSAP/Lenis per la locanda di montagna a Cogne.',
+      },
     },
     services: {
       header: 'Servizi',
@@ -457,6 +461,10 @@ const STRINGS = {
         title: 'Hospitality - OMAMA Social Hotel (Aosta)',
         desc: 'Multilingual hospitality demo for OMAMA Social Hotel: static SEO across 4 languages, curated Instagram section, interactive map, GSAP motion and Lenis scroll on Next.js.',
       },
+      grauson: {
+        title: 'Hospitality - Locanda Grauson (Gimillan di Cogne)',
+        desc: 'Public website and PMS in the same Next.js app: rooms, restaurant, booking engine, reception planning, seasonal looks and GSAP/Lenis motion for the mountain locanda in Cogne.',
+      },
     },
     services: {
       header: 'Services',
@@ -785,6 +793,10 @@ const STRINGS = {
         title: 'Hospitality - OMAMA Social Hotel (Aoste)',
         desc: 'Démo hospitality multilingue pour OMAMA Social Hotel : SEO statique en 4 langues, section Instagram soignée, carte interactive, motion GSAP et scroll Lenis sur Next.js.',
       },
+      grauson: {
+        title: 'Hospitality - Locanda Grauson (Gimillan di Cogne)',
+        desc: 'Site public et PMS dans la même app Next.js : chambres, restaurant, moteur de réservation, planning réception, saisons et motion GSAP/Lenis pour la locanda de montagne à Cogne.',
+      },
     },
     services: {
       header: 'Services',
@@ -1000,6 +1012,10 @@ const STRINGS = {
         title: 'Gastgewerbe - OMAMA Social Hotel (Aosta)',
         desc: 'Mehrsprachige Hospitality-Demo für OMAMA Social Hotel: statisches SEO in 4 Sprachen, kuratierte Instagram-Sektion, interaktive Karte, GSAP-Motion und Lenis-Scroll auf Next.js.',
       },
+      grauson: {
+        title: 'Gastgewerbe - Locanda Grauson (Gimillan di Cogne)',
+        desc: 'Öffentliche Website und PMS in derselben Next.js-App: Zimmer, Restaurant, Booking, Rezeptionsplanung, Saisons und GSAP/Lenis-Motion für die Berg-Locanda in Cogne.',
+      },
     },
     services: {
       header: 'Services',
@@ -1214,6 +1230,10 @@ const STRINGS = {
       omama: {
         title: 'Hostelería - OMAMA Social Hotel (Aosta)',
         desc: 'Demo hospitality multilingüe para OMAMA Social Hotel: SEO estático en 4 idiomas, sección Instagram curada, mapa interactivo, motion GSAP y scroll Lenis sobre Next.js.',
+      },
+      grauson: {
+        title: 'Hostelería - Locanda Grauson (Gimillan di Cogne)',
+        desc: 'Sitio público y PMS en la misma app Next.js: habitaciones, restaurante, reservas, planning de recepción, temporadas y motion GSAP/Lenis para la locanda de montaña en Cogne.',
       },
     },
     services: {
