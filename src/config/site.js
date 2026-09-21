@@ -178,4 +178,14 @@ export const PROJECT_META = [
     thumb: GH('demo-omama', 'preview.png'),
     publishedAt: '2026-08-21',
   },
+  {
+    slug: 'grauson',
+    category: 'hospitality',
+    featured: true,
+    tech: 'Next.js / GSAP / Lenis / Tailwind',
+    link: 'https://hotel-grauson.vercel.app/',
+    img: '/projects/grauson-preview.png',
+    thumb: '/projects/grauson-preview.png',
+    publishedAt: '2026-09-21',
+  },
 ]
