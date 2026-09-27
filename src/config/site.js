@@ -188,4 +188,15 @@ export const PROJECT_META = [
     thumb: '/projects/grauson-preview.jpg',
     publishedAt: '2026-09-21',
   },
+  {
+    slug: 'orma',
+    category: 'food',
+    featured: true,
+    tech: 'React / Vite / GSAP / Lenis / Tailwind',
+    link: 'https://demo-caffe-woad.vercel.app/',
+    img: '/projects/orma-mockup-hero.png',
+    thumb: '/projects/orma-mockup-hero.png',
+    imgs: ['/projects/orma-mockup-hero.png', '/projects/orma-mockup-sections.png'],
+    publishedAt: '2026-09-27',
+  },
 ]

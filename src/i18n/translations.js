@@ -128,6 +128,10 @@ const STRINGS = {
         title: 'Hospitality - Locanda Grauson (Gimillan di Cogne)',
         desc: 'Sito pubblico e PMS nello stesso applicativo Next.js: camere, ristorante, booking, planning reception, stagioni e motion GSAP/Lenis per la locanda di montagna a Cogne.',
       },
+      orma: {
+        title: 'Gastronomia - Orma (microtorrefazione, Valle d’Aosta)',
+        desc: 'Landing per una microtorrefazione di specialità: origini, tostatura, selezione e capsule, con motion GSAP, scroll Lenis e layout editoriale su React e Vite.',
+      },
     },
     services: {
       header: 'Servizi',
@@ -465,6 +469,10 @@ const STRINGS = {
         title: 'Hospitality - Locanda Grauson (Gimillan di Cogne)',
         desc: 'Public website and PMS in the same Next.js app: rooms, restaurant, booking engine, reception planning, seasonal looks and GSAP/Lenis motion for the mountain locanda in Cogne.',
       },
+      orma: {
+        title: 'Gastronomy - Orma (micro-roastery, Aosta Valley)',
+        desc: 'Landing for a specialty micro-roastery: origins, roasting, selection and capsules, with GSAP motion, Lenis scroll and an editorial layout on React and Vite.',
+      },
     },
     services: {
       header: 'Services',
@@ -797,6 +805,10 @@ const STRINGS = {
         title: 'Hospitality - Locanda Grauson (Gimillan di Cogne)',
         desc: 'Site public et PMS dans la même app Next.js : chambres, restaurant, moteur de réservation, planning réception, saisons et motion GSAP/Lenis pour la locanda de montagne à Cogne.',
       },
+      orma: {
+        title: 'Gastronomie - Orma (micro-torréfaction, Vallée d’Aoste)',
+        desc: 'Landing pour une micro-torréfaction de spécialité : origines, torréfaction, sélection et capsules, avec motion GSAP, scroll Lenis et layout éditorial sur React et Vite.',
+      },
     },
     services: {
       header: 'Services',
@@ -1016,6 +1028,10 @@ const STRINGS = {
         title: 'Gastgewerbe - Locanda Grauson (Gimillan di Cogne)',
         desc: 'Öffentliche Website und PMS in derselben Next.js-App: Zimmer, Restaurant, Booking, Rezeptionsplanung, Saisons und GSAP/Lenis-Motion für die Berg-Locanda in Cogne.',
       },
+      orma: {
+        title: 'Gastronomie - Orma (Mikro-Rösterei, Aostatal)',
+        desc: 'Landing für eine Spezialitäten-Mikrörösterei: Herkunft, Röstung, Selection und Kapseln, mit GSAP-Motion, Lenis-Scroll und editorialem Layout auf React und Vite.',
+      },
     },
     services: {
       header: 'Services',
@@ -1234,6 +1250,10 @@ const STRINGS = {
       grauson: {
         title: 'Hostelería - Locanda Grauson (Gimillan di Cogne)',
         desc: 'Sitio público y PMS en la misma app Next.js: habitaciones, restaurante, reservas, planning de recepción, temporadas y motion GSAP/Lenis para la locanda de montaña en Cogne.',
+      },
+      orma: {
+        title: 'Gastronomía - Orma (microtorrefacción, Valle de Aosta)',
+        desc: 'Landing para una microtorrefacción de especialidad: orígenes, tueste, selección y cápsulas, con motion GSAP, scroll Lenis y layout editorial en React y Vite.',
       },
     },
     services: {
