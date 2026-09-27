@@ -1187,13 +1187,15 @@ function App() {
       <VisualSectionLazy />
       <div className="project-modal" ref={modalRef}>
         <div className="modal-layout">
-          <div className="modal-image-container">
-            <img
-              className="modal-img"
-              ref={modalImgRef}
-              src={modalData?.img || undefined}
-              alt={String(t('modal.imgAlt'))}
-            />
+          <div
+            className={`modal-image-container${
+              (modalData?.imgs?.length ?? 0) > 1 ? ' modal-image-container--stack' : ''
+            }`}
+            ref={modalImgRef}
+          >
+            {(modalData?.imgs?.length ? modalData.imgs : modalData?.img ? [modalData.img] : []).map((src) => (
+              <img key={src} className="modal-img" src={src} alt={String(t('modal.imgAlt'))} />
+            ))}
           </div>
           <div className="modal-content">
             <div className="modal-close-wrap">

@@ -2527,6 +2527,14 @@ body.preloader-active .cursor {
 .modal-image-container {
   flex: 1;
   overflow: hidden;
+  opacity: 0;
+}
+
+.modal-image-container--stack {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: #f5f2ed;
 }
 
 .modal-img {
@@ -2534,7 +2542,15 @@ body.preloader-active .cursor {
   height: 100%;
   object-fit: cover;
   filter: grayscale(0%);
-  opacity: 0;
+  opacity: 1;
+}
+
+.modal-image-container--stack .modal-img {
+  height: auto;
+  min-height: 100%;
+  flex: 0 0 auto;
+  object-fit: contain;
+  object-position: center top;
 }
 
 .modal-content {
@@ -3667,6 +3683,11 @@ body.self-destruct-mode .project-modal {
     flex: 0 0 42dvh;
     min-height: 200px;
     max-height: 50dvh;
+  }
+
+  .modal-image-container--stack {
+    flex-basis: 52dvh;
+    max-height: 55dvh;
   }
 }
 
