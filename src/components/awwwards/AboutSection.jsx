@@ -7,7 +7,7 @@ import { AnimatedTextLines } from './AnimatedTextLines.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const ABOUT_IMAGE = '/images/michel-about.png?v=2'
+const ABOUT_IMAGE = '/images/michel-about.png?v=3'
 
 export function AboutSection({ subTitle, title, lead, body, imageAlt }) {
   const sectionRef = useRef(null)

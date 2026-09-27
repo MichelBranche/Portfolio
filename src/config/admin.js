@@ -1,9 +1,5 @@
 /**
- * Password admin lato client.
- * - Locale: `.env.local` → VITE_ADMIN_PASSWORD
- * - Vercel: Environment Variables → VITE_ADMIN_PASSWORD
- * Opzionale in locale: `admin.local.js` (solo dev, vedi vite.config.js).
+ * Il login controlla `ADMIN_PASSWORD` sull'API.
+ * La password non entra nel bundle del browser.
  */
-export const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? ''
-
-export const isAdminConfigured = () => Boolean(ADMIN_PASSWORD)
+export const isAdminConfigured = () => true

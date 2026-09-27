@@ -1,5 +1,4 @@
 import { useId } from 'react'
-import './FlagIcon.css'
 
 export function FlagIcon({ code, className = '' }) {
   const uid = useId().replace(/:/g, '')

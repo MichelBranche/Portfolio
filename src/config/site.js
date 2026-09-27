@@ -28,9 +28,6 @@ export const HERO_MP3_TRACKS = [
 
 export const HERO_MP3_ART = '/favicon.png'
 
-const GH = (repo, file, branch = 'main') =>
-  `https://raw.githubusercontent.com/MichelBranche/${repo}/${branch}/${file}`
-
 export const FLAIR_CDN = 'https://assets.codepen.io/16327/'
 
 export const HERO_FLAIR_PRELOAD_3D = [
@@ -76,8 +73,9 @@ export const PROJECT_META = [
     category: 'portfolio',
     tech: 'JavaScript / GSAP / CSS',
     link: 'https://rubinastradella.vercel.app/',
-    img: GH('photo-portfolio-demo', 'preview.jpg'),
-    thumb: GH('photo-portfolio-demo', 'preview.jpg'),
+    img: '/projects/rubina-mockup-hero.png',
+    imgs: ['/projects/rubina-mockup-hero.png', '/projects/rubina-mockup-sections.png'],
+    thumb: '/projects/rubina-cover.png',
     publishedAt: '2026-03-21',
   },
   {
@@ -86,8 +84,9 @@ export const PROJECT_META = [
     featured: true,
     tech: 'React / Router / GSAP / Lenis',
     link: 'https://sys-0ff.vercel.app/',
-    img: GH('ecommerce-demo1', 'public/assets/mockup.png'),
-    thumb: GH('ecommerce-demo1', 'public/assets/mockup.png'),
+    img: '/projects/streetwear-mockup-hero.png',
+    imgs: ['/projects/streetwear-mockup-hero.png', '/projects/streetwear-mockup-sections.png'],
+    thumb: '/projects/streetwear-cover.png',
     publishedAt: '2026-03-29',
   },
   {
@@ -96,8 +95,9 @@ export const PROJECT_META = [
     featured: true,
     tech: 'React / Vite / GSAP / Lenis',
     link: 'https://museoegiziotorino.vercel.app/',
-    img: GH('Museo-Egizio-Torino-Demo', 'preview.png'),
-    thumb: GH('Museo-Egizio-Torino-Demo', 'preview.png'),
+    img: '/projects/museo-mockup-hero.png',
+    imgs: ['/projects/museo-mockup-hero.png', '/projects/museo-mockup-sections.png'],
+    thumb: '/projects/museo-cover.png',
     publishedAt: '2026-04-06',
   },
   {
@@ -105,8 +105,9 @@ export const PROJECT_META = [
     category: 'ui',
     tech: 'HTML / CSS / JavaScript',
     link: 'https://spotify-clone-mbdev-umber.vercel.app/',
-    img: GH('Spotify-Clone', 'preview.png'),
-    thumb: GH('Spotify-Clone', 'preview.png'),
+    img: '/projects/spotify-mockup-hero.png',
+    imgs: ['/projects/spotify-mockup-hero.png', '/projects/spotify-mockup-sections.png'],
+    thumb: '/projects/spotify-cover.png',
     publishedAt: '2026-04-13',
   },
   {
@@ -116,8 +117,9 @@ export const PROJECT_META = [
     tech: 'React / Vite / API / Redis',
     link: 'https://demoleveleresidence.vercel.app/',
     caseHref: '/work/levele',
-    img: GH('Demo-LeVeleResidence', 'preview.png'),
-    thumb: GH('Demo-LeVeleResidence', 'preview.png'),
+    img: '/projects/levele-mockup-hero.png',
+    imgs: ['/projects/levele-mockup-hero.png', '/projects/levele-mockup-sections.png'],
+    thumb: '/projects/levele-cover.png',
     publishedAt: '2026-04-18',
   },
   {
@@ -126,8 +128,9 @@ export const PROJECT_META = [
     featured: true,
     tech: 'React Router / GSAP / Framer Motion',
     link: 'https://demo-paologriffa.vercel.app/',
-    img: GH('demo-paologriffa', 'preview.png'),
-    thumb: GH('demo-paologriffa', 'preview.png'),
+    img: '/projects/caffestella-mockup-hero.png',
+    imgs: ['/projects/caffestella-mockup-hero.png', '/projects/caffestella-mockup-sections.png'],
+    thumb: '/projects/caffestella-cover.png',
     publishedAt: '2026-04-20',
   },
   {
@@ -135,8 +138,9 @@ export const PROJECT_META = [
     category: 'food',
     tech: 'HTML / CSS / JavaScript',
     link: 'https://demo-il-gusto.vercel.app/',
-    img: GH('Demo-IlGusto', 'preview-hero.png'),
-    thumb: GH('Demo-IlGusto', 'preview-hero.png'),
+    img: '/projects/ilgusto-mockup-hero.png',
+    imgs: ['/projects/ilgusto-mockup-hero.png', '/projects/ilgusto-mockup-sections.png'],
+    thumb: '/projects/ilgusto-cover.png',
     publishedAt: '2025-12-01',
   },
   {
@@ -144,8 +148,9 @@ export const PROJECT_META = [
     category: 'food',
     tech: 'React 19 / Router / Framer Motion / Lenis',
     link: 'https://demo-kiosk-two.vercel.app/',
-    img: GH('demo-kiosk', 'docs/preview.png'),
-    thumb: GH('demo-kiosk', 'docs/preview.png'),
+    img: '/projects/kiosk-mockup-hero.png',
+    imgs: ['/projects/kiosk-mockup-hero.png', '/projects/kiosk-mockup-sections.png'],
+    thumb: '/projects/kiosk-cover.png',
     publishedAt: '2026-05-18',
   },
   {
@@ -154,8 +159,9 @@ export const PROJECT_META = [
     featured: true,
     tech: 'React / Vite / GSAP / Lenis / Tailwind',
     link: 'https://demo-sina-villa-matilde.vercel.app/',
-    img: GH('demo-sina-villa-matilde', 'docs/preview.png'),
-    thumb: GH('demo-sina-villa-matilde', 'docs/preview.png'),
+    img: '/projects/villamatilde-mockup-hero.png',
+    imgs: ['/projects/villamatilde-mockup-hero.png', '/projects/villamatilde-mockup-sections.png'],
+    thumb: '/projects/villamatilde-cover.png',
     publishedAt: '2026-07-19',
   },
   {
@@ -164,8 +170,9 @@ export const PROJECT_META = [
     featured: true,
     tech: 'React / Vite / GSAP / Lenis / Tailwind',
     link: 'https://demo-vini.vercel.app/',
-    img: '/projects/altura-preview.png',
-    thumb: '/projects/altura-preview.png',
+    img: '/projects/altura-mockup-hero.png',
+    imgs: ['/projects/altura-mockup-hero.png', '/projects/altura-mockup-sections.png'],
+    thumb: '/projects/altura-cover.png',
     publishedAt: '2026-08-08',
   },
   {
@@ -174,8 +181,9 @@ export const PROJECT_META = [
     featured: true,
     tech: 'Next.js / GSAP / Lenis / Tailwind',
     link: 'https://demo-omama.vercel.app/',
-    img: GH('demo-omama', 'preview.png'),
-    thumb: GH('demo-omama', 'preview.png'),
+    img: '/projects/omama-mockup-hero.png',
+    imgs: ['/projects/omama-mockup-hero.png', '/projects/omama-mockup-sections.png'],
+    thumb: '/projects/omama-cover.png',
     publishedAt: '2026-08-21',
   },
   {
@@ -184,8 +192,9 @@ export const PROJECT_META = [
     featured: true,
     tech: 'Next.js / GSAP / Lenis / Tailwind',
     link: 'https://hotel-grauson.vercel.app/',
-    img: '/projects/grauson-preview.jpg',
-    thumb: '/projects/grauson-preview.jpg',
+    img: '/projects/grauson-mockup-hero.png',
+    imgs: ['/projects/grauson-mockup-hero.png', '/projects/grauson-mockup-sections.png'],
+    thumb: '/projects/grauson-cover.png',
     publishedAt: '2026-09-21',
   },
   {
@@ -195,7 +204,7 @@ export const PROJECT_META = [
     tech: 'React / Vite / GSAP / Lenis / Tailwind',
     link: 'https://demo-caffe-woad.vercel.app/',
     img: '/projects/orma-mockup-hero.png',
-    thumb: '/projects/orma-mockup-hero.png',
+    thumb: '/projects/orma-cover.png',
     imgs: ['/projects/orma-mockup-hero.png', '/projects/orma-mockup-sections.png'],
     publishedAt: '2026-09-27',
   },
