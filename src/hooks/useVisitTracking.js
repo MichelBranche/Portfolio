@@ -1,9 +1,11 @@
+'use client'
+
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { usePathname } from 'next/navigation'
 import { trackVisit } from '../lib/trackVisit.js'
 
 export function useVisitTracking() {
-  const { pathname } = useLocation()
+  const pathname = usePathname()
 
   useEffect(() => {
     trackVisit(pathname)

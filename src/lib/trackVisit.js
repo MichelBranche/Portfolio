@@ -15,7 +15,7 @@ function getSessionId() {
 
 /** Solo host pubblico in build di produzione (niente localhost / dev). */
 function shouldTrackVisits() {
-  if (!import.meta.env.PROD) return false
+  if (process.env.NODE_ENV !== 'production') return false
   const host = window.location.hostname
   return host !== 'localhost' && host !== '127.0.0.1' && !host.endsWith('.local')
 }

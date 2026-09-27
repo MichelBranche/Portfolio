@@ -4,11 +4,47 @@ import gsap from 'gsap'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { FlagIcon } from './FlagIcon.jsx'
 
-import './LanguageSwitch.css'
-
 gsap.registerPlugin(useGSAP)
 
-export function LanguageSwitch() {
+export function LanguageSwitch({ variant = 'bubble' }) {
+  if (variant === 'pill') return <PillLanguageSwitch />
+  return <BubbleLanguageSwitch />
+}
+
+function PillLanguageSwitch() {
+  const { lang, setLang, languages, t } = useLanguage()
+  const listId = useId()
+  const index = Math.max(0, languages.findIndex((item) => item.code === lang))
+
+  return (
+    <div className="hero-lang hero-lang--pill">
+      <div className="hero-lang-pill" id={listId} role="listbox" aria-label={String(t('language.chooseAria'))}>
+        <span className="hero-lang-chip" style={{ '--n': languages.length, '--on': index }} aria-hidden />
+        <div className="hero-lang-track">
+          {languages.map((item) => {
+            const selected = item.code === lang
+            return (
+              <button
+                key={item.code}
+                type="button"
+                className="hero-lang-flag interactable"
+                role="option"
+                aria-label={item.label}
+                title={item.label}
+                aria-selected={selected}
+                onClick={() => setLang(item.code)}
+              >
+                <FlagIcon code={item.code} />
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function BubbleLanguageSwitch() {
   const { lang, setLang, languages, t } = useLanguage()
   const [open, setOpen] = useState(false)
   const rootRef = useRef(null)

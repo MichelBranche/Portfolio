@@ -72,5 +72,6 @@ export function clearSessionCookieHeader() {
 }
 
 export function isAuthenticated(req) {
-  return Boolean(parseSessionCookie(req.headers.cookie))
+  const cookie = typeof req?.headers?.get === 'function' ? req.headers.get('cookie') : req?.headers?.cookie
+  return Boolean(parseSessionCookie(cookie))
 }
