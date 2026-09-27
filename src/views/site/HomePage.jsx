@@ -10,8 +10,13 @@ import { useSiteUI } from './site-ui.js'
 
 const BOARD_W = 2600
 const BOARD_H = 1550
-const COLS = [0, 1, 2, 3]
-const ROWS = [0, 1, 2]
+
+function boardSpan(width, height) {
+  return {
+    cols: Math.min(3, Math.max(2, Math.ceil(width / BOARD_W) + 1)),
+    rows: Math.min(3, Math.max(2, Math.ceil(height / BOARD_H) + 1)),
+  }
+}
 
 const LOOK_DEAD = 0.16
 
@@ -66,9 +71,11 @@ function stamp(iso, lang) {
   return new Intl.DateTimeFormat(lang, { day: '2-digit', month: '2-digit', year: '2-digit' }).format(date)
 }
 
-const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, panningRef }) {
-  return ROWS.map((row) =>
-    COLS.map((col) => {
+const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, panningRef, cols, rows }) {
+  const colIds = Array.from({ length: cols }, (_, index) => index)
+  const rowIds = Array.from({ length: rows }, (_, index) => index)
+  return rowIds.map((row) =>
+    colIds.map((col) => {
       const primary = col === 0 && row === 0
       return (
         <div key={`${col}-${row}`} className="hb-board-cell" data-i={col} data-j={row} aria-hidden={primary ? undefined : true}>
@@ -78,16 +85,14 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
               spot: SPOTS[index % SPOTS.length],
               key: project.slug,
               repeat: false,
-              eager: index < 6,
             })),
             ...EXTRAS.map((extra, index) => ({
               project: projects[extra.from % projects.length],
               spot: extra,
               key: `extra-${index}`,
               repeat: true,
-              eager: false,
             })),
-          ].map(({ project, spot, key, repeat, eager }) => {
+          ].map(({ project, spot, key, repeat }) => {
             const name = shortName(project.title)
             return (
               <button
@@ -110,7 +115,13 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
                 onClick={() => onOpen(project)}
               >
                 <span className="hb-tile-in">
-                  <PixelImage src={project.thumb} eager={primary && eager} />
+                  <PixelImage
+                    src={project.thumb}
+                    eager={primary && !repeat}
+                    priority={primary && !repeat && spot.w >= 330}
+                    grid={false}
+                    optimized
+                  />
                   <span className="hb-tile-meta">
                     <span>{name}</span>
                     <span>{stamp(project.publishedAt, lang)}</span>
@@ -137,6 +148,7 @@ export function HomePage() {
   const boardRef = useRef(null)
   const draggedRef = useRef(false)
   const panningRef = useRef(false)
+  const [span, setSpan] = useState({ cols: 2, rows: 2 })
   const [hovered, setHovered] = useState('')
   const [labelPlay, setLabelPlay] = useState(0)
   const hover = useCallback((name) => {
@@ -155,6 +167,12 @@ export function HomePage() {
     const gate = gateRef.current
     const board = boardRef.current
     if (!gate || !board) return undefined
+
+    const fitted = boardSpan(gate.clientWidth, gate.clientHeight)
+    if (fitted.cols !== span.cols || fitted.rows !== span.rows) {
+      setSpan(fitted)
+      return undefined
+    }
 
     const cells = [...board.querySelectorAll('.hb-board-cell')]
     const fine = finePointer()
@@ -355,6 +373,11 @@ export function HomePage() {
     }
 
     const onResize = () => {
+      const next = boardSpan(gate.clientWidth, gate.clientHeight)
+      if (next.cols !== span.cols || next.rows !== span.rows) {
+        setSpan(next)
+        return
+      }
       if (!moved) center()
       else {
         placed = { col: null, row: null }
@@ -383,7 +406,7 @@ export function HomePage() {
       window.removeEventListener('resize', onResize)
       if (!calm) gsap.ticker.remove(tick)
     }
-  }, [])
+  }, [span.cols, span.rows])
 
   useLayoutEffect(() => {
     const gate = gateRef.current
@@ -428,6 +451,8 @@ export function HomePage() {
           onOpen={open}
           onHover={hover}
           panningRef={panningRef}
+          cols={span.cols}
+          rows={span.rows}
         />
       </div>
       <p className="hb-choose" aria-live="polite">
