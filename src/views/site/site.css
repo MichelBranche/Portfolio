@@ -594,6 +594,8 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
   position: absolute;
   width: 2600px;
   height: 1550px;
+  content-visibility: auto;
+  contain-intrinsic-size: 2600px 1550px;
 }
 
 .hb-tile {

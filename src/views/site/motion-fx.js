@@ -100,8 +100,25 @@ export function pixelClear(root) {
   gsap.set(cells, { opacity: 0 })
 }
 
+function ensurePixelGrid(root) {
+  if (root.querySelector('.hb-px')) return
+  const pix = root.querySelector('.hb-pix')
+  if (!pix) return
+  const grid = document.createElement('span')
+  grid.className = 'hb-px-grid'
+  grid.setAttribute('aria-hidden', 'true')
+  const count = PX_GRID * PX_GRID
+  for (let index = 0; index < count; index += 1) {
+    const cell = document.createElement('span')
+    cell.className = 'hb-px'
+    grid.appendChild(cell)
+  }
+  pix.appendChild(grid)
+}
+
 export function pixelBurst(root) {
   if (!root || reduceMotion()) return
+  ensurePixelGrid(root)
   const cells = root.querySelectorAll('.hb-px')
   if (!cells.length) return
   pixelClear(root)

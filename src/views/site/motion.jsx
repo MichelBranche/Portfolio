@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { PX_GRID, finePointer, reduceMotion } from './motion-fx'
 
@@ -53,16 +54,35 @@ export function Scramble({ text, play = 0, className }) {
   return <span className={className}>{out ?? text}</span>
 }
 
-/** Griglia di pixel neri sopra un'immagine. */
-export function PixelImage({ src, alt = '', className = '', eager = false }) {
+/** Griglia di pixel neri sopra un'immagine. Sulla home i pixel nascono al primo hover. */
+export function PixelImage({ src, alt = '', className = '', eager = false, priority = false, grid = true, optimized = false }) {
+  const image = optimized ? (
+    <Image
+      src={src}
+      alt={alt}
+      width={640}
+      height={589}
+      sizes="360px"
+      draggable={false}
+      priority={priority}
+      loading={priority ? undefined : eager ? 'eager' : 'lazy'}
+      decoding="async"
+      style={{ width: '100%', height: '100%' }}
+    />
+  ) : (
+    <img src={src} alt={alt} draggable="false" loading={eager || priority ? 'eager' : 'lazy'} decoding="async" />
+  )
+
   return (
     <span className={`hb-pix ${className}`}>
-      <img src={src} alt={alt} draggable="false" loading={eager ? 'eager' : 'lazy'} decoding="async" />
-      <span className="hb-px-grid" aria-hidden>
-        {Array.from({ length: PX_GRID * PX_GRID }, (_, index) => (
-          <span key={index} className="hb-px" />
-        ))}
-      </span>
+      {image}
+      {grid ? (
+        <span className="hb-px-grid" aria-hidden>
+          {Array.from({ length: PX_GRID * PX_GRID }, (_, index) => (
+            <span key={index} className="hb-px" />
+          ))}
+        </span>
+      ) : null}
     </span>
   )
 }
