@@ -199,7 +199,7 @@ export function HomePage() {
   const panningRef = useRef(false)
   const [span, setSpan] = useState({ cols: 1, rows: 1 })
   const [fullBoard, setFullBoard] = useState(false)
-  const [compact, setCompact] = useState(false)
+  const [compact, setCompact] = useState(null)
   const [hovered, setHovered] = useState('')
   const [labelPlay, setLabelPlay] = useState(0)
   const hover = useCallback((name) => {
@@ -223,7 +223,7 @@ export function HomePage() {
   }, [])
 
   useLayoutEffect(() => {
-    if (compact) return undefined
+    if (compact !== false) return undefined
     const gate = gateRef.current
     const board = boardRef.current
     if (!gate || !board) return undefined
@@ -545,8 +545,8 @@ export function HomePage() {
       <p className="hb-choose" aria-live="polite">
         <Scramble text={hovered || String(t('site.choose'))} play={labelPlay} />
       </p>
-      {compact ? (
-        <div className="hb-mobile-grid">
+      {compact == null ? null : compact ? (
+        <div key="mobile" className="hb-mobile-grid">
           {projects.map((project, index) => (
             <ProjectTile
               key={project.slug}
@@ -561,7 +561,7 @@ export function HomePage() {
           ))}
         </div>
       ) : (
-        <div ref={boardRef} className="hb-board">
+        <div key="desktop" ref={boardRef} className="hb-board">
           <Board
             projects={projects}
             lang={lang}
