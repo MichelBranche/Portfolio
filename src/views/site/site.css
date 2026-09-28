@@ -723,7 +723,7 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
 }
 
 .hb-skip {
-  position: absolute;
+  position: fixed;
   left: 50%;
   bottom: 1.2rem;
   margin-left: -2rem;
@@ -733,9 +733,9 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
   gap: 0.35rem;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: #f4f1ea;
   letter-spacing: 0.28em;
-  z-index: 6;
+  z-index: 96;
 }
 
 .hb-skip-x {

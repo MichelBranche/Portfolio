@@ -3,7 +3,6 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { PixelImage, Scramble } from './motion.jsx'
-import { magnetic, magneticReset } from './magnetic'
 import { finePointer, reduceMotion } from './motion-utils'
 import { useProjects } from './useProjects.js'
 import { useSiteUI } from './site-ui.js'
@@ -174,7 +173,7 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
 
 export function HomePage() {
   const { t, lang } = useLanguage()
-  const { openProject, go, introDone } = useSiteUI()
+  const { openProject, introDone } = useSiteUI()
   const projects = useProjects()
   const gateRef = useRef(null)
   const boardRef = useRef(null)
@@ -530,19 +529,6 @@ export function HomePage() {
       <p className="hb-choose" aria-live="polite">
         <Scramble text={hovered || String(t('site.choose'))} play={labelPlay} />
       </p>
-      <button
-        type="button"
-        className="hb-skip"
-        onClick={() => go('/portfolio')}
-        onPointerMove={(event) => magnetic(event, 0.4)}
-        onPointerLeave={magneticReset}
-      >
-        <span className="hb-skip-x" aria-hidden>
-          <span />
-          <span />
-        </span>
-        {String(t('site.skip'))}
-      </button>
     </div>
   )
 }
