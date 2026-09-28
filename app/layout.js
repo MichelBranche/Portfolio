@@ -1,4 +1,6 @@
+import { Archivo, Chakra_Petch, EB_Garamond } from 'next/font/google'
 import { Suspense } from 'react'
+import { headers } from 'next/headers'
 import { Analytics } from '@vercel/analytics/next'
 import { VisitTracker } from '@/components/VisitTracker.jsx'
 import { LanguageProvider } from '@/context/LanguageContext.jsx'
@@ -9,12 +11,47 @@ import '@/views/AdminPage.css'
 import '@/components/LanguageSwitch.css'
 import '@/components/FlagIcon.css'
 
+const archivo = Archivo({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-archivo',
+  preload: true,
+})
+
+const chakra = Chakra_Petch({
+  subsets: ['latin'],
+  weight: ['600', '700'],
+  display: 'swap',
+  variable: '--font-chakra',
+  preload: false,
+})
+
+const garamond = EB_Garamond({
+  subsets: ['latin', 'latin-ext'],
+  weight: '500',
+  display: 'swap',
+  variable: '--font-garamond',
+  preload: false,
+})
+
 export const metadata = {
-  title: 'MICHEL BRANCHE | Web developer',
-  description: 'Michel Branche, web developer.',
+  metadataBase: new URL('https://www.michelbranche.it'),
+  title: {
+    default: 'Michel Branche | Websites for hospitality',
+    absolute: 'Michel Branche | Websites for hospitality',
+  },
+  description:
+    'Independent web developer in Italy. Websites for hotels, B&Bs, residences, holiday homes and local businesses.',
   icons: {
     icon: '/favicon.png',
     apple: '/favicon.png',
+  },
+  openGraph: {
+    siteName: 'Michel Branche',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
   },
 }
 
@@ -27,20 +64,15 @@ export const viewport = {
   colorScheme: 'light',
 }
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const h = await headers()
+  const lang = h.get('x-mb-lang') || 'en'
+
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://w.soundcloud.com" crossOrigin="" />
-        <link rel="preconnect" href="https://www.youtube.com" crossOrigin="" />
-        <link rel="preconnect" href="https://i.ytimg.com" crossOrigin="" />
-        <link rel="preconnect" href="https://assets.codepen.io" crossOrigin="" />
-        <link rel="preconnect" href="https://raw.githubusercontent.com" crossOrigin="" />
-        <link rel="preconnect" href="https://skycrabacademy.net" crossOrigin="" />
-      </head>
-      <body>
+    <html lang={lang} className={`${archivo.variable} ${chakra.variable} ${garamond.variable}`}>
+      <body className={archivo.className}>
         <div id="root">
-          <LanguageProvider>
+          <LanguageProvider initialLang={lang}>
             <div id="page-transition" className="page-transition" aria-hidden="true" />
             <Suspense fallback={null}>
               <VisitTracker />

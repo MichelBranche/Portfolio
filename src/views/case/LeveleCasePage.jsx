@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FOOTER_SOCIAL } from '../../config/site.js'
+import { useLanguage } from '../../context/LanguageContext.jsx'
 import { Chars, PixelImage, Scramble } from '../site/motion.jsx'
 import { magnetic, magneticReset, pixelBurst, pixelClear, reduceMotion } from '../site/motion-fx'
 import { useSiteUI } from '../site/site-ui.js'
@@ -13,36 +14,68 @@ gsap.registerPlugin(ScrollTrigger)
 
 export default function LeveleCasePage() {
   const { go } = useSiteUI()
+  const { t } = useLanguage()
   const kpiRef = useRef(null)
-
-  useEffect(() => {
-    const previous = document.title
-    document.title = `${D.brand} — Case study | Michel Branche`
-    return () => {
-      document.title = previous
-    }
-  }, [])
 
   useLayoutEffect(() => {
     const root = kpiRef.current
-    if (!root || reduceMotion()) return undefined
+    if (!root) return undefined
+    const nodes = [...root.querySelectorAll('[data-count]')]
+    const finals = nodes.map((el) => formatKpiDisplay(D.kpis[Number(el.dataset.count)]))
+    nodes.forEach((el, index) => {
+      el.textContent = finals[index]
+    })
+    if (reduceMotion()) return undefined
+
+    const restore = () => {
+      nodes.forEach((el, index) => {
+        if (el.isConnected) el.textContent = finals[index]
+      })
+    }
+    const timers = [window.setTimeout(restore, 2800), window.setTimeout(restore, 4600)]
     const ctx = gsap.context(() => {
-      root.querySelectorAll('[data-count]').forEach((el) => {
+      nodes.forEach((el, index) => {
         const kpi = D.kpis[Number(el.dataset.count)]
+        if (!kpi || kpi.value === 0) return
+        const finalText = finals[index]
         const counter = { v: 0 }
-        el.textContent = formatKpiDisplay(kpi, 0)
-        gsap.to(counter, {
-          v: kpi.value,
-          duration: 1.6,
-          ease: 'expo.out',
-          scrollTrigger: { trigger: el, start: 'top 92%', once: true },
-          onUpdate: () => {
-            el.textContent = formatKpiDisplay(kpi, counter.v)
-          },
-        })
+        let started = false
+        const play = () => {
+          if (started) return
+          started = true
+          gsap.to(counter, {
+            v: kpi.value,
+            duration: 1.6,
+            ease: 'expo.out',
+            onStart: () => {
+              el.textContent = formatKpiDisplay(kpi, 0)
+            },
+            onUpdate: () => {
+              el.textContent = formatKpiDisplay(kpi, counter.v)
+            },
+            onComplete: () => {
+              el.textContent = finalText
+            },
+          })
+        }
+        const rect = el.getBoundingClientRect()
+        const inView = rect.top < (window.innerHeight || 1) * 0.92 && rect.bottom > 0
+        if (inView) play()
+        else {
+          ScrollTrigger.create({
+            trigger: el,
+            start: 'top 92%',
+            once: true,
+            onEnter: play,
+          })
+        }
       })
     }, root)
-    return () => ctx.revert()
+    return () => {
+      timers.forEach((id) => window.clearTimeout(id))
+      ctx.revert()
+      restore()
+    }
   }, [])
 
   const back = (event) => {
@@ -71,8 +104,11 @@ export default function LeveleCasePage() {
         <p className="hb-label" data-reveal>
           \ {D.location} \
         </p>
+        <p className="hb-kind" data-reveal>
+          {String(t('site.clientWork'))}
+        </p>
         <h1 className="hb-cs-title">
-          <Chars text="Le Vele" />
+          <Chars text="Le Vele" wrap />
         </h1>
         <p className="hb-cs-lead" data-reveal>
           {D.hero.headline}

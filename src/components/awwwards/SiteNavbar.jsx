@@ -43,7 +43,9 @@ export function SiteNavbar({ labels, onNavigate, hidden = false }) {
   }, [isOpen, navHover])
 
   useEffect(() => {
-    if (hidden) setIsOpen(false)
+    if (!hidden) return undefined
+    const id = window.setTimeout(() => setIsOpen(false), 0)
+    return () => window.clearTimeout(id)
   }, [hidden])
 
   const setMenuOpen = useCallback((open) => {

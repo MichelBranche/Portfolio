@@ -1,7 +1,9 @@
 'use client'
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { LANGUAGES, LANGUAGE_LIST, translate } from '../i18n/translations'
+import { applyClientMeta } from '../lib/seo-shared'
 
 const STORAGE = 'mb-lang'
 const STORAGE_EXPLICIT = 'mb-lang-explicit'
@@ -9,19 +11,9 @@ const CODES = new Set(LANGUAGE_LIST.map((l) => l.code))
 
 const LanguageContext = createContext(null)
 
-function readStoredLang() {
-  try {
-    const explicit = localStorage.getItem(STORAGE_EXPLICIT) === '1'
-    const stored = localStorage.getItem(STORAGE)
-    if (explicit && stored && CODES.has(stored)) return stored
-  } catch {
-    /* private mode */
-  }
-  return 'en'
-}
-
-export function LanguageProvider({ children }) {
-  const [lang, setLangState] = useState('en')
+export function LanguageProvider({ children, initialLang = 'en' }) {
+  const pathname = usePathname()
+  const [lang, setLangState] = useState(CODES.has(initialLang) ? initialLang : 'en')
 
   const setLang = useCallback((code) => {
     if (!CODES.has(code)) return
@@ -29,23 +21,31 @@ export function LanguageProvider({ children }) {
     try {
       localStorage.setItem(STORAGE, code)
       localStorage.setItem(STORAGE_EXPLICIT, '1')
+      document.cookie = `mb-lang=${code};path=/;max-age=31536000;SameSite=Lax`
     } catch {
       /* private mode */
     }
   }, [])
 
   useEffect(() => {
-    const stored = readStoredLang()
-    if (stored !== 'en') setLangState(stored)
-  }, [])
+    let stored = ''
+    try {
+      const explicit = localStorage.getItem(STORAGE_EXPLICIT) === '1'
+      const value = localStorage.getItem(STORAGE) || ''
+      if (explicit && CODES.has(value)) stored = value
+    } catch {
+      stored = ''
+    }
+    if (!stored) return undefined
+    const id = window.setTimeout(() => setLang(stored), 0)
+    return () => window.clearTimeout(id)
+  }, [setLang])
 
   useEffect(() => {
     if (typeof document === 'undefined') return
     document.documentElement.lang = LANGUAGES[lang]?.code || 'en'
-    const cycle = translate(lang, 'doc.cycle')
-    const title = Array.isArray(cycle) ? cycle[0] : String(cycle)
-    if (title) document.title = title
-  }, [lang])
+    applyClientMeta(lang, pathname || '/')
+  }, [lang, pathname])
 
   const t = useCallback(
     (path) => {

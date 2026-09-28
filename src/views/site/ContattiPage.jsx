@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { FOOTER_SOCIAL } from '../../config/site.js'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { Chars } from './motion.jsx'
-import { magnetic, magneticReset } from './motion-fx'
+import { magnetic, magneticReset } from './magnetic'
 
 const EMAIL = 'michel.lavoro@gmail.com'
 
@@ -33,7 +33,7 @@ export function ContattiPage() {
         \ {String(t('site.contatti'))} \
       </p>
       <h1 className="hb-contact-title">
-        <Chars text={String(t('footer.cta'))} />
+        <Chars text={String(t('footer.cta'))} wrap />
       </h1>
       <a className="hb-contact-mail" href={FOOTER_SOCIAL.email} data-reveal data-cursor={String(t('site.writeMe'))}>
         {[...EMAIL].map((char, index) => (
@@ -42,6 +42,12 @@ export function ContattiPage() {
           </span>
         ))}
       </a>
+      <p className="hb-contact-phone" data-reveal>
+        <a href={FOOTER_SOCIAL.phone}>{FOOTER_SOCIAL.phoneDisplay}</a>
+        <a href={FOOTER_SOCIAL.whatsapp} target="_blank" rel="noreferrer">
+          WhatsApp
+        </a>
+      </p>
       <div className="hb-contact-actions" data-reveal>
         <button
           type="button"

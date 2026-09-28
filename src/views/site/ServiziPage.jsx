@@ -5,7 +5,7 @@ import { FOOTER_SOCIAL } from '../../config/site.js'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { asArray } from '../../utils/document.js'
 import { Chars, Scramble } from './motion.jsx'
-import { magnetic, magneticReset } from './motion-fx'
+import { magnetic, magneticReset } from './magnetic'
 
 const WEB_KEYS = ['website', 'ecommerce', 'uiux', 'performance', 'maintenance', 'seo']
 const VISUAL_KEYS = ['photo', 'copy', 'drone']

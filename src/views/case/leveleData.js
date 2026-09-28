@@ -1,4 +1,4 @@
-/** Dati case study Residence Le Vele — primo mese risultati. */
+/** Dati case study Residence Le Vele, primo mese di risultati. */
 export const LEVELE_CASE = {
   brand: 'Residence Le Vele',
   location: 'Stintino, Sardegna',
@@ -24,7 +24,7 @@ export const LEVELE_CASE = {
   },
   kpis: [
     { value: 11947, prefix: '', suffix: ' €', label: 'Ricavi nel 1° mese', format: 'currency' },
-    { value: 14, prefix: '', suffix: '', label: 'Prenotazioni (3–30 lug)', format: 'int' },
+    { value: 14, prefix: '', suffix: '', label: 'Prenotazioni (3-30 lug)', format: 'int' },
     { value: 77, prefix: '', suffix: '', label: 'Notti vendute', format: 'int' },
     { value: 0, prefix: '', suffix: ' €', label: 'Google Ads', format: 'currency' },
   ],
@@ -67,7 +67,7 @@ export const LEVELE_CASE = {
     title: 'Analytics',
     lead: 'Traffico organico e comportamento nel primo mese di messa online.',
     caption:
-      'Vercel Analytics (primo mese) — 267 visitatori (+493%), 752 page views, bounce rate 34%. Top referrer: Google (135). /prenota ha ricevuto 100 visitatori.',
+      'Vercel Analytics (primo mese): 267 visitatori (+493%), 752 page views, bounce rate 34%. Top referrer: Google (135). /prenota ha ricevuto 100 visitatori.',
     metrics: [
       { value: 267, label: 'Visitatori' },
       { value: 752, label: 'Page Views' },
@@ -77,7 +77,7 @@ export const LEVELE_CASE = {
   },
   results: {
     title: 'Risultati economici',
-    lead: 'Nel primo mese di messa online (3–30 luglio) il sito ha generato:',
+    lead: 'Nel primo mese di messa online (3-30 luglio) il sito ha generato:',
     lines: ['14 prenotazioni dirette', '77 notti', '11.947 €'],
     note: 'Senza alcuna campagna Google Ads.',
     context:
@@ -86,7 +86,7 @@ export const LEVELE_CASE = {
   slope: {
     title: 'Report del gestionale',
     caption:
-      'Estratto Slope (3–30 luglio) — canale “sito”: 14 prenotazioni, 77 notti, 11.947 €, 0% commissioni e 0% cancellazioni. YTD 2026: 17 prenotazioni dirette totali dal sito.',
+      'Estratto Slope (3-30 luglio), canale “sito”: 14 prenotazioni, 77 notti, 11.947 €, 0% commissioni e 0% cancellazioni. YTD 2026: 17 prenotazioni dirette totali dal sito.',
   },
   deliverables: {
     title: 'Cosa ho realizzato',

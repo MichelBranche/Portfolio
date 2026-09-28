@@ -2,17 +2,14 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import Lenis from 'lenis'
 import { FOOTER_SOCIAL } from '../../config/site.js'
 import { LanguageSwitch } from '../../components/LanguageSwitch.jsx'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { Chars, HbCursor, Scramble } from './motion.jsx'
-import { EASE, magnetic, magneticReset, reduceMotion, useReveal } from './motion-fx'
+import { magnetic, magneticReset } from './magnetic'
+import { reduceMotion } from './motion-utils'
+import { shopIsOpen } from './shopData.js'
 import { SiteUIContext } from './site-ui.js'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const NAV = [
   { to: '/', key: 'home' },
@@ -21,7 +18,7 @@ const NAV = [
   { to: '/servizi', key: 'servizi' },
   { to: '/shop', key: 'shop' },
   { to: '/contatti', key: 'contatti' },
-]
+].filter((item) => item.key !== 'shop' || shopIsOpen())
 
 const VEIL_CELLS = 12 * 7
 const WELCOME_KEY = 'hb:welcome'
@@ -61,33 +58,50 @@ function Welcome({ text, onDone }) {
       onDone()
       return
     }
-    gsap
-      .timeline({ onComplete: onDone })
-      .to(root.querySelectorAll('.hb-welcome-text .hb-char'), {
-        yPercent: -115,
-        duration: 0.55,
-        ease: 'expo.in',
-        stagger: 0.012,
-      })
-      .to(root.querySelector('.hb-welcome-hint'), { autoAlpha: 0, duration: 0.3 }, 0)
-      .to(veilRef.current.children, { opacity: 0, duration: 0.001, stagger: { each: 0.005, from: 'random' } })
+    const fail = window.setTimeout(onDone, 900)
+    import('gsap').then(({ default: gsap }) => {
+      gsap
+        .timeline({
+          onComplete: () => {
+            window.clearTimeout(fail)
+            onDone()
+          },
+        })
+        .to(root.querySelectorAll('.hb-welcome-text .hb-char'), {
+          yPercent: -115,
+          duration: 0.55,
+          ease: 'expo.in',
+          stagger: 0.012,
+        })
+        .to(root.querySelector('.hb-welcome-hint'), { autoAlpha: 0, duration: 0.3 }, 0)
+        .to(veilRef.current?.children || [], { opacity: 0, duration: 0.001, stagger: { each: 0.005, from: 'random' } })
+    })
   }, [onDone])
 
   useLayoutEffect(() => {
     const root = rootRef.current
-    if (reduceMotion()) return undefined
-    const tl = gsap.timeline({ delay: 0.15 })
-    tl.fromTo(
-      root.querySelectorAll('.hb-welcome-text .hb-char'),
-      { yPercent: 115 },
-      { yPercent: 0, duration: 1.1, ease: EASE, stagger: 0.028 },
-    ).fromTo(root.querySelector('.hb-welcome-hint'), { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.6)
+    if (reduceMotion()) {
+      onDone()
+      return undefined
+    }
+    let alive = true
+    let tl
     const id = window.setTimeout(finish, 2600)
+    import('gsap').then(({ default: gsap }) => {
+      if (!alive || !root) return
+      tl = gsap.timeline({ delay: 0.15 })
+      tl.fromTo(
+        root.querySelectorAll('.hb-welcome-text .hb-char'),
+        { yPercent: 115 },
+        { yPercent: 0, duration: 1.1, ease: 'expo.out', stagger: 0.028 },
+      ).fromTo(root.querySelector('.hb-welcome-hint'), { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.6)
+    })
     return () => {
-      tl.kill()
+      alive = false
+      tl?.kill()
       window.clearTimeout(id)
     }
-  }, [finish])
+  }, [finish, onDone])
 
   return (
     <div ref={rootRef} className="hb-welcome" onClick={finish} role="presentation">
@@ -100,8 +114,29 @@ function Welcome({ text, onDone }) {
   )
 }
 
+function clearBodyLock() {
+  const body = document.body
+  body.style.position = ''
+  body.style.top = ''
+  body.style.left = ''
+  body.style.right = ''
+  body.style.width = ''
+  body.style.paddingRight = ''
+}
+
+function applyBodyLock(y) {
+  const body = document.body
+  const gap = Math.max(0, window.innerWidth - document.documentElement.clientWidth)
+  body.style.position = 'fixed'
+  body.style.top = `-${y}px`
+  body.style.left = '0'
+  body.style.right = '0'
+  body.style.width = '100%'
+  body.style.paddingRight = gap ? `${gap}px` : ''
+}
+
 export function SiteFrame({ children }) {
-  const { t, lang } = useLanguage()
+  const { t, lang, setLang } = useLanguage()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -125,16 +160,69 @@ export function SiteFrame({ children }) {
   const menuOpen = menuPath === here
   const modalProject = modal?.path === here ? modal.project : null
 
-  useEffect(() => {
-    try {
-      setWelcome(sessionStorage.getItem(WELCOME_KEY) !== '1')
-    } catch {
-      setWelcome(true)
-    }
-    setWelcomeKnown(true)
-  }, [])
+  const isHomeRef = useRef(isHome)
+  const apiRef = useRef({})
+  const runtimeRef = useRef(null)
+  const lockY = useRef(null)
 
-  useReveal(mainRef, [location.pathname, location.search, welcome], 0.2)
+  useLayoutEffect(() => {
+    isHomeRef.current = isHome
+    apiRef.current = {
+      pathname: location.pathname,
+      search: location.search,
+      welcome,
+      welcomeKnown,
+      menuOpen,
+      modalOpen: Boolean(modalProject),
+      modalKey: modalProject?.slug || '',
+      isHome,
+      overlayLock,
+      mainRef,
+      lenisRef,
+      modalRef,
+    }
+  })
+
+  useEffect(() => {
+    let cancel = false
+    const show = (value) => {
+      if (cancel) return
+      setWelcome(value)
+      setWelcomeKnown(true)
+    }
+    let seen = false
+    try {
+      seen = sessionStorage.getItem(WELCOME_KEY) === '1'
+    } catch {
+      seen = false
+    }
+    if (seen) {
+      show(false)
+      return undefined
+    }
+    const arm = () => show(true)
+    if (!isHomeRef.current) {
+      arm()
+      return () => {
+        cancel = true
+      }
+    }
+    const img = document.querySelector('[data-lcp] img')
+    let cap = 0
+    if (img && !img.complete) {
+      img.addEventListener('load', arm, { once: true })
+      img.addEventListener('error', arm, { once: true })
+      cap = window.setTimeout(arm, 1000)
+    } else {
+      cap = window.setTimeout(arm, 80)
+    }
+    return () => {
+      cancel = true
+      window.clearTimeout(cap)
+      img?.removeEventListener('load', arm)
+      img?.removeEventListener('error', arm)
+    }
+  }, [])
 
   useEffect(() => {
     document.body.classList.add('hb-on')
@@ -142,52 +230,86 @@ export function SiteFrame({ children }) {
   }, [])
 
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (value) => Math.min(1, 1.001 - 2 ** (-10 * value)),
-    })
-    lenis.on('scroll', ScrollTrigger.update)
-    const tick = (time) => lenis.raf(time * 1000)
-    gsap.ticker.add(tick)
-    gsap.ticker.lagSmoothing(0)
-    lenisRef.current = lenis
+    let dead = false
+    const boot = () => {
+      import('./site-runtime.js').then(({ createRuntime }) => {
+        if (dead) return
+        runtimeRef.current = createRuntime(apiRef)
+        runtimeRef.current.sync()
+      })
+    }
+    const start = () => {
+      const ric = window.requestIdleCallback
+      if (ric) ric(boot, { timeout: 1600 })
+      else window.setTimeout(boot, 400)
+    }
+    if (document.readyState === 'complete') start()
+    else window.addEventListener('load', start, { once: true })
     return () => {
-      gsap.ticker.remove(tick)
-      lenis.destroy()
-      lenisRef.current = null
+      dead = true
+      window.removeEventListener('load', start)
+      runtimeRef.current?.destroy()
+      runtimeRef.current = null
     }
   }, [])
 
+  useEffect(() => {
+    runtimeRef.current?.sync()
+  }, [location.pathname, location.search, welcome, welcomeKnown, menuOpen, modalProject, isHome, overlayLock])
+
+  useEffect(() => {
+    const code = searchParams.get('lang')
+    if (code && code !== lang) setLang(code)
+  }, [searchParams, lang, setLang])
+
   useLayoutEffect(() => {
-    lenisRef.current?.scrollTo(0, { immediate: true })
+    if (document.body.style.position === 'fixed') {
+      clearBodyLock()
+      lockY.current = null
+    }
     window.scrollTo(0, 0)
+    lenisRef.current?.scrollTo(0, { immediate: true, force: true })
     if (!veilPending.current || !veilRef.current) return
+    const cells = veilRef.current.children
     veilPending.current = false
-    gsap.to(veilRef.current.children, {
-      opacity: 0,
-      duration: 0.001,
-      delay: 0.1,
-      stagger: { each: 0.005, from: 'random' },
+    import('gsap').then(({ default: gsap }) => {
+      gsap.to(cells, {
+        opacity: 0,
+        duration: 0.001,
+        delay: 0.1,
+        stagger: { each: 0.005, from: 'random' },
+      })
     })
   }, [location.pathname, location.search])
 
-  useEffect(() => {
-    const locked = menuOpen || Boolean(modalProject) || isHome || welcome || overlayLock
-    document.body.classList.toggle('site-lock', locked)
+  useLayoutEffect(() => {
+    const menuLock = menuOpen || Boolean(modalProject)
     const lenis = lenisRef.current
+    if (menuLock) {
+      if (lockY.current == null) {
+        const y = window.scrollY || lenis?.scroll || 0
+        lockY.current = y
+        applyBodyLock(y)
+      }
+      lenis?.stop()
+      return
+    }
+    if (lockY.current != null) {
+      const y = lockY.current
+      lockY.current = null
+      clearBodyLock()
+      window.scrollTo(0, y)
+      if (lenis) {
+        if (isHome || welcome || overlayLock) lenis.stop()
+        else lenis.start()
+        lenis.scrollTo(y, { immediate: true, force: true })
+      }
+      return
+    }
     if (!lenis) return
-    if (locked) lenis.stop()
+    if (isHome || welcome || overlayLock) lenis.stop()
     else lenis.start()
   }, [menuOpen, modalProject, isHome, welcome, overlayLock])
-
-  useLayoutEffect(() => {
-    if (!welcomeKnown || welcome || reduceMotion()) return
-    gsap.fromTo(
-      '.hb-header > *, .hb-subline > *',
-      { y: -16, autoAlpha: 0 },
-      { y: 0, autoAlpha: 1, duration: 0.9, ease: EASE, stagger: 0.07 },
-    )
-  }, [welcome, welcomeKnown])
 
   const go = useCallback(
     (to) => {
@@ -198,15 +320,17 @@ export function SiteFrame({ children }) {
         router.push(to)
         return
       }
-      gsap.killTweensOf(cells)
-      gsap.to(cells, {
-        opacity: 1,
-        duration: 0.001,
-        stagger: { each: 0.005, from: 'random' },
-        onComplete: () => {
-          veilPending.current = true
-          router.push(to)
-        },
+      import('gsap').then(({ default: gsap }) => {
+        gsap.killTweensOf(cells)
+        gsap.to(cells, {
+          opacity: 1,
+          duration: 0.001,
+          stagger: { each: 0.005, from: 'random' },
+          onComplete: () => {
+            veilPending.current = true
+            router.push(to)
+          },
+        })
       })
     },
     [here, router],
@@ -214,43 +338,22 @@ export function SiteFrame({ children }) {
 
   const openProject = useCallback((project) => setModal({ project, path: here }), [here])
 
-  useLayoutEffect(() => {
-    const root = modalRef.current
-    if (!modalProject || !root || reduceMotion()) return
-    const tl = gsap.timeline()
-    tl.fromTo(root.querySelector('.hb-modal-backdrop'), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4 })
-      .fromTo(
-        root.querySelector('.hb-modal-panel'),
-        { clipPath: 'inset(50% 0% 50% 0%)' },
-        { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.85, ease: 'expo.inOut' },
-        0,
-      )
-      .fromTo(
-        root.querySelectorAll('.hb-modal-copy > *'),
-        { y: 24, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.8, ease: EASE, stagger: 0.06 },
-        0.45,
-      )
-    const singleImage = root.querySelector('.hb-modal-images:not(.is-stack) img')
-    if (singleImage) {
-      tl.fromTo(singleImage, { scale: 1.08 }, { scale: 1, duration: 1.15, ease: EASE, clearProps: 'transform' }, 0.2)
-    }
-  }, [modalProject])
-
   const closeModal = useCallback(() => {
     const root = modalRef.current
     if (!root || reduceMotion()) {
       setModal(null)
       return
     }
-    gsap
-      .timeline({ onComplete: () => setModal(null) })
-      .to(root.querySelector('.hb-modal-panel'), {
-        clipPath: 'inset(50% 0% 50% 0%)',
-        duration: 0.55,
-        ease: 'expo.in',
-      })
-      .to(root.querySelector('.hb-modal-backdrop'), { autoAlpha: 0, duration: 0.3 }, 0.3)
+    import('gsap').then(({ default: gsap }) => {
+      gsap
+        .timeline({ onComplete: () => setModal(null) })
+        .to(root.querySelector('.hb-modal-panel'), {
+          clipPath: 'inset(50% 0% 50% 0%)',
+          duration: 0.55,
+          ease: 'expo.in',
+        })
+        .to(root.querySelector('.hb-modal-backdrop'), { autoAlpha: 0, duration: 0.3 }, 0.3)
+    })
   }, [])
 
   useEffect(() => {
@@ -331,7 +434,7 @@ export function SiteFrame({ children }) {
           <span>
             H. {hh}
             <span className="hb-blink">.</span>
-            {mm} — {String(t('site.place'))}
+            {mm} - {String(t('site.place'))}
           </span>
           <span className="hb-subline-page">{String(t(`site.${routeKey(location.pathname)}`))}</span>
         </div>
@@ -398,6 +501,7 @@ export function SiteFrame({ children }) {
                   <span />
                 </button>
                 <p className="hb-tags">{`\\ ${modalProject.categoryLabel} \\`}</p>
+                {modalProject.kindLabel ? <p className="hb-kind">{modalProject.kindLabel}</p> : null}
                 <h2 id="hb-modal-title">{modalProject.title}</h2>
                 <p className="hb-modal-tech">{modalProject.tech}</p>
                 <p>{modalProject.desc}</p>
@@ -460,6 +564,10 @@ function SiteFooter({ t, link }) {
         <div data-reveal>
           <p className="hb-label">\ {String(t('site.contatti'))} \</p>
           <a href={FOOTER_SOCIAL.email}>michel.lavoro@gmail.com</a>
+          <a href={FOOTER_SOCIAL.phone}>{FOOTER_SOCIAL.phoneDisplay}</a>
+          <a href={FOOTER_SOCIAL.whatsapp} target="_blank" rel="noreferrer">
+            WhatsApp
+          </a>
           <a href={FOOTER_SOCIAL.instagram} target="_blank" rel="noreferrer">
             Instagram
           </a>

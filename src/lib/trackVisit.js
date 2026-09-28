@@ -15,6 +15,8 @@ function getSessionId() {
 
 /** Solo host pubblico in build di produzione (niente localhost / dev). */
 function shouldTrackVisits() {
+  // Next inlines this at build time. The browser bundle has no process global.
+  // eslint-disable-next-line no-undef
   if (process.env.NODE_ENV !== 'production') return false
   const host = window.location.hostname
   return host !== 'localhost' && host !== '127.0.0.1' && !host.endsWith('.local')

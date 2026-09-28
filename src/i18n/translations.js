@@ -83,6 +83,9 @@ const STRINGS = {
       mail: 'Mail',
       place: 'Italia',
       shop: 'Shop',
+      clientWork: 'Lavoro per cliente',
+      demoConcept: 'Demo / concept',
+      audience: 'Siti per hotel, B&B, residence, case vacanza e attività locali.',
     },
     shop: {
       welcome: 'Benvenuti nel mercato',
@@ -108,9 +111,9 @@ const STRINGS = {
     },
     projects: {
       header: 'Lavori Selezionati',
-      subTitle: 'Logica e estetica, insieme',
+      subTitle: 'Logica ed estetica, insieme',
       lead:
-        'Progetti selezionati, curati con attenzione\nper risultati concreti e impatto reale.',
+        'Progetti scelti, curati per risultati concreti.',
       countOne: '1 progetto',
       countMany: '{{n}} progetti',
       featuredBadge: 'Top pick',
@@ -182,7 +185,7 @@ const STRINGS = {
       website: {
         title: 'Siti Web Su Misura',
         desc: 'Landing page e siti istituzionali veloci, responsive e orientati ai risultati.',
-        bullets: ['Landing e siti vetrina', 'Design responsive su misura', 'Deploy e messa online'],
+        bullets: ['Hotel, B&B, residence, case vacanza', 'Landing e siti vetrina', 'Design responsive su misura', 'Deploy e messa online'],
       },
       ecommerce: {
         title: 'E-commerce',
@@ -206,7 +209,7 @@ const STRINGS = {
       },
       seo: {
         title: 'SEO Tecnica Base',
-        desc: 'Struttura corretta, metadati e basi solide per una migliore visibilita online.',
+        desc: 'Struttura corretta, metadati e basi solide per una migliore visibilità online.',
         bullets: ['Meta e Open Graph', 'Struttura semantica', 'Sitemap e indicizzazione'],
       },
     },
@@ -216,8 +219,8 @@ const STRINGS = {
       lead:
         'Sviluppatore web indipendente in Italia.\nProgetto interfacce chiare e performanti\ndalla prima bozza al deploy.',
       body:
-        'Mi occupo di siti ed esperienze digitali dove estetica e tecnica vanno insieme: React, animazioni GSAP, scroll fluido con Lenis e attenzione alla conversione.\nOgni progetto è pensato per essere veloce, comprensibile e coerente con il brand.\n\nQuando non sono in deploy:\n— Sperimentazione con UI, motion e layout editoriali\n— Demo e side project per hospitality, food e brand locali\n— Caffè, buona musica e debug con calma',
-      imageAlt: 'Michel Branche — ritratto',
+        'Mi occupo di siti ed esperienze digitali dove estetica e tecnica vanno insieme: React, animazioni GSAP, scroll fluido con Lenis e attenzione alla conversione.\nOgni progetto è pensato per essere veloce, comprensibile e coerente con il brand.\n\nQuando non sono in deploy:\n- Sperimentazione con UI, motion e layout editoriali\n- Demo e side project per hospitality, food e brand locali\n- Caffè, buona musica e debug con calma',
+      imageAlt: 'Michel Branche - ritratto',
     },
     reel: {
       yes: 'Sono',
@@ -237,8 +240,8 @@ const STRINGS = {
       includesLabel: 'Include',
       launch: {
         name: 'Launch',
-        range: '500€ - 900€',
-        ideal: ['Piccoli business locali', 'Landing page', 'Chi parte da zero'],
+        range: '500 € - 900 €',
+        ideal: ['Hotel, B&B e case vacanza', 'Piccoli business locali', 'Landing page', 'Chi parte da zero'],
         includes: [
           '1 pagina landing',
           'Design moderno su misura',
@@ -249,22 +252,22 @@ const STRINGS = {
       },
       growth: {
         name: 'Growth',
-        range: '1200€ - 2500€',
-        ideal: ['Business in espansione', 'Brand che vogliono alzare il livello', 'Best Value'],
+        range: '1.200 € - 2.500 €',
+        ideal: ['Strutture ricettive', 'Business in espansione', 'Brand che vogliono alzare il livello', 'Best Value'],
         includes: [
           '3-5 pagine',
           'UI premium',
           'Motion base (micro animazioni)',
           'SEO strutturato',
-          'Performance optimization',
+          'Ottimizzazione delle performance',
           'Setup analytics base',
           'Mini strategia (target + contenuti)',
         ],
       },
       authority: {
         name: 'Authority',
-        range: '3000€ - 6000€+',
-        ideal: ['Ristoranti high-end', 'Brand personali forti', 'Progetti wow'],
+        range: '3.000 € - 6.000 €+',
+        ideal: ['Hotel e residence', 'Ristoranti high-end', 'Brand personali forti', 'Progetti wow'],
         includes: [
           'Design completamente custom',
           'Motion avanzata (GSAP)',
@@ -278,11 +281,11 @@ const STRINGS = {
       extras: {
         title: 'Extra (upsell)',
         items: [
-          'Manutenzione mensile: 50€ - 150€/mese',
-          'SEO avanzato: 300€ - 800€',
+          'Manutenzione mensile: 50 € - 150 €/mese',
+          'SEO avanzato: 300 € - 800 €',
           'Copywriting: su richiesta',
-          'Landing aggiuntive: 150€ - 400€',
-          'Analytics avanzato: 200€ - 500€',
+          'Landing aggiuntive: 150 € - 400 €',
+          'Analytics avanzato: 200 € - 500 €',
         ],
       },
       positioning: {
@@ -329,7 +332,7 @@ const STRINGS = {
           name: 'Launch + Visual Pack',
           lead: 'A partire da',
           items: ['Sito 3-5 pagine', 'Shooting foto base', '5-10 foto editate', '1 mini video'],
-          range: '1.500€',
+          range: '1.500 €',
         },
         premiumExperience: {
           name: 'Premium Brand Experience',
@@ -340,7 +343,7 @@ const STRINGS = {
             'Shooting avanzato',
             'Drone e video cinematico',
           ],
-          range: '4.000€',
+          range: '4.000 €',
         },
       },
       cta: 'Richiedi consulenza gratuita',
@@ -358,19 +361,19 @@ const STRINGS = {
         photo: {
           title: 'FOTOGRAFIA',
           desc: 'Shooting professionali per prodotti, food ed e-commerce. Immagini curate dalla luce alla post-produzione, pensate per migliorare la percezione del brand e la conversione su ogni canale.',
-          price: 'da €150 / €300+',
+          price: 'da 150 € / 300 €+',
           details: ['Shooting prodotto', 'Food / e-commerce', 'Post produzione inclusa'],
         },
         copy: {
           title: 'COPYWRITING',
           desc: 'Testi che vendono e parlano la lingua del tuo brand. Naming, claim, microcopy e contenuti per landing, email e social, pensati per generare azione.',
-          price: 'da €100 / €400+',
+          price: 'da 100 € / 400 €+',
           details: ['Naming e claim', 'Testi sito / landing', 'Email & social copy'],
         },
         drone: {
           title: 'DRONE',
           desc: 'Riprese aeree cinematiche per location, hospitality e brand. Inquadrature stabili, traiettorie pulite e autorizzazioni gestite: file pronti al montaggio, in formato verticale o orizzontale.',
-          price: 'da €200 / €500+',
+          price: 'da 200 € / 500 €+',
           details: ['Riprese aeree cinematiche', 'Location / hospitality', 'Pilota certificato'],
         },
       },
@@ -387,7 +390,7 @@ const STRINGS = {
       line: 'DISPONIBILE PER NUOVI PROGETTI -',
       items: [
         'DISPONIBILE PER NUOVI PROGETTI',
-        'MICHEL BRANCHE — WEB DEVELOPER',
+        'MICHEL BRANCHE - WEB DEVELOPER',
         'UI/UX · GSAP · LENIS',
         'DISPONIBILE PER NUOVI PROGETTI',
       ],
@@ -475,6 +478,9 @@ const STRINGS = {
       mail: 'Mail',
       place: 'Italy',
       shop: 'Shop',
+      clientWork: 'Client work',
+      demoConcept: 'Demo / concept',
+      audience: 'Sites for hotels, B&Bs, residences, holiday homes and local businesses.',
     },
     shop: {
       welcome: 'Welcome to the market',
@@ -502,7 +508,7 @@ const STRINGS = {
       header: 'Selected work',
       subTitle: 'Logic meets aesthetics',
       lead:
-        'Featured projects crafted with care\nto drive real results and impact.',
+        'Selected projects, shaped for real results.',
       countOne: '1 project',
       countMany: '{{n}} projects',
       featuredBadge: 'Top pick',
@@ -570,11 +576,11 @@ const STRINGS = {
     services: {
       header: 'Services',
       subTitle: 'Behind the scene, beyond the screen',
-      lead: 'I help turn your idea into a website that delivers real results.',
+      lead: 'I turn an idea into a site that brings real results.',
       website: {
         title: 'Custom Websites',
         desc: 'Fast, responsive landing pages and business websites built to perform.',
-        bullets: ['Landing & showcase sites', 'Tailored responsive design', 'Deploy & go-live'],
+        bullets: ['Hotels, B&Bs, residences, holiday homes', 'Landing & showcase sites', 'Tailored responsive design', 'Deploy & go-live'],
       },
       ecommerce: {
         title: 'E-commerce',
@@ -608,8 +614,8 @@ const STRINGS = {
       lead:
         'Independent web developer based in Italy.\nI craft clear, high-performance interfaces\nfrom first sketch to deploy.',
       body:
-        'I build digital experiences where aesthetics and engineering meet: React, GSAP motion, Lenis smooth scroll, and a sharp eye on conversion.\nEvery project aims to be fast, readable, and true to the brand.\n\nWhen I’m not shipping:\n— UI, motion, and editorial layout experiments\n— Demos and side projects for hospitality, food, and local brands\n— Coffee, good music, and calm debugging',
-      imageAlt: 'Michel Branche — portrait',
+        'I build digital experiences where aesthetics and engineering meet: React, GSAP motion, Lenis smooth scroll, and a sharp eye on conversion.\nEvery project aims to be fast, readable, and true to the brand.\n\nWhen I’m not shipping:\n- UI, motion, and editorial layout experiments\n- Demos and side projects for hospitality, food, and local brands\n- Coffee, good music, and calm debugging',
+      imageAlt: 'Michel Branche - portrait',
     },
     reel: {
       yes: 'I am',
@@ -629,8 +635,8 @@ const STRINGS = {
       includesLabel: 'Includes',
       launch: {
         name: 'Launch',
-        range: '500€ - 900€',
-        ideal: ['Small local businesses', 'Landing pages', 'Starting from scratch'],
+        range: '€500 - €900',
+        ideal: ['Hotels, B&Bs, holiday homes', 'Small local businesses', 'Landing pages', 'Starting from scratch'],
         includes: [
           '1 landing page',
           'Modern custom design',
@@ -641,8 +647,8 @@ const STRINGS = {
       },
       growth: {
         name: 'Growth',
-        range: '1200€ - 2500€',
-        ideal: ['Growing businesses', 'Brands ready to level up', 'Best Value'],
+        range: '€1,200 - €2,500',
+        ideal: ['Hospitality businesses', 'Growing businesses', 'Brands ready to level up', 'Best Value'],
         includes: [
           '3-5 pages',
           'Premium UI',
@@ -655,8 +661,8 @@ const STRINGS = {
       },
       authority: {
         name: 'Authority',
-        range: '3000€ - 6000€+',
-        ideal: ['High-end restaurants', 'Strong personal brands', 'Wow projects'],
+        range: '€3,000 - €6,000+',
+        ideal: ['Hotels and residences', 'High-end restaurants', 'Strong personal brands', 'Wow projects'],
         includes: [
           'Fully custom design',
           'Advanced motion (GSAP)',
@@ -670,11 +676,11 @@ const STRINGS = {
       extras: {
         title: 'Extras (upsell)',
         items: [
-          'Monthly maintenance: 50€ - 150€/month',
-          'Advanced SEO: 300€ - 800€',
+          'Monthly maintenance: €50 - €150/month',
+          'Advanced SEO: €300 - €800',
           'Copywriting: on request',
-          'Additional landing pages: 150€ - 400€',
-          'Advanced analytics: 200€ - 500€',
+          'Additional landing pages: €150 - €400',
+          'Advanced analytics: €200 - €500',
         ],
       },
       positioning: {
@@ -721,13 +727,13 @@ const STRINGS = {
           name: 'Launch + Visual Pack',
           lead: 'Starting from',
           items: ['3-5 page website', 'Base photo shoot', '5-10 edited photos', '1 mini video'],
-          range: '1,500€',
+          range: '€1,500',
         },
         premiumExperience: {
           name: 'Premium Brand Experience',
           lead: 'Starting from',
           items: ['Full website', 'Art direction', 'Advanced shooting', 'Drone and cinematic video'],
-          range: '4,000€',
+          range: '€4,000',
         },
       },
       cta: 'Request a free consultation',
@@ -774,7 +780,7 @@ const STRINGS = {
       line: 'AVAILABLE FOR NEW PROJECTS -',
       items: [
         'AVAILABLE FOR NEW PROJECTS',
-        'MICHEL BRANCHE — WEB DEVELOPER',
+        'MICHEL BRANCHE - WEB DEVELOPER',
         'UI/UX · GSAP · LENIS',
         'AVAILABLE FOR NEW PROJECTS',
       ],
@@ -862,6 +868,9 @@ const STRINGS = {
       mail: 'Mail',
       place: 'Italie',
       shop: 'Shop',
+      clientWork: 'Projet client',
+      demoConcept: 'Démo / concept',
+      audience: 'Sites pour hôtels, B&B, résidences, maisons de vacances et commerces locaux.',
     },
     shop: {
       welcome: 'Bienvenue au marché',
@@ -995,8 +1004,8 @@ const STRINGS = {
       lead:
         'Developpeur web independant en Italie.\nJe concois des interfaces claires et performantes\nde la premiere maquette au deploy.',
       body:
-        'Je cree des experiences digitales ou esthetique et technique se rejoignent : React, motion GSAP, scroll Lenis et attention a la conversion.\nChaque projet vise la vitesse, la clarte et la coherence de marque.\n\nQuand je ne ship pas :\n— Experiences UI, motion et layouts editoriaux\n— Demos et side projects hospitality, food et marques locales\n— Cafe, bonne musique et debug tranquille',
-      imageAlt: 'Michel Branche — portrait',
+        'Je cree des experiences digitales ou esthetique et technique se rejoignent : React, motion GSAP, scroll Lenis et attention a la conversion.\nChaque projet vise la vitesse, la clarte et la coherence de marque.\n\nQuand je ne ship pas :\n- Experiences UI, motion et layouts editoriaux\n- Demos et side projects hospitality, food et marques locales\n- Cafe, bonne musique et debug tranquille',
+      imageAlt: 'Michel Branche - portrait',
     },
     reel: {
       yes: 'Je suis',
@@ -1048,7 +1057,7 @@ const STRINGS = {
       line: 'DISPONIBLE POUR NOUVEAUX PROJETS -',
       items: [
         'DISPONIBLE POUR NOUVEAUX PROJETS',
-        'MICHEL BRANCHE — WEB DEVELOPER',
+        'MICHEL BRANCHE - WEB DEVELOPER',
         'UI/UX · GSAP · LENIS',
         'DISPONIBLE POUR NOUVEAUX PROJETS',
       ],
@@ -1136,6 +1145,9 @@ const STRINGS = {
       mail: 'Mail',
       place: 'Italien',
       shop: 'Shop',
+      clientWork: 'Kundenarbeit',
+      demoConcept: 'Demo / Konzept',
+      audience: 'Websites für Hotels, B&Bs, Residenzen, Ferienhäuser und lokale Betriebe.',
     },
     shop: {
       welcome: 'Willkommen auf dem Markt',
@@ -1269,8 +1281,8 @@ const STRINGS = {
       lead:
         'Selbständiger Webentwickler in Italien.\nIch gestalte klare, performante Interfaces\nvom ersten Entwurf bis zum Deploy.',
       body:
-        'Ich baue digitale Erlebnisse, in denen Ästhetik und Technik zusammenpassen: React, GSAP Motion, Lenis Smooth Scroll und Fokus auf Conversion.\nJedes Projekt soll schnell, verständlich und markentreu sein.\n\nWenn ich nicht deploye:\n— UI-, Motion- und Editorial-Experimente\n— Demos und Side Projects für Hospitality, Food und lokale Brands\n— Kaffee, gute Musik und ruhiges Debugging',
-      imageAlt: 'Michel Branche — Porträt',
+        'Ich baue digitale Erlebnisse, in denen Ästhetik und Technik zusammenpassen: React, GSAP Motion, Lenis Smooth Scroll und Fokus auf Conversion.\nJedes Projekt soll schnell, verständlich und markentreu sein.\n\nWenn ich nicht deploye:\n- UI-, Motion- und Editorial-Experimente\n- Demos und Side Projects für Hospitality, Food und lokale Brands\n- Kaffee, gute Musik und ruhiges Debugging',
+      imageAlt: 'Michel Branche - Porträt',
     },
     reel: {
       yes: 'Bin',
@@ -1298,7 +1310,7 @@ const STRINGS = {
         },
         copy: {
           title: 'COPYWRITING',
-          desc: 'Texte, die verkaufen und nach Ihrer Marke klingen. Naming, Claims, Microcopy und Inhalte für Landingpages, E-Mail und Social – auf Wirkung ausgelegt.',
+          desc: 'Texte, die verkaufen und nach Ihrer Marke klingen. Naming, Claims, Microcopy und Inhalte für Landingpages, E-Mail und Social - auf Wirkung ausgelegt.',
           price: 'ab 100 € / 400 €+',
           details: ['Naming und Claims', 'Website- / Landing-Texte', 'E-Mail & Social Copy'],
         },
@@ -1322,7 +1334,7 @@ const STRINGS = {
       line: 'VERFÜGBAR FÜR NEUE PROJEKTE -',
       items: [
         'VERFÜGBAR FÜR NEUE PROJEKTE',
-        'MICHEL BRANCHE — WEBENTWICKLER',
+        'MICHEL BRANCHE - WEBENTWICKLER',
         'UI/UX · GSAP · LENIS',
         'VERFÜGBAR FÜR NEUE PROJEKTE',
       ],
@@ -1410,6 +1422,9 @@ const STRINGS = {
       mail: 'Mail',
       place: 'Italia',
       shop: 'Shop',
+      clientWork: 'Trabajo de cliente',
+      demoConcept: 'Demo / concepto',
+      audience: 'Sitios para hoteles, B&B, residencias, casas de vacaciones y negocios locales.',
     },
     shop: {
       welcome: 'Bienvenido al mercado',
@@ -1543,8 +1558,8 @@ const STRINGS = {
       lead:
         'Desarrollador web independiente en Italia.\nDiseno interfaces claras y rapidas\ndel primer boceto al deploy.',
       body:
-        'Creo experiencias digitales donde estetica y tecnica van juntas: React, motion con GSAP, scroll Lenis y foco en conversion.\nCada proyecto busca velocidad, claridad y coherencia de marca.\n\nCuando no estoy en deploy:\n— Experimentos de UI, motion y layout editorial\n— Demos y side projects para hospitality, food y marcas locales\n— Cafe, buena musica y debug con calma',
-      imageAlt: 'Michel Branche — retrato',
+        'Creo experiencias digitales donde estetica y tecnica van juntas: React, motion con GSAP, scroll Lenis y foco en conversion.\nCada proyecto busca velocidad, claridad y coherencia de marca.\n\nCuando no estoy en deploy:\n- Experimentos de UI, motion y layout editorial\n- Demos y side projects para hospitality, food y marcas locales\n- Cafe, buena musica y debug con calma',
+      imageAlt: 'Michel Branche - retrato',
     },
     reel: {
       yes: 'Soy',
@@ -1596,7 +1611,7 @@ const STRINGS = {
       line: 'DISPONIBLE PARA NUEVOS PROYECTOS -',
       items: [
         'DISPONIBLE PARA NUEVOS PROYECTOS',
-        'MICHEL BRANCHE — DESARROLLADOR WEB',
+        'MICHEL BRANCHE - DESARROLLADOR WEB',
         'UI/UX · GSAP · LENIS',
         'DISPONIBLE PARA NUEVOS PROYECTOS',
       ],

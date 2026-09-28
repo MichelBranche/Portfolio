@@ -1,19 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import Image from 'next/image'
-import gsap from 'gsap'
-import { PX_GRID, finePointer, reduceMotion } from './motion-fx'
+import { PX_GRID, finePointer, reduceMotion } from './motion-utils'
 
 const GLYPHS = '\\/_-|#*+<>=%'
 
 /** Parole spezzate in lettere, animate da useReveal tramite data-chars. */
-export function Chars({ text, className = '', reveal = true }) {
+export function Chars({ text, className = '', reveal = true, wrap = false }) {
   const value = String(text)
   return (
-    <span className={`hb-chars ${className}`} data-chars={reveal ? '' : undefined}>
+    <span className={`hb-chars${wrap ? ' is-wrap' : ''}${className ? ` ${className}` : ''}`} data-chars={reveal ? '' : undefined}>
       <span className="hb-sr">{value}</span>
       {[...value].map((char, index) => (
         <span key={`${index}-${char}`} className="hb-char-wrap" aria-hidden>
-          <span className="hb-char">{char === ' ' ? '\u00a0' : char}</span>
+          <span className="hb-char">{char === ' ' ? (wrap ? ' ' : '\u00a0') : char}</span>
         </span>
       ))}
     </span>
@@ -55,19 +54,29 @@ export function Scramble({ text, play = 0, className }) {
 }
 
 /** Griglia di pixel neri sopra un'immagine. Sulla home i pixel nascono al primo hover. */
-export function PixelImage({ src, alt = '', className = '', eager = false, priority = false, grid = true, optimized = false }) {
+export function PixelImage({
+  src,
+  alt = '',
+  className = '',
+  eager = false,
+  priority = false,
+  grid = true,
+  optimized = false,
+  sizes = '360px',
+}) {
   const image = optimized ? (
     <Image
       src={src}
       alt={alt}
       width={640}
       height={589}
-      sizes="360px"
+      sizes={sizes}
       draggable={false}
       priority={priority}
+      quality={70}
       loading={priority ? undefined : eager ? 'eager' : 'lazy'}
       decoding="async"
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
     />
   ) : (
     <img src={src} alt={alt} draggable="false" loading={eager || priority ? 'eager' : 'lazy'} decoding="async" />
@@ -88,23 +97,35 @@ export function PixelImage({ src, alt = '', className = '', eager = false, prior
 }
 
 /** Cursore custom: punto, anello su link, pillola con etichetta su [data-cursor]. */
+function cursorEnabled() {
+  return finePointer() && !reduceMotion()
+}
+
 export function HbCursor() {
-  const [enabled, setEnabled] = useState(false)
+  const enabled = useSyncExternalStore(() => () => {}, cursorEnabled, () => false)
   const dotRef = useRef(null)
   const labelRef = useRef(null)
-
-  useEffect(() => {
-    setEnabled(finePointer() && !reduceMotion())
-  }, [])
 
   useEffect(() => {
     if (!enabled) return undefined
     const dot = dotRef.current
     const root = document.documentElement
+    let alive = true
+    let xTo = (value) => {
+      dot.style.left = `${value}px`
+    }
+    let yTo = (value) => {
+      dot.style.top = `${value}px`
+    }
     root.classList.add('hb-cursor-on')
-    gsap.set(dot, { xPercent: -50, yPercent: -50, x: window.innerWidth / 2, y: window.innerHeight / 2 })
-    const xTo = gsap.quickTo(dot, 'x', { duration: 0.42, ease: 'power3.out' })
-    const yTo = gsap.quickTo(dot, 'y', { duration: 0.42, ease: 'power3.out' })
+    import('gsap').then(({ default: gsap }) => {
+      if (!alive) return
+      dot.style.left = '0px'
+      dot.style.top = '0px'
+      gsap.set(dot, { xPercent: -50, yPercent: -50, x: window.innerWidth / 2, y: window.innerHeight / 2 })
+      xTo = gsap.quickTo(dot, 'x', { duration: 0.42, ease: 'power3.out' })
+      yTo = gsap.quickTo(dot, 'y', { duration: 0.42, ease: 'power3.out' })
+    })
 
     const paint = (event) => {
       const target = event.target instanceof Element ? event.target : null
@@ -134,6 +155,7 @@ export function HbCursor() {
     window.addEventListener('pointerup', onUp)
     document.addEventListener('pointerleave', onLeave)
     return () => {
+      alive = false
       root.classList.remove('hb-cursor-on')
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerover', onOver)

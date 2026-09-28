@@ -5,7 +5,7 @@ import { flushSync } from 'react-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLanguage } from '../../context/LanguageContext.jsx'
-import { reduceMotion } from './motion-fx'
+import { reduceMotion } from './motion-utils'
 import { useSiteUI } from './site-ui.js'
 
 gsap.registerPlugin(ScrollTrigger)
