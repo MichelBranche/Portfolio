@@ -51,7 +51,7 @@ export function ServiziPage() {
     <article className="hb-page hb-services">
       <header className="hb-chapter">
         <h1>
-          <Chars text={String(t('services.header'))} />
+          <Chars text={String(t('services.header'))} wrap />
         </h1>
         <p data-reveal>{String(t('services.lead'))}</p>
       </header>

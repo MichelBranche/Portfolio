@@ -122,7 +122,6 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
           {items.map(({ project, spot, key, repeat }) => {
             const name = shortName(project.title)
             const lcp = primary && key === lcpKey
-            const near = primary && spotDistance(spot) < 520 ** 2
             return (
               <button
                 key={key}
@@ -149,7 +148,6 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
                 <span className="hb-tile-in">
                   <PixelImage
                     src={project.thumb}
-                    eager={near}
                     priority={lcp}
                     sizes={`${Math.round(spot.w)}px`}
                     grid={false}

@@ -298,11 +298,13 @@ export function SiteFrame({ children }) {
       const y = lockY.current
       lockY.current = null
       clearBodyLock()
-      window.scrollTo(0, y)
-      if (lenis) {
-        if (isHome || welcome || overlayLock) lenis.stop()
-        else lenis.start()
+      if (lenis && !isHome && !welcome && !overlayLock) {
+        lenis.start()
+        lenis.resize()
         lenis.scrollTo(y, { immediate: true, force: true })
+      } else {
+        window.scrollTo(0, y)
+        lenis?.stop()
       }
       return
     }

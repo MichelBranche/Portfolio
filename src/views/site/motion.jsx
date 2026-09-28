@@ -73,6 +73,7 @@ export function PixelImage({
       sizes={sizes}
       draggable={false}
       priority={priority}
+      fetchPriority={priority ? 'high' : 'low'}
       quality={70}
       loading={priority ? undefined : eager ? 'eager' : 'lazy'}
       decoding="async"
