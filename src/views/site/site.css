@@ -622,6 +622,7 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
 .hb-audience {
   position: relative;
   z-index: 8;
+  box-sizing: border-box;
   width: 100%;
   margin: 0;
   padding: 0.55rem 1rem 0.5rem;

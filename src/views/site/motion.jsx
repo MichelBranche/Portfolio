@@ -83,7 +83,6 @@ export function PixelImage({
   optimized = false,
   sizes = '360px',
   late = false,
-  fallback = '',
 }) {
   const [ready, setReady] = useState(!late)
 
@@ -117,19 +116,16 @@ export function PixelImage({
       decoding={priority ? 'auto' : 'async'}
       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
     />
-  ) : priority && fallback ? (
-    <picture>
-      <source srcSet={src} type="image/avif" />
-      <img
-        src={fallback}
-        alt={alt}
-        width={640}
-        height={640}
-        draggable={false}
-        fetchPriority="high"
-        decoding="auto"
-      />
-    </picture>
+  ) : priority ? (
+    <img
+      src={src}
+      alt={alt}
+      width={640}
+      height={640}
+      draggable={false}
+      fetchpriority="high"
+      decoding="auto"
+    />
   ) : (
     <img
       src={src}

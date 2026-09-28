@@ -8,7 +8,7 @@ export function generateMetadata() {
 export default function Page() {
   return (
     <>
-      <link rel="preload" as="image" href="/projects/lcp/museo.avif" type="image/avif" fetchPriority="high" />
+      <link rel="preload" as="image" href="/projects/lcp/museo.avif" type="image/avif" fetchpriority="high" />
       <HomePage />
     </>
   )
