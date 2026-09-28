@@ -73,6 +73,54 @@ function shortName(title) {
   return (parts[1] || parts[0]).trim()
 }
 
+const COMPACT_QUERY = '(max-width: 760px)'
+
+function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lcp, style, tabIndex = 0 }) {
+  const name = shortName(project.title)
+  return (
+    <button
+      type="button"
+      className="hb-tile"
+      tabIndex={tabIndex}
+      style={style}
+      data-cursor={openLabel}
+      data-lcp={lcp ? '' : undefined}
+      onPointerEnter={(event) => {
+        if (panningRef.current) return
+        const node = event.currentTarget
+        import('./motion-fx.js').then(({ pixelBurst }) => pixelBurst(node))
+        onHover(name)
+      }}
+      onPointerLeave={(event) => {
+        if (panningRef.current) return
+        const node = event.currentTarget
+        import('./motion-fx.js').then(({ pixelClear }) => pixelClear(node))
+        onHover('')
+      }}
+      onClick={() => onOpen(project)}
+    >
+      <span className="hb-tile-in">
+        <PixelImage
+          src={lcp && project.slug === 'museo' ? '/projects/lcp/museo.avif' : project.thumb}
+          priority={lcp}
+          late={!lcp}
+          sizes={style?.width ? `${Math.round(style.width)}px` : '50vw'}
+          grid={false}
+          optimized={!(lcp && project.slug === 'museo')}
+        />
+        <span className="hb-tile-meta">
+          <span>{name}</span>
+          <span>{stamp(project.publishedAt, lang)}</span>
+        </span>
+        <span className="hb-tile-meta hb-tile-meta--sub">
+          <span>{project.kindLabel}</span>
+          <span>{project.featured ? '★' : ''}</span>
+        </span>
+      </span>
+    </button>
+  )
+}
+
 function stamp(iso, lang) {
   const date = new Date(`${iso}T12:00:00`)
   if (Number.isNaN(date.getTime())) return ''
@@ -119,50 +167,20 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
           aria-hidden={primary ? undefined : true}
         >
           {items.map(({ project, spot, key, repeat }) => {
-            const name = shortName(project.title)
             const lcp = primary && key === lcpKey
             return (
-              <button
+              <ProjectTile
                 key={key}
-                type="button"
-                className="hb-tile"
+                project={project}
+                lang={lang}
+                openLabel={openLabel}
+                onOpen={onOpen}
+                onHover={onHover}
+                panningRef={panningRef}
+                lcp={lcp}
                 tabIndex={primary && !repeat ? 0 : -1}
                 style={{ left: spot.x, top: spot.y, width: spot.w, '--r': `${spot.r}deg` }}
-                data-cursor={openLabel}
-                data-lcp={lcp ? '' : undefined}
-                onPointerEnter={(event) => {
-                  if (panningRef.current) return
-                  const node = event.currentTarget
-                  import('./motion-fx.js').then(({ pixelBurst }) => pixelBurst(node))
-                  onHover(name)
-                }}
-                onPointerLeave={(event) => {
-                  if (panningRef.current) return
-                  const node = event.currentTarget
-                  import('./motion-fx.js').then(({ pixelClear }) => pixelClear(node))
-                  onHover('')
-                }}
-                onClick={() => onOpen(project)}
-              >
-                <span className="hb-tile-in">
-                  <PixelImage
-                    src={lcp && project.slug === 'museo' ? '/projects/lcp/museo.avif' : project.thumb}
-                    priority={lcp}
-                    late={!lcp}
-                    sizes={`${Math.round(spot.w)}px`}
-                    grid={false}
-                    optimized={!(lcp && project.slug === 'museo')}
-                  />
-                  <span className="hb-tile-meta">
-                    <span>{name}</span>
-                    <span>{stamp(project.publishedAt, lang)}</span>
-                  </span>
-                  <span className="hb-tile-meta hb-tile-meta--sub">
-                    <span>{project.kindLabel}</span>
-                    <span>{project.featured ? '★' : ''}</span>
-                  </span>
-                </span>
-              </button>
+              />
             )
           })}
         </div>
@@ -181,6 +199,7 @@ export function HomePage() {
   const panningRef = useRef(false)
   const [span, setSpan] = useState({ cols: 1, rows: 1 })
   const [fullBoard, setFullBoard] = useState(false)
+  const [compact, setCompact] = useState(false)
   const [hovered, setHovered] = useState('')
   const [labelPlay, setLabelPlay] = useState(0)
   const hover = useCallback((name) => {
@@ -196,6 +215,15 @@ export function HomePage() {
   )
 
   useLayoutEffect(() => {
+    const mq = window.matchMedia(COMPACT_QUERY)
+    const apply = () => setCompact(mq.matches)
+    apply()
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
+  }, [])
+
+  useLayoutEffect(() => {
+    if (compact) return undefined
     const gate = gateRef.current
     const board = boardRef.current
     if (!gate || !board) return undefined
@@ -468,7 +496,7 @@ export function HomePage() {
       window.removeEventListener('pointercancel', onUp)
       window.removeEventListener('resize', onResize)
     }
-  }, [span.cols, span.rows, fullBoard])
+  }, [span.cols, span.rows, fullBoard, compact])
 
   useEffect(() => {
     const ric = window.requestIdleCallback
@@ -509,26 +537,43 @@ export function HomePage() {
   return (
     <div
       ref={gateRef}
-      className="hb-gate"
+      className={compact ? 'hb-gate is-compact' : 'hb-gate'}
       data-cursor={String(t('site.explore'))}
       onPointerLeave={() => setHovered('')}
     >
       <p className="hb-audience">{String(t('site.audience'))}</p>
-      <div ref={boardRef} className="hb-board">
-        <Board
-          projects={projects}
-          lang={lang}
-          openLabel={String(t('site.open'))}
-          onOpen={open}
-          onHover={hover}
-          panningRef={panningRef}
-          cols={span.cols}
-          rows={span.rows}
-        />
-      </div>
       <p className="hb-choose" aria-live="polite">
         <Scramble text={hovered || String(t('site.choose'))} play={labelPlay} />
       </p>
+      {compact ? (
+        <div className="hb-mobile-grid">
+          {projects.map((project, index) => (
+            <ProjectTile
+              key={project.slug}
+              project={project}
+              lang={lang}
+              openLabel={String(t('site.open'))}
+              onOpen={open}
+              onHover={hover}
+              panningRef={panningRef}
+              lcp={index === 0}
+            />
+          ))}
+        </div>
+      ) : (
+        <div ref={boardRef} className="hb-board">
+          <Board
+            projects={projects}
+            lang={lang}
+            openLabel={String(t('site.open'))}
+            onOpen={open}
+            onHover={hover}
+            panningRef={panningRef}
+            cols={span.cols}
+            rows={span.rows}
+          />
+        </div>
+      )}
     </div>
   )
 }
