@@ -20,9 +20,10 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ display: 'flex', fontSize: 28, fontWeight: 700, letterSpacing: 4 }}>MICHEL BRANCHE</div>
-        <div style={{ display: 'flex', flexDirection: 'column', fontSize: 76, fontWeight: 800, lineHeight: 0.95, letterSpacing: -2 }}>
-          <span>Siti per hotel,</span>
-          <span>B&B e attività locali.</span>
+        <div style={{ display: 'flex', flexDirection: 'column', fontSize: 64, fontWeight: 800, lineHeight: 1.02, letterSpacing: -1.5 }}>
+          <span>Siti web su misura,</span>
+          <span>progettati e sviluppati</span>
+          <span>da zero.</span>
         </div>
         <div style={{ display: 'flex', fontSize: 28, fontWeight: 700 }}>michelbranche.it</div>
       </div>

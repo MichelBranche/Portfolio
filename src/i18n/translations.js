@@ -85,7 +85,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Lavoro per cliente',
       demoConcept: 'Demo / concept',
-      audience: 'Siti per hotel, B&B, residence, case vacanza e attività locali.',
+      audience: 'Siti web su misura, progettati e sviluppati da zero.',
     },
     shop: {
       welcome: 'Benvenuti nel mercato',
@@ -185,7 +185,7 @@ const STRINGS = {
       website: {
         title: 'Siti Web Su Misura',
         desc: 'Landing page e siti istituzionali veloci, responsive e orientati ai risultati.',
-        bullets: ['Hotel, B&B, residence, case vacanza', 'Landing e siti vetrina', 'Design responsive su misura', 'Deploy e messa online'],
+        bullets: ['Aziende, brand e progetti', 'Landing e siti vetrina', 'Design responsive su misura', 'Deploy e messa online'],
       },
       ecommerce: {
         title: 'E-commerce',
@@ -241,7 +241,7 @@ const STRINGS = {
       launch: {
         name: 'Launch',
         range: '500 € - 900 €',
-        ideal: ['Hotel, B&B e case vacanza', 'Piccoli business locali', 'Landing page', 'Chi parte da zero'],
+        ideal: ['Aziende, brand e progetti', 'Piccoli business locali', 'Landing page', 'Chi parte da zero'],
         includes: [
           '1 pagina landing',
           'Design moderno su misura',
@@ -253,7 +253,7 @@ const STRINGS = {
       growth: {
         name: 'Growth',
         range: '1.200 € - 2.500 €',
-        ideal: ['Strutture ricettive', 'Business in espansione', 'Brand che vogliono alzare il livello', 'Best Value'],
+        ideal: ['Progetti di ogni tipo', 'Business in espansione', 'Brand che vogliono alzare il livello', 'Best Value'],
         includes: [
           '3-5 pagine',
           'UI premium',
@@ -267,7 +267,7 @@ const STRINGS = {
       authority: {
         name: 'Authority',
         range: '3.000 € - 6.000 €+',
-        ideal: ['Hotel e residence', 'Ristoranti high-end', 'Brand personali forti', 'Progetti di alto profilo'],
+        ideal: ['Aziende e brand', 'Ristoranti high-end', 'Brand personali forti', 'Progetti di alto profilo'],
         includes: [
           'Design completamente custom',
           'Motion avanzata (GSAP)',
@@ -480,7 +480,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Client work',
       demoConcept: 'Demo / concept',
-      audience: 'Sites for hotels, B&Bs, residences, holiday homes and local businesses.',
+      audience: 'Custom websites, designed and built from scratch.',
     },
     shop: {
       welcome: 'Welcome to the market',
@@ -580,7 +580,7 @@ const STRINGS = {
       website: {
         title: 'Custom Websites',
         desc: 'Fast, responsive landing pages and business websites built to perform.',
-        bullets: ['Hotels, B&Bs, residences, holiday homes', 'Landing & showcase sites', 'Tailored responsive design', 'Deploy & go-live'],
+        bullets: ['Businesses, brands and projects', 'Landing & showcase sites', 'Tailored responsive design', 'Deploy & go-live'],
       },
       ecommerce: {
         title: 'E-commerce',
@@ -636,7 +636,7 @@ const STRINGS = {
       launch: {
         name: 'Launch',
         range: '€500 - €900',
-        ideal: ['Hotels, B&Bs, holiday homes', 'Small local businesses', 'Landing pages', 'Starting from scratch'],
+        ideal: ['Businesses, brands and projects', 'Small local businesses', 'Landing pages', 'Starting from scratch'],
         includes: [
           '1 landing page',
           'Modern custom design',
@@ -648,7 +648,7 @@ const STRINGS = {
       growth: {
         name: 'Growth',
         range: '€1,200 - €2,500',
-        ideal: ['Hospitality businesses', 'Growing businesses', 'Brands ready to level up', 'Best Value'],
+        ideal: ['Projects of any kind', 'Growing businesses', 'Brands ready to level up', 'Best Value'],
         includes: [
           '3-5 pages',
           'Premium UI',
@@ -662,7 +662,7 @@ const STRINGS = {
       authority: {
         name: 'Authority',
         range: '€3,000 - €6,000+',
-        ideal: ['Hotels and residences', 'High-end restaurants', 'Strong personal brands', 'Wow projects'],
+        ideal: ['Businesses and brands', 'High-end restaurants', 'Strong personal brands', 'Wow projects'],
         includes: [
           'Fully custom design',
           'Advanced motion (GSAP)',
@@ -870,7 +870,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Projet client',
       demoConcept: 'Démo / concept',
-      audience: 'Sites pour hôtels, B&B, résidences, maisons de vacances et commerces locaux.',
+      audience: 'Sites web sur mesure, conçus et développés de zéro.',
     },
     shop: {
       welcome: 'Bienvenue au marché',
@@ -1147,7 +1147,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Kundenarbeit',
       demoConcept: 'Demo / Konzept',
-      audience: 'Websites für Hotels, B&Bs, Residenzen, Ferienhäuser und lokale Betriebe.',
+      audience: 'Maßgeschneiderte Websites, von Grund auf gestaltet und entwickelt.',
     },
     shop: {
       welcome: 'Willkommen auf dem Markt',
@@ -1424,7 +1424,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Trabajo de cliente',
       demoConcept: 'Demo / concepto',
-      audience: 'Sitios para hoteles, B&B, residencias, casas de vacaciones y negocios locales.',
+      audience: 'Sitios web a medida, diseñados y desarrollados desde cero.',
     },
     shop: {
       welcome: 'Bienvenido al mercado',

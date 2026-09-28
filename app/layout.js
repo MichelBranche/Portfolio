@@ -37,11 +37,11 @@ const garamond = EB_Garamond({
 export const metadata = {
   metadataBase: new URL('https://www.michelbranche.it'),
   title: {
-    default: 'Michel Branche | Websites for hospitality',
-    absolute: 'Michel Branche | Websites for hospitality',
+    default: 'Michel Branche | Custom websites',
+    absolute: 'Michel Branche | Custom websites',
   },
   description:
-    'Independent web developer in Italy. Websites for hotels, B&Bs, residences, holiday homes and local businesses.',
+    'Independent web developer in Italy. Custom websites, designed and built from scratch for businesses, brands and projects of any kind, including hospitality.',
   icons: {
     icon: '/favicon.png',
     apple: '/favicon.png',
