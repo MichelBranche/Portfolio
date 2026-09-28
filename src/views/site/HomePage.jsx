@@ -147,11 +147,13 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
               >
                 <span className="hb-tile-in">
                   <PixelImage
-                    src={project.thumb}
+                    src={lcp && project.slug === 'museo' ? '/projects/lcp/museo.avif' : project.thumb}
+                    fallback={lcp && project.slug === 'museo' ? '/projects/lcp/museo.webp' : ''}
                     priority={lcp}
+                    late={!lcp}
                     sizes={`${Math.round(spot.w)}px`}
                     grid={false}
-                    optimized
+                    optimized={!(lcp && project.slug === 'museo')}
                   />
                   <span className="hb-tile-meta">
                     <span>{name}</span>

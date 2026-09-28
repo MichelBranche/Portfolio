@@ -98,6 +98,17 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
   max-width: 100%;
 }
 
+.hb-word {
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.hb-word-gap {
+  display: inline;
+  white-space: pre;
+}
+
 .hb-char-wrap {
   display: inline-block;
   overflow: hidden;
@@ -609,13 +620,12 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
 }
 
 .hb-audience {
-  position: absolute;
-  z-index: 4;
-  top: 0.7rem;
-  left: 50%;
-  width: min(40rem, calc(100% - 1.6rem));
+  position: relative;
+  z-index: 8;
+  width: 100%;
   margin: 0;
-  transform: translateX(-50%);
+  padding: 0.55rem 1rem 0.5rem;
+  background: var(--hb);
   text-align: center;
   font-size: 0.72rem;
   font-weight: 700;
@@ -687,6 +697,13 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
 .hb-tile:hover .hb-tile-meta--sub {
   opacity: 0.75;
   transform: none;
+}
+
+@media (max-width: 768px) {
+  .hb-tile-meta--sub {
+    opacity: 0.75;
+    transform: none;
+  }
 }
 
 .hb-choose {

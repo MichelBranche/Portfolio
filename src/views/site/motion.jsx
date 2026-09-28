@@ -4,17 +4,36 @@ import { PX_GRID, finePointer, reduceMotion } from './motion-utils'
 
 const GLYPHS = '\\/_-|#*+<>=%'
 
+function Letter({ char }) {
+  return (
+    <span className="hb-char-wrap" aria-hidden>
+      <span className="hb-char">{char === ' ' ? '\u00a0' : char}</span>
+    </span>
+  )
+}
+
 /** Parole spezzate in lettere, animate da useReveal tramite data-chars. */
 export function Chars({ text, className = '', reveal = true, wrap = false }) {
   const value = String(text)
+  const parts = wrap ? value.split(/(\s+)/) : null
   return (
     <span className={`hb-chars${wrap ? ' is-wrap' : ''}${className ? ` ${className}` : ''}`} data-chars={reveal ? '' : undefined}>
       <span className="hb-sr">{value}</span>
-      {[...value].map((char, index) => (
-        <span key={`${index}-${char}`} className="hb-char-wrap" aria-hidden>
-          <span className="hb-char">{char === ' ' ? (wrap ? ' ' : '\u00a0') : char}</span>
-        </span>
-      ))}
+      {wrap
+        ? parts.map((part, index) =>
+            /\s/.test(part) ? (
+              <span key={`gap-${index}`} className="hb-word-gap" aria-hidden>
+                {' '}
+              </span>
+            ) : (
+              <span key={`word-${index}`} className="hb-word" aria-hidden>
+                {[...part].map((char, charIndex) => (
+                  <Letter key={`${charIndex}-${char}`} char={char} />
+                ))}
+              </span>
+            ),
+          )
+        : [...value].map((char, index) => <Letter key={`${index}-${char}`} char={char} />)}
     </span>
   )
 }
@@ -63,8 +82,27 @@ export function PixelImage({
   grid = true,
   optimized = false,
   sizes = '360px',
+  late = false,
+  fallback = '',
 }) {
-  const image = optimized ? (
+  const [ready, setReady] = useState(!late)
+
+  useEffect(() => {
+    if (!late) return undefined
+    let cancelled = false
+    const show = () => {
+      if (!cancelled) setReady(true)
+    }
+    const ric = window.requestIdleCallback
+    const id = ric ? ric(show, { timeout: 2200 }) : window.setTimeout(show, 1400)
+    return () => {
+      cancelled = true
+      if (ric) window.cancelIdleCallback(id)
+      else window.clearTimeout(id)
+    }
+  }, [late])
+
+  const image = !ready ? null : optimized ? (
     <Image
       src={src}
       alt={alt}
@@ -74,13 +112,33 @@ export function PixelImage({
       draggable={false}
       priority={priority}
       fetchPriority={priority ? 'high' : 'low'}
-      quality={70}
+      quality={priority ? 50 : 55}
       loading={priority ? undefined : eager ? 'eager' : 'lazy'}
-      decoding="async"
+      decoding={priority ? 'auto' : 'async'}
       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
     />
+  ) : priority && fallback ? (
+    <picture>
+      <source srcSet={src} type="image/avif" />
+      <img
+        src={fallback}
+        alt={alt}
+        width={640}
+        height={640}
+        draggable={false}
+        fetchPriority="high"
+        decoding="auto"
+      />
+    </picture>
   ) : (
-    <img src={src} alt={alt} draggable="false" loading={eager || priority ? 'eager' : 'lazy'} decoding="async" />
+    <img
+      src={src}
+      alt={alt}
+      draggable={false}
+      fetchPriority={priority ? 'high' : 'auto'}
+      loading={priority ? 'eager' : eager ? 'eager' : 'lazy'}
+      decoding={priority ? 'auto' : 'async'}
+    />
   )
 
   return (

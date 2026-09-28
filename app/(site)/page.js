@@ -6,5 +6,10 @@ export function generateMetadata() {
 }
 
 export default function Page() {
-  return <HomePage />
+  return (
+    <>
+      <link rel="preload" as="image" href="/projects/lcp/museo.avif" type="image/avif" fetchPriority="high" />
+      <HomePage />
+    </>
+  )
 }
