@@ -3,6 +3,9 @@ export const FOOTER_SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/michel-branche-328501301/',
   instagram: 'https://www.instagram.com/80_sete_/',
   email: 'mailto:michel.lavoro@gmail.com',
+  phone: 'tel:+393881660117',
+  phoneDisplay: '+39 388 166 0117',
+  whatsapp: 'https://wa.me/393881660117',
 }
 
 export const FOOTER_SOUNDS = {
@@ -114,6 +117,7 @@ export const PROJECT_META = [
     slug: 'levele',
     category: 'hospitality',
     featured: true,
+    client: true,
     tech: 'React / Vite / API / Redis',
     link: 'https://demoleveleresidence.vercel.app/',
     caseHref: '/work/levele',
@@ -202,7 +206,7 @@ export const PROJECT_META = [
     category: 'food',
     featured: true,
     tech: 'React / Vite / GSAP / Lenis / Tailwind',
-    link: 'https://demo-caffe-woad.vercel.app/',
+    link: 'https://demo-caff.vercel.app/',
     img: '/projects/orma-mockup-hero.png',
     thumb: '/projects/orma-cover.png',
     imgs: ['/projects/orma-mockup-hero.png', '/projects/orma-mockup-sections.png'],

@@ -189,6 +189,7 @@ function Shot({ project, cursor, onOpen }) {
       <span className="hb-shot-name">
         <Scramble text={shortName(project.title)} play={play} />
       </span>
+      <span className="hb-kind">{project.kindLabel}</span>
       <span className="hb-tags">
         <Scramble text={techTags(project.tech)} play={play} />
       </span>
@@ -220,6 +221,9 @@ function CaseCard({ project, cursor, onOpen }) {
       <span className="hb-case-copy">
         <span className="hb-case-title" data-reveal>
           <Scramble text={shortName(project.title)} play={play} />
+        </span>
+        <span className="hb-kind" data-reveal>
+          {project.kindLabel}
         </span>
         <span className="hb-tags" data-reveal>{`\\ ${project.categoryLabel} \\`}</span>
         <span className="hb-case-desc" data-reveal>

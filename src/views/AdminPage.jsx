@@ -31,7 +31,7 @@ function formatNumber(n) {
 }
 
 function formatDateTime(ts) {
-  if (!ts) return '—'
+  if (!ts) return '-'
   return new Date(ts).toLocaleString('it-IT', {
     dateStyle: 'medium',
     timeStyle: 'short',

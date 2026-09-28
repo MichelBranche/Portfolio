@@ -3,7 +3,7 @@
 import { useEffect, useId, useLayoutEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '../../context/LanguageContext.jsx'
-import { magnetic, magneticReset } from './motion-fx'
+import { magnetic, magneticReset } from './magnetic'
 import { useSiteUI } from './site-ui.js'
 import { SHOP_PRODUCTS } from './shopData.js'
 
@@ -17,7 +17,9 @@ export function ShopPage() {
   const titleId = useId()
 
   useLayoutEffect(() => {
-    setSlot(document.getElementById('hb-header-end'))
+    const node = document.getElementById('hb-header-end')
+    const id = window.setTimeout(() => setSlot(node), 0)
+    return () => window.clearTimeout(id)
   }, [])
 
   useEffect(() => {
@@ -141,7 +143,7 @@ function pieceView(product, t) {
   if (product.status === 'ready' && product.name) {
     return {
       title: product.name,
-      price: product.price || '—',
+      price: product.price || '-',
       label: product.label || '',
       note: product.note || '',
     }

@@ -1,12 +1,21 @@
 'use client'
 
-import { memo, useCallback, useLayoutEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
+import { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { PixelImage, Scramble } from './motion.jsx'
-import { EASE, finePointer, magnetic, magneticReset, pixelBurst, pixelClear, reduceMotion } from './motion-fx'
+import { magnetic, magneticReset } from './magnetic'
+import { finePointer, reduceMotion } from './motion-utils'
 import { useProjects } from './useProjects.js'
 import { useSiteUI } from './site-ui.js'
+
+const BOARD_CX = 1300
+const BOARD_CY = 775
+
+function spotDistance(spot) {
+  const cx = spot.x + spot.w / 2
+  const cy = spot.y + spot.w * 0.46
+  return (cx - BOARD_CX) ** 2 + (cy - BOARD_CY) ** 2
+}
 
 const BOARD_W = 2600
 const BOARD_H = 1550
@@ -74,26 +83,45 @@ function stamp(iso, lang) {
 const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, panningRef, cols, rows }) {
   const colIds = Array.from({ length: cols }, (_, index) => index)
   const rowIds = Array.from({ length: rows }, (_, index) => index)
+  const items = [
+    ...projects.map((project, index) => ({
+      project,
+      spot: SPOTS[index % SPOTS.length],
+      key: project.slug,
+      repeat: false,
+    })),
+    ...EXTRAS.map((extra, index) => ({
+      project: projects[extra.from % projects.length],
+      spot: extra,
+      key: `extra-${index}`,
+      repeat: true,
+    })),
+  ]
+  let lcpKey = items[0]?.key
+  let best = Infinity
+  items.forEach((item) => {
+    if (item.repeat) return
+    const dist = spotDistance(item.spot)
+    if (dist < best) {
+      best = dist
+      lcpKey = item.key
+    }
+  })
   return rowIds.map((row) =>
     colIds.map((col) => {
       const primary = col === 0 && row === 0
       return (
-        <div key={`${col}-${row}`} className="hb-board-cell" data-i={col} data-j={row} aria-hidden={primary ? undefined : true}>
-          {[
-            ...projects.map((project, index) => ({
-              project,
-              spot: SPOTS[index % SPOTS.length],
-              key: project.slug,
-              repeat: false,
-            })),
-            ...EXTRAS.map((extra, index) => ({
-              project: projects[extra.from % projects.length],
-              spot: extra,
-              key: `extra-${index}`,
-              repeat: true,
-            })),
-          ].map(({ project, spot, key, repeat }) => {
+        <div
+          key={`${col}-${row}`}
+          className="hb-board-cell"
+          data-i={col}
+          data-j={row}
+          data-primary={primary ? '' : undefined}
+          aria-hidden={primary ? undefined : true}
+        >
+          {items.map(({ project, spot, key, repeat }) => {
             const name = shortName(project.title)
+            const lcp = primary && key === lcpKey
             return (
               <button
                 key={key}
@@ -102,14 +130,17 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
                 tabIndex={primary && !repeat ? 0 : -1}
                 style={{ left: spot.x, top: spot.y, width: spot.w, '--r': `${spot.r}deg` }}
                 data-cursor={openLabel}
+                data-lcp={lcp ? '' : undefined}
                 onPointerEnter={(event) => {
                   if (panningRef.current) return
-                  pixelBurst(event.currentTarget)
+                  const node = event.currentTarget
+                  import('./motion-fx.js').then(({ pixelBurst }) => pixelBurst(node))
                   onHover(name)
                 }}
                 onPointerLeave={(event) => {
                   if (panningRef.current) return
-                  pixelClear(event.currentTarget)
+                  const node = event.currentTarget
+                  import('./motion-fx.js').then(({ pixelClear }) => pixelClear(node))
                   onHover('')
                 }}
                 onClick={() => onOpen(project)}
@@ -117,8 +148,8 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
                 <span className="hb-tile-in">
                   <PixelImage
                     src={project.thumb}
-                    eager={primary && !repeat}
-                    priority={primary && !repeat && spot.w >= 330}
+                    priority={lcp}
+                    sizes={`${Math.round(spot.w)}px`}
                     grid={false}
                     optimized
                   />
@@ -127,7 +158,7 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
                     <span>{stamp(project.publishedAt, lang)}</span>
                   </span>
                   <span className="hb-tile-meta hb-tile-meta--sub">
-                    <span>{project.categoryLabel}</span>
+                    <span>{project.kindLabel}</span>
                     <span>{project.featured ? '★' : ''}</span>
                   </span>
                 </span>
@@ -148,7 +179,8 @@ export function HomePage() {
   const boardRef = useRef(null)
   const draggedRef = useRef(false)
   const panningRef = useRef(false)
-  const [span, setSpan] = useState({ cols: 2, rows: 2 })
+  const [span, setSpan] = useState({ cols: 1, rows: 1 })
+  const [fullBoard, setFullBoard] = useState(false)
   const [hovered, setHovered] = useState('')
   const [labelPlay, setLabelPlay] = useState(0)
   const hover = useCallback((name) => {
@@ -168,7 +200,7 @@ export function HomePage() {
     const board = boardRef.current
     if (!gate || !board) return undefined
 
-    const fitted = boardSpan(gate.clientWidth, gate.clientHeight)
+    const fitted = fullBoard ? boardSpan(gate.clientWidth, gate.clientHeight) : { cols: 1, rows: 1 }
     if (fitted.cols !== span.cols || fitted.rows !== span.rows) {
       setSpan(fitted)
       return undefined
@@ -281,6 +313,7 @@ export function HomePage() {
 
     const onMove = (event) => {
       if (!fine || drag || calm) return
+      wake()
       const rect = gate.getBoundingClientRect()
       if (!rect.width || !rect.height) return
       const lookX = look((event.clientX - rect.left) / rect.width - 0.5)
@@ -354,6 +387,7 @@ export function HomePage() {
         const vy = Math.max(-42, Math.min(42, drag.vy))
         destX = scrollX + vx * 11
         destY = scrollY + vy * 11
+        wake()
       }
       drag = null
     }
@@ -369,11 +403,11 @@ export function HomePage() {
         scrollX = destX
         scrollY = destY
         place()
-      }
+      } else wake()
     }
 
     const onResize = () => {
-      const next = boardSpan(gate.clientWidth, gate.clientHeight)
+      const next = fullBoard ? boardSpan(gate.clientWidth, gate.clientHeight) : { cols: 1, rows: 1 }
       if (next.cols !== span.cols || next.rows !== span.rows) {
         setSpan(next)
         return
@@ -394,8 +428,37 @@ export function HomePage() {
     window.addEventListener('pointerup', onUp)
     window.addEventListener('pointercancel', onUp)
     window.addEventListener('resize', onResize)
-    if (!calm) gsap.ticker.add(tick)
+    let raf = 0
+    let awake = false
+    const loop = () => {
+      tick()
+      const still =
+        !drag &&
+        !velX &&
+        !velY &&
+        Math.abs(destX - scrollX) < 0.2 &&
+        Math.abs(destY - scrollY) < 0.2 &&
+        Math.abs(wantParX - parX) < 0.2 &&
+        Math.abs(wantParY - parY) < 0.2
+      if (!awake || still) {
+        awake = false
+        raf = 0
+        return
+      }
+      raf = requestAnimationFrame(loop)
+    }
+    const wake = () => {
+      if (calm) return
+      awake = true
+      if (!raf) raf = requestAnimationFrame(loop)
+    }
+    const stopLoop = () => {
+      awake = false
+      if (raf) cancelAnimationFrame(raf)
+      raf = 0
+    }
     return () => {
+      stopLoop()
       gate.removeEventListener('pointermove', onMove)
       gate.removeEventListener('pointerleave', onLeave)
       gate.removeEventListener('pointerdown', onDown)
@@ -404,37 +467,44 @@ export function HomePage() {
       window.removeEventListener('pointerup', onUp)
       window.removeEventListener('pointercancel', onUp)
       window.removeEventListener('resize', onResize)
-      if (!calm) gsap.ticker.remove(tick)
     }
-  }, [span.cols, span.rows])
+  }, [span.cols, span.rows, fullBoard])
 
-  useLayoutEffect(() => {
-    const gate = gateRef.current
-    if (!gate || reduceMotion()) return undefined
-    const tiles = gate.querySelectorAll('.hb-tile-in')
-    const extras = gate.querySelectorAll('.hb-choose, .hb-skip')
-    if (!introDone) {
-      gsap.set([...tiles, ...extras], { autoAlpha: 0 })
-      return undefined
+  useEffect(() => {
+    const ric = window.requestIdleCallback
+    const id = ric ? ric(() => setFullBoard(true), { timeout: 1800 }) : window.setTimeout(() => setFullBoard(true), 1200)
+    return () => {
+      if (ric) window.cancelIdleCallback(id)
+      else window.clearTimeout(id)
     }
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        tiles,
-        { autoAlpha: 0, scale: 0.6, y: 60 },
-        {
-          autoAlpha: 1,
-          scale: 1,
-          y: 0,
-          duration: 1.2,
-          ease: EASE,
-          stagger: { each: 0.008, from: 'random' },
-          delay: 0.1,
-        },
-      )
-      gsap.fromTo(extras, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: EASE, delay: 0.7, stagger: 0.1 })
-    }, gate)
-    return () => ctx.revert()
-  }, [introDone])
+  }, [])
+
+  useEffect(() => {
+    if (!introDone || reduceMotion()) return undefined
+    const gate = gateRef.current
+    if (!gate) return undefined
+    let dead = false
+    let tween
+    const run = () => {
+      import('gsap').then(({ default: gsap }) => {
+        if (dead) return
+        const tiles = gate.querySelectorAll('.hb-tile:not([data-lcp]) .hb-tile-in')
+        tween = gsap.fromTo(
+          tiles,
+          { y: 22 },
+          { y: 0, duration: 0.9, ease: 'expo.out', stagger: 0.01, clearProps: 'transform' },
+        )
+      })
+    }
+    const ric = window.requestIdleCallback
+    const id = ric ? ric(run, { timeout: 2000 }) : window.setTimeout(run, 600)
+    return () => {
+      dead = true
+      if (ric) window.cancelIdleCallback(id)
+      else window.clearTimeout(id)
+      tween?.kill()
+    }
+  }, [introDone, span.cols, span.rows])
 
   return (
     <div
@@ -443,6 +513,7 @@ export function HomePage() {
       data-cursor={String(t('site.explore'))}
       onPointerLeave={() => setHovered('')}
     >
+      <p className="hb-audience">{String(t('site.audience'))}</p>
       <div ref={boardRef} className="hb-board">
         <Board
           projects={projects}

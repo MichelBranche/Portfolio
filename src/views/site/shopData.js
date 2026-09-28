@@ -11,3 +11,7 @@ export const SHOP_PRODUCTS = [
   { id: '05', status: 'packing', tilt: -16, tape: 22 },
   { id: '06', status: 'packing', tilt: 5, tape: 40 },
 ]
+
+export function shopIsOpen() {
+  return SHOP_PRODUCTS.some((item) => item.status === 'ready')
+}
