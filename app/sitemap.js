@@ -5,14 +5,15 @@ const PATHS = ['', '/portfolio', '/studio', '/servizi', '/contatti', '/work/leve
 export default function sitemap() {
   const lastModified = new Date()
   return PATHS.map((path) => {
-    const url = `${SITE}${path}`
+    const url = path ? `${SITE}${path}` : SITE
+    const italian = path ? `${url}?lang=it` : `${SITE}/?lang=it`
     return {
       url,
       lastModified,
       alternates: {
         languages: {
           en: url,
-          it: `${url}?lang=it`,
+          it: italian,
           'x-default': url,
         },
       },

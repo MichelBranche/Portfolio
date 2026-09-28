@@ -61,8 +61,8 @@ const STRINGS = {
       servizi: 'Servizi',
       portfolio: 'Portfolio',
       contatti: 'Contatti',
-      calendar: 'Calendar',
-      caseHistory: 'Case history',
+      calendar: 'Calendario',
+      caseHistory: 'Casi studio',
       caseLead: 'I progetti raccontati per intero.',
       homeRole: 'Sviluppatore web',
       seeWork: 'Vedi i lavori',
@@ -199,8 +199,8 @@ const STRINGS = {
       },
       performance: {
         title: 'Performance & Motion',
-        desc: 'Ottimizzazione caricamenti e micro-animazioni per un’esperienza premium.',
-        bullets: ['GSAP e scroll curato', 'Core Web Vitals', 'Motion rispettosa del device'],
+        desc: 'Ottimizzazione dei caricamenti e micro-animazioni per un’esperienza premium.',
+        bullets: ['GSAP e scroll curato', 'Core Web Vitals', 'Animazioni leggere su ogni dispositivo'],
       },
       maintenance: {
         title: 'Supporto & Aggiornamenti',
@@ -240,7 +240,7 @@ const STRINGS = {
       includesLabel: 'Include',
       launch: {
         name: 'Launch',
-        range: '500 € - 900 €',
+        range: '500 € - 900 €',
         ideal: ['Hotel, B&B e case vacanza', 'Piccoli business locali', 'Landing page', 'Chi parte da zero'],
         includes: [
           '1 pagina landing',
@@ -252,7 +252,7 @@ const STRINGS = {
       },
       growth: {
         name: 'Growth',
-        range: '1.200 € - 2.500 €',
+        range: '1.200 € - 2.500 €',
         ideal: ['Strutture ricettive', 'Business in espansione', 'Brand che vogliono alzare il livello', 'Best Value'],
         includes: [
           '3-5 pagine',
@@ -266,26 +266,26 @@ const STRINGS = {
       },
       authority: {
         name: 'Authority',
-        range: '3.000 € - 6.000 €+',
-        ideal: ['Hotel e residence', 'Ristoranti high-end', 'Brand personali forti', 'Progetti wow'],
+        range: '3.000 € - 6.000 €+',
+        ideal: ['Hotel e residence', 'Ristoranti high-end', 'Brand personali forti', 'Progetti di alto profilo'],
         includes: [
           'Design completamente custom',
           'Motion avanzata (GSAP)',
           'UX strategica',
           'Architettura completa',
           'SEO avanzato',
-          'Performance top',
+          'Prestazioni elevate',
           'CMS / integrazioni su richiesta',
         ],
       },
       extras: {
         title: 'Extra (upsell)',
         items: [
-          'Manutenzione mensile: 50 € - 150 €/mese',
-          'SEO avanzato: 300 € - 800 €',
+          'Manutenzione mensile: 50 € - 150 €/mese',
+          'SEO avanzato: 300 € - 800 €',
           'Copywriting: su richiesta',
-          'Landing aggiuntive: 150 € - 400 €',
-          'Analytics avanzato: 200 € - 500 €',
+          'Landing aggiuntive: 150 € - 400 €',
+          'Analytics avanzato: 200 € - 500 €',
         ],
       },
       positioning: {
@@ -332,7 +332,7 @@ const STRINGS = {
           name: 'Launch + Visual Pack',
           lead: 'A partire da',
           items: ['Sito 3-5 pagine', 'Shooting foto base', '5-10 foto editate', '1 mini video'],
-          range: '1.500 €',
+          range: '1.500 €',
         },
         premiumExperience: {
           name: 'Premium Brand Experience',
@@ -343,7 +343,7 @@ const STRINGS = {
             'Shooting avanzato',
             'Drone e video cinematico',
           ],
-          range: '4.000 €',
+          range: '4.000 €',
         },
       },
       cta: 'Richiedi consulenza gratuita',
@@ -361,19 +361,19 @@ const STRINGS = {
         photo: {
           title: 'FOTOGRAFIA',
           desc: 'Shooting professionali per prodotti, food ed e-commerce. Immagini curate dalla luce alla post-produzione, pensate per migliorare la percezione del brand e la conversione su ogni canale.',
-          price: 'da 150 € / 300 €+',
+          price: 'da 150 € / 300 €+',
           details: ['Shooting prodotto', 'Food / e-commerce', 'Post produzione inclusa'],
         },
         copy: {
           title: 'COPYWRITING',
           desc: 'Testi che vendono e parlano la lingua del tuo brand. Naming, claim, microcopy e contenuti per landing, email e social, pensati per generare azione.',
-          price: 'da 100 € / 400 €+',
+          price: 'da 100 € / 400 €+',
           details: ['Naming e claim', 'Testi sito / landing', 'Email & social copy'],
         },
         drone: {
           title: 'DRONE',
           desc: 'Riprese aeree cinematiche per location, hospitality e brand. Inquadrature stabili, traiettorie pulite e autorizzazioni gestite: file pronti al montaggio, in formato verticale o orizzontale.',
-          price: 'da 200 € / 500 €+',
+          price: 'da 200 € / 500 €+',
           details: ['Riprese aeree cinematiche', 'Location / hospitality', 'Pilota certificato'],
         },
       },
@@ -635,7 +635,7 @@ const STRINGS = {
       includesLabel: 'Includes',
       launch: {
         name: 'Launch',
-        range: '€500 - €900',
+        range: '€500 - €900',
         ideal: ['Hotels, B&Bs, holiday homes', 'Small local businesses', 'Landing pages', 'Starting from scratch'],
         includes: [
           '1 landing page',
@@ -647,7 +647,7 @@ const STRINGS = {
       },
       growth: {
         name: 'Growth',
-        range: '€1,200 - €2,500',
+        range: '€1,200 - €2,500',
         ideal: ['Hospitality businesses', 'Growing businesses', 'Brands ready to level up', 'Best Value'],
         includes: [
           '3-5 pages',
@@ -661,7 +661,7 @@ const STRINGS = {
       },
       authority: {
         name: 'Authority',
-        range: '€3,000 - €6,000+',
+        range: '€3,000 - €6,000+',
         ideal: ['Hotels and residences', 'High-end restaurants', 'Strong personal brands', 'Wow projects'],
         includes: [
           'Fully custom design',
@@ -676,11 +676,11 @@ const STRINGS = {
       extras: {
         title: 'Extras (upsell)',
         items: [
-          'Monthly maintenance: €50 - €150/month',
-          'Advanced SEO: €300 - €800',
+          'Monthly maintenance: €50 - €150/month',
+          'Advanced SEO: €300 - €800',
           'Copywriting: on request',
-          'Additional landing pages: €150 - €400',
-          'Advanced analytics: €200 - €500',
+          'Additional landing pages: €150 - €400',
+          'Advanced analytics: €200 - €500',
         ],
       },
       positioning: {
@@ -751,19 +751,19 @@ const STRINGS = {
         photo: {
           title: 'PHOTOGRAPHY',
           desc: 'Professional shoots for products, food and e-commerce. Imagery crafted from lighting to post-production, designed to elevate brand perception and conversion on every channel.',
-          price: 'from €150 / €300+',
+          price: 'from €150 / €300+',
           details: ['Product shoots', 'Food / e-commerce', 'Post-production included'],
         },
         copy: {
           title: 'COPYWRITING',
           desc: 'Copy that sells and sounds like your brand. Naming, claims, microcopy and content for landing pages, email and social, designed to drive action.',
-          price: 'from €100 / €400+',
+          price: 'from €100 / €400+',
           details: ['Naming and claims', 'Website / landing copy', 'Email & social copy'],
         },
         drone: {
           title: 'DRONE',
           desc: 'Cinematic aerial footage for locations, hospitality and brands. Stable framing, clean paths and permits handled: edit-ready files, vertical or horizontal.',
-          price: 'from €200 / €500+',
+          price: 'from €200 / €500+',
           details: ['Cinematic aerial footage', 'Location / hospitality', 'Certified pilot'],
         },
       },
@@ -1028,19 +1028,19 @@ const STRINGS = {
         photo: {
           title: 'PHOTOGRAPHIE',
           desc: 'Shootings professionnels pour produits, food et e-commerce. Des images soignées, de la lumière à la post-production, pensées pour valoriser la marque et la conversion sur chaque canal.',
-          price: 'à partir de 150 € / 300 €+',
+          price: 'à partir de 150 € / 300 €+',
           details: ['Shooting produit', 'Food / e-commerce', 'Post-production incluse'],
         },
         copy: {
           title: 'COPYWRITING',
           desc: 'Des textes qui vendent et qui parlent la langue de votre marque. Naming, claims, microcopy et contenus pour landing pages, emails et social, pensés pour générer de l’action.',
-          price: 'à partir de 100 € / 400 €+',
+          price: 'à partir de 100 € / 400 €+',
           details: ['Naming et claims', 'Textes site / landing', 'Email & social copy'],
         },
         drone: {
           title: 'DRONE',
           desc: 'Prises de vue aériennes cinématographiques pour lieux, hôtellerie et marques. Cadres stables, trajectoires propres et autorisations gérées : fichiers prêts au montage, vertical ou horizontal.',
-          price: 'à partir de 200 € / 500 €+',
+          price: 'à partir de 200 € / 500 €+',
           details: ['Prises de vue cinématographiques', 'Lieu / hôtellerie', 'Pilote certifié'],
         },
       },
@@ -1305,19 +1305,19 @@ const STRINGS = {
         photo: {
           title: 'FOTOGRAFIE',
           desc: 'Professionelle Shootings für Produkte, Food und E-Commerce. Bilder, vom Licht bis zur Postproduktion gepflegt, um Markenwahrnehmung und Conversion auf jedem Kanal zu steigern.',
-          price: 'ab 150 € / 300 €+',
+          price: 'ab 150 € / 300 €+',
           details: ['Produkt-Shootings', 'Food / E-Commerce', 'Postproduktion inklusive'],
         },
         copy: {
           title: 'COPYWRITING',
           desc: 'Texte, die verkaufen und nach Ihrer Marke klingen. Naming, Claims, Microcopy und Inhalte für Landingpages, E-Mail und Social - auf Wirkung ausgelegt.',
-          price: 'ab 100 € / 400 €+',
+          price: 'ab 100 € / 400 €+',
           details: ['Naming und Claims', 'Website- / Landing-Texte', 'E-Mail & Social Copy'],
         },
         drone: {
           title: 'DROHNE',
           desc: 'Cinematische Luftaufnahmen für Locations, Hospitality und Marken. Stabile Bildausschnitte, saubere Flugbahnen und Genehmigungen geregelt: schnittfertige Dateien, vertikal oder horizontal.',
-          price: 'ab 200 € / 500 €+',
+          price: 'ab 200 € / 500 €+',
           details: ['Cinematische Luftaufnahmen', 'Location / Hospitality', 'Zertifizierter Pilot'],
         },
       },
@@ -1582,19 +1582,19 @@ const STRINGS = {
         photo: {
           title: 'FOTOGRAFÍA',
           desc: 'Sesiones profesionales para productos, food y e-commerce. Imágenes cuidadas desde la luz hasta la postproducción, pensadas para elevar la percepción de marca y la conversión en cada canal.',
-          price: 'desde 150 € / 300 €+',
+          price: 'desde 150 € / 300 €+',
           details: ['Sesiones de producto', 'Food / e-commerce', 'Postproducción incluida'],
         },
         copy: {
           title: 'COPYWRITING',
           desc: 'Textos que venden y suenan como tu marca. Naming, claims, microcopy y contenido para landings, email y redes sociales, pensados para activar acción.',
-          price: 'desde 100 € / 400 €+',
+          price: 'desde 100 € / 400 €+',
           details: ['Naming y claims', 'Textos web / landing', 'Email & social copy'],
         },
         drone: {
           title: 'DRON',
           desc: 'Tomas aéreas cinematográficas para localizaciones, hospitality y marcas. Encuadres estables, trayectorias limpias y permisos gestionados: archivos listos para montaje, vertical u horizontal.',
-          price: 'desde 200 € / 500 €+',
+          price: 'desde 200 € / 500 €+',
           details: ['Tomas aéreas cinematográficas', 'Localización / hospitality', 'Piloto certificado'],
         },
       },

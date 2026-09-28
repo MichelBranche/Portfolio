@@ -1,6 +1,6 @@
 'use client'
 
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FOOTER_SOCIAL } from '../../config/site.js'
@@ -8,20 +8,21 @@ import { useLanguage } from '../../context/LanguageContext.jsx'
 import { Chars, PixelImage, Scramble } from '../site/motion.jsx'
 import { magnetic, magneticReset, pixelBurst, pixelClear, reduceMotion } from '../site/motion-fx'
 import { useSiteUI } from '../site/site-ui.js'
-import { formatKpiDisplay, LEVELE_CASE as D } from './leveleData.js'
+import { formatKpiDisplay, leveleCase } from './leveleData.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function LeveleCasePage() {
   const { go } = useSiteUI()
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
+  const D = useMemo(() => leveleCase(lang), [lang])
   const kpiRef = useRef(null)
 
   useLayoutEffect(() => {
     const root = kpiRef.current
     if (!root) return undefined
     const nodes = [...root.querySelectorAll('[data-count]')]
-    const finals = nodes.map((el) => formatKpiDisplay(D.kpis[Number(el.dataset.count)]))
+    const finals = nodes.map((el) => formatKpiDisplay(D.kpis[Number(el.dataset.count)], undefined, lang))
     nodes.forEach((el, index) => {
       el.textContent = finals[index]
     })
@@ -48,10 +49,10 @@ export default function LeveleCasePage() {
             duration: 1.6,
             ease: 'expo.out',
             onStart: () => {
-              el.textContent = formatKpiDisplay(kpi, 0)
+              el.textContent = formatKpiDisplay(kpi, 0, lang)
             },
             onUpdate: () => {
-              el.textContent = formatKpiDisplay(kpi, counter.v)
+              el.textContent = formatKpiDisplay(kpi, counter.v, lang)
             },
             onComplete: () => {
               el.textContent = finalText
@@ -76,7 +77,7 @@ export default function LeveleCasePage() {
       ctx.revert()
       restore()
     }
-  }, [])
+  }, [D, lang])
 
   const back = (event) => {
     event.preventDefault()
@@ -132,12 +133,12 @@ export default function LeveleCasePage() {
         <Media src={D.previewImg} href={D.liveUrl} cursor={D.hero.ctaLive} className="is-site" />
       </div>
 
-      <section className="hb-cs-kpis" ref={kpiRef} aria-label="Risultati chiave">
+      <section className="hb-cs-kpis" ref={kpiRef} aria-label={lang === 'it' ? 'Risultati chiave' : 'Key results'}>
         {D.kpis.map((kpi, index) => (
           <div key={kpi.label} className="hb-cs-kpi" data-reveal>
             <span className="hb-rule" data-line />
             <p className="hb-cs-num" data-count={index}>
-              {formatKpiDisplay(kpi)}
+              {formatKpiDisplay(kpi, undefined, lang)}
             </p>
             <p className="hb-label">\ {kpi.label} \</p>
           </div>

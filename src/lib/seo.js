@@ -8,7 +8,8 @@ export async function metaFor(pathname) {
   const locale = lang === 'it' ? 'it' : 'en'
   const { title, description } = resolveMeta(locale, pathname)
   const clean = `${SITE}${pathname === '/' ? '' : pathname}`
-  const canonical = explicit && lang === 'it' ? `${clean}?lang=it` : clean
+  const italian = pathname === '/' ? `${SITE}/?lang=it` : `${clean}?lang=it`
+  const canonical = explicit && lang === 'it' ? italian : clean
 
   return {
     title: { absolute: title },
@@ -17,7 +18,7 @@ export async function metaFor(pathname) {
       canonical,
       languages: {
         en: clean,
-        it: `${clean}?lang=it`,
+        it: italian,
         'x-default': clean,
       },
     },

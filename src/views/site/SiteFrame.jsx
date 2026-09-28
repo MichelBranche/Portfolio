@@ -209,17 +209,28 @@ export function SiteFrame({ children }) {
     }
     const img = document.querySelector('[data-lcp] img')
     let cap = 0
+    const afterPaint = () => {
+      window.clearTimeout(cap)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (cancel) return
+          cap = window.setTimeout(arm, 120)
+        })
+      })
+    }
     if (img && !img.complete) {
-      img.addEventListener('load', arm, { once: true })
+      img.addEventListener('load', afterPaint, { once: true })
       img.addEventListener('error', arm, { once: true })
-      cap = window.setTimeout(arm, 1000)
+      cap = window.setTimeout(arm, 4000)
+    } else if (img) {
+      afterPaint()
     } else {
       cap = window.setTimeout(arm, 80)
     }
     return () => {
       cancel = true
       window.clearTimeout(cap)
-      img?.removeEventListener('load', arm)
+      img?.removeEventListener('load', afterPaint)
       img?.removeEventListener('error', arm)
     }
   }, [])

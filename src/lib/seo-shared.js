@@ -30,7 +30,7 @@ const PAGE_META = {
     '/work/levele': {
       title: 'Residence Le Vele, case study | Michel Branche',
       description:
-        'Case study del sito di Residence Le Vele a Stintino. Primo mese online: 14 prenotazioni dirette, 77 notti, 11.947 €, zero Google Ads.',
+        'Case study del sito di Residence Le Vele a Stintino. Primo mese online: 14 prenotazioni dirette, 77 notti, 11.947 €, zero Google Ads.',
     },
     '/shop': {
       title: 'Shop | Michel Branche',
@@ -65,7 +65,7 @@ const PAGE_META = {
     '/work/levele': {
       title: 'Residence Le Vele case study | Michel Branche',
       description:
-        'Case study for Residence Le Vele in Stintino. First month online: 14 direct bookings, 77 nights, €11,947, zero Google Ads.',
+        'Case study for Residence Le Vele in Stintino. First month online: 14 direct bookings, 77 nights, €11,947, zero Google Ads.',
     },
     '/shop': {
       title: 'Shop | Michel Branche',

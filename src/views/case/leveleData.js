@@ -1,3 +1,5 @@
+const EURO = '\u00A0€'
+
 /** Dati case study Residence Le Vele, primo mese di risultati. */
 export const LEVELE_CASE = {
   brand: 'Residence Le Vele',
@@ -18,15 +20,15 @@ export const LEVELE_CASE = {
   hero: {
     eyebrow: 'Case study · 1° mese online',
     headline:
-      'Come un nuovo sito ha generato 11.947 € di prenotazioni dirette nel primo mese di messa online, senza Google Ads.',
+      `Come un nuovo sito ha generato 11.947${EURO} di prenotazioni dirette nel primo mese di messa online, senza Google Ads.`,
     ctaLive: 'Vedi il sito',
     ctaBack: 'Torna ai lavori',
   },
   kpis: [
-    { value: 11947, prefix: '', suffix: ' €', label: 'Ricavi nel 1° mese', format: 'currency' },
+    { value: 11947, prefix: '', suffix: EURO, label: 'Ricavi nel 1° mese', format: 'currency' },
     { value: 14, prefix: '', suffix: '', label: 'Prenotazioni (3-30 lug)', format: 'int' },
     { value: 77, prefix: '', suffix: '', label: 'Notti vendute', format: 'int' },
-    { value: 0, prefix: '', suffix: ' €', label: 'Google Ads', format: 'currency' },
+    { value: 0, prefix: '', suffix: EURO, label: 'Google Ads', format: 'currency' },
   ],
   /** Contesto temporale sul canale “sito”. */
   bookingContext:
@@ -78,7 +80,7 @@ export const LEVELE_CASE = {
   results: {
     title: 'Risultati economici',
     lead: 'Nel primo mese di messa online (3-30 luglio) il sito ha generato:',
-    lines: ['14 prenotazioni dirette', '77 notti', '11.947 €'],
+    lines: ['14 prenotazioni dirette', '77 notti', `11.947${EURO}`],
     note: 'Senza alcuna campagna Google Ads.',
     context:
       'Dal 01/01/2026 a oggi: 17 prenotazioni dirette totali dal canale “sito”. Di queste, 14 sono state ottenute tra il 3 e il 30 luglio.',
@@ -86,7 +88,7 @@ export const LEVELE_CASE = {
   slope: {
     title: 'Report del gestionale',
     caption:
-      'Estratto Slope (3-30 luglio), canale “sito”: 14 prenotazioni, 77 notti, 11.947 €, 0% commissioni e 0% cancellazioni. YTD 2026: 17 prenotazioni dirette totali dal sito.',
+      `Estratto Slope (3-30 luglio), canale “sito”: 14 prenotazioni, 77 notti, 11.947${EURO}, 0% commissioni e 0% cancellazioni. YTD 2026: 17 prenotazioni dirette totali dal sito.`,
   },
   deliverables: {
     title: 'Cosa ho realizzato',
@@ -106,7 +108,6 @@ export const LEVELE_CASE = {
   },
   /** Imposta quote + author per mostrare la sezione testimonianza. */
   testimonial: null,
-  // testimonial: { quote: '…', author: '…', role: 'Residence Le Vele' },
   cta: {
     title: 'Il tuo sito porta davvero clienti?',
     lead: 'Costruiamo insieme un sito pensato per generare risultati, non solo per essere bello.',
@@ -114,10 +115,97 @@ export const LEVELE_CASE = {
   },
 }
 
-export function formatKpiDisplay(kpi, animatedValue) {
+/** English body. Numbers stay identical to the Italian case. */
+export const LEVELE_CASE_EN = {
+  ...LEVELE_CASE,
+  location: 'Stintino, Sardinia',
+  hero: {
+    eyebrow: 'Case study · first month online',
+    headline:
+      'How a new site brought in €11,947 of direct bookings in its first month online, with no Google Ads.',
+    ctaLive: 'See the site',
+    ctaBack: 'Back to the work',
+  },
+  kpis: [
+    { value: 11947, prefix: '', suffix: '', label: 'Revenue in month 1', format: 'currency' },
+    { value: 14, prefix: '', suffix: '', label: 'Bookings (3-30 Jul)', format: 'int' },
+    { value: 77, prefix: '', suffix: '', label: 'Nights sold', format: 'int' },
+    { value: 0, prefix: '', suffix: '', label: 'Google Ads', format: 'currency' },
+  ],
+  bookingContext:
+    'From 1 Jan 2026 to today, direct bookings on the "site" channel total 17. 14 of them came in between 3 and 30 July, in the first month online.',
+  problem: {
+    title: 'The problem',
+    lead: 'The previous site had a few clear limits:',
+    items: [
+      'dated design',
+      'low trust',
+      'a weak mobile experience',
+      'rooms that were hard to appreciate',
+      'no SEO work',
+    ],
+  },
+  solution: {
+    title: 'The solution',
+    lead: 'A site built to convert: design, trust, performance and direct booking.',
+    checklist: ['Design', 'SEO', 'Performance', 'Responsive', 'Booking Engine', 'Multilingual'],
+  },
+  process: {
+    title: 'The process',
+    steps: ['Discovery', 'UX', 'UI', 'Development', 'SEO', 'Launch'],
+  },
+  beforeAfter: {
+    title: 'Before / After',
+    beforeLabel: 'Old website',
+    afterLabel: 'New website',
+  },
+  analytics: {
+    title: 'Analytics',
+    lead: 'Organic traffic and behaviour in the first month online.',
+    caption:
+      'Vercel Analytics (first month): 267 visitors (+493%), 752 page views, bounce rate 34%. Top referrer: Google (135). /prenota received 100 visitors.',
+    metrics: [
+      { value: 267, label: 'Visitors' },
+      { value: 752, label: 'Page views' },
+      { value: 34, suffix: '%', label: 'Bounce rate' },
+      { value: 135, label: 'Visitors from Google' },
+    ],
+  },
+  results: {
+    title: 'Business results',
+    lead: 'In the first month online (3-30 July) the site brought in:',
+    lines: ['14 direct bookings', '77 nights', '€11,947'],
+    note: 'With no Google Ads campaign.',
+    context:
+      'From 1 Jan 2026 to today: 17 direct bookings on the "site" channel. 14 of them came in between 3 and 30 July.',
+  },
+  slope: {
+    title: 'Property system report',
+    caption:
+      'Slope extract (3-30 July), "site" channel: 14 bookings, 77 nights, €11,947, 0% commission and 0% cancellations. YTD 2026: 17 direct bookings from the site.',
+  },
+  deliverables: {
+    title: 'What I built',
+    items: LEVELE_CASE.deliverables.items,
+  },
+  cta: {
+    title: 'Does your site actually bring guests?',
+    lead: "Let's build a site meant to bring results, not only to look good.",
+    button: "Let's talk",
+  },
+}
+
+export function leveleCase(lang) {
+  return lang === 'it' ? LEVELE_CASE : LEVELE_CASE_EN
+}
+
+export function formatKpiDisplay(kpi, animatedValue, lang = 'it') {
   const n = animatedValue ?? kpi.value
   if (kpi.format === 'currency') {
-    return `${new Intl.NumberFormat('it-IT').format(Math.round(n))}${kpi.suffix || ''}`
+    if (lang === 'it') {
+      return `${new Intl.NumberFormat('it-IT').format(Math.round(n))}${kpi.suffix || EURO}`
+    }
+    return `€${new Intl.NumberFormat('en-US').format(Math.round(n))}`
   }
   return `${Math.round(n)}${kpi.suffix || ''}`
 }
