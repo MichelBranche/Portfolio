@@ -66,7 +66,7 @@ export const viewport = {
 
 export default async function RootLayout({ children }) {
   const h = await headers()
-  const lang = h.get('x-mb-lang') || 'en'
+  const lang = h.get('x-mb-lang') || 'it'
 
   return (
     <html lang={lang} className={`${archivo.variable} ${chakra.variable} ${garamond.variable}`}>

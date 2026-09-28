@@ -11,9 +11,9 @@ const CODES = new Set(LANGUAGE_LIST.map((l) => l.code))
 
 const LanguageContext = createContext(null)
 
-export function LanguageProvider({ children, initialLang = 'en' }) {
+export function LanguageProvider({ children, initialLang = 'it' }) {
   const pathname = usePathname()
-  const [lang, setLangState] = useState(CODES.has(initialLang) ? initialLang : 'en')
+  const [lang, setLangState] = useState(CODES.has(initialLang) ? initialLang : 'it')
 
   const setLang = useCallback((code) => {
     if (!CODES.has(code)) return
@@ -22,6 +22,7 @@ export function LanguageProvider({ children, initialLang = 'en' }) {
       localStorage.setItem(STORAGE, code)
       localStorage.setItem(STORAGE_EXPLICIT, '1')
       document.cookie = `mb-lang=${code};path=/;max-age=31536000;SameSite=Lax`
+      document.cookie = `mb-lang-explicit=1;path=/;max-age=31536000;SameSite=Lax`
     } catch {
       /* private mode */
     }
@@ -43,7 +44,7 @@ export function LanguageProvider({ children, initialLang = 'en' }) {
 
   useEffect(() => {
     if (typeof document === 'undefined') return
-    document.documentElement.lang = LANGUAGES[lang]?.code || 'en'
+    document.documentElement.lang = LANGUAGES[lang]?.code || 'it'
     applyClientMeta(lang, pathname || '/')
   }, [lang, pathname])
 

@@ -270,8 +270,8 @@ export function SiteFrame({ children }) {
 
   useEffect(() => {
     const code = searchParams.get('lang')
-    if (code && code !== lang) setLang(code)
-  }, [searchParams, lang, setLang])
+    if (code) setLang(code)
+  }, [searchParams, setLang])
 
   useLayoutEffect(() => {
     if (document.body.style.position === 'fixed') {
