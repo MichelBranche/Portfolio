@@ -722,8 +722,58 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
   z-index: 5;
 }
 
+.hb-gate.is-compact {
+  display: flex;
+  flex-direction: column;
+  touch-action: manipulation;
+}
+
+.hb-gate.is-compact .hb-choose {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  flex: none;
+  width: max-content;
+  max-width: calc(100% - 1.6rem);
+  margin: 0 auto 0.45rem;
+  z-index: 8;
+}
+
+.hb-mobile-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  align-items: start;
+  gap: 1.15rem 0.75rem;
+  padding: 0.15rem 0.85rem 1.6rem;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+
+.hb-gate.is-compact .hb-tile,
+.hb-gate.is-compact .hb-tile:hover {
+  position: relative;
+  width: 100%;
+  transform: none;
+}
+
+.hb-gate.is-compact .hb-tile-meta {
+  flex-wrap: wrap;
+  gap: 0.15rem 0.6rem;
+}
+
+.hb-gate.is-compact .hb-tile-meta span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .hb-skip {
-  position: absolute;
+  position: fixed;
   left: 50%;
   bottom: 1.2rem;
   margin-left: -2rem;
@@ -733,9 +783,9 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
   gap: 0.35rem;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: #f4f1ea;
   letter-spacing: 0.28em;
-  z-index: 6;
+  z-index: 96;
 }
 
 .hb-skip-x {

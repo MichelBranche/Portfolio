@@ -270,8 +270,8 @@ export function SiteFrame({ children }) {
 
   useEffect(() => {
     const code = searchParams.get('lang')
-    if (code && code !== lang) setLang(code)
-  }, [searchParams, lang, setLang])
+    if (code) setLang(code)
+  }, [searchParams, setLang])
 
   useLayoutEffect(() => {
     if (document.body.style.position === 'fixed') {
@@ -545,7 +545,24 @@ export function SiteFrame({ children }) {
         ) : null}
 
         <Veil veilRef={veilRef} />
-        {welcome ? <Welcome text={String(t('site.welcome'))} onDone={endWelcome} /> : null}
+        {welcome ? (
+          <>
+            <Welcome text={String(t('site.welcome'))} onDone={endWelcome} />
+            <button
+              type="button"
+              className="hb-skip"
+              onClick={endWelcome}
+              onPointerMove={(event) => magnetic(event, 0.4)}
+              onPointerLeave={magneticReset}
+            >
+              <span className="hb-skip-x" aria-hidden>
+                <span />
+                <span />
+              </span>
+              {String(t('site.skip'))}
+            </button>
+          </>
+        ) : null}
         <HbCursor />
       </div>
     </SiteUIContext.Provider>

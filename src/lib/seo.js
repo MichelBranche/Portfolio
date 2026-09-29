@@ -3,7 +3,7 @@ import { SITE, resolveMeta } from './seo-shared'
 
 export async function metaFor(pathname) {
   const h = await headers()
-  const lang = h.get('x-mb-lang') || 'en'
+  const lang = h.get('x-mb-lang') || 'it'
   const explicit = h.get('x-mb-lang-explicit') === '1'
   const locale = lang === 'it' ? 'it' : 'en'
   const { title, description } = resolveMeta(locale, pathname)

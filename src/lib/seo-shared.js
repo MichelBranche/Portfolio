@@ -3,9 +3,9 @@ export const SITE = 'https://www.michelbranche.it'
 const PAGE_META = {
   it: {
     '/': {
-      title: 'Michel Branche | Siti per strutture ricettive',
+      title: 'Michel Branche | Siti web su misura',
       description:
-        'Sviluppatore web indipendente in Italia. Siti per hotel, B&B, residence, case vacanza e attività locali.',
+        'Sviluppatore web indipendente in Italia. Siti web su misura, progettati e sviluppati da zero per aziende, brand e progetti di ogni tipo, compresa l’hospitality.',
     },
     '/portfolio': {
       title: 'Lavori | Michel Branche',
@@ -15,12 +15,12 @@ const PAGE_META = {
     '/studio': {
       title: 'Studio | Michel Branche',
       description:
-        'Michel Branche, sviluppatore web indipendente. Interfacce chiare, motion e siti pensati per chi accoglie ospiti.',
+        'Michel Branche, sviluppatore web indipendente. Interfacce chiare, motion e siti su misura per aziende, brand e progetti di ogni tipo.',
     },
     '/servizi': {
       title: 'Servizi | Michel Branche',
       description:
-        'Siti su misura, e-commerce, UI/UX e pacchetti per hotel, B&B, residence, case vacanza e attività locali.',
+        'Siti su misura, e-commerce, UI/UX e pacchetti per aziende, brand e progetti di ogni tipo.',
     },
     '/contatti': {
       title: 'Contatti | Michel Branche',
@@ -39,9 +39,9 @@ const PAGE_META = {
   },
   en: {
     '/': {
-      title: 'Michel Branche | Websites for hospitality',
+      title: 'Michel Branche | Custom websites',
       description:
-        'Independent web developer in Italy. Websites for hotels, B&Bs, residences, holiday homes and local businesses.',
+        'Independent web developer in Italy. Custom websites, designed and built from scratch for businesses, brands and projects of any kind, including hospitality.',
     },
     '/portfolio': {
       title: 'Work | Michel Branche',
@@ -50,12 +50,12 @@ const PAGE_META = {
     '/studio': {
       title: 'Studio | Michel Branche',
       description:
-        'Michel Branche, independent web developer. Clear interfaces, motion, and sites for people who host guests.',
+        'Michel Branche, independent web developer. Clear interfaces, motion, and custom sites for businesses, brands and projects of any kind.',
     },
     '/servizi': {
       title: 'Services | Michel Branche',
       description:
-        'Custom websites, e-commerce, UI/UX and packages for hotels, B&Bs, residences, holiday homes and local businesses.',
+        'Custom websites, e-commerce, UI/UX and packages for businesses, brands and projects of any kind.',
     },
     '/contatti': {
       title: 'Contact | Michel Branche',
