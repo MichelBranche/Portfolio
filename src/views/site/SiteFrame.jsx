@@ -410,7 +410,7 @@ export function SiteFrame({ children }) {
   }, [])
 
   return (
-    <SiteUIContext.Provider value={{ openProject, go, introDone: !welcome, lang, scrollTop, setOverlayLock }}>
+    <SiteUIContext.Provider value={{ openProject, go, introDone: !welcome, showSkip: welcomeKnown && !welcome, lang, scrollTop, setOverlayLock }}>
       <div className={`hb-shell${isHome ? ' hb-shell--gate' : ''}`}>
         <header className="hb-header">
           <a
@@ -545,24 +545,7 @@ export function SiteFrame({ children }) {
         ) : null}
 
         <Veil veilRef={veilRef} />
-        {welcome ? (
-          <>
-            <Welcome text={String(t('site.welcome'))} onDone={endWelcome} />
-            <button
-              type="button"
-              className="hb-skip"
-              onClick={endWelcome}
-              onPointerMove={(event) => magnetic(event, 0.4)}
-              onPointerLeave={magneticReset}
-            >
-              <span className="hb-skip-x" aria-hidden>
-                <span />
-                <span />
-              </span>
-              {String(t('site.skip'))}
-            </button>
-          </>
-        ) : null}
+        {welcome ? <Welcome text={String(t('site.welcome'))} onDone={endWelcome} /> : null}
         <HbCursor />
       </div>
     </SiteUIContext.Provider>
