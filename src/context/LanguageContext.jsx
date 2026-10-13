@@ -11,9 +11,9 @@ const CODES = new Set(LANGUAGE_LIST.map((l) => l.code))
 
 const LanguageContext = createContext(null)
 
-export function LanguageProvider({ children, initialLang = 'it' }) {
+export function LanguageProvider({ children, initialLang = 'en' }) {
   const pathname = usePathname()
-  const [lang, setLangState] = useState(CODES.has(initialLang) ? initialLang : 'it')
+  const [lang, setLangState] = useState(CODES.has(initialLang) ? initialLang : 'en')
 
   const setLang = useCallback((code) => {
     if (!CODES.has(code)) return
@@ -44,7 +44,7 @@ export function LanguageProvider({ children, initialLang = 'it' }) {
 
   useEffect(() => {
     if (typeof document === 'undefined') return
-    document.documentElement.lang = LANGUAGES[lang]?.code || 'it'
+    document.documentElement.lang = LANGUAGES[lang]?.code || 'en'
     applyClientMeta(lang, pathname || '/')
   }, [lang, pathname])
 

@@ -5,10 +5,7 @@ const PATHS = ['/', '/portfolio', '/studio', '/servizi', '/contatti', '/work/lev
 export default function sitemap() {
   const lastModified = new Date()
   return PATHS.flatMap((path) => {
-    const { it, en, languages } = alternatesFor(path)
-    return [
-      { url: it, lastModified, alternates: { languages } },
-      { url: en, lastModified, alternates: { languages } },
-    ]
+    const { urls, languages } = alternatesFor(path)
+    return Object.values(urls).map((url) => ({ url, lastModified, alternates: { languages } }))
   })
 }

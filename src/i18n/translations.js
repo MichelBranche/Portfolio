@@ -865,6 +865,9 @@ const STRINGS = {
       menuClose: 'Fermer le menu',
     },
     site: {
+      h1Home: 'Michel Branche, développeur web : sites web sur mesure',
+      h1Portfolio: 'Réalisations et projets de Michel Branche',
+      h1Studio: 'Le studio de Michel Branche',
       menu: 'Menu',
       studio: 'Studio',
       servizi: 'Services',
@@ -1151,6 +1154,9 @@ const STRINGS = {
       menuClose: 'Menü schließen',
     },
     site: {
+      h1Home: 'Michel Branche, Webentwickler: maßgeschneiderte Websites',
+      h1Portfolio: 'Arbeiten und Projekte von Michel Branche',
+      h1Studio: 'Das Studio von Michel Branche',
       menu: 'Menü',
       studio: 'Studio',
       servizi: 'Leistungen',
@@ -1437,6 +1443,9 @@ const STRINGS = {
       menuClose: 'Cerrar menú',
     },
     site: {
+      h1Home: 'Michel Branche, desarrollador web: sitios web a medida',
+      h1Portfolio: 'Trabajos y proyectos de Michel Branche',
+      h1Studio: 'El estudio de Michel Branche',
       menu: 'Menú',
       studio: 'Estudio',
       servizi: 'Servicios',

@@ -3,13 +3,12 @@ import { OG_LOCALES, alternatesFor, resolveMeta } from './seo-shared'
 
 export async function metaFor(pathname) {
   const h = await headers()
-  const lang = h.get('x-mb-lang') || 'it'
-  const { title, description } = resolveMeta(lang === 'it' ? 'it' : 'en', pathname)
-  const { it, en, languages } = alternatesFor(pathname)
-  // Italian lives on the clean URL, English on ?lang=en. Other languages are served
-  // by negotiation only, so they point their canonical at the Italian default.
-  const canonical = lang === 'en' ? en : it
-  const ogLocale = OG_LOCALES[lang] || OG_LOCALES.it
+  const lang = h.get('x-mb-lang') || 'en'
+  const { title, description } = resolveMeta(lang, pathname)
+  const { urls, languages } = alternatesFor(pathname)
+  // Canonical is the explicit URL of the language actually served (clean URL included).
+  const canonical = urls[lang] || urls.en
+  const ogLocale = OG_LOCALES[lang] || OG_LOCALES.en
 
   return {
     title: { absolute: title },
@@ -21,7 +20,7 @@ export async function metaFor(pathname) {
       url: canonical,
       siteName: 'Michel Branche',
       locale: ogLocale,
-      alternateLocale: [ogLocale === OG_LOCALES.it ? OG_LOCALES.en : OG_LOCALES.it],
+      alternateLocale: Object.values(OG_LOCALES).filter((value) => value !== ogLocale),
       type: 'website',
       images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Michel Branche' }],
     },
