@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { PixelImage, Scramble } from './motion.jsx'
 import { magnetic, magneticReset } from './magnetic'
@@ -76,7 +76,7 @@ function shortName(title) {
 
 const COMPACT_QUERY = '(max-width: 760px)'
 
-function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lcp, style, tabIndex = 0 }) {
+function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lcp, lead = false, early = false, held = false, style, tabIndex = 0 }) {
   const name = shortName(project.title)
   return (
     <button
@@ -103,8 +103,11 @@ function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lc
       <span className="hb-tile-in">
         <PixelImage
           src={lcp && project.slug === 'museo' ? '/projects/lcp/museo.avif' : project.thumb}
+          alt={project.alt}
           priority={lcp}
-          late={!lcp}
+          eager={early && !held}
+          quality={lcp || lead ? 50 : undefined}
+          late={!lcp && !early}
           sizes={style?.width ? `${Math.round(style.width)}px` : '50vw'}
           grid={false}
           optimized={!(lcp && project.slug === 'museo')}
@@ -131,17 +134,26 @@ function stamp(iso, lang) {
 const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, panningRef, cols, rows }) {
   const colIds = Array.from({ length: cols }, (_, index) => index)
   const rowIds = Array.from({ length: rows }, (_, index) => index)
+  // Newer entries marked boardTail take the repeat (extra) slots, so existing tiles keep their place.
+  const main = projects.filter((project) => !project.boardTail)
+  const tail = projects.filter((project) => project.boardTail)
   const items = [
-    ...projects.map((project, index) => ({
+    ...main.map((project, index) => ({
       project,
       spot: SPOTS[index % SPOTS.length],
       key: project.slug,
       repeat: false,
     })),
-    ...EXTRAS.map((extra, index) => ({
-      project: projects[extra.from % projects.length],
+    ...tail.slice(0, EXTRAS.length).map((project, index) => ({
+      project,
+      spot: EXTRAS[index],
+      key: project.slug,
+      repeat: false,
+    })),
+    ...EXTRAS.slice(tail.length).map((extra, index) => ({
+      project: main[extra.from % main.length],
       spot: extra,
-      key: `extra-${index}`,
+      key: `extra-${index + tail.length}`,
       repeat: true,
     })),
   ]
@@ -193,7 +205,12 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
 export function HomePage() {
   const { t, lang } = useLanguage()
   const { openProject, go, introDone, showSkip } = useSiteUI()
-  const projects = useProjects()
+  const sorted = useProjects()
+  // Board tiles keep their slots: newer additions marked boardTail take the free slots at the end.
+  const projects = useMemo(
+    () => [...sorted.filter((project) => !project.boardTail), ...sorted.filter((project) => project.boardTail)],
+    [sorted],
+  )
   const gateRef = useRef(null)
   const boardRef = useRef(null)
   const draggedRef = useRef(false)
@@ -538,15 +555,16 @@ export function HomePage() {
   return (
     <div
       ref={gateRef}
-      className={compact ? 'hb-gate is-compact' : 'hb-gate'}
+      className={compact ? 'hb-gate is-compact' : compact == null ? 'hb-gate is-pending' : 'hb-gate'}
       data-cursor={String(t('site.explore'))}
       onPointerLeave={() => setHovered('')}
     >
+      <h1 className="hb-sr-only">{String(t('site.h1Home'))}</h1>
       <p className="hb-audience">{String(t('site.audience'))}</p>
       <p className="hb-choose" aria-live="polite">
         <Scramble text={hovered || String(t('site.choose'))} play={labelPlay} />
       </p>
-      {compact == null ? null : compact ? (
+      {compact !== false ? (
         <div key="mobile" className="hb-mobile-grid">
           {projects.map((project, index) => (
             <ProjectTile
@@ -557,7 +575,10 @@ export function HomePage() {
               onOpen={open}
               onHover={hover}
               panningRef={panningRef}
-              lcp={index === 0}
+              lcp={compact === true && index === 0}
+              lead={index === 0}
+              early={index < 4}
+              held={compact == null}
             />
           ))}
         </div>

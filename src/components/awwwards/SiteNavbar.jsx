@@ -103,14 +103,6 @@ export function SiteNavbar({ labels, onNavigate, hidden = false }) {
               >
                 {'{ LinkedIn }'}
               </a>
-              <a
-                className="site-nav-social interactable"
-                href={FOOTER_SOCIAL.instagram}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {'{ Instagram }'}
-              </a>
               <a className="site-nav-social interactable" href={FOOTER_SOCIAL.email}>
                 {'{ Email }'}
               </a>

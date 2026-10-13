@@ -1,22 +1,11 @@
-const SITE = 'https://www.michelbranche.it'
+import { alternatesFor } from '@/lib/seo-shared'
 
-const PATHS = ['', '/portfolio', '/studio', '/servizi', '/contatti', '/work/levele']
+const PATHS = ['/', '/portfolio', '/studio', '/servizi', '/contatti', '/work/levele']
 
 export default function sitemap() {
   const lastModified = new Date()
-  return PATHS.map((path) => {
-    const url = path ? `${SITE}${path}` : SITE
-    const italian = path ? `${url}?lang=it` : `${SITE}/?lang=it`
-    return {
-      url,
-      lastModified,
-      alternates: {
-        languages: {
-          en: url,
-          it: italian,
-          'x-default': url,
-        },
-      },
-    }
+  return PATHS.flatMap((path) => {
+    const { urls, languages } = alternatesFor(path)
+    return Object.values(urls).map((url) => ({ url, lastModified, alternates: { languages } }))
   })
 }

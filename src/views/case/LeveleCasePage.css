@@ -2,7 +2,7 @@
   min-height: 100svh;
   display: grid;
   place-items: center;
-  font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-space), 'Space Grotesk', 'Helvetica Neue', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background: #ececec;
@@ -22,7 +22,7 @@
   min-height: 100svh;
   background: var(--case-bg);
   color: var(--case-fg);
-  font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-space), 'Space Grotesk', 'Helvetica Neue', sans-serif;
   text-transform: none;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;

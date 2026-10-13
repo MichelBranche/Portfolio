@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server'
 const LANGS = new Set(['it', 'en', 'fr', 'de', 'es'])
 const YEAR = 60 * 60 * 24 * 365
 
-/** Map an Accept-Language list onto a supported locale. `it*` is Italian; anything else we cannot serve falls back to Italian. */
+/** Map an Accept-Language list onto a supported locale (best q first); anything we cannot serve falls back to English. */
 export function languageFromAccept(header) {
-  if (!header) return 'it'
+  if (!header) return 'en'
   const ranked = []
   for (const part of header.split(',')) {
     const [rawTag, ...params] = part.trim().split(';')
@@ -24,10 +24,9 @@ export function languageFromAccept(header) {
   ranked.sort((a, b) => b.quality - a.quality)
   for (const { tag } of ranked) {
     const primary = tag.split('-')[0]
-    if (primary === 'it') return 'it'
     if (LANGS.has(primary)) return primary
   }
-  return 'it'
+  return 'en'
 }
 
 export function middleware(request) {
@@ -39,7 +38,6 @@ export function middleware(request) {
   const lang = queryLang || savedLang || languageFromAccept(request.headers.get('accept-language'))
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-mb-lang', lang)
-  requestHeaders.set('x-mb-lang-explicit', query === 'it' ? '1' : '0')
   const response = NextResponse.next({ request: { headers: requestHeaders } })
   if (queryLang) {
     response.cookies.set('mb-lang', queryLang, { path: '/', maxAge: YEAR, sameSite: 'lax' })

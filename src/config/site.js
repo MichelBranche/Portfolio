@@ -1,7 +1,6 @@
 /** URL, asset e elenco progetti (single source of truth per App). */
 export const FOOTER_SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/michel-branche-328501301/',
-  instagram: 'https://www.instagram.com/80_sete_/',
   email: 'mailto:michel.lavoro@gmail.com',
   phone: 'tel:+393881660117',
   phoneDisplay: '+39 388 166 0117',
@@ -10,7 +9,6 @@ export const FOOTER_SOCIAL = {
 
 export const FOOTER_SOUNDS = {
   linkedin: '/sounds/linkedin.mp3',
-  instagram: '/sounds/instagram.mp3',
   email: '/sounds/vine-boom.mp3',
   scrivimi: '/sounds/scrivimi.mp3',
   anvilDrop: '/sounds/anvil-drop.mp3',
@@ -84,7 +82,6 @@ export const PROJECT_META = [
   {
     slug: 'streetwear',
     category: 'ecommerce',
-    featured: true,
     tech: 'React / Router / GSAP / Lenis',
     link: 'https://sys-0ff.vercel.app/',
     img: '/projects/streetwear-mockup-hero.png',
@@ -95,7 +92,6 @@ export const PROJECT_META = [
   {
     slug: 'museo',
     category: 'institutional',
-    featured: true,
     tech: 'React / Vite / GSAP / Lenis',
     link: 'https://museoegiziotorino.vercel.app/',
     img: '/projects/museo-mockup-hero.png',
@@ -116,7 +112,6 @@ export const PROJECT_META = [
   {
     slug: 'levele',
     category: 'hospitality',
-    featured: true,
     client: true,
     tech: 'React / Vite / API / Redis',
     link: 'https://demoleveleresidence.vercel.app/',
@@ -129,7 +124,6 @@ export const PROJECT_META = [
   {
     slug: 'caffestella',
     category: 'food',
-    featured: true,
     tech: 'React Router / GSAP / Framer Motion',
     link: 'https://demo-paologriffa.vercel.app/',
     img: '/projects/caffestella-mockup-hero.png',
@@ -182,7 +176,6 @@ export const PROJECT_META = [
   {
     slug: 'omama',
     category: 'hospitality',
-    featured: true,
     tech: 'Next.js / GSAP / Lenis / Tailwind',
     link: 'https://demo-omama.vercel.app/',
     img: '/projects/omama-mockup-hero.png',
@@ -211,5 +204,27 @@ export const PROJECT_META = [
     thumb: '/projects/orma-cover.png',
     imgs: ['/projects/orma-mockup-hero.png', '/projects/orma-mockup-sections.png'],
     publishedAt: '2026-09-27',
+  },
+  {
+    slug: 'webtec',
+    category: 'institutional',
+    tech: 'Next.js / GSAP / Lenis / Tailwind',
+    link: 'https://webtec-concept.vercel.app/',
+    img: '/projects/webtec-mockup-hero.png',
+    imgs: ['/projects/webtec-mockup-hero.png', '/projects/webtec-mockup-sections.png'],
+    thumb: '/projects/webtec-cover.png',
+    publishedAt: '2026-10-08',
+    boardTail: true,
+  },
+  {
+    slug: 'webtec2',
+    category: 'institutional',
+    tech: 'Next.js / GSAP / Lenis / Tailwind',
+    link: 'https://webtec-concept-2.vercel.app/',
+    img: '/projects/webtec2-mockup-hero.png',
+    imgs: ['/projects/webtec2-mockup-hero.png', '/projects/webtec2-mockup-sections.png'],
+    thumb: '/projects/webtec2-cover.png',
+    publishedAt: '2026-10-08',
+    boardTail: true,
   },
 ]

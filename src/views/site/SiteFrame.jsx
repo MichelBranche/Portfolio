@@ -483,9 +483,6 @@ export function SiteFrame({ children }) {
             <div className="hb-menu-foot">
               <LanguageSwitch variant="pill" />
               <div className="hb-menu-social">
-                <a href={FOOTER_SOCIAL.instagram} target="_blank" rel="noreferrer">
-                  Instagram
-                </a>
                 <a href={FOOTER_SOCIAL.linkedin} target="_blank" rel="noreferrer">
                   LinkedIn
                 </a>
@@ -580,9 +577,6 @@ function SiteFooter({ t, link }) {
           <a href={FOOTER_SOCIAL.phone}>{FOOTER_SOCIAL.phoneDisplay}</a>
           <a href={FOOTER_SOCIAL.whatsapp} target="_blank" rel="noreferrer">
             WhatsApp
-          </a>
-          <a href={FOOTER_SOCIAL.instagram} target="_blank" rel="noreferrer">
-            Instagram
           </a>
           <a href={FOOTER_SOCIAL.linkedin} target="_blank" rel="noreferrer">
             LinkedIn

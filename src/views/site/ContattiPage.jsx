@@ -58,9 +58,6 @@ export function ContattiPage() {
         >
           {copied ? `✓ ${String(t('site.copied'))}` : String(t('site.copy'))}
         </button>
-        <a href={FOOTER_SOCIAL.instagram} target="_blank" rel="noreferrer" onPointerMove={magnetic} onPointerLeave={magneticReset}>
-          Instagram ↗
-        </a>
         <a href={FOOTER_SOCIAL.linkedin} target="_blank" rel="noreferrer" onPointerMove={magnetic} onPointerLeave={magneticReset}>
           LinkedIn ↗
         </a>

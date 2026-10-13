@@ -86,6 +86,7 @@ export function PortfolioPage() {
 
   return (
     <article className="hb-page">
+      <h1 className="hb-sr-only">{String(t('site.h1Portfolio'))}</h1>
       <div className="hb-switch" data-reveal>
         <div className="hb-switch-tabs" role="tablist">
           <button
@@ -151,6 +152,7 @@ export function PortfolioPage() {
               <Shot
                 key={item.project.slug}
                 project={item.project}
+                rank={item.rank}
                 cursor={String(t('site.open'))}
                 onOpen={() => openProject(item.project)}
               />
@@ -170,7 +172,10 @@ export function PortfolioPage() {
   )
 }
 
-function Shot({ project, cursor, onOpen }) {
+const SHOT_SIZES = '(max-width: 600px) 100vw, (max-width: 900px) 50vw, (max-width: 1100px) 33vw, 25vw'
+const CASE_SIZES = '(max-width: 900px) 100vw, 50vw'
+
+function Shot({ project, rank, cursor, onOpen }) {
   const [play, setPlay] = useState(0)
   return (
     <button
@@ -194,7 +199,14 @@ function Shot({ project, cursor, onOpen }) {
         <Scramble text={techTags(project.tech)} play={play} />
       </span>
       <span className="hb-shot-media" data-clip>
-        <PixelImage src={project.thumb} />
+        <PixelImage
+          src={project.thumb}
+          alt={project.alt}
+          optimized
+          sizes={SHOT_SIZES}
+          priority={rank === 0}
+          eager={rank > 0 && rank < 4}
+        />
         {project.featured ? <span className="hb-badge">★ Top pick</span> : null}
       </span>
     </button>
@@ -216,7 +228,7 @@ function CaseCard({ project, cursor, onOpen }) {
       onClick={onOpen}
     >
       <span className="hb-shot-media" data-clip>
-        <PixelImage src={project.thumb} />
+        <PixelImage src={project.thumb} alt={project.alt} optimized sizes={CASE_SIZES} />
       </span>
       <span className="hb-case-copy">
         <span className="hb-case-title" data-reveal>
@@ -264,7 +276,7 @@ function buildCalendar(projects, lang) {
         .toUpperCase()
       items.push({ type: 'month', key, month, year: String(date.getFullYear()) })
     }
-    items.push({ type: 'project', project })
+    items.push({ type: 'project', project, rank: items.filter((item) => item.type === 'project').length })
   }
   return items
 }
