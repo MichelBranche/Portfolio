@@ -1,4 +1,4 @@
-import { Archivo, Chakra_Petch, EB_Garamond } from 'next/font/google'
+import { Archivo, Chakra_Petch, EB_Garamond, Space_Grotesk } from 'next/font/google'
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
 import { Analytics } from '@vercel/analytics/next'
@@ -31,6 +31,16 @@ const garamond = EB_Garamond({
   weight: '500',
   display: 'swap',
   variable: '--font-garamond',
+  preload: false,
+})
+
+// Used by the Le Vele case study and the admin area. Self-hosted so it no longer
+// blocks rendering through a Google Fonts @import, and only downloaded where used.
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-space',
   preload: false,
 })
 
@@ -69,7 +79,7 @@ export default async function RootLayout({ children }) {
   const lang = h.get('x-mb-lang') || 'it'
 
   return (
-    <html lang={lang} className={`${archivo.variable} ${chakra.variable} ${garamond.variable}`}>
+    <html lang={lang} className={`${archivo.variable} ${chakra.variable} ${garamond.variable} ${spaceGrotesk.variable}`}>
       <body className={archivo.className}>
         <div id="root">
           <LanguageProvider initialLang={lang}>

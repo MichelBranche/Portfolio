@@ -134,6 +134,7 @@ export function StudioPage() {
 
   return (
     <article className="hb-page hb-studio">
+      <h1 className="hb-sr-only">{String(t('site.h1Studio'))}</h1>
       <section
         ref={rootRef}
         className="hb-id"

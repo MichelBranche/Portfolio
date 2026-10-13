@@ -39,7 +39,6 @@ export function middleware(request) {
   const lang = queryLang || savedLang || languageFromAccept(request.headers.get('accept-language'))
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-mb-lang', lang)
-  requestHeaders.set('x-mb-lang-explicit', query === 'it' ? '1' : '0')
   const response = NextResponse.next({ request: { headers: requestHeaders } })
   if (queryLang) {
     response.cookies.set('mb-lang', queryLang, { path: '/', maxAge: YEAR, sameSite: 'lax' })

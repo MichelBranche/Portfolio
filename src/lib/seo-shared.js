@@ -1,5 +1,14 @@
 export const SITE = 'https://www.michelbranche.it'
 
+export const OG_LOCALES = { it: 'it_IT', en: 'en_US', fr: 'fr_FR', de: 'de_DE', es: 'es_ES' }
+
+/** Indexable language URLs: Italian on the clean path (also x-default), English on ?lang=en. */
+export function alternatesFor(pathname) {
+  const it = pathname === '/' ? SITE : `${SITE}${pathname}`
+  const en = `${pathname === '/' ? `${SITE}/` : it}?lang=en`
+  return { it, en, languages: { it, en, 'x-default': it } }
+}
+
 const PAGE_META = {
   it: {
     '/': {
@@ -45,7 +54,7 @@ const PAGE_META = {
     },
     '/portfolio': {
       title: 'Work | Michel Branche',
-      description: 'Selected sites and demos. Residence Le Vele, in Stintino, is the paid client project.',
+      description: 'Selected sites and demos. Residence Le Vele, in Stintino, is the client project.',
     },
     '/studio': {
       title: 'Studio | Michel Branche',
@@ -87,6 +96,7 @@ export function applyClientMeta(lang, pathname) {
   upsertMeta('description', description)
   upsertMeta('og:title', title, 'property')
   upsertMeta('og:description', description, 'property')
+  upsertMeta('og:locale', OG_LOCALES[lang] || OG_LOCALES.it, 'property')
   upsertMeta('twitter:title', title)
   upsertMeta('twitter:description', description)
 }

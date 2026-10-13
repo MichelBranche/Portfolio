@@ -56,6 +56,9 @@ const STRINGS = {
       menuClose: 'Chiudi menu',
     },
     site: {
+      h1Home: 'Michel Branche, sviluppatore web: siti web su misura',
+      h1Portfolio: 'Lavori e progetti di Michel Branche',
+      h1Studio: 'Lo studio di Michel Branche',
       menu: 'Menu',
       studio: 'Studio',
       servizi: 'Servizi',
@@ -117,6 +120,7 @@ const STRINGS = {
       countOne: '1 progetto',
       countMany: '{{n}} progetti',
       featuredBadge: 'Top pick',
+      coverAlt: 'Anteprima della homepage di {{name}}, progetto {{category}}',
       categories: {
         ecommerce: 'E-commerce',
         hospitality: 'Hospitality',
@@ -176,6 +180,14 @@ const STRINGS = {
       orma: {
         title: 'Gastronomia - Orma (microtorrefazione, Valle d’Aosta)',
         desc: 'Landing per una microtorrefazione di specialità: origini, tostatura, selezione e capsule, con motion GSAP, scroll Lenis e layout editoriale su React e Vite.',
+      },
+      webtec: {
+        title: 'Istituzionale - Webtec Agency (concept 1)',
+        desc: 'Concept di homepage per un\'agenzia web di Stoccolma: hero con gradiente, servizi CRO, SEO e ads, casi studio e prenotazione call. Realizzato in un giorno con Next.js, GSAP, Lenis e Tailwind.',
+      },
+      webtec2: {
+        title: 'Istituzionale - Webtec Agency (concept 2)',
+        desc: 'Seconda direzione per la stessa homepage: layout editoriale scuro, griglia tipografica, accenti lime e sezione lavori. Realizzato in un giorno con Next.js, GSAP, Lenis e Tailwind.',
       },
     },
     services: {
@@ -451,17 +463,20 @@ const STRINGS = {
       menuClose: 'Close menu',
     },
     site: {
+      h1Home: 'Michel Branche, web developer: custom websites',
+      h1Portfolio: 'Work and projects by Michel Branche',
+      h1Studio: 'Michel Branche studio',
       menu: 'Menu',
       studio: 'Studio',
       servizi: 'Services',
       portfolio: 'Portfolio',
       contatti: 'Contact',
       calendar: 'Calendar',
-      caseHistory: 'Case history',
+      caseHistory: 'Case studies',
       caseLead: 'The projects told in full.',
       homeRole: 'Web developer',
       seeWork: 'See the work',
-      writeMe: 'Write me',
+      writeMe: 'Write to me',
       selected: 'Selected',
       webChapter: 'Sites and experiences',
       visualChapter: 'Photo, copy and aerial',
@@ -508,10 +523,11 @@ const STRINGS = {
       header: 'Selected work',
       subTitle: 'Logic meets aesthetics',
       lead:
-        'Selected projects, shaped for real results.',
+        'Selected projects, built for real results.',
       countOne: '1 project',
       countMany: '{{n}} projects',
       featuredBadge: 'Top pick',
+      coverAlt: 'Homepage preview of {{name}}, {{category}} project',
       categories: {
         ecommerce: 'E-commerce',
         hospitality: 'Hospitality',
@@ -522,7 +538,7 @@ const STRINGS = {
       },
       rubina: {
         title: 'Photography - Rubina',
-        desc: 'Brutal/editorial photo portfolio with dynamic layouts, GSAP motion and a performance-first, framework-free approach.',
+        desc: 'Brutalist, editorial photo portfolio with dynamic layouts, GSAP motion and a performance-first, framework-free approach.',
       },
       streetwear: {
         title: 'E-commerce - Streetwear',
@@ -541,23 +557,23 @@ const STRINGS = {
         desc: 'Full-stack web app for a residence: animated landing, booking flow, admin area and serverless API.',
       },
       caffestella: {
-        title: 'Gastronomy - Paolo Griffa, Caffè Nazionale',
-        desc: 'Showcase/editorial multi-page site for Paolo Griffa’s Caffè Nazionale (Stella) with SPA routing, GSAP, Lenis smooth scroll and responsive layout.',
+        title: 'Food & beverage - Paolo Griffa, Caffè Nazionale',
+        desc: 'Multi-page editorial showcase for Paolo Griffa’s Caffè Nazionale (Stella), with SPA routing, GSAP motion, Lenis smooth scroll and a responsive layout.',
       },
       ilgusto: {
-        title: 'Gastronomy - Il Gusto',
-        desc: 'Static slice-pizzeria site: diner-style layout, mobile-first, Deliveroo and WhatsApp CTAs, no heavy frameworks.',
+        title: 'Food & beverage - Il Gusto',
+        desc: 'Static site for a pizza-by-the-slice shop: diner-style layout, mobile-first, Deliveroo and WhatsApp calls to action, no heavy frameworks.',
       },
       kiosk: {
         title: 'Food tech - Self-order kiosk',
-        desc: 'Touch-first self-order kiosk mockup: attract loop, bento menu, meal compose wizard, customization, cart, simulated checkout and order confirmation. React 19, Framer Motion, Lenis, 5-language i18n.',
+        desc: 'Touch-first self-order kiosk mockup: attract loop, bento menu, meal builder wizard, customization, cart, simulated checkout and order confirmation. React 19, Framer Motion, Lenis, 5-language i18n.',
       },
       villamatilde: {
         title: 'Hospitality - Sina Villa Matilde (Canavese)',
-        desc: 'Immersive demo for an 18th-century historic villa turned hospitality venue: editorial typography, Lenis smooth scroll, GSAP motion, SPA room pages and multi-language i18n.',
+        desc: 'Immersive demo for an 18th-century villa turned into a hotel: editorial typography, Lenis smooth scroll, GSAP motion, SPA room pages and multi-language i18n.',
       },
       altura: {
-        title: 'Gastronomy - Maison Altura (alpine winery demo)',
+        title: 'Food & beverage - Maison Altura (alpine winery demo)',
         desc: 'Neutral alpine winery demo: brand-first splash, wine catalogue, family storytelling, food pairings, vineyard experiences and cellar visits. Lenis scroll, GSAP motion and IT/FR/EN/DE i18n.',
       },
       omama: {
@@ -566,17 +582,25 @@ const STRINGS = {
       },
       grauson: {
         title: 'Hospitality - Locanda Grauson (Gimillan di Cogne)',
-        desc: 'Public website and PMS in the same Next.js app: rooms, restaurant, booking engine, reception planning, seasonal looks and GSAP/Lenis motion for the mountain locanda in Cogne.',
+        desc: 'Public website and PMS in the same Next.js app: rooms, restaurant, booking engine, reception planning, seasonal looks and GSAP/Lenis motion for a mountain inn in Cogne.',
       },
       orma: {
-        title: 'Gastronomy - Orma (micro-roastery, Aosta Valley)',
-        desc: 'Landing for a specialty micro-roastery: origins, roasting, selection and capsules, with GSAP motion, Lenis scroll and an editorial layout on React and Vite.',
+        title: 'Food & beverage - Orma (micro-roastery, Aosta Valley)',
+        desc: 'Landing page for a specialty micro-roastery: origins, roasting, selection and capsules, with GSAP motion, Lenis scroll and an editorial layout on React and Vite.',
+      },
+      webtec: {
+        title: 'Institutional - Webtec Agency (concept 1)',
+        desc: 'Homepage concept for a Stockholm web agency: gradient hero, CRO, SEO and ads services, case studies and call booking. Built in one day with Next.js, GSAP, Lenis and Tailwind.',
+      },
+      webtec2: {
+        title: 'Institutional - Webtec Agency (concept 2)',
+        desc: 'A second direction for the same homepage: dark editorial layout, typographic grid, lime accents and a work section. Built in one day with Next.js, GSAP, Lenis and Tailwind.',
       },
     },
     services: {
       header: 'Services',
-      subTitle: 'Behind the scene, beyond the screen',
-      lead: 'I turn an idea into a site that brings real results.',
+      subTitle: 'Behind the scenes, beyond the screen',
+      lead: 'I turn your idea into a site that delivers real results.',
       website: {
         title: 'Custom Websites',
         desc: 'Fast, responsive landing pages and business websites built to perform.',
@@ -584,13 +608,13 @@ const STRINGS = {
       },
       ecommerce: {
         title: 'E-commerce',
-        desc: 'Modern online stores with clear UX, effective checkout, and conversion focus.',
+        desc: 'Modern online stores with clear UX, a smooth checkout and a focus on conversion.',
         bullets: ['Clear catalog UX', 'Optimized checkout', 'Payment integrations'],
       },
       uiux: {
         title: 'UI/UX Design',
         desc: 'Clean, intuitive interfaces designed to look sharp and feel effortless.',
-        bullets: ['Wireframes & visual hierarchy', 'Coherent design system', 'Interactive prototypes'],
+        bullets: ['Wireframes & visual hierarchy', 'Consistent design system', 'Interactive prototypes'],
       },
       performance: {
         title: 'Performance & Motion',
@@ -652,7 +676,7 @@ const STRINGS = {
         includes: [
           '3-5 pages',
           'Premium UI',
-          'Base motion (micro interactions)',
+          'Basic motion (micro-interactions)',
           'Structured SEO',
           'Performance optimization',
           'Basic analytics setup',
@@ -662,7 +686,7 @@ const STRINGS = {
       authority: {
         name: 'Authority',
         range: '€3,000 - €6,000+',
-        ideal: ['Businesses and brands', 'High-end restaurants', 'Strong personal brands', 'Wow projects'],
+        ideal: ['Businesses and brands', 'High-end restaurants', 'Strong personal brands', 'Standout projects'],
         includes: [
           'Fully custom design',
           'Advanced motion (GSAP)',
@@ -674,7 +698,7 @@ const STRINGS = {
         ],
       },
       extras: {
-        title: 'Extras (upsell)',
+        title: 'Extras',
         items: [
           'Monthly maintenance: €50 - €150/month',
           'Advanced SEO: €300 - €800',
@@ -687,12 +711,12 @@ const STRINGS = {
         title: 'Positioning',
         lines: [
           'Not just websites: I improve how a business is perceived and performs online.',
-          'Outcome-driven approach, not just “building a site”.',
+          'An outcome-driven approach, not just “building a site”.',
         ],
       },
       flow: {
         title: 'How I work',
-        steps: ['Free discovery call', 'Understand goals and context', 'Tailored proposal based on packages'],
+        steps: ['Free discovery call', 'Understand goals and context', 'A tailored proposal built on the packages'],
       },
     },
     visualProduction: {
@@ -902,6 +926,7 @@ const STRINGS = {
       countOne: '1 projet',
       countMany: '{{n}} projets',
       featuredBadge: 'Coup de cœur',
+      coverAlt: 'Aperçu de la page d\'accueil de {{name}}, projet {{category}}',
       categories: {
         ecommerce: 'E-commerce',
         hospitality: 'Hospitality',
@@ -961,6 +986,14 @@ const STRINGS = {
       orma: {
         title: 'Gastronomie - Orma (micro-torréfaction, Vallée d’Aoste)',
         desc: 'Landing pour une micro-torréfaction de spécialité : origines, torréfaction, sélection et capsules, avec motion GSAP, scroll Lenis et layout éditorial sur React et Vite.',
+      },
+      webtec: {
+        title: 'Institutionnel - Webtec Agency (concept 1)',
+        desc: 'Concept de page d\'accueil pour une agence web de Stockholm : hero en dégradé, services CRO, SEO et ads, études de cas. Réalisé en une journée avec Next.js, GSAP, Lenis et Tailwind.',
+      },
+      webtec2: {
+        title: 'Institutionnel - Webtec Agency (concept 2)',
+        desc: 'Deuxième direction pour la même page d\'accueil : mise en page éditoriale sombre, grille typographique et accents citron vert. Réalisé en une journée avec Next.js, GSAP, Lenis et Tailwind.',
       },
     },
     services: {
@@ -1179,6 +1212,7 @@ const STRINGS = {
       countOne: '1 Projekt',
       countMany: '{{n}} Projekte',
       featuredBadge: 'Top-Auswahl',
+      coverAlt: 'Homepage-Vorschau von {{name}}, Projekt {{category}}',
       categories: {
         ecommerce: 'E-Commerce',
         hospitality: 'Hospitality',
@@ -1238,6 +1272,14 @@ const STRINGS = {
       orma: {
         title: 'Gastronomie - Orma (Mikro-Rösterei, Aostatal)',
         desc: 'Landing für eine Spezialitäten-Mikrörösterei: Herkunft, Röstung, Selection und Kapseln, mit GSAP-Motion, Lenis-Scroll und editorialem Layout auf React und Vite.',
+      },
+      webtec: {
+        title: 'Institutionell - Webtec Agency (Konzept 1)',
+        desc: 'Homepage-Konzept für eine Webagentur aus Stockholm: Hero mit Verlauf, CRO-, SEO- und Ads-Leistungen, Fallstudien und Terminbuchung. An einem Tag gebaut mit Next.js, GSAP, Lenis und Tailwind.',
+      },
+      webtec2: {
+        title: 'Institutionell - Webtec Agency (Konzept 2)',
+        desc: 'Eine zweite Richtung für dieselbe Homepage: dunkles Editorial-Layout, typografisches Raster und Lime-Akzente. An einem Tag gebaut mit Next.js, GSAP, Lenis und Tailwind.',
       },
     },
     services: {
@@ -1456,6 +1498,7 @@ const STRINGS = {
       countOne: '1 proyecto',
       countMany: '{{n}} proyectos',
       featuredBadge: 'Destacado',
+      coverAlt: 'Vista previa de la homepage de {{name}}, proyecto {{category}}',
       categories: {
         ecommerce: 'E-commerce',
         hospitality: 'Hospitality',
@@ -1515,6 +1558,14 @@ const STRINGS = {
       orma: {
         title: 'Gastronomía - Orma (microtorrefacción, Valle de Aosta)',
         desc: 'Landing para una microtorrefacción de especialidad: orígenes, tueste, selección y cápsulas, con motion GSAP, scroll Lenis y layout editorial en React y Vite.',
+      },
+      webtec: {
+        title: 'Institucional - Webtec Agency (concepto 1)',
+        desc: 'Concepto de homepage para una agencia web de Estocolmo: hero con degradado, servicios CRO, SEO y ads, casos de estudio y reserva de llamada. Hecho en un día con Next.js, GSAP, Lenis y Tailwind.',
+      },
+      webtec2: {
+        title: 'Institucional - Webtec Agency (concepto 2)',
+        desc: 'Una segunda dirección para la misma homepage: layout editorial oscuro, retícula tipográfica y acentos lima. Hecho en un día con Next.js, GSAP, Lenis y Tailwind.',
       },
     },
     services: {

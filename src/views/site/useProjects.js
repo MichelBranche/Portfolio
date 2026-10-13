@@ -6,13 +6,19 @@ export function useProjects() {
   const { t } = useLanguage()
 
   return useMemo(() => {
-    return PROJECT_META.map((project) => ({
-      ...project,
-      title: String(t(`projects.${project.slug}.title`)),
-      desc: String(t(`projects.${project.slug}.desc`)),
-      categoryLabel: String(t(`projects.categories.${project.category}`)),
-      kindLabel: String(project.client ? t('site.clientWork') : t('site.demoConcept')),
-    })).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)))
+    return PROJECT_META.map((project) => {
+      const title = String(t(`projects.${project.slug}.title`))
+      const categoryLabel = String(t(`projects.categories.${project.category}`))
+      const name = (title.split(' - ')[1] || title).trim()
+      return {
+        ...project,
+        title,
+        desc: String(t(`projects.${project.slug}.desc`)),
+        categoryLabel,
+        kindLabel: String(project.client ? t('site.clientWork') : t('site.demoConcept')),
+        alt: String(t('projects.coverAlt')).replace('{{name}}', name).replace('{{category}}', categoryLabel.toLowerCase()),
+      }
+    }).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)))
   }, [t])
 }
 
