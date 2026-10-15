@@ -649,6 +649,21 @@ export function HomePage() {
   }, [span.cols, span.rows, fullBoard, compact, scale])
 
   useEffect(() => {
+    // Fetch and decode every illustration once the intro is done, so fast panning never
+    // reveals a piece that is still loading (there are only ~22 files).
+    if (!introDone) return undefined
+    const id = window.setTimeout(() => {
+      HOME_ART.forEach((art) => {
+        const img = new Image()
+        img.decoding = 'async'
+        img.src = art.src
+        img.decode?.().catch(() => {})
+      })
+    }, 300)
+    return () => window.clearTimeout(id)
+  }, [introDone])
+
+  useEffect(() => {
     const ric = window.requestIdleCallback
     const id = ric ? ric(() => setFullBoard(true), { timeout: 1800 }) : window.setTimeout(() => setFullBoard(true), 1200)
     return () => {
