@@ -206,6 +206,17 @@ export const PROJECT_META = [
     publishedAt: '2026-09-27',
   },
   {
+    slug: 'chaumont',
+    category: 'institutional',
+    featured: true,
+    tech: 'Next.js / TypeScript / GSAP / Lenis / Tailwind',
+    link: 'https://chateau-chaumont-concept.vercel.app/',
+    img: '/projects/chaumont-mockup-hero.webp',
+    imgs: ['/projects/chaumont-mockup-hero.webp'],
+    thumb: '/projects/chaumont-cover.webp',
+    publishedAt: '2026-10-15',
+  },
+  {
     slug: 'webtec',
     category: 'institutional',
     tech: 'Next.js / GSAP / Lenis / Tailwind',

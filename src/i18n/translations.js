@@ -181,6 +181,10 @@ const STRINGS = {
         title: 'Gastronomia - Orma (microtorrefazione, Valle d’Aosta)',
         desc: 'Landing per una microtorrefazione di specialità: origini, tostatura, selezione e capsule, con motion GSAP, scroll Lenis e layout editoriale su React e Vite.',
       },
+      chaumont: {
+        title: 'Istituzionale - Château de Chaumont (fan concept per Escape to Rural France)',
+        desc: 'Concept non ufficiale, realizzato da fan come regalo per il canale YouTube di Dan Preston: intro cinematografica con musica, 5 lingue, cartoline d\'epoca, la storia del rifugio durante la Seconda guerra mondiale, la casa piano per piano, un omaggio a Nick, contatori YouTube in tempo reale, sezione Patreon con i tier reali e un muro di commenti dei sostenitori, shop e newsletter collegata a Shopify. Next.js, TypeScript, GSAP, Lenis e Tailwind.',
+      },
       webtec: {
         title: 'Istituzionale - Webtec Agency (concept 1)',
         desc: 'Concept di homepage per un\'agenzia web di Stoccolma: hero con gradiente, servizi CRO, SEO e ads, casi studio e prenotazione call. Realizzato in un giorno con Next.js, GSAP, Lenis e Tailwind.',
@@ -588,6 +592,10 @@ const STRINGS = {
         title: 'Food & beverage - Orma (micro-roastery, Aosta Valley)',
         desc: 'Landing page for a specialty micro-roastery: origins, roasting, selection and capsules, with GSAP motion, Lenis scroll and an editorial layout on React and Vite.',
       },
+      chaumont: {
+        title: 'Institutional - Château de Chaumont (fan concept for Escape to Rural France)',
+        desc: 'Unofficial fan concept built as a gift for Dan Preston\'s YouTube channel: cinematic intro with music, 5 languages, historic postcards, the WWII refuge story, a floor-by-floor tour of the house, a tribute to Nick, live YouTube counters, a Patreon section with the real tiers and a wall of supporter comments, shop pages and a newsletter wired to Shopify. Next.js, TypeScript, GSAP, Lenis and Tailwind.',
+      },
       webtec: {
         title: 'Institutional - Webtec Agency (concept 1)',
         desc: 'Homepage concept for a Stockholm web agency: gradient hero, CRO, SEO and ads services, case studies and call booking. Built in one day with Next.js, GSAP, Lenis and Tailwind.',
@@ -990,6 +998,10 @@ const STRINGS = {
         title: 'Gastronomie - Orma (micro-torréfaction, Vallée d’Aoste)',
         desc: 'Landing pour une micro-torréfaction de spécialité : origines, torréfaction, sélection et capsules, avec motion GSAP, scroll Lenis et layout éditorial sur React et Vite.',
       },
+      chaumont: {
+        title: 'Institutionnel - Château de Chaumont (concept de fan pour Escape to Rural France)',
+        desc: 'Concept non officiel, réalisé par un fan en cadeau pour la chaîne YouTube de Dan Preston : intro cinématographique en musique, 5 langues, cartes postales anciennes, l\'histoire du refuge pendant la Seconde Guerre mondiale, la maison étage par étage, un hommage à Nick, compteurs YouTube en direct, section Patreon avec les vrais paliers et un mur de commentaires de soutiens, boutique et newsletter reliée à Shopify. Next.js, TypeScript, GSAP, Lenis et Tailwind.',
+      },
       webtec: {
         title: 'Institutionnel - Webtec Agency (concept 1)',
         desc: 'Concept de page d\'accueil pour une agence web de Stockholm : hero en dégradé, services CRO, SEO et ads, études de cas. Réalisé en une journée avec Next.js, GSAP, Lenis et Tailwind.',
@@ -1279,6 +1291,10 @@ const STRINGS = {
         title: 'Gastronomie - Orma (Mikro-Rösterei, Aostatal)',
         desc: 'Landing für eine Spezialitäten-Mikrörösterei: Herkunft, Röstung, Selection und Kapseln, mit GSAP-Motion, Lenis-Scroll und editorialem Layout auf React und Vite.',
       },
+      chaumont: {
+        title: 'Institutionell - Château de Chaumont (Fan-Konzept für Escape to Rural France)',
+        desc: 'Inoffizielles Fan-Konzept, entstanden als Geschenk für Dan Prestons YouTube-Kanal: filmisches Intro mit Musik, 5 Sprachen, historische Postkarten, die Geschichte des Zufluchtsorts im Zweiten Weltkrieg, das Haus Etage für Etage, eine Hommage an Nick, Live-Zähler von YouTube, ein Patreon-Bereich mit den echten Stufen und einer Wand mit Kommentaren von Unterstützern, Shop-Seiten und ein mit Shopify verbundener Newsletter. Next.js, TypeScript, GSAP, Lenis und Tailwind.',
+      },
       webtec: {
         title: 'Institutionell - Webtec Agency (Konzept 1)',
         desc: 'Homepage-Konzept für eine Webagentur aus Stockholm: Hero mit Verlauf, CRO-, SEO- und Ads-Leistungen, Fallstudien und Terminbuchung. An einem Tag gebaut mit Next.js, GSAP, Lenis und Tailwind.',
@@ -1567,6 +1583,10 @@ const STRINGS = {
       orma: {
         title: 'Gastronomía - Orma (microtorrefacción, Valle de Aosta)',
         desc: 'Landing para una microtorrefacción de especialidad: orígenes, tueste, selección y cápsulas, con motion GSAP, scroll Lenis y layout editorial en React y Vite.',
+      },
+      chaumont: {
+        title: 'Institucional - Château de Chaumont (concepto fan para Escape to Rural France)',
+        desc: 'Concepto no oficial, hecho por un fan como regalo para el canal de YouTube de Dan Preston: intro cinematográfica con música, 5 idiomas, postales históricas, la historia del refugio durante la Segunda Guerra Mundial, la casa planta por planta, un homenaje a Nick, contadores de YouTube en directo, sección de Patreon con los niveles reales y un muro de comentarios de seguidores, páginas de tienda y newsletter conectada a Shopify. Next.js, TypeScript, GSAP, Lenis y Tailwind.',
       },
       webtec: {
         title: 'Institucional - Webtec Agency (concepto 1)',
