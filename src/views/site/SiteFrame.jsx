@@ -235,6 +235,11 @@ export function SiteFrame({ children }) {
     }
   }, [])
 
+  useLayoutEffect(() => {
+    // Hand over from the pre-paint cover (app/layout.js) once the real welcome is mounted or skipped.
+    if (welcomeKnown) document.documentElement.classList.remove('hb-pre')
+  }, [welcome, welcomeKnown])
+
   useEffect(() => {
     document.body.classList.add('hb-on')
     return () => document.body.classList.remove('hb-on')

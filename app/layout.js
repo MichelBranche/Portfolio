@@ -74,12 +74,26 @@ export const viewport = {
   colorScheme: 'light',
 }
 
+// Paints the black welcome cover from the very first frame, before React hydrates.
+// Mirrors SiteFrame: skipped when the welcome was already seen this session,
+// with reduced motion, or outside the public site. No JS means no class, so nothing is hidden.
+const PRE_WELCOME_SCRIPT = `(function(){try{var d=document.documentElement;if(location.pathname.indexOf('/admin')===0)return;if(sessionStorage.getItem('hb:welcome')==='1')return;if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;d.classList.add('hb-pre');setTimeout(function(){d.classList.remove('hb-pre')},8000)}catch(e){}})()`
+const PRE_WELCOME_CSS = 'html.hb-pre,html.hb-pre body{background:#111111}html.hb-pre body::before{content:"";position:fixed;inset:0;z-index:94;background:#111111;pointer-events:none}'
+
 export default async function RootLayout({ children }) {
   const h = await headers()
   const lang = h.get('x-mb-lang') || 'en'
 
   return (
-    <html lang={lang} className={`${archivo.variable} ${chakra.variable} ${garamond.variable} ${spaceGrotesk.variable}`}>
+    <html
+      lang={lang}
+      className={`${archivo.variable} ${chakra.variable} ${garamond.variable} ${spaceGrotesk.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: PRE_WELCOME_SCRIPT }} />
+        <style dangerouslySetInnerHTML={{ __html: PRE_WELCOME_CSS }} />
+      </head>
       <body className={archivo.className}>
         <div id="root">
           <LanguageProvider initialLang={lang}>
