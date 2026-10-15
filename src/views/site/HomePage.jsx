@@ -9,19 +9,19 @@ import { useProjects } from './useProjects.js'
 import { useSiteUI } from './site-ui.js'
 
 // Infinite board, measured against the reference interaction at 1440x900:
-// a 6 x 3 module of cells (~690 x 720 px), one cover per cell, sizes between ~240 and
-// ~420 px with an irregular but fixed offset inside each cell. Covers keep their natural
+// a 6 x 3 module of cells (520 x 560 px), one cover per cell, sizes between 200 and
+// 420 px (median neighbour gap ~200 px) with an irregular but fixed offset inside each cell. Covers keep their natural
 // ratio. Everything scales with the viewport width (unit = vw / 1440); the module repeats
 // seamlessly in both directions.
 const COLS = 6
 const ROWS = 3
-const CELL_W = 690
-const CELL_H = 720
+const CELL_W = 520
+const CELL_H = 560
 // [size, dx, dy] per cell at 1440 px wide, dx/dy are offsets of the cover from the cell origin.
 const PATTERN = [
-  [300, 120, 150], [262, 300, 60], [340, 90, 210], [276, 230, 110], [318, 150, 40], [250, 280, 190],
-  [252, 260, 230], [356, 70, 120], [270, 210, 260], [330, 130, 70], [244, 320, 160], [300, 60, 240],
-  [336, 180, 90], [258, 90, 200], [306, 250, 140], [248, 140, 50], [348, 40, 170], [282, 270, 230],
+  [260, 13, 122], [235, 28, 211], [290, 107, 203], [200, 11, 304], [215, 189, 64], [350, 85, 102],
+  [395, 16, 92], [300, 159, 47], [330, 138, 126], [370, 52, 74], [280, 16, 20], [245, 137, 48],
+  [230, 45, 88], [275, 213, 202], [420, 67, 44], [310, 83, 42], [250, 100, 221], [320, 121, 168],
 ]
 // Cursor offset from the centre (normalised to -1..1 per axis) drives a constant pan
 // speed: 243 px/s at the edge on the reference, linear, no dead zone, no inertia.
@@ -85,6 +85,8 @@ function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lc
       tabIndex={tabIndex}
       style={style}
       data-cursor={openLabel}
+      data-name={name}
+      data-tint={project.tint || ''}
       data-lcp={lcp ? '' : undefined}
       onPointerEnter={() => {
         if (panningRef.current) return
@@ -197,10 +199,15 @@ export function HomePage() {
   const hover = useCallback((name, tint) => {
     setHovered(name)
     // Hovering a cover tints the whole stage with that cover's colour; leaving restores it.
-    const gate = gateRef.current
-    if (gate) gate.style.setProperty('--stage', tint || '')
+    if (tint) document.documentElement.style.setProperty('--stage', tint)
+    else document.documentElement.style.removeProperty('--stage')
     setLabelPlay((n) => n + 1)
   }, [])
+  const hoverRef = useRef(hover)
+  useEffect(() => {
+    hoverRef.current = hover
+  }, [hover])
+  useEffect(() => () => document.documentElement.style.removeProperty('--stage'), [])
   const open = useCallback(
     (project) => {
       if (draggedRef.current) return
@@ -338,16 +345,41 @@ export function HomePage() {
       const idle = !velX && !velY && !wx && !wy && nextParX === parX && nextParY === parY
       parX = nextParX
       parY = nextParY
-      if (!idle) place()
+      if (!idle) {
+        place()
+        hitFrame += 1
+        if (hitFrame % 4 === 0) hitTest()
+      }
     }
 
+    // Tracked on the window: the navbar and overlays sit on top of the board but never
+    // interrupt the pan. The whole viewport is the control surface, like the reference.
+    let pointer = null
+    let hitTile = null
+    let hitFrame = 0
+    const hitTest = () => {
+      if (!pointer || drag) return
+      const el = document.elementFromPoint(pointer.x, pointer.y)
+      const tile = el instanceof Element ? el.closest('.hb-tile') : null
+      if (tile === hitTile) return
+      hitTile = tile
+      hoverRef.current(tile ? tile.dataset.name || '' : '', tile ? tile.dataset.tint || '' : '')
+    }
     const onMove = (event) => {
+      if (event.pointerType && event.pointerType !== 'mouse') return
+      pointer = { x: event.clientX, y: event.clientY }
       if (!fine || drag || calm) return
+      if (document.querySelector('.hb-welcome')) {
+        pushX = 0
+        pushY = 0
+        return
+      }
       wake()
-      const rect = gate.getBoundingClientRect()
-      if (!rect.width || !rect.height) return
-      const lookX = look((event.clientX - rect.left) / rect.width - 0.5, geo.scale)
-      const lookY = look((event.clientY - rect.top) / rect.height - 0.5, geo.scale)
+      const w = window.innerWidth
+      const h = window.innerHeight
+      if (!w || !h) return
+      const lookX = look(event.clientX / w - 0.5, geo.scale)
+      const lookY = look(event.clientY / h - 0.5, geo.scale)
       wantParX = lookX.parallax
       wantParY = lookY.parallax
       pushX = lookX.push
@@ -456,8 +488,9 @@ export function HomePage() {
     }
 
     center()
-    gate.addEventListener('pointermove', onMove)
-    gate.addEventListener('pointerleave', onLeave)
+    window.addEventListener('pointermove', onMove)
+    document.documentElement.addEventListener('pointerleave', onLeave)
+    window.addEventListener('blur', onLeave)
     gate.addEventListener('pointerdown', onDown)
     gate.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('pointermove', onDrag)
@@ -495,8 +528,9 @@ export function HomePage() {
     }
     return () => {
       stopLoop()
-      gate.removeEventListener('pointermove', onMove)
-      gate.removeEventListener('pointerleave', onLeave)
+      window.removeEventListener('pointermove', onMove)
+      document.documentElement.removeEventListener('pointerleave', onLeave)
+      window.removeEventListener('blur', onLeave)
       gate.removeEventListener('pointerdown', onDown)
       gate.removeEventListener('wheel', onWheel)
       window.removeEventListener('pointermove', onDrag)

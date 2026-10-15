@@ -651,10 +651,6 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
   z-index: 3;
 }
 
-.hb-gate {
-  background: var(--stage, transparent);
-  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
 .hb-tile-meta {
   display: flex;
@@ -2613,4 +2609,58 @@ html:has(.hb-shop) {
     text-transform: uppercase;
     transform: translateX(-50%);
   }
+}
+
+/* Home stage: the board fills the whole viewport and the navbar floats over it with no
+   background of its own, so the board colour (and the hover tint) shows through. */
+.hb-shell--gate {
+  position: relative;
+  background: var(--stage, var(--hb));
+  transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hb-shell--gate .hb-header,
+.hb-shell--gate .hb-subline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: transparent;
+  pointer-events: none;
+}
+
+.hb-shell--gate .hb-header {
+  top: 0;
+}
+
+.hb-shell--gate .hb-subline {
+  top: 2.6rem;
+}
+
+.hb-shell--gate .hb-header a,
+.hb-shell--gate .hb-header button,
+.hb-shell--gate .hb-header-end,
+.hb-shell--gate .hb-subline a {
+  pointer-events: auto;
+}
+
+.hb-shell--gate .hb-gate {
+  position: absolute;
+  inset: 0;
+  height: auto;
+}
+
+.hb-shell--gate .hb-audience {
+  position: absolute;
+  top: 4.4rem;
+  left: 0;
+  background: transparent;
+}
+
+.hb-shell--gate .hb-choose {
+  background: transparent;
+}
+
+.hb-shell--gate .hb-main {
+  position: static;
 }

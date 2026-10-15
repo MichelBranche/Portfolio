@@ -194,7 +194,16 @@ export function HbCursor() {
       dot.classList.toggle('is-label', Boolean(label))
       dot.classList.toggle('is-on-dark', Boolean(target?.closest('.hb-menu, .hb-modal-copy, .hb-cs-results, .hb-welcome')))
     }
+    // Content can move under a still pointer (the home board pans on its own), so the
+    // label is also re-evaluated from the element under the pointer a few times a second.
+    let last = null
+    const probe = window.setInterval(() => {
+      if (!last) return
+      const el = document.elementFromPoint(last.x, last.y)
+      if (el) paint({ target: el })
+    }, 90)
     const onMove = (event) => {
+      last = { x: event.clientX, y: event.clientY }
       xTo(event.clientX)
       yTo(event.clientY)
       dot.classList.remove('is-away')
@@ -214,6 +223,7 @@ export function HbCursor() {
     document.addEventListener('pointerleave', onLeave)
     return () => {
       alive = false
+      window.clearInterval(probe)
       root.classList.remove('hb-cursor-pill')
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerover', onOver)
