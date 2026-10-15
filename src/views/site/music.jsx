@@ -53,12 +53,25 @@ function fadeIn() {
   }, 120)
 }
 
-function startNow() {
-  wantPlay = false
-  player.unMute()
-  player.setVolume(0)
+// The cross-origin player never receives our click, so a sound start issued from it is
+// blocked by Chrome's autoplay policy. Instead the playlist is started muted while the
+// intro is showing (muted autoplay is always allowed); the click then rewinds to the
+// first track and unmutes with a fade.
+let warm = false
+function warmUp() {
+  if (warm || !player) return
+  warm = true
+  player.mute()
   player.loadPlaylist({ playlist: PLAYLIST, index: 0 })
   player.setLoop(true)
+}
+
+function startNow() {
+  wantPlay = false
+  if (!warm) warmUp()
+  player.setVolume(0)
+  player.playVideoAt(0)
+  player.unMute()
   fadeIn()
   setState('playing')
 }
@@ -69,7 +82,14 @@ export function primeMusic() {
   const mount = () => {
     const host = document.createElement('div')
     host.id = 'mb-yt'
-    document.getElementById('mb-yt-wrap')?.appendChild(host)
+    let wrap = document.getElementById('mb-yt-wrap')
+    if (!wrap) {
+      wrap = document.createElement('div')
+      wrap.id = 'mb-yt-wrap'
+      wrap.className = 'mb-yt-wrap'
+      document.body.appendChild(wrap)
+    }
+    wrap.appendChild(host)
     player = new window.YT.Player('mb-yt', {
       width: 1,
       height: 1,
@@ -78,6 +98,11 @@ export function primeMusic() {
         onReady: () => {
           ready = true
           if (wantPlay) startNow()
+          else warmUp()
+        },
+        // Exposed as a data attribute so playback can be checked from outside (1 = playing).
+        onStateChange: (event) => {
+          document.documentElement.dataset.ytState = String(event.data)
         },
       },
     })
@@ -97,7 +122,7 @@ export function primeMusic() {
   document.head.appendChild(s)
 }
 
-// Called from the click on an illustration (the click is the user gesture).
+// Called from the click that dismisses the intro (the click is the user gesture).
 export function startMusic() {
   if (state === 'playing' || state === 'muted') return
   if (!player) primeMusic()

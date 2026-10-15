@@ -7,7 +7,6 @@ import { magnetic, magneticReset } from './magnetic'
 import { finePointer, reduceMotion } from './motion-utils'
 import { HOME_ART } from '../../config/site.js'
 import { applyTheme, wipe } from './theme.js'
-import { startMusic } from './music.jsx'
 import { useSiteUI } from './site-ui.js'
 
 // Infinite board of illustrations (transparent cut-outs), modelled on the reference at
@@ -39,6 +38,8 @@ function seeded(seed) {
 // drives a constant pan speed, measured frame by frame on the reference: 3.48 px per
 // 60 fps frame at the edge on a 1440 px wide window (4.55 at 1920), i.e. ~0.0024 x
 // viewport width per frame, linear, same on both axes, no ramp-up, no inertia.
+const ROW_Z = [-45, 50, 0, 25]
+
 const PAN_PER_FRAME = 0.00777
 
 export function boardScale(width, compact) {
@@ -56,8 +57,14 @@ function boardGeometry(scale) {
       // Depth like the reference's 3D scene: each piece sits at its own z (camera at 700,
       // z within about -45..+50), so it looks slightly bigger and pans slightly faster
       // the closer it is. f is the on-screen speed and size factor (0.94..1.07).
-      const z = -45 + rand() * 95
-      const f = 700 / (700 - z) / 1.0045
+      // Depth by row, like the reference's z spread (about -45..+50 against a camera at
+      // 700): each row pans horizontally at its own speed (up to ~12% apart) and nearer
+      // rows draw on top. A whole row shares one speed and wraps as one, so pieces in a
+      // row keep their spacing, and rows are stacked so they slide past each other
+      // without touching. Vertically the depth is a small bounded sway.
+      rand()
+      const z = ROW_Z[r % ROW_Z.length]
+      const f = 700 / (700 - z)
       // Sized by area rather than by the long side, so wide pieces are not thin strips.
       const side = (0.8 * SIZES[index % SIZES.length] + 95) * f
       const ratio = art.width / art.height
@@ -313,7 +320,8 @@ export function HomePage() {
     const shown = cells.map((cell, c) => tilesOf[c].map(() => true))
     const dxs = new Float64Array(slots.length)
     const dys = new Float64Array(slots.length)
-    const DRIFT_R = 420 * geo.scale
+    const DRIFT_R = 380 * geo.scale
+    const wrap = (v, m) => v - Math.round(v / m) * m
     const decoded = new WeakSet()
     let viewW = window.innerWidth
     let viewH = window.innerHeight
@@ -378,10 +386,10 @@ export function HomePage() {
       const margin = Math.max(vw, vh) * 0.25
       for (let s = 0; s < slots.length; s += 1) {
         const spot = slots[s]
-        // Bounded depth drift: speed is (1 + k cos phase), so nearer pieces still move a
-        // little faster or slower than the board, but they only sway around their home
-        // spot (at most ~30 px) and can never drift into each other.
-        dxs[s] = spot.k * DRIFT_R * Math.sin((x + absX) / DRIFT_R)
+        // Horizontal: real depth parallax per row, wrapped to +-half a module (a wrap lands
+        // exactly on the twin in the neighbouring copy, so it is invisible).
+        dxs[s] = wrap(spot.k * (x + absX), BOARD_W)
+        // Vertical: bounded sway (speed 1 + k cos phase, at most ~25 px), so rows never meet.
         dys[s] = spot.k * DRIFT_R * Math.sin((y + absY) / DRIFT_R)
       }
       for (let c = 0; c < cells.length; c += 1) {
@@ -720,7 +728,6 @@ export function HomePage() {
           go('/portfolio')
           return
         }
-        startMusic()
         wipe(tint, event.clientX, event.clientY, () => {
           applyTheme(tint)
           go('/portfolio')

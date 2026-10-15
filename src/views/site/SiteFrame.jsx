@@ -7,7 +7,7 @@ import { FOOTER_SOCIAL } from '../../config/site.js'
 import { LanguageSwitch } from '../../components/LanguageSwitch.jsx'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { Chars, HbCursor, Scramble } from './motion.jsx'
-import { MusicDock } from './music.jsx'
+import { MusicDock, primeMusic, startMusic } from './music.jsx'
 import { magnetic, magneticReset } from './magnetic'
 import { reduceMotion } from './motion-utils'
 import { shopIsOpen } from './shopData.js'
@@ -63,6 +63,8 @@ function Welcome({ text, cursorLabel, onDone }) {
   const finish = useCallback(() => {
     if (doneRef.current) return
     doneRef.current = true
+    // The click (or key) that dismisses the intro is the user gesture that starts music.
+    startMusic()
     const root = rootRef.current
     if (!root || reduceMotion()) {
       onDone()
@@ -96,6 +98,8 @@ function Welcome({ text, cursorLabel, onDone }) {
     }
     let alive = true
     let tl
+    // Load the (hidden) YouTube player while the intro is on screen, so it is ready by the click.
+    primeMusic()
     // Like the reference, the intro waits for the visitor: click/tap anywhere (or Enter) to go in.
     const onKey = (event) => {
       if (event.key === 'Enter' || event.key === ' ' || event.key === 'Escape') finish()
