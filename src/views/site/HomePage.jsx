@@ -39,7 +39,7 @@ function seeded(seed) {
 // drives a constant pan speed, measured frame by frame on the reference: 3.48 px per
 // 60 fps frame at the edge on a 1440 px wide window (4.55 at 1920), i.e. ~0.0024 x
 // viewport width per frame, linear, same on both axes, no ramp-up, no inertia.
-const PAN_PER_FRAME = 0.00259
+const PAN_PER_FRAME = 0.00777
 
 export function boardScale(width, compact) {
   if (compact) return 0.5
@@ -374,8 +374,8 @@ export function HomePage() {
       // get a transform write, the rest are display:none (no paint, no image decoding).
       const vw = viewW
       const vh = viewH
-      // One screen of buffer around the viewport so images are decoded before they show.
-      const margin = Math.max(vw, vh) * 0.5
+      // A quarter screen of buffer around the viewport so images are decoded before they show.
+      const margin = Math.max(vw, vh) * 0.25
       for (let s = 0; s < slots.length; s += 1) {
         const spot = slots[s]
         // Bounded depth drift: speed is (1 + k cos phase), so nearer pieces still move a
