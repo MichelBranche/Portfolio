@@ -1,5 +1,6 @@
 'use client'
 
+import { BrandMark } from './BrandMark.jsx'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FOOTER_SOCIAL } from '../../config/site.js'
@@ -168,7 +169,6 @@ export function SiteFrame({ children }) {
   const [modal, setModal] = useState(null)
   const [welcome, setWelcome] = useState(false)
   const [welcomeKnown, setWelcomeKnown] = useState(false)
-  const [brandPlay, setBrandPlay] = useState(0)
   const [overlayLock, setOverlayLock] = useState(false)
   const here = location.pathname + location.search
   const isHome = location.pathname === '/'
@@ -438,9 +438,8 @@ export function SiteFrame({ children }) {
             href="/"
             className="hb-brand"
             onClick={link('/')}
-            onPointerEnter={() => setBrandPlay((n) => n + 1)}
           >
-            <Scramble text="michel branche" play={brandPlay} />
+            <BrandMark text="michel branche" />
           </a>
           <div className="hb-header-center">
             <button
