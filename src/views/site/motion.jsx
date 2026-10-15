@@ -173,24 +173,25 @@ export function HbCursor() {
     let yTo = (value) => {
       dot.style.top = `${value}px`
     }
-    root.classList.add('hb-cursor-on')
+    root.classList.add('hb-cursor-pill')
     import('gsap').then(({ default: gsap }) => {
       if (!alive) return
       dot.style.left = '0px'
       dot.style.top = '0px'
       gsap.set(dot, { xPercent: -50, yPercent: -50, x: window.innerWidth / 2, y: window.innerHeight / 2 })
-      xTo = gsap.quickTo(dot, 'x', { duration: 0.42, ease: 'power3.out' })
-      yTo = gsap.quickTo(dot, 'y', { duration: 0.42, ease: 'power3.out' })
+      xTo = gsap.quickTo(dot, 'x', { duration: 0.55, ease: 'power3.out' })
+      yTo = gsap.quickTo(dot, 'y', { duration: 0.55, ease: 'power3.out' })
     })
 
+    // The native cursor stays visible; the follower is a soft pill that only appears
+    // over elements carrying a data-cursor label and fades out everywhere else.
     const paint = (event) => {
       const target = event.target instanceof Element ? event.target : null
       const labelled = target?.closest('[data-cursor]')
       const label = labelled?.getAttribute('data-cursor') || ''
-      labelRef.current.textContent = label
+      if (label) labelRef.current.textContent = label
       dot.classList.toggle('is-label', Boolean(label))
-      dot.classList.toggle('is-link', !label && Boolean(target?.closest('a, button, label')))
-      dot.classList.toggle('is-on-dark', Boolean(target?.closest('.hb-menu, .hb-modal-copy, .hb-cs-results')))
+      dot.classList.toggle('is-on-dark', Boolean(target?.closest('.hb-menu, .hb-modal-copy, .hb-cs-results, .hb-welcome')))
     }
     const onMove = (event) => {
       xTo(event.clientX)
@@ -212,7 +213,7 @@ export function HbCursor() {
     document.addEventListener('pointerleave', onLeave)
     return () => {
       alive = false
-      root.classList.remove('hb-cursor-on')
+      root.classList.remove('hb-cursor-pill')
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerover', onOver)
       window.removeEventListener('pointerdown', onDown)

@@ -531,7 +531,6 @@ export function HomePage() {
     <div
       ref={gateRef}
       className={compact == null ? 'hb-gate is-pending' : compact ? 'hb-gate is-board-compact' : 'hb-gate'}
-      data-cursor={String(t('site.explore'))}
       onPointerLeave={() => setHovered('')}
     >
       <h1 className="hb-sr-only">{String(t('site.h1Home'))}</h1>

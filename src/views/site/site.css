@@ -130,80 +130,57 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
 
 /* —— Cursore —— */
 
-.hb-cursor-on .hb-shell,
-.hb-cursor-on .hb-shell * {
-  cursor: none !important;
-}
-
 .hb-cursor {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  background: var(--ink);
   pointer-events: none;
-  display: grid;
-  place-items: center;
-  transition:
-    width 0.45s var(--ease-out),
-    height 0.45s var(--ease-out),
-    background-color 0.3s,
-    border-color 0.3s,
-    opacity 0.3s,
-    padding 0.45s var(--ease-out);
-  border: 1px solid var(--ink);
-}
-
-.hb-cursor.is-link {
-  width: 44px;
-  height: 44px;
-  background: transparent;
-}
-
-.hb-cursor.is-on-dark {
-  background: var(--hb);
-  border-color: var(--hb);
-}
-
-.hb-cursor.is-on-dark.is-link {
-  background: transparent;
-}
-
-.hb-cursor.is-on-dark .hb-cursor-label {
-  color: var(--ink);
-}
-
-.hb-cursor.is-label {
-  width: auto;
-  height: 30px;
-  padding: 0 0.9rem;
-}
-
-.hb-cursor.is-down {
-  transform: scale(0.8);
-}
-
-.hb-cursor.is-away {
-  opacity: 0;
+  /* The pill sits just below-right of the pointer so the native cursor and text stay readable. */
+  margin: 22px 0 0 0;
 }
 
 .hb-cursor-label {
-  color: var(--hb);
-  font-size: 0.66rem;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 2.1rem;
+  border: 1px solid #d6d6d2;
+  border-radius: 999px;
+  background: #e4e4e0;
+  color: var(--ink);
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.2s;
+  transform: scale(0.6);
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.5s,
+    color 0.5s;
 }
 
 .hb-cursor.is-label .hb-cursor-label {
   opacity: 1;
-  transition-delay: 0.1s;
+  transform: scale(1);
+}
+
+.hb-cursor.is-down .hb-cursor-label {
+  transform: scale(0.92);
+}
+
+.hb-cursor.is-on-dark .hb-cursor-label {
+  background: var(--ink);
+  border-color: #3a3a3a;
+  color: #f2f2ee;
+}
+
+.hb-cursor.is-away .hb-cursor-label {
+  opacity: 0;
 }
 
 /* —— Header —— */

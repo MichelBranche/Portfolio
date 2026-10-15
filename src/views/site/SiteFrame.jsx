@@ -45,7 +45,7 @@ function Veil({ veilRef, className = '' }) {
   )
 }
 
-function Welcome({ text, onDone }) {
+function Welcome({ text, cursorLabel, onDone }) {
   const rootRef = useRef(null)
   const veilRef = useRef(null)
   const doneRef = useRef(false)
@@ -104,7 +104,7 @@ function Welcome({ text, onDone }) {
   }, [finish, onDone])
 
   return (
-    <div ref={rootRef} className="hb-welcome" onClick={finish} role="presentation">
+    <div ref={rootRef} className="hb-welcome" onClick={finish} role="presentation" data-cursor={cursorLabel}>
       <Veil veilRef={veilRef} className="is-full" />
       <p className="hb-welcome-text">
         <Chars text={text} reveal={false} />
@@ -547,7 +547,7 @@ export function SiteFrame({ children }) {
         ) : null}
 
         <Veil veilRef={veilRef} />
-        {welcome ? <Welcome text={String(t('site.welcome'))} onDone={endWelcome} /> : null}
+        {welcome ? <Welcome text={String(t('site.welcome'))} cursorLabel={String(t('site.skip'))} onDone={endWelcome} /> : null}
         <HbCursor />
       </div>
     </SiteUIContext.Provider>
