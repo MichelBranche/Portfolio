@@ -8,34 +8,54 @@ import { finePointer, reduceMotion } from './motion-utils'
 import { useProjects } from './useProjects.js'
 import { useSiteUI } from './site-ui.js'
 
-const BOARD_CX = 1300
-const BOARD_CY = 775
-
-function spotDistance(spot) {
-  const cx = spot.x + spot.w / 2
-  const cy = spot.y + spot.w * 0.46
-  return (cx - BOARD_CX) ** 2 + (cy - BOARD_CY) ** 2
+// Infinite board: one repeating module of COLS columns x PAIRS (portrait + landscape) rows.
+// Even columns start portrait, odd columns landscape, so every column has the same height
+// and the module tiles seamlessly in both directions with equal gaps everywhere.
+const COLS = 8
+const PAIRS = 2
+const GEOMETRY = {
+  wide: { w: 280, gap: 120, meta: 44 },
+  compact: { w: 140, gap: 40, meta: 34 },
 }
 
-const BOARD_W = 2600
-const BOARD_H = 1550
+function boardGeometry(compact) {
+  const { w, gap, meta } = compact ? GEOMETRY.compact : GEOMETRY.wide
+  const tall = Math.round(w * 1.25)
+  const flat = Math.round(w * 0.75)
+  const pitch = w + gap
+  const pairH = tall + flat + meta * 2 + gap * 2
+  const slots = []
+  for (let p = 0; p < PAIRS; p += 1) {
+    for (let c = 0; c < COLS; c += 1) {
+      let y = p * pairH + gap / 2
+      for (let t = 0; t < 2; t += 1) {
+        const portrait = (c + t) % 2 === 0
+        const h = portrait ? tall : flat
+        slots.push({ index: (p * 2 + t) * COLS + c, x: c * pitch + gap / 2, y, w, h, portrait })
+        y += h + meta + gap
+      }
+    }
+  }
+  slots.sort((left, right) => left.index - right.index)
+  return { w, gap, width: COLS * pitch, height: PAIRS * pairH, slots }
+}
 
-function boardSpan(width, height) {
+function boardSpan(width, height, geo) {
   return {
-    cols: Math.min(3, Math.max(2, Math.ceil(width / BOARD_W) + 1)),
-    rows: Math.min(3, Math.max(2, Math.ceil(height / BOARD_H) + 1)),
+    cols: Math.min(4, Math.max(2, Math.ceil(width / geo.width) + 1)),
+    rows: Math.min(4, Math.max(2, Math.ceil(height / geo.height) + 1)),
   }
 }
 
-const LOOK_DEAD = 0.16
+const LOOK_DEAD = 0.05
 
 function look(offset) {
   const mag = Math.abs(offset)
-  const parallax = Math.max(-96, Math.min(96, offset * 200))
+  const parallax = Math.max(-160, Math.min(160, offset * 340))
   if (mag <= LOOK_DEAD) return { push: 0, parallax }
-  const t = Math.min(1, (mag - LOOK_DEAD) / (0.5 - LOOK_DEAD))
-  const eased = t * t * (3 - 2 * t)
-  return { push: -Math.sign(offset) * eased * 20, parallax }
+  const t = Math.min(1, (mag - LOOK_DEAD) / (0.34 - LOOK_DEAD))
+  const eased = t * (2 - t)
+  return { push: -Math.sign(offset) * eased * 52, parallax }
 }
 
 function wheelUnit(event, viewport) {
@@ -43,31 +63,6 @@ function wheelUnit(event, viewport) {
   if (event.deltaMode === 2) return viewport
   return 1
 }
-
-const SPOTS = [
-  { x: 70, y: 90, w: 280, r: -2 },
-  { x: 440, y: 380, w: 240, r: 1.5 },
-  { x: 780, y: 60, w: 330, r: 0 },
-  { x: 1190, y: 250, w: 260, r: -1 },
-  { x: 1570, y: 40, w: 300, r: 2 },
-  { x: 1960, y: 300, w: 340, r: -1.5 },
-  { x: 100, y: 560, w: 300, r: 1 },
-  { x: 520, y: 760, w: 360, r: -1 },
-  { x: 980, y: 600, w: 250, r: 2 },
-  { x: 1320, y: 700, w: 310, r: 0 },
-  { x: 1730, y: 760, w: 280, r: -2 },
-  { x: 2120, y: 640, w: 260, r: 1 },
-  { x: 320, y: 1060, w: 280, r: -1 },
-  { x: 760, y: 1120, w: 320, r: 1.5 },
-  { x: 1200, y: 1080, w: 280, r: -1 },
-]
-
-const EXTRAS = [
-  { from: 0, x: 1580, y: 388, w: 235, r: -1.5 },
-  { from: 12, x: 940, y: 928, w: 245, r: 1.4 },
-  { from: 7, x: 1375, y: 1068, w: 235, r: -1.2 },
-  { from: 6, x: 1785, y: 1100, w: 220, r: 1.1 },
-]
 
 function shortName(title) {
   const parts = String(title).split(' - ')
@@ -131,42 +126,19 @@ function stamp(iso, lang) {
   return new Intl.DateTimeFormat(lang, { day: '2-digit', month: '2-digit', year: '2-digit' }).format(date)
 }
 
-const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, panningRef, cols, rows }) {
+const Board = memo(function Board({ projects, geo, lang, openLabel, onOpen, onHover, panningRef, cols, rows }) {
   const colIds = Array.from({ length: cols }, (_, index) => index)
   const rowIds = Array.from({ length: rows }, (_, index) => index)
-  // Newer entries marked boardTail take the repeat (extra) slots, so existing tiles keep their place.
-  const main = projects.filter((project) => !project.boardTail)
-  const tail = projects.filter((project) => project.boardTail)
-  const items = [
-    ...main.map((project, index) => ({
-      project,
-      spot: SPOTS[index % SPOTS.length],
-      key: project.slug,
-      repeat: false,
-    })),
-    ...tail.slice(0, EXTRAS.length).map((project, index) => ({
-      project,
-      spot: EXTRAS[index],
-      key: project.slug,
-      repeat: false,
-    })),
-    ...EXTRAS.slice(tail.length).map((extra, index) => ({
-      project: main[extra.from % main.length],
-      spot: extra,
-      key: `extra-${index + tail.length}`,
-      repeat: true,
-    })),
-  ]
-  let lcpKey = items[0]?.key
-  let best = Infinity
-  items.forEach((item) => {
-    if (item.repeat) return
-    const dist = spotDistance(item.spot)
-    if (dist < best) {
-      best = dist
-      lcpKey = item.key
-    }
-  })
+  // Same order as the project list (newest first), continued cyclically to fill the module.
+  const items = projects.length
+    ? geo.slots.map((spot) => ({
+        project: projects[spot.index % projects.length],
+        spot,
+        key: spot.index < projects.length ? projects[spot.index].slug : `loop-${spot.index}`,
+        repeat: spot.index >= projects.length,
+      }))
+    : []
+  const lcpKey = items[0]?.key
   return rowIds.map((row) =>
     colIds.map((col) => {
       const primary = col === 0 && row === 0
@@ -174,6 +146,7 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
         <div
           key={`${col}-${row}`}
           className="hb-board-cell"
+          style={{ width: geo.width, height: geo.height, containIntrinsicSize: `${geo.width}px ${geo.height}px` }}
           data-i={col}
           data-j={row}
           data-primary={primary ? '' : undefined}
@@ -192,7 +165,7 @@ const Board = memo(function Board({ projects, lang, openLabel, onOpen, onHover, 
                 panningRef={panningRef}
                 lcp={lcp}
                 tabIndex={primary && !repeat ? 0 : -1}
-                style={{ left: spot.x, top: spot.y, width: spot.w, '--r': `${spot.r}deg` }}
+                style={{ left: spot.x, top: spot.y, width: spot.w, '--ar': `${spot.w} / ${spot.h}` }}
               />
             )
           })}
@@ -206,11 +179,8 @@ export function HomePage() {
   const { t, lang } = useLanguage()
   const { openProject, go, introDone, showSkip } = useSiteUI()
   const sorted = useProjects()
-  // Board tiles keep their slots: newer additions marked boardTail take the free slots at the end.
-  const projects = useMemo(
-    () => [...sorted.filter((project) => !project.boardTail), ...sorted.filter((project) => project.boardTail)],
-    [sorted],
-  )
+  // Board follows the list order exactly: newest first.
+  const projects = sorted
   const gateRef = useRef(null)
   const boardRef = useRef(null)
   const draggedRef = useRef(false)
@@ -218,6 +188,7 @@ export function HomePage() {
   const [span, setSpan] = useState({ cols: 1, rows: 1 })
   const [fullBoard, setFullBoard] = useState(false)
   const [compact, setCompact] = useState(null)
+  const geo = useMemo(() => boardGeometry(Boolean(compact)), [compact])
   const [hovered, setHovered] = useState('')
   const [labelPlay, setLabelPlay] = useState(0)
   const hover = useCallback((name) => {
@@ -241,12 +212,15 @@ export function HomePage() {
   }, [])
 
   useLayoutEffect(() => {
-    if (compact !== false) return undefined
+    if (compact == null) return undefined
+    const geo = boardGeometry(compact)
+    const BOARD_W = geo.width
+    const BOARD_H = geo.height
     const gate = gateRef.current
     const board = boardRef.current
     if (!gate || !board) return undefined
 
-    const fitted = fullBoard ? boardSpan(gate.clientWidth, gate.clientHeight) : { cols: 1, rows: 1 }
+    const fitted = fullBoard ? boardSpan(gate.clientWidth, gate.clientHeight, geo) : { cols: 1, rows: 1 }
     if (fitted.cols !== span.cols || fitted.rows !== span.rows) {
       setSpan(fitted)
       return undefined
@@ -303,8 +277,9 @@ export function HomePage() {
     }
 
     const center = () => {
-      scrollX = (gate.clientWidth - BOARD_W) / 2
-      scrollY = (gate.clientHeight - BOARD_H) / 2
+      // Start with the newest project (slot 0) in the top-left corner; the board loops from there.
+      scrollX = geo.gap / 2
+      scrollY = geo.gap / 2 + (compact ? 36 : 44)
       destX = scrollX
       destY = scrollY
       parX = 0
@@ -326,9 +301,9 @@ export function HomePage() {
       last = now
       const step = dt * 60
       if (pushX) velX = pushX
-      else velX *= Math.pow(0.9, step)
+      else velX *= Math.pow(0.86, step)
       if (pushY) velY = pushY
-      else velY *= Math.pow(0.9, step)
+      else velY *= Math.pow(0.86, step)
       if (Math.abs(velX) < 0.04) velX = 0
       if (Math.abs(velY) < 0.04) velY = 0
       if (velX || velY) {
@@ -338,7 +313,7 @@ export function HomePage() {
         destY += velY * step
         moved = true
       }
-      const follow = 1 - Math.exp(-dt / 0.085)
+      const follow = 1 - Math.exp(-dt / 0.05)
       const wx = destX - scrollX
       const wy = destY - scrollY
       if (wx || wy) {
@@ -346,8 +321,8 @@ export function HomePage() {
         scrollY += Math.abs(wy) < 0.2 ? wy : wy * follow
         moved = true
       }
-      const nextParX = Math.abs(wantParX - parX) < 0.2 ? wantParX : parX + (wantParX - parX) * 0.12
-      const nextParY = Math.abs(wantParY - parY) < 0.2 ? wantParY : parY + (wantParY - parY) * 0.12
+      const nextParX = Math.abs(wantParX - parX) < 0.2 ? wantParX : parX + (wantParX - parX) * 0.22
+      const nextParY = Math.abs(wantParY - parY) < 0.2 ? wantParY : parY + (wantParY - parY) * 0.22
       const gliding = Math.abs(velX) + Math.abs(velY) > 0.6
       panningRef.current = gliding
       gate.classList.toggle('is-gliding', gliding)
@@ -453,7 +428,7 @@ export function HomePage() {
     }
 
     const onResize = () => {
-      const next = fullBoard ? boardSpan(gate.clientWidth, gate.clientHeight) : { cols: 1, rows: 1 }
+      const next = fullBoard ? boardSpan(gate.clientWidth, gate.clientHeight, geo) : { cols: 1, rows: 1 }
       if (next.cols !== span.cols || next.rows !== span.rows) {
         setSpan(next)
         return
@@ -555,7 +530,7 @@ export function HomePage() {
   return (
     <div
       ref={gateRef}
-      className={compact ? 'hb-gate is-compact' : compact == null ? 'hb-gate is-pending' : 'hb-gate'}
+      className={compact == null ? 'hb-gate is-pending' : compact ? 'hb-gate is-board-compact' : 'hb-gate'}
       data-cursor={String(t('site.explore'))}
       onPointerLeave={() => setHovered('')}
     >
@@ -564,7 +539,7 @@ export function HomePage() {
       <p className="hb-choose" aria-live="polite">
         <Scramble text={hovered || String(t('site.choose'))} play={labelPlay} />
       </p>
-      {compact !== false ? (
+      {compact == null ? (
         <div key="mobile" className="hb-mobile-grid">
           {projects.map((project, index) => (
             <ProjectTile
@@ -575,7 +550,7 @@ export function HomePage() {
               onOpen={open}
               onHover={hover}
               panningRef={panningRef}
-              lcp={compact === true && index === 0}
+              lcp={false}
               lead={index === 0}
               early={index < 4}
               held={compact == null}
@@ -586,6 +561,7 @@ export function HomePage() {
         <div key="desktop" ref={boardRef} className="hb-board">
           <Board
             projects={projects}
+            geo={geo}
             lang={lang}
             openLabel={String(t('site.open'))}
             onOpen={open}

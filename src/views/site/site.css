@@ -644,7 +644,6 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
   color: inherit;
   font: inherit;
   text-align: left;
-  transform: rotate(var(--r, 0deg));
   transition: transform 0.7s var(--ease-out);
 }
 
@@ -653,7 +652,7 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
 .hb-gate.is-gliding .hb-tile,
 .hb-gate.is-gliding .hb-tile:hover {
   transition: none;
-  transform: rotate(var(--r, 0deg));
+  transform: none;
 }
 
 .hb-gate.is-dragging .hb-tile:hover .hb-pix img,
@@ -666,12 +665,12 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
 }
 
 .hb-tile .hb-pix {
-  aspect-ratio: 1 / 0.92;
+  aspect-ratio: var(--ar, 1 / 0.92);
   background: rgba(0, 0, 0, 0.08);
 }
 
 .hb-tile:hover {
-  transform: rotate(0deg) scale(1.04);
+  transform: scale(1.04);
   z-index: 3;
 }
 
@@ -2592,4 +2591,21 @@ html:has(.hb-shop) {
   .hb-gate.is-pending .hb-mobile-grid {
     display: none;
   }
+}
+
+/* Compact (touch) board: same infinite grid, smaller tiles; drag/swipe pans and loops. */
+.hb-gate.is-board-compact .hb-tile-meta {
+  font-size: 0.68rem;
+  margin-top: 0.25rem;
+}
+
+.hb-gate.is-board-compact .hb-tile-meta span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hb-gate.is-board-compact .hb-tile-meta--sub {
+  display: none;
 }
