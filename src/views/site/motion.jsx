@@ -84,6 +84,7 @@ export function PixelImage({
   sizes = '360px',
   late = false,
   quality,
+  natural = false,
 }) {
   const [ready, setReady] = useState(!late)
 
@@ -106,8 +107,8 @@ export function PixelImage({
     <Image
       src={src}
       alt={alt}
-      width={640}
-      height={589}
+      width={natural ? 1254 : 640}
+      height={natural ? 1254 : 589}
       sizes={sizes}
       draggable={false}
       priority={priority}
@@ -115,7 +116,7 @@ export function PixelImage({
       quality={quality ?? (priority ? 50 : 55)}
       loading={priority ? undefined : eager ? 'eager' : 'lazy'}
       decoding={priority ? 'auto' : 'async'}
-      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      style={natural ? { width: '100%', height: 'auto', display: 'block' } : { width: '100%', height: '100%', objectFit: 'cover' }}
     />
   ) : priority ? (
     <img

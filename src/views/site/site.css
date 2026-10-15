@@ -642,17 +642,18 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
 }
 
 .hb-tile .hb-pix {
-  aspect-ratio: var(--ar, 1 / 0.92);
-  background: rgba(0, 0, 0, 0.08);
+  /* Natural ratio: the image sets the height, nothing is cropped. */
+  aspect-ratio: auto;
+  background: transparent;
 }
 
 .hb-tile:hover {
-  transform: scale(1.04);
   z-index: 3;
 }
 
-.hb-tile:hover .hb-pix img {
-  transform: scale(1.06);
+.hb-gate {
+  background: var(--stage, transparent);
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hb-tile-meta {
@@ -2585,4 +2586,31 @@ html:has(.hb-shop) {
 
 .hb-gate.is-board-compact .hb-tile-meta--sub {
   display: none;
+}
+
+/* Touch screens have no cursor pill, so the intro shows its own enter pill. */
+.hb-welcome-enter {
+  display: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .hb-welcome-enter {
+    position: absolute;
+    left: 50%;
+    bottom: 12%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    margin: 0;
+    padding: 0 2.1rem;
+    border: 1px solid #3a3a3a;
+    border-radius: 999px;
+    color: #f2f2ee;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transform: translateX(-50%);
+  }
 }

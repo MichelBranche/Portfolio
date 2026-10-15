@@ -77,6 +77,7 @@ export const PROJECT_META = [
     img: '/projects/rubina-mockup-hero.png',
     imgs: ['/projects/rubina-mockup-hero.png', '/projects/rubina-mockup-sections.png'],
     thumb: '/projects/rubina-cover.png',
+    tint: '#dab7b3',
     publishedAt: '2026-03-21',
   },
   {
@@ -87,6 +88,7 @@ export const PROJECT_META = [
     img: '/projects/streetwear-mockup-hero.png',
     imgs: ['/projects/streetwear-mockup-hero.png', '/projects/streetwear-mockup-sections.png'],
     thumb: '/projects/streetwear-cover.png',
+    tint: '#e8a8a5',
     publishedAt: '2026-03-29',
   },
   {
@@ -97,6 +99,7 @@ export const PROJECT_META = [
     img: '/projects/museo-mockup-hero.png',
     imgs: ['/projects/museo-mockup-hero.png', '/projects/museo-mockup-sections.png'],
     thumb: '/projects/museo-cover.png',
+    tint: '#e1c3ac',
     publishedAt: '2026-04-06',
   },
   {
@@ -107,6 +110,7 @@ export const PROJECT_META = [
     img: '/projects/spotify-mockup-hero.png',
     imgs: ['/projects/spotify-mockup-hero.png', '/projects/spotify-mockup-sections.png'],
     thumb: '/projects/spotify-cover.png',
+    tint: '#b3dabb',
     publishedAt: '2026-04-13',
   },
   {
@@ -119,6 +123,7 @@ export const PROJECT_META = [
     img: '/projects/levele-mockup-hero.png',
     imgs: ['/projects/levele-mockup-hero.png', '/projects/levele-mockup-sections.png'],
     thumb: '/projects/levele-cover.png',
+    tint: '#dac9b3',
     publishedAt: '2026-04-18',
   },
   {
@@ -129,6 +134,7 @@ export const PROJECT_META = [
     img: '/projects/caffestella-mockup-hero.png',
     imgs: ['/projects/caffestella-mockup-hero.png', '/projects/caffestella-mockup-sections.png'],
     thumb: '/projects/caffestella-cover.png',
+    tint: '#dac9b3',
     publishedAt: '2026-04-20',
   },
   {
@@ -139,6 +145,7 @@ export const PROJECT_META = [
     img: '/projects/ilgusto-mockup-hero.png',
     imgs: ['/projects/ilgusto-mockup-hero.png', '/projects/ilgusto-mockup-sections.png'],
     thumb: '/projects/ilgusto-cover.png',
+    tint: '#dac2b3',
     publishedAt: '2025-12-01',
   },
   {
@@ -149,6 +156,7 @@ export const PROJECT_META = [
     img: '/projects/kiosk-mockup-hero.png',
     imgs: ['/projects/kiosk-mockup-hero.png', '/projects/kiosk-mockup-sections.png'],
     thumb: '/projects/kiosk-cover.png',
+    tint: '#dcc8b1',
     publishedAt: '2026-05-18',
   },
   {
@@ -160,6 +168,7 @@ export const PROJECT_META = [
     img: '/projects/villamatilde-mockup-hero.png',
     imgs: ['/projects/villamatilde-mockup-hero.png', '/projects/villamatilde-mockup-sections.png'],
     thumb: '/projects/villamatilde-cover.png',
+    tint: '#dacab3',
     publishedAt: '2026-07-19',
   },
   {
@@ -171,6 +180,7 @@ export const PROJECT_META = [
     img: '/projects/altura-mockup-hero.png',
     imgs: ['/projects/altura-mockup-hero.png', '/projects/altura-mockup-sections.png'],
     thumb: '/projects/altura-cover.png',
+    tint: '#dac9b3',
     publishedAt: '2026-08-08',
   },
   {
@@ -181,6 +191,7 @@ export const PROJECT_META = [
     img: '/projects/omama-mockup-hero.png',
     imgs: ['/projects/omama-mockup-hero.png', '/projects/omama-mockup-sections.png'],
     thumb: '/projects/omama-cover.png',
+    tint: '#e1c9ac',
     publishedAt: '2026-08-21',
   },
   {
@@ -192,6 +203,7 @@ export const PROJECT_META = [
     img: '/projects/grauson-mockup-hero.png',
     imgs: ['/projects/grauson-mockup-hero.png', '/projects/grauson-mockup-sections.png'],
     thumb: '/projects/grauson-cover.png',
+    tint: '#dacdb3',
     publishedAt: '2026-09-21',
   },
   {
@@ -202,6 +214,7 @@ export const PROJECT_META = [
     link: 'https://demo-caff.vercel.app/',
     img: '/projects/orma-mockup-hero.png',
     thumb: '/projects/orma-cover.png',
+    tint: '#dac2b3',
     imgs: ['/projects/orma-mockup-hero.png', '/projects/orma-mockup-sections.png'],
     publishedAt: '2026-09-27',
   },
@@ -214,6 +227,7 @@ export const PROJECT_META = [
     img: '/projects/chaumont-mockup-hero.webp',
     imgs: ['/projects/chaumont-mockup-hero.webp'],
     thumb: '/projects/chaumont-cover.webp',
+    tint: '#dac2b3',
     publishedAt: '2026-10-15',
   },
   {
@@ -224,6 +238,7 @@ export const PROJECT_META = [
     img: '/projects/webtec-mockup-hero.png',
     imgs: ['/projects/webtec-mockup-hero.png', '/projects/webtec-mockup-sections.png'],
     thumb: '/projects/webtec-cover.png',
+    tint: '#b7abe2',
     publishedAt: '2026-10-08',
     boardTail: true,
   },
@@ -235,6 +250,7 @@ export const PROJECT_META = [
     img: '/projects/webtec2-mockup-hero.png',
     imgs: ['/projects/webtec2-mockup-hero.png', '/projects/webtec2-mockup-sections.png'],
     thumb: '/projects/webtec2-cover.png',
+    tint: '#dadbb2',
     publishedAt: '2026-10-08',
     boardTail: true,
   },

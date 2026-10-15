@@ -8,36 +8,46 @@ import { finePointer, reduceMotion } from './motion-utils'
 import { useProjects } from './useProjects.js'
 import { useSiteUI } from './site-ui.js'
 
-// Infinite board: one repeating module of COLS columns x PAIRS (portrait + landscape) rows.
-// Even columns start portrait, odd columns landscape, so every column has the same height
-// and the module tiles seamlessly in both directions with equal gaps everywhere.
-const COLS = 8
-const PAIRS = 2
-const GEOMETRY = {
-  wide: { w: 280, gap: 120, meta: 44 },
-  compact: { w: 140, gap: 40, meta: 34 },
+// Infinite board, measured against the reference interaction at 1440x900:
+// a 6 x 3 module of cells (~690 x 720 px), one cover per cell, sizes between ~240 and
+// ~420 px with an irregular but fixed offset inside each cell. Covers keep their natural
+// ratio. Everything scales with the viewport width (unit = vw / 1440); the module repeats
+// seamlessly in both directions.
+const COLS = 6
+const ROWS = 3
+const CELL_W = 690
+const CELL_H = 720
+// [size, dx, dy] per cell at 1440 px wide, dx/dy are offsets of the cover from the cell origin.
+const PATTERN = [
+  [300, 120, 150], [262, 300, 60], [340, 90, 210], [276, 230, 110], [318, 150, 40], [250, 280, 190],
+  [252, 260, 230], [356, 70, 120], [270, 210, 260], [330, 130, 70], [244, 320, 160], [300, 60, 240],
+  [336, 180, 90], [258, 90, 200], [306, 250, 140], [248, 140, 50], [348, 40, 170], [282, 270, 230],
+]
+// Cursor offset from the centre (normalised to -1..1 per axis) drives a constant pan
+// speed: 243 px/s at the edge on the reference, linear, no dead zone, no inertia.
+const PAN_SPEED = 243
+
+export function boardScale(width, compact) {
+  if (compact) return 0.62
+  return Math.round(Math.min(1.6, Math.max(0.8, width / 1440)) * 20) / 20
 }
 
-function boardGeometry(compact) {
-  const { w, gap, meta } = compact ? GEOMETRY.compact : GEOMETRY.wide
-  const tall = Math.round(w * 1.25)
-  const flat = Math.round(w * 0.75)
-  const pitch = w + gap
-  const pairH = tall + flat + meta * 2 + gap * 2
+function boardGeometry(scale) {
   const slots = []
-  for (let p = 0; p < PAIRS; p += 1) {
+  for (let r = 0; r < ROWS; r += 1) {
     for (let c = 0; c < COLS; c += 1) {
-      let y = p * pairH + gap / 2
-      for (let t = 0; t < 2; t += 1) {
-        const portrait = (c + t) % 2 === 0
-        const h = portrait ? tall : flat
-        slots.push({ index: (p * 2 + t) * COLS + c, x: c * pitch + gap / 2, y, w, h, portrait })
-        y += h + meta + gap
-      }
+      const index = r * COLS + c
+      const [size, dx, dy] = PATTERN[index]
+      const w = Math.round(size * scale)
+      slots.push({
+        index,
+        x: Math.round((c * CELL_W + dx) * scale),
+        y: Math.round((r * CELL_H + dy) * scale),
+        w,
+      })
     }
   }
-  slots.sort((left, right) => left.index - right.index)
-  return { w, gap, width: COLS * pitch, height: PAIRS * pairH, slots }
+  return { scale, width: Math.round(COLS * CELL_W * scale), height: Math.round(ROWS * CELL_H * scale), slots }
 }
 
 function boardSpan(width, height, geo) {
@@ -47,15 +57,10 @@ function boardSpan(width, height, geo) {
   }
 }
 
-const LOOK_DEAD = 0.05
-
-function look(offset) {
-  const mag = Math.abs(offset)
-  const parallax = Math.max(-160, Math.min(160, offset * 340))
-  if (mag <= LOOK_DEAD) return { push: 0, parallax }
-  const t = Math.min(1, (mag - LOOK_DEAD) / (0.34 - LOOK_DEAD))
-  const eased = t * (2 - t)
-  return { push: -Math.sign(offset) * eased * 52, parallax }
+function look(offset, scale) {
+  // offset is -0.5..0.5 across the gate; returns px per 60 fps frame.
+  const n = Math.max(-1, Math.min(1, offset * 2))
+  return { push: (-n * PAN_SPEED * scale) / 60, parallax: 0 }
 }
 
 function wheelUnit(event, viewport) {
@@ -71,7 +76,7 @@ function shortName(title) {
 
 const COMPACT_QUERY = '(max-width: 760px)'
 
-function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lcp, lead = false, early = false, held = false, style, tabIndex = 0 }) {
+function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lcp, early = false, held = false, style, tabIndex = 0 }) {
   const name = shortName(project.title)
   return (
     <button
@@ -81,17 +86,13 @@ function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lc
       style={style}
       data-cursor={openLabel}
       data-lcp={lcp ? '' : undefined}
-      onPointerEnter={(event) => {
+      onPointerEnter={() => {
         if (panningRef.current) return
-        const node = event.currentTarget
-        import('./motion-fx.js').then(({ pixelBurst }) => pixelBurst(node))
-        onHover(name)
+        onHover(name, project.tint)
       }}
-      onPointerLeave={(event) => {
+      onPointerLeave={() => {
         if (panningRef.current) return
-        const node = event.currentTarget
-        import('./motion-fx.js').then(({ pixelClear }) => pixelClear(node))
-        onHover('')
+        onHover('', '')
       }}
       onClick={() => onOpen(project)}
     >
@@ -101,7 +102,8 @@ function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lc
           alt={project.alt}
           priority={lcp}
           eager={early && !held}
-          quality={lcp || lead ? 50 : undefined}
+          quality={90}
+          natural
           late={!lcp && !early}
           sizes={style?.width ? `${Math.round(style.width)}px` : '50vw'}
           grid={false}
@@ -165,7 +167,7 @@ const Board = memo(function Board({ projects, geo, lang, openLabel, onOpen, onHo
                 panningRef={panningRef}
                 lcp={lcp}
                 tabIndex={primary && !repeat ? 0 : -1}
-                style={{ left: spot.x, top: spot.y, width: spot.w, '--ar': `${spot.w} / ${spot.h}` }}
+                style={{ left: spot.x, top: spot.y, width: spot.w }}
               />
             )
           })}
@@ -188,11 +190,15 @@ export function HomePage() {
   const [span, setSpan] = useState({ cols: 1, rows: 1 })
   const [fullBoard, setFullBoard] = useState(false)
   const [compact, setCompact] = useState(null)
-  const geo = useMemo(() => boardGeometry(Boolean(compact)), [compact])
+  const [scale, setScale] = useState(1)
+  const geo = useMemo(() => boardGeometry(scale), [scale])
   const [hovered, setHovered] = useState('')
   const [labelPlay, setLabelPlay] = useState(0)
-  const hover = useCallback((name) => {
+  const hover = useCallback((name, tint) => {
     setHovered(name)
+    // Hovering a cover tints the whole stage with that cover's colour; leaving restores it.
+    const gate = gateRef.current
+    if (gate) gate.style.setProperty('--stage', tint || '')
     setLabelPlay((n) => n + 1)
   }, [])
   const open = useCallback(
@@ -205,7 +211,10 @@ export function HomePage() {
 
   useLayoutEffect(() => {
     const mq = window.matchMedia(COMPACT_QUERY)
-    const apply = () => setCompact(mq.matches)
+    const apply = () => {
+      setCompact(mq.matches)
+      setScale(boardScale(window.innerWidth, mq.matches))
+    }
     apply()
     mq.addEventListener('change', apply)
     return () => mq.removeEventListener('change', apply)
@@ -213,7 +222,7 @@ export function HomePage() {
 
   useLayoutEffect(() => {
     if (compact == null) return undefined
-    const geo = boardGeometry(compact)
+    const geo = boardGeometry(scale)
     const BOARD_W = geo.width
     const BOARD_H = geo.height
     const gate = gateRef.current
@@ -278,8 +287,9 @@ export function HomePage() {
 
     const center = () => {
       // Start with the newest project (slot 0) in the top-left corner; the board loops from there.
-      scrollX = geo.gap / 2
-      scrollY = geo.gap / 2 + (compact ? 36 : 44)
+      // Newest project (cell 0) starts near the top-left; the board loops from there.
+      scrollX = Math.round(-60 * geo.scale)
+      scrollY = Math.round(-20 * geo.scale)
       destX = scrollX
       destY = scrollY
       parX = 0
@@ -300,10 +310,9 @@ export function HomePage() {
       const dt = Math.min(0.05, (now - last) / 1000)
       last = now
       const step = dt * 60
-      if (pushX) velX = pushX
-      else velX *= Math.pow(0.86, step)
-      if (pushY) velY = pushY
-      else velY *= Math.pow(0.86, step)
+      // Constant speed while the cursor is off-centre, immediate stop otherwise (no inertia).
+      velX = pushX
+      velY = pushY
       if (Math.abs(velX) < 0.04) velX = 0
       if (Math.abs(velY) < 0.04) velY = 0
       if (velX || velY) {
@@ -323,7 +332,7 @@ export function HomePage() {
       }
       const nextParX = Math.abs(wantParX - parX) < 0.2 ? wantParX : parX + (wantParX - parX) * 0.22
       const nextParY = Math.abs(wantParY - parY) < 0.2 ? wantParY : parY + (wantParY - parY) * 0.22
-      const gliding = Math.abs(velX) + Math.abs(velY) > 0.6
+      const gliding = false
       panningRef.current = gliding
       gate.classList.toggle('is-gliding', gliding)
       const idle = !velX && !velY && !wx && !wy && nextParX === parX && nextParY === parY
@@ -337,8 +346,8 @@ export function HomePage() {
       wake()
       const rect = gate.getBoundingClientRect()
       if (!rect.width || !rect.height) return
-      const lookX = look((event.clientX - rect.left) / rect.width - 0.5)
-      const lookY = look((event.clientY - rect.top) / rect.height - 0.5)
+      const lookX = look((event.clientX - rect.left) / rect.width - 0.5, geo.scale)
+      const lookY = look((event.clientY - rect.top) / rect.height - 0.5, geo.scale)
       wantParX = lookX.parallax
       wantParY = lookY.parallax
       pushX = lookX.push
@@ -406,8 +415,9 @@ export function HomePage() {
       if (!calm) {
         const vx = Math.max(-42, Math.min(42, drag.vx))
         const vy = Math.max(-42, Math.min(42, drag.vy))
-        destX = scrollX + vx * 11
-        destY = scrollY + vy * 11
+        // No fling: the board stays where it is released, like the mouse pan.
+        destX = scrollX + vx * 0
+        destY = scrollY + vy * 0
         wake()
       }
       drag = null
@@ -428,6 +438,11 @@ export function HomePage() {
     }
 
     const onResize = () => {
+      const nextScale = boardScale(window.innerWidth, compact)
+      if (nextScale !== scale) {
+        setScale(nextScale)
+        return
+      }
       const next = fullBoard ? boardSpan(gate.clientWidth, gate.clientHeight, geo) : { cols: 1, rows: 1 }
       if (next.cols !== span.cols || next.rows !== span.rows) {
         setSpan(next)
@@ -489,7 +504,7 @@ export function HomePage() {
       window.removeEventListener('pointercancel', onUp)
       window.removeEventListener('resize', onResize)
     }
-  }, [span.cols, span.rows, fullBoard, compact])
+  }, [span.cols, span.rows, fullBoard, compact, scale])
 
   useEffect(() => {
     const ric = window.requestIdleCallback

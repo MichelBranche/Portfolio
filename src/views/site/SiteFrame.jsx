@@ -86,7 +86,12 @@ function Welcome({ text, cursorLabel, onDone }) {
     }
     let alive = true
     let tl
-    const id = window.setTimeout(finish, 2600)
+    // Like the reference, the intro waits for the visitor: click/tap anywhere (or Enter) to go in.
+    const onKey = (event) => {
+      if (event.key === 'Enter' || event.key === ' ' || event.key === 'Escape') finish()
+    }
+    window.addEventListener('keydown', onKey)
+    const id = 0
     import('gsap').then(({ default: gsap }) => {
       if (!alive || !root) return
       tl = gsap.timeline({ delay: 0.15 })
@@ -100,6 +105,7 @@ function Welcome({ text, cursorLabel, onDone }) {
       alive = false
       tl?.kill()
       window.clearTimeout(id)
+      window.removeEventListener('keydown', onKey)
     }
   }, [finish, onDone])
 
@@ -110,6 +116,7 @@ function Welcome({ text, cursorLabel, onDone }) {
         <Chars text={text} reveal={false} />
       </p>
       <p className="hb-welcome-hint">michel branche</p>
+      <p className="hb-welcome-enter">{cursorLabel}</p>
     </div>
   )
 }
@@ -547,7 +554,7 @@ export function SiteFrame({ children }) {
         ) : null}
 
         <Veil veilRef={veilRef} />
-        {welcome ? <Welcome text={String(t('site.welcome'))} cursorLabel={String(t('site.skip'))} onDone={endWelcome} /> : null}
+        {welcome ? <Welcome text={String(t('site.welcome'))} cursorLabel={String(t('preloader.enter'))} onDone={endWelcome} /> : null}
         <HbCursor />
       </div>
     </SiteUIContext.Provider>
