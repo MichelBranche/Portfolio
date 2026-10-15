@@ -23,9 +23,11 @@ const PATTERN = [
   [395, 16, 92], [300, 159, 47], [330, 138, 126], [370, 52, 74], [280, 16, 20], [245, 137, 48],
   [230, 45, 88], [275, 213, 202], [420, 67, 44], [310, 83, 42], [250, 100, 221], [320, 121, 168],
 ]
-// Cursor offset from the centre (normalised to -1..1 per axis) drives a constant pan
-// speed: 243 px/s at the edge on the reference, linear, no dead zone, no inertia.
-const PAN_SPEED = 243
+// Cursor offset from the centre (normalised to -1..1 per axis, against the viewport)
+// drives a constant pan speed, measured frame by frame on the reference: 3.48 px per
+// 60 fps frame at the edge on a 1440 px wide window (4.55 at 1920), i.e. ~0.0024 x
+// viewport width per frame, linear, same on both axes, no ramp-up, no inertia.
+const PAN_PER_FRAME = 0.00254
 
 export function boardScale(width, compact) {
   if (compact) return 0.62
@@ -57,10 +59,10 @@ function boardSpan(width, height, geo) {
   }
 }
 
-function look(offset, scale) {
-  // offset is -0.5..0.5 across the gate; returns px per 60 fps frame.
+function look(offset) {
+  // offset is -0.5..0.5 across the viewport; returns px per 60 fps frame.
   const n = Math.max(-1, Math.min(1, offset * 2))
-  return { push: (-n * PAN_SPEED * scale) / 60, parallax: 0 }
+  return { push: -n * PAN_PER_FRAME * window.innerWidth, parallax: 0 }
 }
 
 function wheelUnit(event, viewport) {
@@ -378,8 +380,8 @@ export function HomePage() {
       const w = window.innerWidth
       const h = window.innerHeight
       if (!w || !h) return
-      const lookX = look(event.clientX / w - 0.5, geo.scale)
-      const lookY = look(event.clientY / h - 0.5, geo.scale)
+      const lookX = look(event.clientX / w - 0.5)
+      const lookY = look(event.clientY / h - 0.5)
       wantParX = lookX.parallax
       wantParY = lookY.parallax
       pushX = lookX.push
@@ -579,6 +581,13 @@ export function HomePage() {
   return (
     <div
       ref={gateRef}
+      data-cursor-empty={String(t('site.skip'))}
+      onClick={(event) => {
+        // Like the reference, a click on empty board space skips to the full list.
+        if (draggedRef.current || compact) return
+        if (event.target instanceof Element && event.target.closest('.hb-tile, a, button')) return
+        go('/portfolio')
+      }}
       className={compact == null ? 'hb-gate is-pending' : compact ? 'hb-gate is-board-compact' : 'hb-gate'}
       onPointerLeave={() => setHovered('')}
     >

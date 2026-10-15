@@ -153,90 +153,141 @@ export function PixelImage({
   )
 }
 
-/** Cursore custom: punto, anello su link, pillola con etichetta su [data-cursor]. */
+/**
+ * Custom cursor: an 80 px translucent blurred disc that trails the pointer.
+ * - On surfaces marked [data-cursor-empty] (home board, intro) it shows a pixel
+ *   "shuffle" icon with a spaced label underneath (e.g. S K I P).
+ * - On [data-cursor] items (covers, case links) it grows to 1.5x, shows a pixel
+ *   arrow and hides the label.
+ * - Everywhere else it shrinks away and the native cursor does the work.
+ * Disabled on touch / coarse pointers and with prefers-reduced-motion.
+ */
 function cursorEnabled() {
   return finePointer() && !reduceMotion()
+}
+
+// Pixel icons drawn on a 2 px grid (own artwork).
+function PixelShuffle() {
+  const px = [
+    [0, 2], [2, 2], [4, 2], [6, 4], [8, 6], [10, 8], [12, 8], [14, 8], [16, 8], [14, 6], [14, 10],
+    [0, 10], [2, 10], [4, 10], [6, 8], [10, 4], [12, 2], [14, 2], [16, 2], [14, 0], [14, 4],
+  ]
+  return (
+    <svg className="hb-cursor-icon" viewBox="0 0 18 12" width="27" height="18" shapeRendering="crispEdges" aria-hidden>
+      {px.map(([x, y]) => (
+        <rect key={`${x}-${y}`} x={x} y={y} width="2" height="2" fill="currentColor" />
+      ))}
+    </svg>
+  )
+}
+
+function PixelArrow() {
+  const px = [
+    [0, 6], [2, 6], [4, 6], [6, 6], [8, 6], [10, 6], [12, 6], [14, 6],
+    [12, 4], [10, 2], [8, 0], [12, 8], [10, 10], [8, 12],
+  ]
+  return (
+    <svg className="hb-cursor-icon" viewBox="0 0 16 14" width="24" height="21" shapeRendering="crispEdges" aria-hidden>
+      {px.map(([x, y]) => (
+        <rect key={`${x}-${y}`} x={x} y={y} width="2" height="2" fill="currentColor" />
+      ))}
+    </svg>
+  )
 }
 
 export function HbCursor() {
   const enabled = useSyncExternalStore(() => () => {}, cursorEnabled, () => false)
   const dotRef = useRef(null)
   const labelRef = useRef(null)
+  const [mode, setMode] = useState('off')
 
   useEffect(() => {
     if (!enabled) return undefined
     const dot = dotRef.current
     const root = document.documentElement
-    let alive = true
-    let xTo = (value) => {
-      dot.style.left = `${value}px`
-    }
-    let yTo = (value) => {
-      dot.style.top = `${value}px`
-    }
-    root.classList.add('hb-cursor-pill')
-    import('gsap').then(({ default: gsap }) => {
-      if (!alive) return
-      dot.style.left = '0px'
-      dot.style.top = '0px'
-      gsap.set(dot, { xPercent: -50, yPercent: -50, x: window.innerWidth / 2, y: window.innerHeight / 2 })
-      xTo = gsap.quickTo(dot, 'x', { duration: 0.55, ease: 'power3.out' })
-      yTo = gsap.quickTo(dot, 'y', { duration: 0.55, ease: 'power3.out' })
-    })
-
-    // The native cursor stays visible; the follower is a soft pill that only appears
-    // over elements carrying a data-cursor label and fades out everywhere else.
-    const paint = (event) => {
-      const target = event.target instanceof Element ? event.target : null
-      const labelled = target?.closest('[data-cursor]')
-      const label = labelled?.getAttribute('data-cursor') || ''
-      if (label) labelRef.current.textContent = label
-      dot.classList.toggle('is-label', Boolean(label))
-      dot.classList.toggle('is-on-dark', Boolean(target?.closest('.hb-menu, .hb-modal-copy, .hb-cs-results, .hb-welcome')))
-    }
-    // Content can move under a still pointer (the home board pans on its own), so the
-    // label is also re-evaluated from the element under the pointer a few times a second.
+    root.classList.add('hb-cursor-live')
+    let x = window.innerWidth / 2
+    let y = window.innerHeight / 2
+    let tx = x
+    let ty = y
     let last = null
+    let raf = 0
+    let prev = performance.now()
+    let current = 'off'
+    // Exponential follow, time constant ~130 ms (measured on the reference).
+    const loop = (now) => {
+      const dt = Math.min(0.05, (now - prev) / 1000)
+      prev = now
+      const k = 1 - Math.exp(-dt / 0.115)
+      x += (tx - x) * k
+      y += (ty - y) * k
+      dot.style.transform = `translate3d(${x}px, ${y}px, 0)`
+      if (Math.abs(tx - x) > 0.1 || Math.abs(ty - y) > 0.1) raf = requestAnimationFrame(loop)
+      else raf = 0
+    }
+    const kick = () => {
+      if (!raf) {
+        prev = performance.now()
+        raf = requestAnimationFrame(loop)
+      }
+    }
+    const paint = (target) => {
+      const el = target instanceof Element ? target : null
+      const item = el?.closest('[data-cursor]')
+      const empty = item ? null : el?.closest('[data-cursor-empty]')
+      const interactive = !item && el?.closest('a, button, input, textarea, select, label, [role="button"]')
+      let next = 'off'
+      if (item) next = 'item'
+      else if (empty && !interactive) next = 'empty'
+      dot.classList.toggle('on-dark', Boolean(el?.closest('.hb-welcome, .hb-menu, .hb-modal-copy, .hb-cs-results')))
+      if (empty) labelRef.current.textContent = empty.getAttribute('data-cursor-empty') || ''
+      if (next !== current) {
+        current = next
+        setMode(next)
+      }
+    }
+    // Content can move under a still pointer (the home board pans on its own).
     const probe = window.setInterval(() => {
       if (!last) return
       const el = document.elementFromPoint(last.x, last.y)
-      if (el) paint({ target: el })
+      if (el) paint(el)
     }, 90)
     const onMove = (event) => {
+      if (event.pointerType && event.pointerType !== 'mouse') return
+      if (!last) {
+        x = event.clientX
+        y = event.clientY
+      }
       last = { x: event.clientX, y: event.clientY }
-      xTo(event.clientX)
-      yTo(event.clientY)
+      tx = event.clientX
+      ty = event.clientY
       dot.classList.remove('is-away')
-      paint(event)
-    }
-    const onOver = (event) => {
-      paint(event)
+      paint(event.target)
+      kick()
     }
     const onDown = () => dot.classList.add('is-down')
     const onUp = () => dot.classList.remove('is-down')
     const onLeave = () => dot.classList.add('is-away')
-
     window.addEventListener('pointermove', onMove)
-    window.addEventListener('pointerover', onOver)
     window.addEventListener('pointerdown', onDown)
     window.addEventListener('pointerup', onUp)
-    document.addEventListener('pointerleave', onLeave)
+    root.addEventListener('pointerleave', onLeave)
     return () => {
-      alive = false
       window.clearInterval(probe)
-      root.classList.remove('hb-cursor-pill')
+      if (raf) cancelAnimationFrame(raf)
+      root.classList.remove('hb-cursor-live')
       window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerover', onOver)
       window.removeEventListener('pointerdown', onDown)
       window.removeEventListener('pointerup', onUp)
-      document.removeEventListener('pointerleave', onLeave)
+      root.removeEventListener('pointerleave', onLeave)
     }
   }, [enabled])
 
   if (!enabled) return null
   return (
-    <div ref={dotRef} className="hb-cursor" aria-hidden>
-      <span ref={labelRef} className="hb-cursor-label" />
+    <div ref={dotRef} className={`hb-cursor is-${mode}`} aria-hidden>
+      <div className="hb-cursor-disc">{mode === 'item' ? <PixelArrow /> : <PixelShuffle />}</div>
+      <div ref={labelRef} className="hb-cursor-label" />
     </div>
   )
 }

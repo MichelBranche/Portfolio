@@ -135,52 +135,106 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
   top: 0;
   left: 0;
   z-index: 1000;
+  width: 0;
+  height: 0;
   pointer-events: none;
-  /* The pill sits just below-right of the pointer so the native cursor and text stay readable. */
-  margin: 22px 0 0 0;
+  will-change: transform;
+}
+
+.hb-cursor-disc {
+  position: absolute;
+  left: -40px;
+  top: -40px;
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  color: #fff;
+  transform: scale(0);
+  opacity: 0;
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hb-cursor-icon {
+  display: block;
+  image-rendering: pixelated;
 }
 
 .hb-cursor-label {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  padding: 0 2.1rem;
-  border: 1px solid #d6d6d2;
-  border-radius: 999px;
-  background: #e4e4e0;
+  position: absolute;
+  left: -60px;
+  top: 48px;
+  width: 120px;
   color: var(--ink);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  line-height: 1;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 6px;
+  line-height: 1.2;
+  text-align: center;
+  text-indent: 6px;
   text-transform: uppercase;
   white-space: nowrap;
   opacity: 0;
-  transform: scale(0.6);
+  transform: translateY(8px);
   transition:
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.5s,
-    color 0.5s;
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.hb-cursor.is-label .hb-cursor-label {
-  opacity: 1;
+.hb-cursor.is-empty .hb-cursor-disc {
   transform: scale(1);
+  opacity: 1;
 }
 
-.hb-cursor.is-down .hb-cursor-label {
-  transform: scale(0.92);
+.hb-cursor.is-empty .hb-cursor-label {
+  opacity: 1;
+  transform: none;
 }
 
-.hb-cursor.is-on-dark .hb-cursor-label {
-  background: var(--ink);
-  border-color: #3a3a3a;
+.hb-cursor.is-item .hb-cursor-disc {
+  transform: scale(1.5);
+  opacity: 1;
+}
+
+.hb-cursor.is-item .hb-cursor-icon {
+  /* keep the pixel icon at its drawn size inside the enlarged disc */
+  transform: scale(0.6667);
+}
+
+.hb-cursor.is-down .hb-cursor-disc {
+  transform: scale(0.9);
+}
+
+.hb-cursor.is-item.is-down .hb-cursor-disc {
+  transform: scale(1.35);
+}
+
+.hb-cursor.is-away .hb-cursor-disc,
+.hb-cursor.is-away .hb-cursor-label {
+  opacity: 0;
+}
+
+.hb-cursor.on-dark .hb-cursor-label {
   color: #f2f2ee;
 }
 
-.hb-cursor.is-away .hb-cursor-label {
-  opacity: 0;
+/* The disc replaces the native pointer only where it is shown. */
+html.hb-cursor-live [data-cursor-empty],
+html.hb-cursor-live [data-cursor-empty] *,
+html.hb-cursor-live [data-cursor],
+html.hb-cursor-live [data-cursor] * {
+  cursor: none;
+}
+
+html.hb-cursor-live [data-cursor-empty] a,
+html.hb-cursor-live [data-cursor-empty] button:not([data-cursor]) {
+  cursor: pointer;
 }
 
 /* —— Header —— */
@@ -2663,4 +2717,10 @@ html:has(.hb-shop) {
 
 .hb-shell--gate .hb-main {
   position: static;
+}
+
+/* Centre caption: colour-shifts against whatever passes under it, like the reference. */
+.hb-shell--gate .hb-choose {
+  color: #fff;
+  mix-blend-mode: difference;
 }

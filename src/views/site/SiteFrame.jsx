@@ -110,7 +110,7 @@ function Welcome({ text, cursorLabel, onDone }) {
   }, [finish, onDone])
 
   return (
-    <div ref={rootRef} className="hb-welcome" onClick={finish} role="presentation" data-cursor={cursorLabel}>
+    <div ref={rootRef} className="hb-welcome" onClick={finish} role="presentation" data-cursor-empty={cursorLabel}>
       <Veil veilRef={veilRef} className="is-full" />
       <p className="hb-welcome-text">
         <Chars text={text} reveal={false} />
