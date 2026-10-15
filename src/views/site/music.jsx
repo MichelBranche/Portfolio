@@ -58,22 +58,48 @@ function fadeIn() {
 // intro is showing (muted autoplay is always allowed); the click then rewinds to the
 // first track and unmutes with a fade.
 let warm = false
+let cued = false
+
 function warmUp() {
   if (warm || !player) return
   warm = true
   player.mute()
+  player.setVolume(0)
   player.loadPlaylist({ playlist: PLAYLIST, index: 0 })
   player.setLoop(true)
+  // loadPlaylist does not always autoplay across domains; force a muted play.
+  window.setTimeout(() => {
+    try {
+      player.playVideo()
+    } catch {
+      // player not ready yet; onStateChange / onReady will retry
+    }
+  }, 200)
 }
 
 function startNow() {
   wantPlay = false
   if (!warm) warmUp()
   player.setVolume(0)
-  player.playVideoAt(0)
+  try {
+    if (cued) player.playVideoAt(0)
+    else player.playVideo()
+  } catch {
+    // ignore: the next onStateChange / timeout will retry
+  }
   player.unMute()
   fadeIn()
   setState('playing')
+  // Retry once after a short wait: the playlist may still be loading on a cold visit.
+  window.setTimeout(() => {
+    if (state !== 'playing' && state !== 'muted') return
+    try {
+      if (player.getPlayerState() !== 1) player.playVideo()
+      player.unMute()
+    } catch {
+      // player gone
+    }
+  }, 600)
 }
 
 // Loads the YouTube IFrame API and prepares a hidden player (no sound until a click).
@@ -103,6 +129,17 @@ export function primeMusic() {
         // Exposed as a data attribute so playback can be checked from outside (1 = playing).
         onStateChange: (event) => {
           document.documentElement.dataset.ytState = String(event.data)
+          // 5 = video cued, 1 = playing, 3 = buffering.
+          if (event.data === 5 || event.data === 1 || event.data === 3) cued = true
+          if (wantPlay && (event.data === 5 || event.data === -1)) startNow()
+          if (warm && !wantPlay && state === 'idle' && (event.data === 5 || event.data === -1)) {
+            try {
+              player.mute()
+              player.playVideo()
+            } catch {
+              // ignore
+            }
+          }
         },
       },
     })
