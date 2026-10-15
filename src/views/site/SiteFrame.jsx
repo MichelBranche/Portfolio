@@ -6,6 +6,7 @@ import { FOOTER_SOCIAL } from '../../config/site.js'
 import { LanguageSwitch } from '../../components/LanguageSwitch.jsx'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { Chars, HbCursor, Scramble } from './motion.jsx'
+import { MusicDock } from './music.jsx'
 import { magnetic, magneticReset } from './magnetic'
 import { reduceMotion } from './motion-utils'
 import { shopIsOpen } from './shopData.js'
@@ -43,6 +44,14 @@ function Veil({ veilRef, className = '' }) {
       ))}
     </div>
   )
+}
+
+const MUSIC_LABELS = {
+  it: { group: 'Musica', mute: 'Muto', unmute: 'Audio', stop: 'Stop' },
+  en: { group: 'Music', mute: 'Mute', unmute: 'Sound', stop: 'Stop' },
+  fr: { group: 'Musique', mute: 'Muet', unmute: 'Son', stop: 'Stop' },
+  de: { group: 'Musik', mute: 'Stumm', unmute: 'Ton', stop: 'Stopp' },
+  es: { group: 'Música', mute: 'Silencio', unmute: 'Sonido', stop: 'Parar' },
 }
 
 function Welcome({ text, cursorLabel, onDone }) {
@@ -556,6 +565,7 @@ export function SiteFrame({ children }) {
         <Veil veilRef={veilRef} />
         {welcome ? <Welcome text={String(t('site.welcome'))} cursorLabel={String(t('preloader.enter'))} onDone={endWelcome} /> : null}
         <HbCursor />
+        <MusicDock labels={MUSIC_LABELS[lang] || MUSIC_LABELS.en} />
       </div>
     </SiteUIContext.Provider>
   )

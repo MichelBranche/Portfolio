@@ -6,14 +6,17 @@ import { Scramble } from './motion.jsx'
 import { magnetic, magneticReset } from './magnetic'
 import { finePointer, reduceMotion } from './motion-utils'
 import { HOME_ART } from '../../config/site.js'
+import { applyTheme, wipe } from './theme.js'
+import { primeMusic, startMusic } from './music.jsx'
 import { useSiteUI } from './site-ui.js'
 
 // Infinite board of illustrations (transparent cut-outs), modelled on the reference at
 // 1440x900: cells of ~690 x 720 px (median gap between neighbours ~385 px), one piece per
-// cell, longest side between ~240 and ~470 px, loosely offset inside its cell. An 8 x 4
-// module holds each of the 16 illustrations twice (the second pass shifted by 3 so the
-// same piece never sits next to itself) and repeats seamlessly in both directions.
-const COLS = 8
+// cell, longest side between ~240 and ~470 px, loosely offset inside its cell. An 11 x 4
+// module holds each of the 22 illustrations twice (rows 0-1 in board order, rows 2-3 the
+// same order shifted by 5, so a piece never meets itself or its look-alikes) and repeats
+// seamlessly in both directions.
+const COLS = 11
 const ROWS = 4
 const CELL_W = 690
 const CELL_H = 720
@@ -49,7 +52,7 @@ function boardGeometry(scale) {
   for (let r = 0; r < ROWS; r += 1) {
     for (let c = 0; c < COLS; c += 1) {
       const index = r * COLS + c
-      const art = HOME_ART[(index + (r >= 2 ? 3 : 0)) % HOME_ART.length]
+      const art = HOME_ART[(r >= 2 ? index - 2 * COLS + 5 : index) % HOME_ART.length]
       const side = SIZES[index % SIZES.length]
       const ratio = art.width / art.height
       const w = ratio >= 1 ? side : side * ratio
@@ -557,6 +560,13 @@ export function HomePage() {
   }, [span.cols, span.rows, fullBoard, compact, scale])
 
   useEffect(() => {
+    // Get the music player ready (silent) so a click can start sound immediately.
+    if (!introDone) return undefined
+    const id = window.setTimeout(primeMusic, 1200)
+    return () => window.clearTimeout(id)
+  }, [introDone])
+
+  useEffect(() => {
     const ric = window.requestIdleCallback
     const id = ric ? ric(() => setFullBoard(true), { timeout: 1800 }) : window.setTimeout(() => setFullBoard(true), 1200)
     return () => {
@@ -602,7 +612,17 @@ export function HomePage() {
         if (el?.closest('button:not(.hb-art)')) return
         event.preventDefault()
         if (draggedRef.current) return
-        go('/portfolio')
+        const art = el?.closest('.hb-art')
+        const tint = art?.dataset.tint
+        if (!tint) {
+          // Empty space: default theme.
+          applyTheme(null)
+          go('/portfolio')
+          return
+        }
+        applyTheme(tint)
+        startMusic()
+        wipe(tint, event.clientX, event.clientY, () => go('/portfolio'))
       }}
       className={compact == null ? 'hb-gate is-pending' : compact ? 'hb-gate is-board-compact' : 'hb-gate'}
       onPointerLeave={() => setHovered('')}

@@ -77,7 +77,7 @@ export const viewport = {
 // Paints the black welcome cover from the very first frame, before React hydrates.
 // Mirrors SiteFrame: skipped when the welcome was already seen this session,
 // with reduced motion, or outside the public site. No JS means no class, so nothing is hidden.
-const PRE_WELCOME_SCRIPT = `(function(){try{var d=document.documentElement;if(location.pathname.indexOf('/admin')===0)return;if(sessionStorage.getItem('hb:welcome')==='1')return;if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;d.classList.add('hb-pre');setTimeout(function(){d.classList.remove('hb-pre')},8000)}catch(e){}})()`
+const PRE_WELCOME_SCRIPT = `(function(){try{var d=document.documentElement;var th=sessionStorage.getItem('mb:theme');if(th&&/^#[0-9a-f]{6}$/i.test(th)){d.style.setProperty('--theme',th);d.dataset.theme='art'}if(location.pathname.indexOf('/admin')===0)return;if(sessionStorage.getItem('hb:welcome')==='1')return;if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;d.classList.add('hb-pre');setTimeout(function(){d.classList.remove('hb-pre')},8000)}catch(e){}})()`
 const PRE_WELCOME_CSS = 'html.hb-pre,html.hb-pre body{background:#111111}html.hb-pre body::before{content:"";position:fixed;inset:0;z-index:94;background:#111111;pointer-events:none}'
 
 export default async function RootLayout({ children }) {
