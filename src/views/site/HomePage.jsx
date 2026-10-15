@@ -2,27 +2,32 @@
 
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext.jsx'
-import { PixelImage, Scramble } from './motion.jsx'
+import { Scramble } from './motion.jsx'
 import { magnetic, magneticReset } from './magnetic'
 import { finePointer, reduceMotion } from './motion-utils'
-import { useProjects } from './useProjects.js'
+import { HOME_ART } from '../../config/site.js'
 import { useSiteUI } from './site-ui.js'
 
-// Infinite board, measured against the reference interaction at 1440x900:
-// a 6 x 3 module of cells (520 x 560 px), one cover per cell, sizes between 200 and
-// 420 px (median neighbour gap ~200 px) with an irregular but fixed offset inside each cell. Covers keep their natural
-// ratio. Everything scales with the viewport width (unit = vw / 1440); the module repeats
-// seamlessly in both directions.
+// Infinite board of illustrations (transparent cut-outs), modelled on the reference at
+// 1440x900: cells of ~690 x 720 px (median gap between neighbours ~385 px), one piece per
+// cell, longest side between ~240 and ~470 px, loosely offset inside its cell. A 6 x 4
+// module holds every illustration three times and repeats seamlessly in both directions.
 const COLS = 6
-const ROWS = 3
-const CELL_W = 520
-const CELL_H = 560
-// [size, dx, dy] per cell at 1440 px wide, dx/dy are offsets of the cover from the cell origin.
-const PATTERN = [
-  [260, 13, 122], [235, 28, 211], [290, 107, 203], [200, 11, 304], [215, 189, 64], [350, 85, 102],
-  [395, 16, 92], [300, 159, 47], [330, 138, 126], [370, 52, 74], [280, 16, 20], [245, 137, 48],
-  [230, 45, 88], [275, 213, 202], [420, 67, 44], [310, 83, 42], [250, 100, 221], [320, 121, 168],
-]
+const ROWS = 4
+const CELL_W = 690
+const CELL_H = 720
+const CAPTION_H = 56
+const SIZES = [330, 270, 410, 300, 250, 370, 440, 290, 345, 260, 400, 315, 470, 280, 355, 240, 385, 305, 335, 265, 420, 295, 360, 275]
+
+// Small deterministic generator so the layout is loose but identical on every visit.
+function seeded(seed) {
+  let v = seed >>> 0
+  return () => {
+    v = (v * 1664525 + 1013904223) >>> 0
+    return v / 4294967296
+  }
+}
+
 // Cursor offset from the centre (normalised to -1..1 per axis, against the viewport)
 // drives a constant pan speed, measured frame by frame on the reference: 3.48 px per
 // 60 fps frame at the edge on a 1440 px wide window (4.55 at 1920), i.e. ~0.0024 x
@@ -35,17 +40,25 @@ export function boardScale(width, compact) {
 }
 
 function boardGeometry(scale) {
+  const rand = seeded(7)
   const slots = []
   for (let r = 0; r < ROWS; r += 1) {
     for (let c = 0; c < COLS; c += 1) {
       const index = r * COLS + c
-      const [size, dx, dy] = PATTERN[index]
-      const w = Math.round(size * scale)
+      const art = HOME_ART[index % HOME_ART.length]
+      const side = SIZES[index % SIZES.length]
+      const ratio = art.width / art.height
+      const w = ratio >= 1 ? side : side * ratio
+      const h = ratio >= 1 ? side / ratio : side
+      const dx = 30 + rand() * Math.max(0, CELL_W - w - 60)
+      const dy = 30 + rand() * Math.max(0, CELL_H - h - CAPTION_H - 60)
       slots.push({
         index,
+        art,
         x: Math.round((c * CELL_W + dx) * scale),
         y: Math.round((r * CELL_H + dy) * scale),
-        w,
+        w: Math.round(w * scale),
+        h: Math.round(h * scale),
       })
     }
   }
@@ -71,80 +84,85 @@ function wheelUnit(event, viewport) {
   return 1
 }
 
-function shortName(title) {
-  const parts = String(title).split(' - ')
-  return (parts[1] || parts[0]).trim()
-}
-
 const COMPACT_QUERY = '(max-width: 760px)'
 
-function ProjectTile({ project, lang, openLabel, onOpen, onHover, panningRef, lcp, early = false, held = false, style, tabIndex = 0 }) {
-  const name = shortName(project.title)
+// Live clock per place (date + time on the right of each caption, like the reference).
+function useNow() {
+  const [now, setNow] = useState(null)
+  useEffect(() => {
+    const tick = () => setNow(new Date())
+    tick()
+    const id = window.setInterval(tick, 20000)
+    return () => window.clearInterval(id)
+  }, [])
+  return now
+}
+
+function clock(now, timeZone) {
+  if (!now) return ['', '']
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone,
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+      .formatToParts(now)
+      .map((part) => [part.type, part.value]),
+  )
+  return [`${parts.day}.${parts.month}.${parts.year}`, `H. ${parts.hour}.${parts.minute}`]
+}
+
+function ArtTile({ spot, lang, now, label, eager, tabIndex, onHover }) {
+  const { art } = spot
+  const [place, region] = art.caption[lang] || art.caption.en
+  const [day, time] = clock(now, art.timeZone)
   return (
-    <button
-      type="button"
-      className="hb-tile"
+    <a
+      href="/portfolio"
+      className="hb-art"
       tabIndex={tabIndex}
-      style={style}
-      data-cursor={openLabel}
-      data-name={name}
-      data-tint={project.tint || ''}
-      data-lcp={lcp ? '' : undefined}
-      onPointerEnter={() => {
-        if (panningRef.current) return
-        onHover(name, project.tint)
-      }}
-      onPointerLeave={() => {
-        if (panningRef.current) return
-        onHover('', '')
-      }}
-      onClick={() => onOpen(project)}
+      style={{ left: spot.x, top: spot.y, width: spot.w }}
+      data-cursor={label}
+      data-name={place}
+      data-tint={art.tint}
+      draggable={false}
+      onPointerEnter={() => onHover(place, art.tint)}
+      onPointerLeave={() => onHover('', '')}
     >
-      <span className="hb-tile-in">
-        <PixelImage
-          src={lcp && project.slug === 'museo' ? '/projects/lcp/museo.avif' : project.thumb}
-          alt={project.alt}
-          priority={lcp}
-          eager={early && !held}
-          quality={90}
-          natural
-          late={!lcp && !early}
-          sizes={style?.width ? `${Math.round(style.width)}px` : '50vw'}
-          grid={false}
-          optimized={!(lcp && project.slug === 'museo')}
-        />
-        <span className="hb-tile-meta">
-          <span>{name}</span>
-          <span>{stamp(project.publishedAt, lang)}</span>
+      <img
+        src={art.src}
+        alt={`${place}, ${region}`}
+        width={art.width}
+        height={art.height}
+        style={{ width: spot.w, height: spot.h }}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : 'auto'}
+        decoding="async"
+        draggable={false}
+      />
+      <span className="hb-art-cap">
+        <span>
+          {place}
+          <br />
+          {region}
         </span>
-        <span className="hb-tile-meta hb-tile-meta--sub">
-          <span>{project.kindLabel}</span>
-          <span>{project.featured ? '★' : ''}</span>
+        <span className="hb-art-time">
+          {day}
+          <br />
+          {time}
         </span>
       </span>
-    </button>
+    </a>
   )
 }
 
-function stamp(iso, lang) {
-  const date = new Date(`${iso}T12:00:00`)
-  if (Number.isNaN(date.getTime())) return ''
-  return new Intl.DateTimeFormat(lang, { day: '2-digit', month: '2-digit', year: '2-digit' }).format(date)
-}
-
-const Board = memo(function Board({ projects, geo, lang, openLabel, onOpen, onHover, panningRef, cols, rows }) {
+const Board = memo(function Board({ geo, lang, now, label, onHover, cols, rows }) {
   const colIds = Array.from({ length: cols }, (_, index) => index)
   const rowIds = Array.from({ length: rows }, (_, index) => index)
-  // Same order as the project list (newest first), continued cyclically to fill the module.
-  const items = projects.length
-    ? geo.slots.map((spot) => ({
-        project: projects[spot.index % projects.length],
-        spot,
-        key: spot.index < projects.length ? projects[spot.index].slug : `loop-${spot.index}`,
-        repeat: spot.index >= projects.length,
-      }))
-    : []
-  const lcpKey = items[0]?.key
   return rowIds.map((row) =>
     colIds.map((col) => {
       const primary = col === 0 && row === 0
@@ -158,23 +176,18 @@ const Board = memo(function Board({ projects, geo, lang, openLabel, onOpen, onHo
           data-primary={primary ? '' : undefined}
           aria-hidden={primary ? undefined : true}
         >
-          {items.map(({ project, spot, key, repeat }) => {
-            const lcp = primary && key === lcpKey
-            return (
-              <ProjectTile
-                key={key}
-                project={project}
-                lang={lang}
-                openLabel={openLabel}
-                onOpen={onOpen}
-                onHover={onHover}
-                panningRef={panningRef}
-                lcp={lcp}
-                tabIndex={primary && !repeat ? 0 : -1}
-                style={{ left: spot.x, top: spot.y, width: spot.w }}
-              />
-            )
-          })}
+          {geo.slots.map((spot) => (
+            <ArtTile
+              key={spot.index}
+              spot={spot}
+              lang={lang}
+              now={now}
+              label={label}
+              eager={primary && spot.index < 8}
+              tabIndex={primary && spot.index < HOME_ART.length ? 0 : -1}
+              onHover={onHover}
+            />
+          ))}
         </div>
       )
     }),
@@ -183,10 +196,8 @@ const Board = memo(function Board({ projects, geo, lang, openLabel, onOpen, onHo
 
 export function HomePage() {
   const { t, lang } = useLanguage()
-  const { openProject, go, introDone, showSkip } = useSiteUI()
-  const sorted = useProjects()
-  // Board follows the list order exactly: newest first.
-  const projects = sorted
+  const { go, introDone, showSkip } = useSiteUI()
+  const now = useNow()
   const gateRef = useRef(null)
   const boardRef = useRef(null)
   const draggedRef = useRef(false)
@@ -210,13 +221,6 @@ export function HomePage() {
     hoverRef.current = hover
   }, [hover])
   useEffect(() => () => document.documentElement.style.removeProperty('--stage'), [])
-  const open = useCallback(
-    (project) => {
-      if (draggedRef.current) return
-      openProject(project)
-    },
-    [openProject],
-  )
 
   useLayoutEffect(() => {
     const mq = window.matchMedia(COMPACT_QUERY)
@@ -362,7 +366,7 @@ export function HomePage() {
     const hitTest = () => {
       if (!pointer || drag) return
       const el = document.elementFromPoint(pointer.x, pointer.y)
-      const tile = el instanceof Element ? el.closest('.hb-tile') : null
+      const tile = el instanceof Element ? el.closest('.hb-art') : null
       if (tile === hitTile) return
       hitTile = tile
       hoverRef.current(tile ? tile.dataset.name || '' : '', tile ? tile.dataset.tint || '' : '')
@@ -560,7 +564,7 @@ export function HomePage() {
     const run = () => {
       import('gsap').then(({ default: gsap }) => {
         if (dead) return
-        const tiles = gate.querySelectorAll('.hb-tile:not([data-lcp]) .hb-tile-in')
+        const tiles = gate.querySelectorAll('.hb-art')
         tween = gsap.fromTo(
           tiles,
           { y: 22 },
@@ -583,9 +587,11 @@ export function HomePage() {
       ref={gateRef}
       data-cursor-empty={String(t('site.skip'))}
       onClick={(event) => {
-        // Like the reference, a click on empty board space skips to the full list.
-        if (draggedRef.current || compact) return
-        if (event.target instanceof Element && event.target.closest('.hb-tile, a, button')) return
+        // Any illustration or empty space leads to the projects page (unless it was a drag).
+        const el = event.target instanceof Element ? event.target : null
+        if (el?.closest('button:not(.hb-art)')) return
+        event.preventDefault()
+        if (draggedRef.current) return
         go('/portfolio')
       }}
       className={compact == null ? 'hb-gate is-pending' : compact ? 'hb-gate is-board-compact' : 'hb-gate'}
@@ -594,36 +600,16 @@ export function HomePage() {
       <h1 className="hb-sr-only">{String(t('site.h1Home'))}</h1>
       <p className="hb-audience">{String(t('site.audience'))}</p>
       <p className="hb-choose" aria-live="polite">
-        <Scramble text={hovered || String(t('site.choose'))} play={labelPlay} />
+        <Scramble text={hovered || String(t('site.choosePlace'))} play={labelPlay} />
       </p>
-      {compact == null ? (
-        <div key="mobile" className="hb-mobile-grid">
-          {projects.map((project, index) => (
-            <ProjectTile
-              key={project.slug}
-              project={project}
-              lang={lang}
-              openLabel={String(t('site.open'))}
-              onOpen={open}
-              onHover={hover}
-              panningRef={panningRef}
-              lcp={false}
-              lead={index === 0}
-              early={index < 4}
-              held={compact == null}
-            />
-          ))}
-        </div>
-      ) : (
-        <div key="desktop" ref={boardRef} className="hb-board">
+      {compact == null ? null : (
+        <div key="board" ref={boardRef} className="hb-board">
           <Board
-            projects={projects}
             geo={geo}
             lang={lang}
-            openLabel={String(t('site.open'))}
-            onOpen={open}
+            now={now}
+            label={String(t('site.open'))}
             onHover={hover}
-            panningRef={panningRef}
             cols={span.cols}
             rows={span.rows}
           />

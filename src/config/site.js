@@ -256,3 +256,15 @@ export const PROJECT_META = [
     boardTail: true,
   },
 ]
+
+/** Homepage board: Michel's illustrations (transparent cut-outs). Hover colour replaces the page background. */
+export const HOME_ART = [
+  { slug: 'stambecco', src: '/home/stambecco.webp', width: 898, height: 900, animated: true, tint: '#9fb8a0', timeZone: 'Europe/Rome', caption: { it: ['Aosta', 'Valle d\'Aosta, Italia'], en: ['Aosta', 'Aosta Valley, Italy'], fr: ['Aoste', 'Vallée d\'Aoste, Italie'], de: ['Aosta', 'Aostatal, Italien'], es: ['Aosta', 'Valle de Aosta, Italia'] } },
+  { slug: 'barca', src: '/home/barca.webp', width: 640, height: 529, animated: true, tint: '#8ccfe8', timeZone: 'Europe/Rome', caption: { it: ['Stintino', 'Sardegna, Italia'], en: ['Stintino', 'Sardinia, Italy'], fr: ['Stintino', 'Sardaigne, Italie'], de: ['Stintino', 'Sardinien, Italien'], es: ['Stintino', 'Cerdeña, Italia'] } },
+  { slug: 'fungo', src: '/home/fungo.webp', width: 471, height: 560, animated: true, tint: '#ff9d7a', timeZone: 'Europe/Rome', caption: { it: ['Botanica pop', 'Anni Settanta'], en: ['Pop botany', 'The seventies'], fr: ['Botanique pop', 'Années soixante-dix'], de: ['Pop-Botanik', 'Siebzigerjahre'], es: ['Botánica pop', 'Años setenta'] } },
+  { slug: 'lingotto', src: '/home/lingotto.webp', width: 640, height: 225, animated: true, tint: '#f2b8a8', timeZone: 'Europe/Rome', caption: { it: ['Lingotto', 'Torino, Italia'], en: ['Lingotto', 'Turin, Italy'], fr: ['Lingotto', 'Turin, Italie'], de: ['Lingotto', 'Turin, Italien'], es: ['Lingotto', 'Turín, Italia'] } },
+  { slug: 'vino', src: '/home/vino.webp', width: 605, height: 900, animated: false, tint: '#c99aa8', timeZone: 'Europe/Rome', caption: { it: ['Montalcino', 'Toscana, Italia'], en: ['Montalcino', 'Tuscany, Italy'], fr: ['Montalcino', 'Toscane, Italie'], de: ['Montalcino', 'Toskana, Italien'], es: ['Montalcino', 'Toscana, Italia'] } },
+  { slug: 'montebianco', src: '/home/montebianco.webp', width: 640, height: 420, animated: true, tint: '#cfe3ee', timeZone: 'Europe/Rome', caption: { it: ['Courmayeur, Monte Bianco', 'Valle d\'Aosta, Italia'], en: ['Courmayeur, Mont Blanc', 'Aosta Valley, Italy'], fr: ['Courmayeur, Mont Blanc', 'Vallée d\'Aoste, Italie'], de: ['Courmayeur, Montblanc', 'Aostatal, Italien'], es: ['Courmayeur, Mont Blanc', 'Valle de Aosta, Italia'] } },
+  { slug: 'calciatore', src: '/home/calciatore.webp', width: 825, height: 900, animated: false, tint: '#f2d16b', timeZone: 'Europe/Rome', caption: { it: ['Napoli', 'Campania, Italia'], en: ['Naples', 'Campania, Italy'], fr: ['Naples', 'Campanie, Italie'], de: ['Neapel', 'Kampanien, Italien'], es: ['Nápoles', 'Campania, Italia'] } },
+  { slug: 'daruma', src: '/home/daruma.webp', width: 474, height: 516, animated: true, tint: '#e8c873', timeZone: 'Asia/Tokyo', caption: { it: ['Giappone', 'Daruma'], en: ['Japan', 'Daruma'], fr: ['Japon', 'Daruma'], de: ['Japan', 'Daruma'], es: ['Japón', 'Daruma'] } },
+]

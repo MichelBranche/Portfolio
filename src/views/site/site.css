@@ -2724,3 +2724,48 @@ html:has(.hb-shop) {
   color: #fff;
   mix-blend-mode: difference;
 }
+
+/* Home illustrations: transparent cut-outs, no frame, caption underneath. */
+.hb-shell--gate {
+  background: var(--stage, #ededed);
+}
+
+.hb-art {
+  position: absolute;
+  display: block;
+  color: var(--ink);
+  text-decoration: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.hb-art img {
+  display: block;
+  max-width: none;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.hb-art-cap {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.7rem;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hb-art-time {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.hb-gate.is-board-compact .hb-art-cap {
+  font-size: 0.56rem;
+  gap: 0.5rem;
+  margin-top: 0.45rem;
+}
