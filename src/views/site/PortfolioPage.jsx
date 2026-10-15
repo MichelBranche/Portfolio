@@ -35,7 +35,6 @@ export function PortfolioPage() {
   const filtersRef = useRef(null)
   const flipState = useRef(null)
 
-  const cases = projects.filter((project) => project.caseHref)
   const visible = useMemo(
     () => (category === 'all' ? projects : projects.filter((project) => project.category === category)),
     [projects, category],
@@ -119,7 +118,9 @@ export function PortfolioPage() {
             {String(t('site.filter'))}
             <span className="hb-filter-icon" aria-hidden />
           </button>
-        ) : null}
+        ) : (
+          <p className="hb-case-intro">{String(t('site.caseIntro'))}</p>
+        )}
       </div>
 
       {view === 'calendar' ? (
@@ -160,20 +161,17 @@ export function PortfolioPage() {
           )}
         </div>
       ) : (
-        <ul className="hb-cases">
-          {cases.map((project) => (
-            <li key={project.slug}>
-              <CaseCard project={project} cursor={String(t('modal.caseStudy'))} onOpen={() => go(project.caseHref)} />
-            </li>
-          ))}
-        </ul>
+        <CaseList
+          projects={projects}
+          cursor={String(t('site.open'))}
+          onOpen={(project) => (project.caseHref ? go(project.caseHref) : openProject(project))}
+        />
       )}
     </article>
   )
 }
 
 const SHOT_SIZES = '(max-width: 600px) 100vw, (max-width: 900px) 50vw, (max-width: 1100px) 33vw, 25vw'
-const CASE_SIZES = '(max-width: 900px) 100vw, 50vw'
 
 function Shot({ project, rank, cursor, onOpen }) {
   const [play, setPlay] = useState(0)
@@ -213,36 +211,86 @@ function Shot({ project, rank, cursor, onOpen }) {
   )
 }
 
-function CaseCard({ project, cursor, onOpen }) {
-  const [play, setPlay] = useState(0)
+// Case list: one project per row, thin rules, title left and category right. On a mouse a
+// square preview follows the pointer (lagged), grows in on enter and slides to the next
+// project's image when moving between rows. Touch screens get a pixel chevron instead.
+function CaseList({ projects, cursor, onOpen }) {
+  const boxRef = useRef(null)
+  const stripRef = useRef(null)
+  const state = useRef({ x: 0, y: 0, tx: 0, ty: 0, raf: 0, on: false, last: 0 })
+
+  const follow = (now) => {
+    const st = state.current
+    const box = boxRef.current
+    if (!box) return
+    const dt = Math.min(0.05, (now - st.last) / 1000 || 0.016)
+    st.last = now
+    const k = 1 - Math.exp(-dt / 0.09)
+    st.x += (st.tx - st.x) * k
+    st.y += (st.ty - st.y) * k
+    box.style.transform = `translate3d(${st.x}px, ${st.y}px, 0)`
+    if (Math.abs(st.tx - st.x) > 0.2 || Math.abs(st.ty - st.y) > 0.2) st.raf = requestAnimationFrame(follow)
+    else st.raf = 0
+  }
+  const onMove = (event) => {
+    if (event.pointerType && event.pointerType !== 'mouse') return
+    const st = state.current
+    // Positioned inside the list (an ancestor transform would break position: fixed).
+    const rect = event.currentTarget.closest('.hb-caselist').getBoundingClientRect()
+    st.tx = event.clientX - rect.left
+    st.ty = event.clientY - rect.top
+    if (!st.on) {
+      st.x = st.tx
+      st.y = st.ty
+    }
+    if (!st.raf) {
+      st.last = event.timeStamp
+      st.raf = requestAnimationFrame(follow)
+    }
+  }
+  const enterRow = (index, event) => {
+    if (event.pointerType && event.pointerType !== 'mouse') return
+    onMove(event)
+    state.current.on = true
+    boxRef.current?.classList.add('is-on')
+    if (stripRef.current) stripRef.current.style.transform = `translate3d(0, ${(-index * 100) / projects.length}%, 0)`
+  }
+  const leaveList = () => {
+    state.current.on = false
+    boxRef.current?.classList.remove('is-on')
+  }
+
   return (
-    <button
-      type="button"
-      className="hb-case"
-      data-cursor={cursor}
-      onPointerEnter={(event) => {
-        pixelBurst(event.currentTarget)
-        setPlay((n) => n + 1)
-      }}
-      onPointerLeave={(event) => pixelClear(event.currentTarget)}
-      onClick={onOpen}
-    >
-      <span className="hb-shot-media" data-clip>
-        <PixelImage src={project.thumb} alt={project.alt} optimized sizes={CASE_SIZES} />
-      </span>
-      <span className="hb-case-copy">
-        <span className="hb-case-title" data-reveal>
-          <Scramble text={shortName(project.title)} play={play} />
-        </span>
-        <span className="hb-kind" data-reveal>
-          {project.kindLabel}
-        </span>
-        <span className="hb-tags" data-reveal>{`\\ ${project.categoryLabel} \\`}</span>
-        <span className="hb-case-desc" data-reveal>
-          {project.desc}
-        </span>
-      </span>
-    </button>
+    <div className="hb-caselist" onPointerMove={onMove} onPointerLeave={leaveList}>
+      <ul className="hb-cases">
+        {projects.map((project, index) => (
+          <li key={project.slug}>
+            <button
+              type="button"
+              className="hb-case-row"
+              data-cursor={cursor}
+              onPointerEnter={(event) => enterRow(index, event)}
+              onClick={() => onOpen(project)}
+            >
+              <span className="hb-case-title">{shortName(project.title)}</span>
+              <span className="hb-case-client">{project.categoryLabel}</span>
+              <svg className="hb-case-chev" viewBox="0 0 5 9" width="10" height="18" aria-hidden>
+                <path d="M0 0h2v1h1v1h1v1h1v3h-1v1h-1v1h-1v1h-2v-2h1v-1h1v-3h-1v-1h-1z" fill="currentColor" />
+              </svg>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div ref={boxRef} className="hb-case-peek" aria-hidden>
+        <div className="hb-case-peek-frame">
+          <div ref={stripRef} className="hb-case-peek-strip">
+            {projects.map((project, index) => (
+              <img key={project.slug} src={project.thumb} alt="" width="1254" height="1254" loading={index < 4 ? 'eager' : 'lazy'} decoding="async" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
