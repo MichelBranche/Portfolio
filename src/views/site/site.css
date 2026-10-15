@@ -2769,3 +2769,47 @@ html:has(.hb-shop) {
   gap: 0.5rem;
   margin-top: 0.45rem;
 }
+
+/* Play-once hover micro-animations on the static illustrations. */
+.hb-art-fig {
+  position: relative;
+  display: block;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .hb-art:hover .hb-art-fig[data-hover='tilt'] { animation: hb-tilt 600ms ease-in-out 1; }
+  .hb-art:hover .hb-art-fig[data-hover='stamp'] { animation: hb-stamp 450ms cubic-bezier(0.22, 1, 0.36, 1) 1; }
+  .hb-art:hover .hb-art-fig[data-hover='ticket'] { animation: hb-ticket 400ms cubic-bezier(0.22, 1, 0.36, 1) 1; }
+  .hb-art:hover .hb-art-fig[data-hover='shout'] { transform-origin: 28% 55%; animation: hb-shout 550ms ease-in-out 1; }
+  .hb-art:hover .hb-art-fig[data-hover='beat'] { animation: hb-beat 650ms ease-in-out 1; }
+  .hb-art:hover .hb-art-fig[data-hover='lean'] { transform-origin: 50% 100%; animation: hb-lean 700ms ease-in-out 1; }
+
+  .hb-art-fig[data-hover='glint']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 214, 150, 0.85) 48%, transparent 66%) no-repeat;
+    background-size: 250% 100%;
+    background-position: 150% 0;
+    mix-blend-mode: soft-light;
+    -webkit-mask: var(--mask) center / 100% 100% no-repeat;
+    mask: var(--mask) center / 100% 100% no-repeat;
+    opacity: 0;
+  }
+
+  .hb-art:hover .hb-art-fig[data-hover='glint']::after {
+    animation: hb-glint 700ms ease-in-out 1;
+  }
+}
+
+@keyframes hb-tilt { 50% { transform: rotate(1deg); } }
+@keyframes hb-stamp { 45% { transform: rotate(1.5deg) scale(1.02); } }
+@keyframes hb-ticket { 45% { transform: translateY(-3px) rotate(1deg); } }
+@keyframes hb-shout { 35%, 55% { transform: rotate(-3deg); } }
+@keyframes hb-beat { 30% { transform: scale(1.025); } }
+@keyframes hb-lean { 35% { transform: rotate(1deg); } 70% { transform: rotate(-0.3deg); } }
+@keyframes hb-glint {
+  0% { opacity: 1; background-position: 150% 0; }
+  100% { opacity: 1; background-position: -50% 0; }
+}

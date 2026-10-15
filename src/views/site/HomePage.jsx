@@ -10,14 +10,18 @@ import { useSiteUI } from './site-ui.js'
 
 // Infinite board of illustrations (transparent cut-outs), modelled on the reference at
 // 1440x900: cells of ~690 x 720 px (median gap between neighbours ~385 px), one piece per
-// cell, longest side between ~240 and ~470 px, loosely offset inside its cell. A 6 x 4
-// module holds every illustration three times and repeats seamlessly in both directions.
-const COLS = 6
+// cell, longest side between ~240 and ~470 px, loosely offset inside its cell. An 8 x 4
+// module holds each of the 16 illustrations twice (the second pass shifted by 3 so the
+// same piece never sits next to itself) and repeats seamlessly in both directions.
+const COLS = 8
 const ROWS = 4
 const CELL_W = 690
 const CELL_H = 720
 const CAPTION_H = 56
-const SIZES = [330, 270, 410, 300, 250, 370, 440, 290, 345, 260, 400, 315, 470, 280, 355, 240, 385, 305, 335, 265, 420, 295, 360, 275]
+const SIZES = [
+  330, 270, 410, 300, 250, 370, 440, 290, 345, 260, 400, 315, 470, 280, 355, 240,
+  385, 305, 335, 265, 420, 295, 360, 275, 310, 450, 255, 380, 290, 425, 245, 350,
+]
 
 // Small deterministic generator so the layout is loose but identical on every visit.
 function seeded(seed) {
@@ -45,7 +49,7 @@ function boardGeometry(scale) {
   for (let r = 0; r < ROWS; r += 1) {
     for (let c = 0; c < COLS; c += 1) {
       const index = r * COLS + c
-      const art = HOME_ART[index % HOME_ART.length]
+      const art = HOME_ART[(index + (r >= 2 ? 3 : 0)) % HOME_ART.length]
       const side = SIZES[index % SIZES.length]
       const ratio = art.width / art.height
       const w = ratio >= 1 ? side : side * ratio
@@ -133,6 +137,11 @@ function ArtTile({ spot, lang, now, label, eager, tabIndex, onHover }) {
       onPointerEnter={() => onHover(place, art.tint)}
       onPointerLeave={() => onHover('', '')}
     >
+      <span
+        className="hb-art-fig"
+        data-hover={art.hover || undefined}
+        style={art.hover === 'glint' ? { '--mask': `url(${art.src})` } : undefined}
+      >
       <img
         src={art.src}
         alt={`${place}, ${region}`}
@@ -144,6 +153,7 @@ function ArtTile({ spot, lang, now, label, eager, tabIndex, onHover }) {
         decoding="async"
         draggable={false}
       />
+      </span>
       <span className="hb-art-cap">
         <span>
           {place}
@@ -183,7 +193,7 @@ const Board = memo(function Board({ geo, lang, now, label, onHover, cols, rows }
               lang={lang}
               now={now}
               label={label}
-              eager={primary && spot.index < 8}
+              eager={primary && spot.index < 4}
               tabIndex={primary && spot.index < HOME_ART.length ? 0 : -1}
               onHover={onHover}
             />
