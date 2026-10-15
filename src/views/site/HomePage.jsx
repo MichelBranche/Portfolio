@@ -66,8 +66,13 @@ function boardGeometry(scale) {
       const fit = Math.min(1, (CELL_W - 70) / w, (CELL_H - CAPTION_H - 50) / h)
       w *= fit
       h *= fit
-      const dx = 25 + rand() * Math.max(0, CELL_W - w - 50)
-      const dy = 20 + rand() * Math.max(0, CELL_H - h - CAPTION_H - 40)
+      // Even spacing: each piece sits near the middle of its own cell with a modest jitter
+      // (a quarter of the free room each way), and odd rows are shifted by half a cell
+      // (brick pattern), so gaps stay similar everywhere instead of clustering.
+      const freeX = Math.max(0, CELL_W - w)
+      const freeY = Math.max(0, CELL_H - h - CAPTION_H)
+      const dx = freeX / 2 + (rand() - 0.5) * freeX * 0.5 + (r % 2) * (CELL_W / 2)
+      const dy = freeY / 2 + (rand() - 0.5) * freeY * 0.5
       slots.push({
         index,
         art,
@@ -247,18 +252,34 @@ export function HomePage() {
   const geo = useMemo(() => boardGeometry(scale), [scale])
   const [hovered, setHovered] = useState('')
   const [labelPlay, setLabelPlay] = useState(0)
+  const stageA = useRef(null)
+  const stageB = useRef(null)
+  const stageFlip = useRef(0)
   const hover = useCallback((name, tint) => {
     setHovered(name)
     // Hovering a cover tints the whole stage with that cover's colour; leaving restores it.
-    if (tint) document.documentElement.style.setProperty('--stage', tint)
-    else document.documentElement.style.removeProperty('--stage')
+    // Cross-fade two fixed overlays (opacity only, composited) instead of animating the
+    // page background, which repainted the whole screen for 0.6 s.
+    const layers = [stageA.current, stageB.current]
+    if (layers[0] && layers[1]) {
+      if (tint) {
+        const next = layers[stageFlip.current]
+        const prev = layers[1 - stageFlip.current]
+        stageFlip.current = 1 - stageFlip.current
+        next.style.backgroundColor = tint
+        next.style.opacity = '1'
+        prev.style.opacity = '0'
+      } else {
+        layers[0].style.opacity = '0'
+        layers[1].style.opacity = '0'
+      }
+    }
     setLabelPlay((n) => n + 1)
   }, [])
   const hoverRef = useRef(hover)
   useEffect(() => {
     hoverRef.current = hover
   }, [hover])
-  useEffect(() => () => document.documentElement.style.removeProperty('--stage'), [])
 
   useLayoutEffect(() => {
     const mq = window.matchMedia(COMPACT_QUERY)
@@ -292,7 +313,8 @@ export function HomePage() {
     const shown = cells.map((cell, c) => tilesOf[c].map(() => true))
     const dxs = new Float64Array(slots.length)
     const dys = new Float64Array(slots.length)
-    const wrap = (v, m) => v - Math.round(v / m) * m
+    const DRIFT_R = 420 * geo.scale
+    const decoded = new WeakSet()
     let viewW = window.innerWidth
     let viewH = window.innerHeight
     const fine = finePointer()
@@ -352,11 +374,15 @@ export function HomePage() {
       // get a transform write, the rest are display:none (no paint, no image decoding).
       const vw = viewW
       const vh = viewH
-      const margin = 80
+      // One screen of buffer around the viewport so images are decoded before they show.
+      const margin = Math.max(vw, vh) * 0.5
       for (let s = 0; s < slots.length; s += 1) {
         const spot = slots[s]
-        dxs[s] = wrap(spot.k * (x + absX), BOARD_W)
-        dys[s] = wrap(spot.k * (y + absY), BOARD_H)
+        // Bounded depth drift: speed is (1 + k cos phase), so nearer pieces still move a
+        // little faster or slower than the board, but they only sway around their home
+        // spot (at most ~30 px) and can never drift into each other.
+        dxs[s] = spot.k * DRIFT_R * Math.sin((x + absX) / DRIFT_R)
+        dys[s] = spot.k * DRIFT_R * Math.sin((y + absY) / DRIFT_R)
       }
       for (let c = 0; c < cells.length; c += 1) {
         const cell = cells[c]
@@ -372,6 +398,10 @@ export function HomePage() {
           if (show !== shown[c][s]) {
             shown[c][s] = show
             el.style.display = show ? '' : 'none'
+            if (show && !decoded.has(el)) {
+              decoded.add(el)
+              el.querySelector('img')?.decode?.().catch(() => {})
+            }
           }
           if (show) el.style.transform = `translate3d(${dxs[s].toFixed(1)}px,${dys[s].toFixed(1)}px,0)`
         }
@@ -684,6 +714,8 @@ export function HomePage() {
       className={compact == null ? 'hb-gate is-pending' : compact ? 'hb-gate is-board-compact' : 'hb-gate'}
       onPointerLeave={() => setHovered('')}
     >
+      <div ref={stageA} className="hb-stage" aria-hidden />
+      <div ref={stageB} className="hb-stage" aria-hidden />
       <h1 className="hb-sr-only">{String(t('site.h1Home'))}</h1>
       <p className="hb-audience">{String(t('site.audience'))}</p>
       <p className="hb-choose" aria-live="polite">
