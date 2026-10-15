@@ -18,8 +18,8 @@ import { useSiteUI } from './site-ui.js'
 // seamlessly in both directions.
 const COLS = 11
 const ROWS = 4
-const CELL_W = 690
-const CELL_H = 720
+const CELL_W = 640
+const CELL_H = 650
 const CAPTION_H = 56
 const SIZES = [
   330, 270, 410, 300, 250, 370, 440, 290, 345, 260, 400, 315, 470, 280, 355, 240,
@@ -39,10 +39,10 @@ function seeded(seed) {
 // drives a constant pan speed, measured frame by frame on the reference: 3.48 px per
 // 60 fps frame at the edge on a 1440 px wide window (4.55 at 1920), i.e. ~0.0024 x
 // viewport width per frame, linear, same on both axes, no ramp-up, no inertia.
-const PAN_PER_FRAME = 0.00254
+const PAN_PER_FRAME = 0.00259
 
 export function boardScale(width, compact) {
-  if (compact) return 0.62
+  if (compact) return 0.5
   return Math.round(Math.min(1.6, Math.max(0.8, width / 1440)) * 20) / 20
 }
 
@@ -53,12 +53,21 @@ function boardGeometry(scale) {
     for (let c = 0; c < COLS; c += 1) {
       const index = r * COLS + c
       const art = HOME_ART[(r >= 2 ? index - 2 * COLS + 5 : index) % HOME_ART.length]
-      const side = SIZES[index % SIZES.length]
+      // Depth like the reference's 3D scene: each piece sits at its own z (camera at 700,
+      // z within about -45..+50), so it looks slightly bigger and pans slightly faster
+      // the closer it is. f is the on-screen speed and size factor (0.94..1.07).
+      const z = -45 + rand() * 95
+      const f = 700 / (700 - z) / 1.0045
+      // Sized by area rather than by the long side, so wide pieces are not thin strips.
+      const side = (0.8 * SIZES[index % SIZES.length] + 95) * f
       const ratio = art.width / art.height
-      const w = ratio >= 1 ? side : side * ratio
-      const h = ratio >= 1 ? side / ratio : side
-      const dx = 30 + rand() * Math.max(0, CELL_W - w - 60)
-      const dy = 30 + rand() * Math.max(0, CELL_H - h - CAPTION_H - 60)
+      let w = side * Math.sqrt(ratio)
+      let h = side / Math.sqrt(ratio)
+      const fit = Math.min(1, (CELL_W - 70) / w, (CELL_H - CAPTION_H - 50) / h)
+      w *= fit
+      h *= fit
+      const dx = 25 + rand() * Math.max(0, CELL_W - w - 50)
+      const dy = 20 + rand() * Math.max(0, CELL_H - h - CAPTION_H - 40)
       slots.push({
         index,
         art,
@@ -66,6 +75,8 @@ function boardGeometry(scale) {
         y: Math.round((r * CELL_H + dy) * scale),
         w: Math.round(w * scale),
         h: Math.round(h * scale),
+        k: f - 1,
+        zi: Math.round(z + 50),
       })
     }
   }
@@ -74,8 +85,9 @@ function boardGeometry(scale) {
 
 function boardSpan(width, height, geo) {
   return {
-    cols: Math.min(4, Math.max(2, Math.ceil(width / geo.width) + 1)),
-    rows: Math.min(4, Math.max(2, Math.ceil(height / geo.height) + 1)),
+    // One extra copy on each side: depth drift can carry a piece up to half a module away.
+    cols: Math.min(5, Math.ceil(width / geo.width) + 2),
+    rows: Math.min(5, Math.ceil(height / geo.height) + 2),
   }
 }
 
@@ -132,7 +144,7 @@ function ArtTile({ spot, lang, now, label, cursorLabel, eager, tabIndex, onHover
       href="/portfolio"
       className="hb-art"
       tabIndex={tabIndex}
-      style={{ left: spot.x, top: spot.y, width: spot.w }}
+      style={{ left: spot.x, top: spot.y, width: spot.w, zIndex: spot.zi, transform: `translate3d(var(--d${spot.index}x, 0px), var(--d${spot.index}y, 0px), 0)` }}
       data-cursor={label}
       data-name={place}
       data-tint={art.tint}
@@ -281,12 +293,16 @@ export function HomePage() {
     let moved = false
     let drag = null
     let placed = { col: null, row: null }
+    let absX = 0
+    let absY = 0
     let last = performance.now()
 
     const place = () => {
       const shiftX = Math.round(scrollX / BOARD_W) * BOARD_W
       const shiftY = Math.round(scrollY / BOARD_H) * BOARD_H
       if (shiftX || shiftY) {
+        absX += shiftX
+        absY += shiftY
         scrollX -= shiftX
         scrollY -= shiftY
         destX -= shiftX
@@ -305,12 +321,19 @@ export function HomePage() {
         cells.forEach((cell) => {
           const i = Number(cell.dataset.i)
           const j = Number(cell.dataset.j)
-          cell.style.left = `${(baseCol + i) * BOARD_W}px`
-          cell.style.top = `${(baseRow + j) * BOARD_H}px`
+          cell.style.left = `${(baseCol - 1 + i) * BOARD_W}px`
+          cell.style.top = `${(baseRow - 1 + j) * BOARD_H}px`
         })
         placed = { col: baseCol, row: baseRow }
       }
       board.style.transform = `translate3d(${x}px,${y}px,0)`
+      // Per-piece depth drift, wrapped to +-half a module. Every copy moves the same way,
+      // so a wrap lands a piece exactly on its twin and is invisible.
+      const wrap = (v, m) => v - Math.round(v / m) * m
+      for (const spot of geo.slots) {
+        board.style.setProperty(`--d${spot.index}x`, `${wrap(spot.k * (x + absX), BOARD_W).toFixed(2)}px`)
+        board.style.setProperty(`--d${spot.index}y`, `${wrap(spot.k * (y + absY), BOARD_H).toFixed(2)}px`)
+      }
     }
 
     const center = () => {
@@ -407,12 +430,6 @@ export function HomePage() {
       pushY = lookY.push
     }
 
-    const onLeave = () => {
-      pushX = 0
-      pushY = 0
-      wantParX = 0
-      wantParY = 0
-    }
 
     const onDown = (event) => {
       if (event.button !== 0) return
@@ -510,8 +527,6 @@ export function HomePage() {
 
     center()
     window.addEventListener('pointermove', onMove)
-    document.documentElement.addEventListener('pointerleave', onLeave)
-    window.addEventListener('blur', onLeave)
     gate.addEventListener('pointerdown', onDown)
     gate.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('pointermove', onDrag)
@@ -550,8 +565,6 @@ export function HomePage() {
     return () => {
       stopLoop()
       window.removeEventListener('pointermove', onMove)
-      document.documentElement.removeEventListener('pointerleave', onLeave)
-      window.removeEventListener('blur', onLeave)
       gate.removeEventListener('pointerdown', onDown)
       gate.removeEventListener('wheel', onWheel)
       window.removeEventListener('pointermove', onDrag)
@@ -586,7 +599,7 @@ export function HomePage() {
     const run = () => {
       import('gsap').then(({ default: gsap }) => {
         if (dead) return
-        const tiles = gate.querySelectorAll('.hb-art')
+        const tiles = gate.querySelectorAll('.hb-art > *')
         tween = gsap.fromTo(
           tiles,
           { y: 22 },
