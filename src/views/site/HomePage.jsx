@@ -7,7 +7,7 @@ import { magnetic, magneticReset } from './magnetic'
 import { finePointer, reduceMotion } from './motion-utils'
 import { HOME_ART } from '../../config/site.js'
 import { applyTheme, wipe } from './theme.js'
-import { primeMusic, startMusic } from './music.jsx'
+import { startMusic } from './music.jsx'
 import { useSiteUI } from './site-ui.js'
 
 // Infinite board of illustrations (transparent cut-outs), modelled on the reference at
@@ -109,7 +109,11 @@ const COMPACT_QUERY = '(max-width: 760px)'
 function useNow() {
   const [now, setNow] = useState(null)
   useEffect(() => {
-    const tick = () => setNow(new Date())
+    // Re-render the captions only when the minute changes.
+    const tick = () => setNow((prev) => {
+      const next = new Date()
+      return prev && Math.floor(prev.getTime() / 60000) === Math.floor(next.getTime() / 60000) ? prev : next
+    })
     tick()
     const id = window.setInterval(tick, 20000)
     return () => window.clearInterval(id)
@@ -117,10 +121,13 @@ function useNow() {
   return now
 }
 
+const FORMATTERS = new Map()
+
 function clock(now, timeZone) {
   if (!now) return ['', '']
-  const parts = Object.fromEntries(
-    new Intl.DateTimeFormat('en-GB', {
+  let fmt = FORMATTERS.get(timeZone)
+  if (!fmt) {
+    fmt = new Intl.DateTimeFormat('en-GB', {
       timeZone,
       day: '2-digit',
       month: '2-digit',
@@ -129,6 +136,10 @@ function clock(now, timeZone) {
       minute: '2-digit',
       hour12: false,
     })
+    FORMATTERS.set(timeZone, fmt)
+  }
+  const parts = Object.fromEntries(
+    fmt
       .formatToParts(now)
       .map((part) => [part.type, part.value]),
   )
@@ -144,7 +155,7 @@ function ArtTile({ spot, lang, now, label, cursorLabel, eager, tabIndex, onHover
       href="/portfolio"
       className="hb-art"
       tabIndex={tabIndex}
-      style={{ left: spot.x, top: spot.y, width: spot.w, zIndex: spot.zi, transform: `translate3d(var(--d${spot.index}x, 0px), var(--d${spot.index}y, 0px), 0)` }}
+      style={{ left: spot.x, top: spot.y, width: spot.w, zIndex: spot.zi }}
       data-cursor={label}
       data-name={place}
       data-tint={art.tint}
@@ -276,6 +287,14 @@ export function HomePage() {
     }
 
     const cells = [...board.querySelectorAll('.hb-board-cell')]
+    const slots = geo.slots
+    const tilesOf = cells.map((cell) => [...cell.querySelectorAll(':scope > .hb-art')])
+    const shown = cells.map((cell, c) => tilesOf[c].map(() => true))
+    const dxs = new Float64Array(slots.length)
+    const dys = new Float64Array(slots.length)
+    const wrap = (v, m) => v - Math.round(v / m) * m
+    let viewW = window.innerWidth
+    let viewH = window.innerHeight
     const fine = finePointer()
     const calm = reduceMotion()
     let scrollX = 0
@@ -328,11 +347,34 @@ export function HomePage() {
       }
       board.style.transform = `translate3d(${x}px,${y}px,0)`
       // Per-piece depth drift, wrapped to +-half a module. Every copy moves the same way,
-      // so a wrap lands a piece exactly on its twin and is invisible.
-      const wrap = (v, m) => v - Math.round(v / m) * m
-      for (const spot of geo.slots) {
-        board.style.setProperty(`--d${spot.index}x`, `${wrap(spot.k * (x + absX), BOARD_W).toFixed(2)}px`)
-        board.style.setProperty(`--d${spot.index}y`, `${wrap(spot.k * (y + absY), BOARD_H).toFixed(2)}px`)
+      // so a wrap lands a piece exactly on its twin and is invisible. Positions are worked
+      // out arithmetically (no layout reads); only pieces near the viewport are shown and
+      // get a transform write, the rest are display:none (no paint, no image decoding).
+      const vw = viewW
+      const vh = viewH
+      const margin = 80
+      for (let s = 0; s < slots.length; s += 1) {
+        const spot = slots[s]
+        dxs[s] = wrap(spot.k * (x + absX), BOARD_W)
+        dys[s] = wrap(spot.k * (y + absY), BOARD_H)
+      }
+      for (let c = 0; c < cells.length; c += 1) {
+        const cell = cells[c]
+        const ox = x + (baseCol - 1 + Number(cell.dataset.i)) * BOARD_W
+        const oy = y + (baseRow - 1 + Number(cell.dataset.j)) * BOARD_H
+        const list = tilesOf[c]
+        for (let s = 0; s < list.length; s += 1) {
+          const el = list[s]
+          const spot = slots[s]
+          const sx = ox + spot.x + dxs[s]
+          const sy = oy + spot.y + dys[s]
+          const show = sx < vw + margin && sx + spot.w > -margin && sy < vh + margin && sy + spot.h + 60 > -margin
+          if (show !== shown[c][s]) {
+            shown[c][s] = show
+            el.style.display = show ? '' : 'none'
+          }
+          if (show) el.style.transform = `translate3d(${dxs[s].toFixed(1)}px,${dys[s].toFixed(1)}px,0)`
+        }
       }
     }
 
@@ -392,7 +434,7 @@ export function HomePage() {
       if (!idle) {
         place()
         hitFrame += 1
-        if (hitFrame % 4 === 0) hitTest()
+        if (hitFrame % 8 === 0) hitTest()
       }
     }
 
@@ -508,6 +550,8 @@ export function HomePage() {
     }
 
     const onResize = () => {
+      viewW = window.innerWidth
+      viewH = window.innerHeight
       const nextScale = boardScale(window.innerWidth, compact)
       if (nextScale !== scale) {
         setScale(nextScale)
@@ -575,13 +619,6 @@ export function HomePage() {
   }, [span.cols, span.rows, fullBoard, compact, scale])
 
   useEffect(() => {
-    // Get the music player ready (silent) so a click can start sound immediately.
-    if (!introDone) return undefined
-    const id = window.setTimeout(primeMusic, 1200)
-    return () => window.clearTimeout(id)
-  }, [introDone])
-
-  useEffect(() => {
     const ric = window.requestIdleCallback
     const id = ric ? ric(() => setFullBoard(true), { timeout: 1800 }) : window.setTimeout(() => setFullBoard(true), 1200)
     return () => {
@@ -599,7 +636,10 @@ export function HomePage() {
     const run = () => {
       import('gsap').then(({ default: gsap }) => {
         if (dead) return
-        const tiles = gate.querySelectorAll('.hb-art > *')
+        // Only the pieces actually on screen (culled ones are display:none).
+        const tiles = [...gate.querySelectorAll('.hb-art')]
+          .filter((el) => el.style.display !== 'none')
+          .flatMap((el) => [...el.children])
         tween = gsap.fromTo(
           tiles,
           { y: 22 },

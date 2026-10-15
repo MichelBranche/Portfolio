@@ -262,7 +262,7 @@ export function HbCursor() {
       if (!last) return
       const el = document.elementFromPoint(last.x, last.y)
       if (el) paint(el)
-    }, 90)
+    }, 160)
     const onMove = (event) => {
       if (event.pointerType && event.pointerType !== 'mouse') return
       if (!last) {

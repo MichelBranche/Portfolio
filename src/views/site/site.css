@@ -2793,6 +2793,7 @@ html:has(.hb-shop) {
 .hb-art {
   position: absolute;
   display: block;
+  will-change: transform;
   color: var(--ink);
   text-decoration: none;
   -webkit-user-drag: none;
