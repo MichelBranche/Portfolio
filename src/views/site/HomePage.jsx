@@ -123,7 +123,7 @@ function clock(now, timeZone) {
   return [`${parts.day}.${parts.month}.${parts.year}`, `H. ${parts.hour}.${parts.minute}`]
 }
 
-function ArtTile({ spot, lang, now, label, eager, tabIndex, onHover }) {
+function ArtTile({ spot, lang, now, label, cursorLabel, eager, tabIndex, onHover }) {
   const { art } = spot
   const [place, region] = art.caption[lang] || art.caption.en
   const [day, time] = clock(now, art.timeZone)
@@ -136,6 +136,7 @@ function ArtTile({ spot, lang, now, label, eager, tabIndex, onHover }) {
       data-cursor={label}
       data-name={place}
       data-tint={art.tint}
+      data-cursor-label={cursorLabel}
       draggable={false}
       onPointerEnter={() => onHover(place, art.tint)}
       onPointerLeave={() => onHover('', '')}
@@ -173,7 +174,7 @@ function ArtTile({ spot, lang, now, label, eager, tabIndex, onHover }) {
   )
 }
 
-const Board = memo(function Board({ geo, lang, now, label, onHover, cols, rows }) {
+const Board = memo(function Board({ geo, lang, now, label, cursorLabel, onHover, cols, rows }) {
   const colIds = Array.from({ length: cols }, (_, index) => index)
   const rowIds = Array.from({ length: rows }, (_, index) => index)
   return rowIds.map((row) =>
@@ -196,6 +197,7 @@ const Board = memo(function Board({ geo, lang, now, label, onHover, cols, rows }
               lang={lang}
               now={now}
               label={label}
+              cursorLabel={cursorLabel}
               eager={primary && spot.index < 4}
               tabIndex={primary && spot.index < HOME_ART.length ? 0 : -1}
               onHover={onHover}
@@ -620,9 +622,11 @@ export function HomePage() {
           go('/portfolio')
           return
         }
-        applyTheme(tint)
         startMusic()
-        wipe(tint, event.clientX, event.clientY, () => go('/portfolio'))
+        wipe(tint, event.clientX, event.clientY, () => {
+          applyTheme(tint)
+          go('/portfolio')
+        })
       }}
       className={compact == null ? 'hb-gate is-pending' : compact ? 'hb-gate is-board-compact' : 'hb-gate'}
       onPointerLeave={() => setHovered('')}
@@ -639,6 +643,7 @@ export function HomePage() {
             lang={lang}
             now={now}
             label={String(t('site.open'))}
+            cursorLabel={String(t('site.seeWork'))}
             onHover={hover}
             cols={span.cols}
             rows={span.rows}

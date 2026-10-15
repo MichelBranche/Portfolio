@@ -30,13 +30,20 @@ export function wipe(color, x, y, onCovered) {
   el.style.setProperty('--wipe', color)
   el.style.setProperty('--x', `${x}px`)
   el.style.setProperty('--y', `${y}px`)
+  // The tinted cursor disc (120 px across) becomes the start of the wipe.
+  const disc = document.querySelector('.hb-cursor.is-item .hb-cursor-disc')
+  if (disc) el.style.setProperty('--r0', '56px')
+  document.documentElement.classList.add('mb-wiping')
   document.body.appendChild(el)
   requestAnimationFrame(() => el.classList.add('is-in'))
   window.setTimeout(() => {
     onCovered()
     window.setTimeout(() => {
       el.classList.add('is-out')
-      window.setTimeout(() => el.remove(), 380)
+      window.setTimeout(() => {
+        el.remove()
+        document.documentElement.classList.remove('mb-wiping')
+      }, 380)
     }, 260)
   }, 360)
 }

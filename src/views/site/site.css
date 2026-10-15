@@ -216,12 +216,73 @@ html:has(body.hb-on)::-webkit-scrollbar-thumb:hover {
 }
 
 .hb-cursor.is-away .hb-cursor-disc,
-.hb-cursor.is-away .hb-cursor-label {
+.hb-cursor.is-away .hb-cursor-label,
+.hb-cursor.is-away .hb-cursor-pill {
   opacity: 0;
 }
 
 .hb-cursor.on-dark .hb-cursor-label {
   color: #f2f2ee;
+}
+
+/* Illustrations: the disc takes the illustration colour, dark icon, label below. */
+.hb-cursor.is-item[data-tinted] .hb-cursor-disc {
+  background: var(--cursor-tint);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  color: #111;
+}
+
+.hb-cursor.is-item .hb-cursor-label {
+  top: 70px;
+  opacity: 1;
+  transform: none;
+}
+
+.hb-cursor.is-item[data-tinted].is-down .hb-cursor-disc {
+  transform: scale(1.2);
+  transition-duration: 0.18s;
+}
+
+html.mb-wiping .hb-cursor .hb-cursor-disc,
+html.mb-wiping .hb-cursor .hb-cursor-label {
+  opacity: 0;
+  transition: none;
+}
+
+/* Intro ENTER state, matched to hellobarrio.it: a light pill, 40 px tall,
+   40 px side padding, centred 20 px above the pointer. */
+.hb-cursor-pill {
+  position: absolute;
+  left: 0;
+  top: -40px;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 40px;
+  border-radius: 24px;
+  background: #ededed;
+  color: #000;
+  font-size: 14.256px;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translateX(-50%) scale(0.6);
+  opacity: 0;
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hb-cursor.is-pill .hb-cursor-pill {
+  transform: translateX(-50%);
+  opacity: 1;
+}
+
+html.hb-cursor-live [data-cursor-pill],
+html.hb-cursor-live [data-cursor-pill] * {
+  cursor: none;
 }
 
 /* The disc replaces the native pointer only where it is shown. */
@@ -2821,7 +2882,7 @@ html:has(.hb-shop) {
   z-index: 990;
   pointer-events: none;
   background: var(--wipe);
-  clip-path: circle(0 at var(--x) var(--y));
+  clip-path: circle(var(--r0, 0px) at var(--x) var(--y));
   transition: clip-path 0.42s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.36s ease;
 }
 

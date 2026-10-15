@@ -199,6 +199,7 @@ export function HbCursor() {
   const enabled = useSyncExternalStore(() => () => {}, cursorEnabled, () => false)
   const dotRef = useRef(null)
   const labelRef = useRef(null)
+  const pillRef = useRef(null)
   const [mode, setMode] = useState('off')
 
   useEffect(() => {
@@ -233,11 +234,21 @@ export function HbCursor() {
     }
     const paint = (target) => {
       const el = target instanceof Element ? target : null
-      const item = el?.closest('[data-cursor]')
-      const empty = item ? null : el?.closest('[data-cursor-empty]')
+      const pill = el?.closest('[data-cursor-pill]')
+      const item = pill ? null : el?.closest('[data-cursor]')
+      const empty = item || pill ? null : el?.closest('[data-cursor-empty]')
       const interactive = !item && el?.closest('a, button, input, textarea, select, label, [role="button"]')
       let next = 'off'
-      if (item) next = 'item'
+      if (pill) {
+        next = 'pill'
+        pillRef.current.textContent = pill.getAttribute('data-cursor-pill') || ''
+      } else if (item) next = 'item'
+      const tint = item?.getAttribute('data-tint')
+      if (tint) dot.style.setProperty('--cursor-tint', tint)
+      else dot.style.removeProperty('--cursor-tint')
+      if (tint) dot.dataset.tinted = ''
+      else delete dot.dataset.tinted
+      if (item) labelRef.current.textContent = item.getAttribute('data-cursor-label') || ''
       else if (empty && !interactive) next = 'empty'
       dot.classList.toggle('on-dark', Boolean(el?.closest('.hb-welcome, .hb-menu, .hb-modal-copy, .hb-cs-results')))
       if (empty) labelRef.current.textContent = empty.getAttribute('data-cursor-empty') || ''
@@ -288,6 +299,7 @@ export function HbCursor() {
     <div ref={dotRef} className={`hb-cursor is-${mode}`} aria-hidden>
       <div className="hb-cursor-disc">{mode === 'item' ? <PixelArrow /> : <PixelShuffle />}</div>
       <div ref={labelRef} className="hb-cursor-label" />
+      <div ref={pillRef} className="hb-cursor-pill" />
     </div>
   )
 }
