@@ -3,7 +3,7 @@ import { PROJECT_CATEGORY_ORDER, PROJECT_META } from '../../config/site.js'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 
 export function useProjects() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
 
   return useMemo(() => {
     return PROJECT_META.map((project) => {
@@ -12,6 +12,7 @@ export function useProjects() {
       const name = (title.split(' - ')[1] || title).trim()
       return {
         ...project,
+        thumb: project.thumbByLang?.[lang] || project.thumb,
         title,
         desc: String(t(`projects.${project.slug}.desc`)),
         categoryLabel,
@@ -19,7 +20,7 @@ export function useProjects() {
         alt: String(t('projects.coverAlt')).replace('{{name}}', name).replace('{{category}}', categoryLabel.toLowerCase()),
       }
     }).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)))
-  }, [t])
+  }, [t, lang])
 }
 
 export function groupProjects(projects) {
