@@ -183,6 +183,10 @@ const STRINGS = {
         title: 'Gastronomia - Orma (microtorrefazione, Valle d’Aosta)',
         desc: 'Landing per una microtorrefazione di specialità: origini, tostatura, selezione e capsule, con motion GSAP, scroll Lenis e layout editoriale su React e Vite.',
       },
+      sbrano: {
+        title: 'Gastronomia - Sbrano (street burger, Torino)',
+        desc: 'Concept di brand identity e sito per uno smash burger di strada in Vanchiglia, Piazza Santa Giulia: hero manifesto, burger builder interattivo con ingredienti a strati e animazione di aggiunta al carrello, carosello dei drop in edizione speciale, menu a carosello, recensioni e mappa illustrata, selettore lingua IT/EN/FR e micro-interazioni ovunque. Palette lime acido, crema e nero, mascotte con gli occhiali e il claim \'Fame brutta. Prezzi giusti.\'. Next.js 15, TypeScript, Tailwind 4, GSAP (ScrollTrigger, SplitText) e Lenis.',
+      },
       chaumont: {
         title: 'Istituzionale - Château de Chaumont (fan concept per Escape to Rural France)',
         desc: 'Concept non ufficiale, realizzato da fan come regalo per il canale YouTube di Dan Preston: intro cinematografica con musica, 5 lingue, cartoline d\'epoca, la storia del rifugio durante la Seconda guerra mondiale, la casa piano per piano, un omaggio a Nick, contatori YouTube in tempo reale, sezione Patreon con i tier reali e un muro di commenti dei sostenitori, shop e newsletter collegata a Shopify. Next.js, TypeScript, GSAP, Lenis e Tailwind.',
@@ -596,6 +600,10 @@ const STRINGS = {
         title: 'Food & beverage - Orma (micro-roastery, Aosta Valley)',
         desc: 'Landing page for a specialty micro-roastery: origins, roasting, selection and capsules, with GSAP motion, Lenis scroll and an editorial layout on React and Vite.',
       },
+      sbrano: {
+        title: 'Food & beverage - Sbrano (street burger, Turin)',
+        desc: 'Brand identity and website concept for a street smash-burger spot in Vanchiglia, Piazza Santa Giulia: bold manifesto hero, interactive burger builder with layered ingredients and a flying add-to-cart animation, special-edition drop carousel, menu carousel, reviews and an illustrated map, IT/EN/FR language switcher and rich micro-interactions. Acid lime, cream and black palette, a mascot with glasses and the claim \'Fame brutta. Prezzi giusti.\' (dirty hunger, fair prices). Next.js 15, TypeScript, Tailwind 4, GSAP (ScrollTrigger, SplitText) and Lenis.',
+      },
       chaumont: {
         title: 'Institutional - Château de Chaumont (fan concept for Escape to Rural France)',
         desc: 'Unofficial fan concept built as a gift for Dan Preston\'s YouTube channel: cinematic intro with music, 5 languages, historic postcards, the WWII refuge story, a floor-by-floor tour of the house, a tribute to Nick, live YouTube counters, a Patreon section with the real tiers and a wall of supporter comments, shop pages and a newsletter wired to Shopify. Next.js, TypeScript, GSAP, Lenis and Tailwind.',
@@ -1004,6 +1012,10 @@ const STRINGS = {
         title: 'Gastronomie - Orma (micro-torréfaction, Vallée d’Aoste)',
         desc: 'Landing pour une micro-torréfaction de spécialité : origines, torréfaction, sélection et capsules, avec motion GSAP, scroll Lenis et layout éditorial sur React et Vite.',
       },
+      sbrano: {
+        title: 'Gastronomie - Sbrano (street burger, Turin)',
+        desc: 'Concept d\'identité de marque et de site pour un smash burger de rue à Vanchiglia, Piazza Santa Giulia : hero manifeste, burger builder interactif aux ingrédients superposés avec animation d\'ajout au panier, carrousel des éditions spéciales, carrousel du menu, avis et carte illustrée, sélecteur de langue IT/EN/FR et micro-interactions partout. Palette citron vert acide, crème et noir, une mascotte à lunettes et le slogan \'Fame brutta. Prezzi giusti.\'. Next.js 15, TypeScript, Tailwind 4, GSAP (ScrollTrigger, SplitText) et Lenis.',
+      },
       chaumont: {
         title: 'Institutionnel - Château de Chaumont (concept de fan pour Escape to Rural France)',
         desc: 'Concept non officiel, réalisé par un fan en cadeau pour la chaîne YouTube de Dan Preston : intro cinématographique en musique, 5 langues, cartes postales anciennes, l\'histoire du refuge pendant la Seconde Guerre mondiale, la maison étage par étage, un hommage à Nick, compteurs YouTube en direct, section Patreon avec les vrais paliers et un mur de commentaires de soutiens, boutique et newsletter reliée à Shopify. Next.js, TypeScript, GSAP, Lenis et Tailwind.',
@@ -1299,6 +1311,10 @@ const STRINGS = {
         title: 'Gastronomie - Orma (Mikro-Rösterei, Aostatal)',
         desc: 'Landing für eine Spezialitäten-Mikrörösterei: Herkunft, Röstung, Selection und Kapseln, mit GSAP-Motion, Lenis-Scroll und editorialem Layout auf React und Vite.',
       },
+      sbrano: {
+        title: 'Gastronomie - Sbrano (Street-Burger, Turin)',
+        desc: 'Konzept für Markenidentität und Website eines Street-Smash-Burgers in Vanchiglia, Piazza Santa Giulia: plakativer Manifest-Hero, interaktiver Burger-Builder mit geschichteten Zutaten und fliegender Warenkorb-Animation, Karussell der Sondereditionen, Menü-Karussell, Bewertungen und illustrierte Karte, Sprachumschalter IT/EN/FR und viele Mikrointeraktionen. Palette aus Säure-Limette, Creme und Schwarz, ein Maskottchen mit Brille und der Claim \'Fame brutta. Prezzi giusti.\'. Next.js 15, TypeScript, Tailwind 4, GSAP (ScrollTrigger, SplitText) und Lenis.',
+      },
       chaumont: {
         title: 'Institutionell - Château de Chaumont (Fan-Konzept für Escape to Rural France)',
         desc: 'Inoffizielles Fan-Konzept, entstanden als Geschenk für Dan Prestons YouTube-Kanal: filmisches Intro mit Musik, 5 Sprachen, historische Postkarten, die Geschichte des Zufluchtsorts im Zweiten Weltkrieg, das Haus Etage für Etage, eine Hommage an Nick, Live-Zähler von YouTube, ein Patreon-Bereich mit den echten Stufen und einer Wand mit Kommentaren von Unterstützern, Shop-Seiten und ein mit Shopify verbundener Newsletter. Next.js, TypeScript, GSAP, Lenis und Tailwind.',
@@ -1593,6 +1609,10 @@ const STRINGS = {
       orma: {
         title: 'Gastronomía - Orma (microtorrefacción, Valle de Aosta)',
         desc: 'Landing para una microtorrefacción de especialidad: orígenes, tueste, selección y cápsulas, con motion GSAP, scroll Lenis y layout editorial en React y Vite.',
+      },
+      sbrano: {
+        title: 'Gastronomía - Sbrano (street burger, Turín)',
+        desc: 'Concepto de identidad de marca y web para un smash burger callejero en Vanchiglia, Piazza Santa Giulia: hero manifiesto, burger builder interactivo con ingredientes en capas y animación al añadir al carrito, carrusel de ediciones especiales, carrusel del menú, reseñas y mapa ilustrado, selector de idioma IT/EN/FR y microinteracciones por todas partes. Paleta lima ácida, crema y negro, una mascota con gafas y el lema \'Fame brutta. Prezzi giusti.\'. Next.js 15, TypeScript, Tailwind 4, GSAP (ScrollTrigger, SplitText) y Lenis.',
       },
       chaumont: {
         title: 'Institucional - Château de Chaumont (concepto fan para Escape to Rural France)',
