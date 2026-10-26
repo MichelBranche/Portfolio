@@ -66,6 +66,7 @@ export const PROJECT_CATEGORY_ORDER = [
   'institutional',
   'portfolio',
   'ui',
+  'product',
 ]
 
 // tint: hand-picked hover colour per project; it replaces the whole home background on hover.
@@ -251,6 +252,19 @@ export const PROJECT_META = [
     thumbByLang: { en: '/projects/sbrano-cover-en.webp' },
     tint: '#d6ff4d',
     publishedAt: '2026-11-01',
+  },
+  {
+    slug: 'volt',
+    category: 'product',
+    product: true,
+    featured: true,
+    tech: 'Tauri 2 / React / Rust / Ollama',
+    caseHref: '/work/volt',
+    img: '/projects/volt-cover.webp',
+    imgs: ['/projects/volt-cover.webp'],
+    thumb: '/projects/volt-cover.webp',
+    tint: '#ff7a3d',
+    publishedAt: '2026-10-26',
   },
   {
     slug: 'webtec',

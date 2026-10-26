@@ -47,6 +47,11 @@ const PAGE_META = {
       description:
         'Case study del sito di Residence Le Vele a Stintino. Primo mese online: 14 prenotazioni dirette, 77 notti, 11.947 €, zero Google Ads.',
     },
+    '/work/volt': {
+      title: 'VOLT, assistente AI locale | Michel Branche',
+      description:
+        'Assistente AI desktop gratuito che gira in locale: voce, browser agente, card in chat, memoria e avatar. Beta 0.1.1 su richiesta.',
+    },
     '/shop': {
       title: 'Shop | Michel Branche',
       description: 'Il mercato è in preparazione. Nessun prodotto in vendita per ora.',
@@ -81,6 +86,11 @@ const PAGE_META = {
       title: 'Residence Le Vele case study | Michel Branche',
       description:
         'Case study for Residence Le Vele in Stintino. First month online: 14 direct bookings, 77 nights, €11,947, zero Google Ads.',
+    },
+    '/work/volt': {
+      title: 'VOLT, local AI assistant | Michel Branche',
+      description:
+        'Free local desktop AI assistant: voice, agent browser, chat cards, memory and avatar. Beta 0.1.1 on request.',
     },
     '/shop': {
       title: 'Shop | Michel Branche',
@@ -117,6 +127,11 @@ const PAGE_META = {
       title: 'Residence Le Vele, étude de cas | Michel Branche',
       description:
         'Étude de cas du site de Residence Le Vele à Stintino. Premier mois en ligne : 14 réservations directes, 77 nuits, 11 947 €, zéro Google Ads.',
+    },
+    '/work/volt': {
+      title: 'VOLT, assistant IA local | Michel Branche',
+      description:
+        'Assistant IA de bureau gratuit, en local: voix, navigateur agent, cartes dans le chat, mémoire et avatar. Bêta 0.1.1 sur demande.',
     },
     '/shop': {
       title: 'Shop | Michel Branche',
@@ -155,6 +170,11 @@ const PAGE_META = {
       description:
         'Fallstudie zur Website von Residence Le Vele in Stintino. Erster Monat online: 14 Direktbuchungen, 77 Nächte, 11.947 €, null Google Ads.',
     },
+    '/work/volt': {
+      title: 'VOLT, lokaler KI-Assistent | Michel Branche',
+      description:
+        'Kostenloser lokaler Desktop-KI-Assistent: Sprache, Agenten-Browser, Chat-Karten, Gedächtnis und Avatar. Beta 0.1.1 auf Anfrage.',
+    },
     '/shop': {
       title: 'Shop | Michel Branche',
       description:
@@ -191,6 +211,11 @@ const PAGE_META = {
       title: 'Residence Le Vele, caso de estudio | Michel Branche',
       description:
         'Caso de estudio del sitio de Residence Le Vele en Stintino. Primer mes online: 14 reservas directas, 77 noches, 11.947 €, cero Google Ads.',
+    },
+    '/work/volt': {
+      title: 'VOLT, asistente de IA local | Michel Branche',
+      description:
+        'Asistente de IA de escritorio gratuito y local: voz, navegador agente, tarjetas en el chat, memoria y avatar. Beta 0.1.1 bajo petición.',
     },
     '/shop': {
       title: 'Shop | Michel Branche',

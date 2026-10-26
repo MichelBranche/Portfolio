@@ -540,15 +540,17 @@ export function SiteFrame({ children }) {
                 <p className="hb-modal-tech">{modalProject.tech}</p>
                 <p>{modalProject.desc}</p>
                 <div className="hb-modal-actions">
-                  <a
-                    href={modalProject.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    onPointerMove={magnetic}
-                    onPointerLeave={magneticReset}
-                  >
-                    {String(t('modal.visit'))}
-                  </a>
+                  {modalProject.link ? (
+                    <a
+                      href={modalProject.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      onPointerMove={magnetic}
+                      onPointerLeave={magneticReset}
+                    >
+                      {String(t('modal.visit'))}
+                    </a>
+                  ) : null}
                   {modalProject.caseHref ? (
                     <button
                       type="button"
@@ -556,7 +558,7 @@ export function SiteFrame({ children }) {
                       onPointerMove={magnetic}
                       onPointerLeave={magneticReset}
                     >
-                      {String(t('modal.caseStudy'))}
+                      {String(t(modalProject.product ? 'modal.project' : 'modal.caseStudy'))}
                     </button>
                   ) : null}
                 </div>
