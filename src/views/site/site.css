@@ -1838,6 +1838,28 @@ html.hb-cursor-live [data-cursor-empty] button:not([data-cursor]) {
   object-fit: cover;
 }
 
+.hb-modal-images.is-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+}
+
+.hb-modal-images.is-video .hb-player {
+  width: 100%;
+  margin-top: 0;
+}
+
+.hb-modal-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #111;
+}
+
 .hb-modal-images.is-stack img {
   height: auto;
   aspect-ratio: auto 8 / 5;
@@ -2006,10 +2028,113 @@ html.hb-cursor-live [data-cursor-empty] button:not([data-cursor]) {
   display: block;
   width: 100%;
   height: auto;
-  margin-top: 1.1rem;
   aspect-ratio: 16 / 9;
   background: #111;
   object-fit: contain;
+}
+
+.hb-player {
+  position: relative;
+  margin-top: 1.1rem;
+  background: #111;
+}
+
+.hb-player-poster,
+.hb-modal-images .hb-player-poster {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 0.65rem;
+  width: auto;
+  height: calc(100% - 4.4rem);
+  max-width: calc(100% - 1.5rem);
+  transform: translateX(-50%);
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.hb-player.is-started .hb-player-poster {
+  display: none;
+}
+
+/* VOLT: a centered column. The other case studies stay full-bleed and left aligned. */
+.hb-page.hb-volt {
+  box-sizing: border-box;
+  width: min(74rem, 100%);
+  margin-inline: auto;
+}
+
+.hb-volt .hb-cs-hero {
+  justify-items: center;
+  text-align: center;
+}
+
+.hb-volt .hb-cs-lead,
+.hb-volt .hb-cs-note {
+  margin-inline: auto;
+}
+
+.hb-volt .hb-cs-hero .hb-cs-note {
+  text-align: left;
+}
+
+.hb-volt .hb-cs-hero .hb-mail-link {
+  justify-self: center;
+}
+
+.hb-volt .hb-cs-media.is-single {
+  grid-template-columns: minmax(0, 26rem);
+  justify-content: center;
+  margin-inline: auto;
+}
+
+.hb-volt .hb-cs-frame.is-poster .hb-pix {
+  aspect-ratio: 1 / 1;
+}
+
+.hb-volt .hb-cs-block > .hb-label {
+  text-align: center;
+}
+
+.hb-volt .hb-cs-chips {
+  justify-content: center;
+}
+
+.hb-shot[data-flip-id='volt'] .hb-pix {
+  aspect-ratio: 1 / 1;
+}
+
+.hb-volt-shots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4rem 1.1rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hb-volt-shots figure {
+  margin: 0;
+}
+
+.hb-volt-shots img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #111;
+}
+
+.hb-volt-shots figcaption {
+  margin-top: 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+@media (max-width: 720px) {
+  .hb-volt-shots {
+    grid-template-columns: 1fr;
+  }
 }
 
 .hb-cs-frame:hover .hb-pix img {
@@ -2497,6 +2622,14 @@ html:has(.hb-shop) {
   }
 
   .hb-modal-images {
+    max-height: 40dvh;
+  }
+
+  .hb-modal-images.is-video {
+    max-height: none;
+  }
+
+  .hb-modal-video {
     max-height: 40dvh;
   }
 

@@ -1,4 +1,13 @@
 /** Page chrome for /work/volt. Card copy lives in translations.js. */
+const SHOTS = [
+  { id: 'chat', src: '/projects/volt/chat.webp', w: 1280, h: 800 },
+  { id: 'search', src: '/projects/volt/search.webp', w: 1280, h: 854 },
+  { id: 'browser', src: '/projects/volt/browser.webp', w: 1280, h: 852 },
+  { id: 'compare', src: '/projects/volt/compare.webp', w: 1280, h: 854 },
+  { id: 'memory', src: '/projects/volt/memory.webp', w: 1280, h: 854 },
+  { id: 'avatar', src: '/projects/volt/avatar.webp', w: 1280, h: 860 },
+]
+
 const COPY = {
   it: {
     eyebrow: 'Versione 0.1.1',
@@ -17,6 +26,15 @@ const COPY = {
       'Avatar con skin ed espressioni',
     ],
     note: 'Gira sul computer, senza abbonamento. La beta si chiede via mail.',
+    galleryTitle: 'Interfaccia',
+    shots: {
+      chat: 'Chat vocale, con una card nella risposta.',
+      search: 'Ricerca web in chat, con le fonti sulla risposta.',
+      browser: 'L’agente apre una pagina nel suo browser e la legge.',
+      compare: 'Una card di confronto interattiva, compilata dalla chat.',
+      memory: 'Un chip di memoria salvato dalla conversazione.',
+      avatar: 'Avatar, nome, skin e accento, su questo computer.',
+    },
   },
   en: {
     eyebrow: 'Version 0.1.1',
@@ -35,6 +53,15 @@ const COPY = {
       'Avatar with skins and expressions',
     ],
     note: 'It runs on the computer, with no subscription. The beta is available by email.',
+    galleryTitle: 'Interface',
+    shots: {
+      chat: 'Voice chat, with a card in the reply.',
+      search: 'Web search in the chat, with the sources on the answer.',
+      browser: 'The agent opens a page in its browser and reads it.',
+      compare: 'An interactive compare card, filled in from the chat.',
+      memory: 'A memory chip saved from the conversation.',
+      avatar: 'Avatar, name, skin and accent, kept on this machine.',
+    },
   },
   fr: {
     eyebrow: 'Version 0.1.1',
@@ -53,6 +80,15 @@ const COPY = {
       'Avatar avec skins et expressions',
     ],
     note: 'Il tourne sur l’ordinateur, sans abonnement. La bêta se demande par mail.',
+    galleryTitle: 'Interface',
+    shots: {
+      chat: 'Chat vocal, avec une carte dans la réponse.',
+      search: 'Recherche web dans le chat, avec les sources sur la réponse.',
+      browser: 'L’agent ouvre une page dans son navigateur et la lit.',
+      compare: 'Une carte de comparaison interactive, remplie depuis le chat.',
+      memory: 'Une puce mémoire enregistrée depuis la conversation.',
+      avatar: 'Avatar, nom, skin et accent, sur cet ordinateur.',
+    },
   },
   de: {
     eyebrow: 'Version 0.1.1',
@@ -71,6 +107,15 @@ const COPY = {
       'Avatar mit Skins und Ausdrücken',
     ],
     note: 'Es läuft auf dem Computer, ohne Abo. Die Beta gibt es auf Anfrage per Mail.',
+    galleryTitle: 'Oberfläche',
+    shots: {
+      chat: 'Sprachchat, mit einer Karte in der Antwort.',
+      search: 'Websuche im Chat, mit den Quellen an der Antwort.',
+      browser: 'Der Agent öffnet eine Seite in seinem Browser und liest sie.',
+      compare: 'Eine interaktive Vergleichskarte, aus dem Chat gefüllt.',
+      memory: 'Ein Erinnerungschip, aus dem Gespräch gespeichert.',
+      avatar: 'Avatar, Name, Skin und Akzent, auf diesem Rechner.',
+    },
   },
   es: {
     eyebrow: 'Versión 0.1.1',
@@ -89,9 +134,25 @@ const COPY = {
       'Avatar con skins y expresiones',
     ],
     note: 'Funciona en el ordenador, sin suscripción. La beta se pide por correo.',
+    galleryTitle: 'Interfaz',
+    shots: {
+      chat: 'Chat de voz, con una tarjeta en la respuesta.',
+      search: 'Búsqueda web en el chat, con las fuentes en la respuesta.',
+      browser: 'El agente abre una página en su navegador y la lee.',
+      compare: 'Una tarjeta de comparación interactiva, rellenada desde el chat.',
+      memory: 'Un chip de memoria guardado de la conversación.',
+      avatar: 'Avatar, nombre, skin y acento, en este ordenador.',
+    },
   },
 }
 
 export function voltPage(lang) {
-  return COPY[lang] || COPY.en
+  const pack = COPY[lang] || COPY.en
+  return {
+    ...pack,
+    shots: SHOTS.map((shot) => ({
+      ...shot,
+      caption: pack.shots[shot.id],
+    })),
+  }
 }
