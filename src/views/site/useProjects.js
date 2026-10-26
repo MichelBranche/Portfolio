@@ -16,7 +16,9 @@ export function useProjects() {
         title,
         desc: String(t(`projects.${project.slug}.desc`)),
         categoryLabel,
-        kindLabel: String(project.client ? t('site.clientWork') : t('site.demoConcept')),
+        kindLabel: String(
+          project.client ? t('site.clientWork') : project.product ? t('site.productKind') : t('site.demoConcept'),
+        ),
         alt: String(t('projects.coverAlt')).replace('{{name}}', name).replace('{{category}}', categoryLabel.toLowerCase()),
       }
     }).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)))

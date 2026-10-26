@@ -1994,6 +1994,24 @@ html.hb-cursor-live [data-cursor-empty] button:not([data-cursor]) {
   aspect-ratio: 16 / 9;
 }
 
+.hb-cs-media.is-single {
+  grid-template-columns: minmax(0, 52rem);
+}
+
+.hb-cs-frame.is-poster .hb-pix {
+  aspect-ratio: 4 / 3;
+}
+
+.hb-cs-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 1.1rem;
+  aspect-ratio: 16 / 9;
+  background: #111;
+  object-fit: contain;
+}
+
 .hb-cs-frame:hover .hb-pix img {
   transform: scale(1.05);
 }

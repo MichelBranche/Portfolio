@@ -90,6 +90,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Lavoro per cliente',
       demoConcept: 'Demo / concept',
+      productKind: 'Prodotto',
       audience: 'Siti web su misura, progettati e sviluppati da zero.',
     },
     shop: {
@@ -130,6 +131,7 @@ const STRINGS = {
         institutional: 'Istituzionale',
         portfolio: 'Siti portfolio personali',
         ui: 'UI & prototipi',
+        product: 'Prodotto',
       },
       rubina: {
         title: 'Fotografia - Rubina',
@@ -198,6 +200,10 @@ const STRINGS = {
       webtec2: {
         title: 'Istituzionale - Webtec Agency (concept 2)',
         desc: 'Seconda direzione per la stessa homepage: layout editoriale scuro, griglia tipografica, accenti lime e sezione lavori. Realizzato in un giorno con Next.js, GSAP, Lenis e Tailwind.',
+      },
+      volt: {
+        title: 'Prodotto - VOLT',
+        desc: 'Assistente AI desktop gratuito che gira tutto in locale. Conversazione vocale, browser agente che cerca, legge e riassume, card interattive in chat (Intelligent UI), memoria, notch in stile Dynamic Island e avatar personalizzabile con skin ed espressioni. Tauri 2, React, TypeScript, Rust, Ollama e TTS locale. Versione 0.1.1, beta su richiesta.',
       },
     },
     services: {
@@ -404,6 +410,7 @@ const STRINGS = {
       close: 'CHIUDI [X]',
       visit: 'VAI AL SITO WEB ↗',
       caseStudy: 'LEGGI IL CASE STUDY ↗',
+      project: 'VEDI IL PROGETTO ↗',
       imgAlt: 'Anteprima progetto',
       titlePlaceholder: 'TITOLO',
       descPlaceholder: 'Descrizione.',
@@ -507,6 +514,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Client work',
       demoConcept: 'Demo / concept',
+      productKind: 'Product',
       audience: 'Custom websites, designed and built from scratch.',
     },
     shop: {
@@ -547,6 +555,7 @@ const STRINGS = {
         institutional: 'Institutional',
         portfolio: 'Personal portfolio sites',
         ui: 'UI & prototypes',
+        product: 'Product',
       },
       rubina: {
         title: 'Photography - Rubina',
@@ -615,6 +624,10 @@ const STRINGS = {
       webtec2: {
         title: 'Institutional - Webtec Agency (concept 2)',
         desc: 'A second direction for the same homepage: dark editorial layout, typographic grid, lime accents and a work section. Built in one day with Next.js, GSAP, Lenis and Tailwind.',
+      },
+      volt: {
+        title: 'Product - VOLT',
+        desc: 'Free desktop AI assistant that runs entirely on the machine. Voice conversation, an agent browser that searches, reads and summarizes, interactive cards in chat (Intelligent UI), memory, a Dynamic Island-style notch and a customizable avatar with skins and expressions. Tauri 2, React, TypeScript, Rust, Ollama and local TTS. Version 0.1.1, beta on request.',
       },
     },
     services: {
@@ -816,6 +829,7 @@ const STRINGS = {
       close: 'CLOSE [X]',
       visit: 'GO TO THE SITE ↗',
       caseStudy: 'READ THE CASE STUDY ↗',
+      project: 'SEE THE PROJECT ↗',
       imgAlt: 'Project preview',
       titlePlaceholder: 'TITLE',
       descPlaceholder: 'Description.',
@@ -919,6 +933,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Projet client',
       demoConcept: 'Démo / concept',
+      productKind: 'Produit',
       audience: 'Sites web sur mesure, conçus et développés de zéro.',
     },
     shop: {
@@ -959,6 +974,7 @@ const STRINGS = {
         institutional: 'Institutionnel',
         portfolio: 'Sites portfolio personnels',
         ui: 'UI & prototypes',
+        product: 'Produit',
       },
       rubina: {
         title: 'Photo - Rubina',
@@ -1027,6 +1043,10 @@ const STRINGS = {
       webtec2: {
         title: 'Institutionnel - Webtec Agency (concept 2)',
         desc: 'Deuxième direction pour la même page d\'accueil : mise en page éditoriale sombre, grille typographique et accents citron vert. Réalisé en une journée avec Next.js, GSAP, Lenis et Tailwind.',
+      },
+      volt: {
+        title: 'Produit - VOLT',
+        desc: 'Assistant IA de bureau gratuit, qui tourne entièrement en local. Conversation vocale, navigateur agent qui cherche, lit et résume, cartes interactives dans le chat (Intelligent UI), mémoire, encoche façon Dynamic Island et avatar personnalisable avec skins et expressions. Tauri 2, React, TypeScript, Rust, Ollama et TTS local. Version 0.1.1, bêta sur demande.',
       },
     },
     services: {
@@ -1115,6 +1135,7 @@ const STRINGS = {
       close: 'FERMER [X]',
       visit: 'ALLER AU SITE ↗',
       caseStudy: 'LIRE LE CASE STUDY ↗',
+      project: 'VOIR LE PROJET ↗',
       imgAlt: 'Aperçu du projet',
       titlePlaceholder: 'TITRE',
       descPlaceholder: 'Description.',
@@ -1218,6 +1239,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Kundenarbeit',
       demoConcept: 'Demo / Konzept',
+      productKind: 'Produkt',
       audience: 'Maßgeschneiderte Websites, von Grund auf gestaltet und entwickelt.',
     },
     shop: {
@@ -1258,6 +1280,7 @@ const STRINGS = {
         institutional: 'Institutionell',
         portfolio: 'Persönliche Portfolio-Websites',
         ui: 'UI & Prototypen',
+        product: 'Produkt',
       },
       rubina: {
         title: 'Fotografie - Rubina',
@@ -1326,6 +1349,10 @@ const STRINGS = {
       webtec2: {
         title: 'Institutionell - Webtec Agency (Konzept 2)',
         desc: 'Eine zweite Richtung für dieselbe Homepage: dunkles Editorial-Layout, typografisches Raster und Lime-Akzente. An einem Tag gebaut mit Next.js, GSAP, Lenis und Tailwind.',
+      },
+      volt: {
+        title: 'Produkt - VOLT',
+        desc: 'Kostenloser Desktop-KI-Assistent, der vollständig lokal läuft. Sprachgespräch, Agenten-Browser zum Suchen, Lesen und Zusammenfassen, interaktive Karten im Chat (Intelligent UI), Gedächtnis, Notch im Stil von Dynamic Island und anpassbarer Avatar mit Skins und Ausdrücken. Tauri 2, React, TypeScript, Rust, Ollama und lokales TTS. Version 0.1.1, Beta auf Anfrage.',
       },
     },
     services: {
@@ -1414,6 +1441,7 @@ const STRINGS = {
       close: 'SCHLIESSEN [X]',
       visit: 'ZUR WEBSITE ↗',
       caseStudy: 'CASE STUDY LESEN ↗',
+      project: 'PROJEKT ANSEHEN ↗',
       imgAlt: 'Projektvorschau',
       titlePlaceholder: 'TITEL',
       descPlaceholder: 'Beschreibung.',
@@ -1517,6 +1545,7 @@ const STRINGS = {
       shop: 'Shop',
       clientWork: 'Trabajo de cliente',
       demoConcept: 'Demo / concepto',
+      productKind: 'Producto',
       audience: 'Sitios web a medida, diseñados y desarrollados desde cero.',
     },
     shop: {
@@ -1557,6 +1586,7 @@ const STRINGS = {
         institutional: 'Institucional',
         portfolio: 'Sitios portfolio personales',
         ui: 'UI y prototipos',
+        product: 'Producto',
       },
       rubina: {
         title: 'Fotografía - Rubina',
@@ -1625,6 +1655,10 @@ const STRINGS = {
       webtec2: {
         title: 'Institucional - Webtec Agency (concepto 2)',
         desc: 'Una segunda dirección para la misma homepage: layout editorial oscuro, retícula tipográfica y acentos lima. Hecho en un día con Next.js, GSAP, Lenis y Tailwind.',
+      },
+      volt: {
+        title: 'Producto - VOLT',
+        desc: 'Asistente de IA de escritorio gratuito que funciona por completo en local. Conversación por voz, navegador agente que busca, lee y resume, tarjetas interactivas en el chat (Intelligent UI), memoria, notch al estilo Dynamic Island y avatar personalizable con skins y expresiones. Tauri 2, React, TypeScript, Rust, Ollama y TTS local. Versión 0.1.1, beta bajo petición.',
       },
     },
     services: {
@@ -1713,6 +1747,7 @@ const STRINGS = {
       close: 'CERRAR [X]',
       visit: 'IR AL SITIO ↗',
       caseStudy: 'VER EL CASE STUDY ↗',
+      project: 'VER EL PROYECTO ↗',
       imgAlt: 'Vista del proyecto',
       titlePlaceholder: 'TÍTULO',
       descPlaceholder: 'Descripción.',

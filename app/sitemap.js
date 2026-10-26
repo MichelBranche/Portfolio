@@ -1,6 +1,6 @@
 import { alternatesFor } from '@/lib/seo-shared'
 
-const PATHS = ['/', '/portfolio', '/studio', '/servizi', '/contatti', '/work/levele']
+const PATHS = ['/', '/portfolio', '/studio', '/servizi', '/contatti', '/work/levele', '/work/volt']
 
 export default function sitemap() {
   const lastModified = new Date()
