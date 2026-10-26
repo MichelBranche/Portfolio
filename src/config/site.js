@@ -263,6 +263,7 @@ export const PROJECT_META = [
     img: '/projects/volt-cover.webp',
     imgs: ['/projects/volt-cover.webp'],
     thumb: '/projects/volt-cover.webp',
+    video: '/projects/volt.mp4',
     tint: '#ff7a3d',
     publishedAt: '2026-10-26',
   },

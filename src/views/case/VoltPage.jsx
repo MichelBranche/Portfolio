@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { FOOTER_SOCIAL, PROJECT_META } from '../../config/site.js'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { Chars, PixelImage } from '../site/motion.jsx'
 import { magnetic, magneticReset, pixelBurst, pixelClear } from '../site/motion-fx'
+import { ProjectVideo } from '../site/ProjectVideo.jsx'
 import { useSiteUI } from '../site/site-ui.js'
 import { voltPage } from './voltData.js'
 
@@ -25,7 +25,7 @@ export default function VoltPage() {
   }
 
   return (
-    <article className="hb-page hb-cs">
+    <article className="hb-page hb-cs hb-volt">
       <div className="hb-switch" data-reveal>
         <a className="hb-cs-back" href="/portfolio?vista=case" onClick={back}>
           ← {D.back}
@@ -76,7 +76,30 @@ export default function VoltPage() {
         <p className="hb-label" data-reveal>
           \ {D.videoTitle} \
         </p>
-        <LazyVideo src={VIDEO} poster={COVER} label={D.videoLabel} />
+        <ProjectVideo src={VIDEO} poster={COVER} label={D.videoLabel} className="hb-cs-video" />
+      </section>
+
+      <section className="hb-cs-block" aria-label={D.galleryTitle}>
+        <p className="hb-label" data-reveal>
+          \ {D.galleryTitle} \
+        </p>
+        <ul className="hb-volt-shots">
+          {D.shots.map((shot) => (
+            <li key={shot.id}>
+              <figure>
+                <img
+                  src={shot.src}
+                  alt={shot.caption}
+                  width={shot.w}
+                  height={shot.h}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>{shot.caption}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="hb-cs-block">
@@ -98,46 +121,3 @@ export default function VoltPage() {
   )
 }
 
-/** Poster stays visible. The file itself waits until the player is near the viewport. */
-function LazyVideo({ src, poster, label }) {
-  const ref = useRef(null)
-
-  useEffect(() => {
-    const video = ref.current
-    if (!video) return undefined
-    const arm = () => {
-      if (video.getAttribute('src')) return
-      video.preload = 'none'
-      video.src = src
-    }
-    if (typeof IntersectionObserver !== 'function') {
-      arm()
-      return undefined
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return
-        arm()
-        io.disconnect()
-      },
-      { rootMargin: '240px 0px' },
-    )
-    io.observe(video)
-    return () => io.disconnect()
-  }, [src])
-
-  return (
-    <video
-      ref={ref}
-      className="hb-cs-video"
-      controls
-      playsInline
-      width={1280}
-      height={720}
-      preload="none"
-      poster={poster}
-      loading="lazy"
-      aria-label={label}
-    />
-  )
-}

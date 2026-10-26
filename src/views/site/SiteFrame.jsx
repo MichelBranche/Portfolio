@@ -9,6 +9,7 @@ import { useLanguage } from '../../context/LanguageContext.jsx'
 import { Chars, HbCursor, Scramble } from './motion.jsx'
 import { MusicDock, primeMusic, startMusic } from './music.jsx'
 import { magnetic, magneticReset } from './magnetic'
+import { ProjectVideo } from './ProjectVideo.jsx'
 import { reduceMotion } from './motion-utils'
 import { shopIsOpen } from './shopData.js'
 import { SiteUIContext } from './site-ui.js'
@@ -524,10 +525,19 @@ export function SiteFrame({ children }) {
           <div ref={modalRef} className="hb-modal" role="dialog" aria-modal="true" aria-labelledby="hb-modal-title">
             <button type="button" className="hb-modal-backdrop" aria-label={String(t('modal.close'))} onClick={closeModal} />
             <div className="hb-modal-panel">
-              <div className={`hb-modal-images${images.length > 1 ? ' is-stack' : ''}`} data-lenis-prevent>
-                {images.map((src) => (
-                  <img key={src} src={src} alt={String(t('modal.imgAlt'))} />
-                ))}
+              <div className={`hb-modal-images${modalProject.video ? ' is-video' : ''}${images.length > 1 ? ' is-stack' : ''}`} data-lenis-prevent>
+                {modalProject.video ? (
+                  <ProjectVideo
+                    src={modalProject.video}
+                    poster={modalProject.thumb}
+                    label={modalProject.title}
+                    className="hb-modal-video"
+                  />
+                ) : (
+                  images.map((src) => (
+                    <img key={src} src={src} alt={String(t('modal.imgAlt'))} />
+                  ))
+                )}
               </div>
               <div className="hb-modal-copy" data-lenis-prevent>
                 <button type="button" className="hb-menu-x" onClick={closeModal} aria-label={String(t('modal.close'))}>
